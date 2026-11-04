@@ -163,6 +163,10 @@ small,.small {font-size:12px;color:var(--sub)}
   .track-pick {min-height:62px}
   .sound-panel {padding:0 20px 17px}
 }
+/* Narrow phones keep full genre and preset names instead of clipping them. */
+@media (max-width:430px) {
+  .preset-controls {grid-template-columns:minmax(0,1fr)}
+}
 @media (max-width:374px) {
   .brand {gap:7px}
   .brand-icon {width:31px;height:31px;font-size:21px}

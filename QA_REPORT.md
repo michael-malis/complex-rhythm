@@ -68,3 +68,23 @@ Run the repository's workflows `ui-regression.yml`, `spec-baseline.yml`, `preset
 | FIX-009 | New industrial `noiseBurst` voice had RMS ≈0.0008 versus other voices typically ≈0.013–0.069 in identical offline renders | Boost only the noise-source synthesis/amplitude envelope, retain master limiter; add minimum RMS and transient assertions for all 15 voices | Updated audio-offline test and high-density mix stress passed, Actions 42117874127 |
 
 These remain **technical acceptance records**. Hearing quality and exact genre authenticity still require human assessment.
+
+## Follow-up engineering verification — 2026-11-06
+
+The working-branch changes remain in draft PR #1; they are not claimed to be deployed or independently accepted.
+
+| Case | Actual evidence | Measured result |
+|---|---|---|
+| Asynchronous Play / Cancel | [CI 42132119969](https://github.com/michael-malis/complex-rhythm/actions/runs/42132119969), `tests/transport-race.mjs` | Double/triple click, 10 pause/resume cycles and final rapid cancellation; timer creation/clear counts balanced |
+| Rapid preset switching | Same CI, `tests/transport-switching.mjs` | 24 running-state transitions, selected math/instruments refreshed, old voice buses reclaimed |
+| Four-lane mathematical provenance | Same CI, `tests/event-properties.mjs` | 400 deterministic combinations; 200 unions, 200 intersections, 134 with Euclidean sources, 13 boundary orientations; phase outputs and planner source/instrument/patch/articulation metadata agree |
+| Mandatory nonstandard first lane | [CI 42131998402](https://github.com/michael-malis/complex-rhythm/actions/runs/42131998402) | 12 of 15 new studies are not four equally spaced onsets in the first lane, meeting the exact ≥12 threshold |
+| General browser regression | [CI 42132119969](https://github.com/michael-malis/complex-rhythm/actions/runs/42132119969) | 173 responsive/interaction assertions plus 310 math typography/coordinates/zoom assertions, both successful |
+
+### Corrective records
+
+- **FIX-007**: rapid Play requests previously could overlap asynchronous sample preparation and create a duplicate transport. Corrected through synchronous intent/ticket invalidation and one live scheduler invariant. The older regression incorrectly assumed Play always became active synchronously, and was updated to await the explicit playing state.
+- **FIX-008**: an initial transport-race test contained an incorrect four-click expectation from the already-playing state. Corrected to a three-click final cancellation. An earlier failed CI run remains visible; the final scenarios passed.
+- **FIX-009**: mathematical provenance was not independently tested against its own input root sets. Exposed a read-only event source snapshot and exercised 400 random configurations; no provenance mismatches in the tested domain.
+
+**Remaining limitations:** computational matching is not human musical listening. Real-phone audio, screen-reader signoff, second annotated source image and independent visual inspection remain open. Previously verified requirements must return to FAILED if a future test proves their behavior incorrect.

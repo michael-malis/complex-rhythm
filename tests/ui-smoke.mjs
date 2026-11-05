@@ -41,7 +41,13 @@ try {
         headingSize: parseFloat(getComputedStyle(document.querySelector('.brand h1')).fontSize),
         disclosureOpen: document.querySelector('#presetDetails').open,
         language: document.documentElement.lang,
-        textHasCyrillic: /[А-Яа-яЁё]/.test(document.body.innerText)
+        textHasCyrillic: /[А-Яа-яЁё]/.test(document.body.innerText),
+        helperFont: parseFloat(getComputedStyle(document.querySelector('.editor-intro')).fontSize),
+        angleHelpFont: parseFloat(getComputedStyle(document.querySelector('.angle-help')).fontSize),
+        readoutFont: parseFloat(getComputedStyle(document.querySelector('#modulusDisplay')).fontSize),
+        helperOverflow: document.querySelector('.editor-intro').scrollWidth > document.querySelector('.editor-intro').clientWidth + 1,
+        angleHelpOverflow: document.querySelector('.angle-help').scrollWidth > document.querySelector('.angle-help').clientWidth + 1,
+        readoutOverflow: document.querySelector('#modulusDisplay').scrollWidth > document.querySelector('#modulusDisplay').clientWidth + 1
       };
     });
     verify(result.scroll <= result.viewport + 2,
@@ -55,6 +61,10 @@ try {
       'examples disclosure does not follow responsive layout at '+width);
     verify(result.chosen === 'afro', 'not a mathematical initial preset at ' + width);
     verify(result.slider, 'argument slider disabled at ' + width);
+    verify(result.helperFont <= 12.5 && result.angleHelpFont <= 12 && result.readoutFont <= 12,
+      'secondary text is too large at '+width+': '+JSON.stringify(result));
+    verify(!result.helperOverflow && !result.angleHelpOverflow && !result.readoutOverflow,
+      'secondary helper text clips horizontally at '+width+': '+JSON.stringify(result));
     if (width < 720) verify(result.editorTop < result.sceneTop,
       'mathematical controls not visible before canvas at ' + width);
     if(width >= 720 && width < 950) verify(Math.abs(result.editorTop-result.sceneTop)<3,

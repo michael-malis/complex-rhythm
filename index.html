@@ -412,6 +412,58 @@ body{font-size:clamp(13px,calc(14px * var(--ui-scale)),16px);line-height:1.48}
  .canvas-shell{width:min(100%,max(230px,calc(100svh - 185px)))}
 }
 @media(prefers-reduced-motion:reduce){.app *{transition:none!important}}
+
+/* Small explanatory copy: subordinate to parameters and hit counts.
+   Compact also at desktop widths where the editor column is narrow. */
+.workspace>.editor .editor-intro{
+  font-size:clamp(10.5px,calc(11.5px * var(--ui-scale)),12.5px);
+  line-height:1.35;
+  letter-spacing:0;
+  max-width:none;
+  margin:4px 0 9px;
+  color:#9cb1be;
+  overflow-wrap:break-word;
+}
+.workspace>.editor .angle-help{
+  font-size:clamp(10px,calc(11px * var(--ui-scale)),12px);
+  line-height:1.32;
+  margin:2px 0 6px;
+  color:#95aab7;
+  overflow-wrap:break-word;
+}
+.workspace>.editor .math-readout{
+  padding:clamp(8px,calc(9px * var(--ui-scale)),10px) 10px;
+  gap:2px;
+}
+.workspace>.editor .math-topline{
+  gap:4px 10px;
+  align-items:baseline;
+}
+.workspace>.editor .math-topline strong{
+  font-size:clamp(13px,calc(14.5px * var(--ui-scale)),16px);
+  line-height:1.3;
+}
+.workspace>.editor .math-topline span{
+  font-size:clamp(10.5px,calc(11.5px * var(--ui-scale)),12.5px);
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.workspace>.editor .math-readout small{
+  display:block;
+  font-size:clamp(10px,calc(11px * var(--ui-scale)),12px);
+  line-height:1.35;
+  color:#9db2bf;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.workspace>.editor #modulusDisplay{
+  font-size:clamp(10px,calc(11px * var(--ui-scale)),12px);
+  color:#8fa6b4;
+}
+@media(max-width:430px){
+  .workspace>.editor .editor-intro{margin-bottom:8px}
+  .workspace>.editor .math-readout{padding:8px 9px}
+}
 </style>
 </head>
 <body>
@@ -428,16 +480,16 @@ body{font-size:clamp(13px,calc(14px * var(--ui-scale)),16px);line-height:1.48}
   <main class="workspace">
       <section class="editor" id="editor" aria-labelledby="editorHeading">
         <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading" tabindex="-1">Track 1</h3></div><span class="math-tag">z = a + bi</span></div>
-        <p class="editor-intro">Change a, b or n. Rotate the base roots with the angle slider.</p>
+        <p class="editor-intro">Change a, b, or n. Rotate with arg(z).</p>
         <div class="params" role="group" aria-label="Complex number and root degree">
           <div class="param"><label for="editA">a · Re(z)</label><input id="editA" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editB">b · Im(z)</label><input id="editB" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editN">n · root degree</label><input id="editN" type="number" inputmode="numeric" step="1" min="1" max="24"></div>
         </div>
         <div class="angle-control"><label for="argumentAngle">arg(z)</label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0" aria-describedby="angleHelp"><output id="argumentText" for="argumentAngle">0°</output></div>
-        <p class="angle-help" id="angleHelp">Rotates evenly spaced events without changing |z|.</p>
+        <p class="angle-help" id="angleHelp">Rotate the roots; |z| stays fixed.</p>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
-        <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 hits per bar</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · phase 0%</small><small id="modulusDisplay">|z| = 1 · magnitude does not affect event timing</small></div>
+        <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 hits per bar</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · phase 0%</small><small id="modulusDisplay">|z| = 1 · no timing effect</small></div>
 
       </section>
     <section class="visual-stage" aria-labelledby="orbitHeading">
@@ -563,8 +615,8 @@ function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setPrope
 function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} per ${cycleBars===2?'2 bars':'bar'}${t.layers.length?' · '+t.layers.length+' extra':''}`;
  $('eqDisplay').textContent=`z = ${complexDisplay(t)}`;
  const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
- $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: only additional root sets sound':'z = 0: no base-layer events'):`arg(z) = ${fmt(arg)}° · root shift = ${fmt(arg/t.n)}°`;
- $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · magnitude does not affect timing`;
+ $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: only additional root sets sound':'z = 0: no base-layer events'):`arg(z) = ${fmt(arg)}° · shift = ${fmt(arg/t.n)}°`;
+ $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · no timing effect`;
  const angleSlider=$('argumentAngle');angleSlider.disabled=arg===null;angleSlider.value=arg===null?'0':String(Math.round(arg));$('argumentText').textContent=arg===null?'—':`${fmt(arg)}°`;
 }
 

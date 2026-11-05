@@ -696,6 +696,12 @@ function draw(){const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(dr
  // Clock hand runs behind the roots.
  const showPhase=reducedMotion?Math.floor(phase*16)/16:phase,hand=-Math.PI/2+TAU*showPhase,tipX=cx+Math.cos(hand)*(outer+4),tipY=cy+Math.sin(hand)*(outer+4);
  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(tipX,tipY);ctx.strokeStyle=playing?'#d6f3f7ad':'#99a9b36b';ctx.lineWidth=playing?2:1.1;ctx.stroke();
+ if(rootDrag&&rootDrag.moved){
+  const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;
+  ctx.save();ctx.lineWidth=1.5;ctx.strokeStyle=rgba(i,.6);ctx.setLineDash([3,3]);
+  for(let k=0;k<n;k++){const a=-Math.PI/2+(arg+TAU*k)/n;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,Math.max(3,side*.008),0,TAU);ctx.stroke()}
+  ctx.restore();
+ }
  tracks.forEach((t,i)=>{const r=radii[i],es=events(t),spacing=es.length?TAU*r/es.length:40;const baseSize=Math.min(i===selectedTrack?10:8.4,Math.max(2.7,spacing*.3));const allowedPulse=Math.max(.7,Math.min(5.5,spacing*.10));for(const {phase:p,velocity} of es){const size=baseSize*(.68+.32*velocity);const a=-Math.PI/2+TAU*p,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
  const dist=((phase-p)%1+1)%1*duration;const pulse=playing&&!t.muted&&dist<.18?Math.pow(1-dist/.18,2):0;const growth=reducedMotion?0:allowedPulse*pulse*velocity;const sz=size+growth;
  if(!t.muted){ctx.beginPath();ctx.arc(x,y,sz+Math.min(4,spacing*.07),0,TAU);ctx.fillStyle=rgba(i,.14+.14*pulse);ctx.fill();}

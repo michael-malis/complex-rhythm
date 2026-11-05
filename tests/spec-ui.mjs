@@ -71,6 +71,25 @@ try{
  ok((await page.locator('#laneCount0').textContent()).includes('64 hits'),'64 root events');
  await page.locator('#zoomBtn').click();
  ok(Number((await page.locator('#orbitCanvas').boundingBox()).width)>=900,'magnification expands plot');
+ let spacing=await page.evaluate(()=>{
+   const width=document.querySelector('#orbitCanvas').getBoundingClientRect().width;
+   const radius=window.RhythmResearch.radiiForSize(width)[0];
+   return {width,chord:2*radius*Math.sin(Math.PI/64)};
+ });
+ ok(spacing.chord>=34-1e-8,'magnified outer n64 points separated at least 34px: '+JSON.stringify(spacing));
+ await page.locator('.lane[data-lane="3"] .lane-select').click();
+ await page.waitForTimeout(80);
+ const smaller=(await page.locator('#orbitCanvas').boundingBox()).width;
+ ok(smaller<spacing.width,'switching selected lane recomputes zoom to new mathematical degree');
+ await page.locator('#trackN3').fill('64');
+ await page.waitForTimeout(80);
+ spacing=await page.evaluate(()=>{
+   const width=document.querySelector('#orbitCanvas').getBoundingClientRect().width;
+   const radius=window.RhythmResearch.radiiForSize(width)[3];
+   return {width,chord:2*radius*Math.sin(Math.PI/64)};
+ });
+ ok(spacing.width>smaller,'editing n while magnified recomputes plot size');
+ ok(spacing.chord>=34-1e-8,'innermost n64 circle has minimum root chord 34px: '+JSON.stringify(spacing));
  await page.locator('#zoomBtn').click();
  ok((await page.locator('#zoomBtn').getAttribute('aria-pressed'))==='false','zoom toggle restores standard view');
  console.log('PASS spec typography/KaTeX/Cartesian-Polar/zoom:',count,'assertions');

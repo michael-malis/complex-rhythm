@@ -43,6 +43,20 @@ try{
   assert.ok(state.summary.length>35,'musical and mathematical construction explained');
   console.log('PASS REQUIRED RATIO',ratio,id,state.degrees.join(':'));
  }
+
+ // All four phase offsets are independent; editing one lane must not rotate the others.
+ const phasesBefore=await page.evaluate(()=>window.RhythmResearch.current().tracks.map(
+  t=>window.RhythmResearch.events(t).map(e=>e.phase)
+ ));
+ await page.locator('#trackA1').fill('0.8');
+ await page.locator('#trackB1').fill('0.6');
+ const phasesAfter=await page.evaluate(()=>window.RhythmResearch.current().tracks.map(
+  t=>window.RhythmResearch.events(t).map(e=>e.phase)
+ ));
+ assert.notDeepEqual(phasesAfter[1],phasesBefore[1],
+  'independent phase shift changes selected instrument lane');
+ for(const lane of [0,2,3])assert.deepEqual(phasesAfter[lane],phasesBefore[lane],
+  'changing lane 2 phase must not change lane '+(lane+1));
  assert.equal(failures.length,0,'no browser script errors');
  console.log('ALL PASS: 8 mandatory polyrhythm configurations');
  await page.close();

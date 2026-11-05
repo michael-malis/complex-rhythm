@@ -41,7 +41,7 @@ try{
  }
  fs.mkdirSync('artifacts',{recursive:true});
  fs.writeFileSync('artifacts/touch-target-audit.json',JSON.stringify({minimumCssPx:44,results:report},null,2));
- assert.equal(report.reduce((n,row)=>n+row.failures.length,0),
+ assert.equal(report.reduce((n,row)=>n+row.failures.length,0),0,
    'undersized mobile controls: '+JSON.stringify(report.flatMap(r=>r.failures.map(f=>({...f,viewport:r.width}))).slice(0,20)));
  console.log('PASS touch target audit:',report.length,'mobile/tablet screens');
 }finally{await browser.close()}

@@ -92,7 +92,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 
 ## 17. UI/UX test evidence
 
-`tests/ui-smoke.mjs` passes 7 responsive widths/heights with Canvas geometry, editing and compositing, four-lane selection, JSON, transport, 50 presets and real set intersection. `tests/spec-ui.mjs` passes 108 checks on 6 sizes × 2 themes, including formula typesetting and zoom. `tests/accessibility-contrast.mjs` checks WCAG4.5/7 and the 3:1 palette. The earlier contrast run found 4.38:1 for one light-theme logo separator; CSS was corrected and requires a successful **latest** test run to close this defect.
+`tests/ui-smoke.mjs` passes 7 responsive widths/heights with Canvas geometry, editing and compositing, four-lane selection, JSON, transport, 50 presets and real set intersection. `tests/spec-ui.mjs` passes 108 checks on 6 sizes × 2 themes, including formula typesetting and zoom. `tests/accessibility-contrast.mjs` checks WCAG4.5/7 and the 3:1 palette. An earlier run found 4.38:1 on one light-theme logo separator; the color was corrected. **The subsequent full run passed** all 14 configurations with 160 text samples each, no text/palette failures ([Actions 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484)).
 
 ## 18. Known limitations
 
@@ -101,18 +101,18 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
 4. `TASKS.md` status/evidence fields have not been brought into formal acceptance alignment. This alone prevents the mandatory Gate VII.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
-6. Full-page visual contrast is being checked with a new automated audit, but must not be called passed on failing or running jobs.
+6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
 ## 19. Git change evidence
 
-Representative work commits (the complete history is available in GitHub): `cbe2475ca427455671de9f55cfb807bdf6add669` dense mathematical events; `f51f2866e461887a0878fb1447d6c19cf8cbb14c` 2π/Euclidean/JSON tests; `1a631b6d1a87ab8a78f83cb8e8580c8de667f8e3` true set intersection; `87787b1dab2fa46838868b482b1ac02e52a2d191` onset compensation; `9019a0ea803ad45002c717ffdefd96de2d91c731` unique rhythm patterns; `f742ada1b57cf7944d05b7a8400177e8bba111dc` stricter traceability; `0fab137afaa17e1bbb2ed1e46f3a6104948ce2fa` contrast fix.
+Representative work commits (the complete history is available in GitHub): `cbe2475ca427455671de9f55cfb807bdf6add669` dense mathematical events; `f51f2866e461887a0878fb1447d6c19cf8cbb14c` 2π/Euclidean/JSON tests; `1a631b6d1a87ab8a78f83cb8e8580c8de667f8e3` true set intersection; `87787b1dab2fa46838868b482b1ac02e52a2d191` onset compensation; `9019a0ea803ad45002c717ffdefd96de2d91c731` unique rhythm patterns; `f742ada1b57cf7944d05b7a8400177e8bba111dc` stricter traceability; `0fab137afaa17e1bbb2ed1e46f3a6104948ce2fa` contrast fix, [verified by CI run 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484).
 
 ## 20. Seven mandatory gates
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
 | I — audit and traceability | IN_PROGRESS | All 98 IDs and 651 tasks registered, but annotated source screenshots missing |
-| II — typography/accessibility | IN_PROGRESS | Automated sizing available; final contrast audit and human review pending |
+| II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |

@@ -186,10 +186,10 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
  .canvas-shell{width:min(100%,calc(100svh - 255px),700px)}
  .lane{padding:10px;min-width:0}
  .lane-head{grid-template-columns:minmax(0,1fr) minmax(120px,1fr) 44px;gap:5px}
- .lane-select{font-size:19px;white-space:nowrap}
- .lane-sound{font-size:17px}
+ .lane-select{font-size:20px;white-space:nowrap}
+ .lane-sound{font-size:18px}
  .lane-fields{gap:5px}
- .lane-fields label{font-size:17px}
+ .lane-fields label{font-size:18px}
  .lane-fields input{min-width:0}
  .lane-alternate-math{padding:5px 0}
  .lane-modes{margin:6px 0 4px}

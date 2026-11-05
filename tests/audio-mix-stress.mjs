@@ -72,6 +72,27 @@ try {
   let first=-1;for(let i=0;i<signal.length;i++)if(Math.abs(signal[i])>0.000025){first=i/sr;break}
   return {catalog,denseLow,denseHigh,onset:{scheduledAt,compensatedStart,first,driftMs:(first-scheduledAt)*1000}};
  });
+ // Exercise the REAL application hit() path, not only the standalone synth module:
+ // a secondary accent with gain 0.4 must not be attenuated twice to 0.16.
+ await page.evaluate(()=>{
+  window.__velocityProbe=[];
+  const original=window.RhythmVoices;
+  window.RhythmVoices={...original,play(ctx,bus,name,time,velocity){
+   window.__velocityProbe.push({name,busGain:bus.gain.value,velocity});
+   return true;
+  }};
+  const instrument=document.getElementById('laneSound0');
+  instrument.value='acidHard';instrument.dispatchEvent(new Event('change',{bubbles:true}));
+  const slider=document.getElementById('laneGain');
+  slider.value='0.4';slider.dispatchEvent(new Event('input',{bubbles:true}));
+  document.getElementById('previewBtn').click();
+ });
+ await page.waitForFunction(()=>window.__velocityProbe?.length>0,undefined,{timeout:3500});
+ const probe=await page.evaluate(()=>window.__velocityProbe[0]);
+ assert.equal(probe.name,'acidHard','synthetic acid voice reached preview path');
+ assert.equal(probe.busGain,1,'synth gain applied only in envelope, not squared by the bus');
+ assert.ok(Math.abs(probe.velocity-.4)<1e-8,'intended velocity 0.4 reaches the synthesizer');
+ result.liveVelocityProbe=probe;
  await page.close();
 }finally{await browser.close()}
 assert.equal(result.catalog.length,50,'all 50 presets in planner test');

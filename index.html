@@ -318,7 +318,7 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
     <details class="file-actions" id="fileMenu"><summary aria-label="Импорт и экспорт JSON">Файлы <span aria-hidden="true">⌄</span></summary><div class="file-menu"><button id="loadBtn" type="button">Импорт JSON</button><button id="saveBtn" type="button">Экспорт JSON</button></div></details>
   </header>
   <div class="preset-strip">
-    <div class="preset-head"><label for="presetSelect">Примеры ритмов</label><span class="preset-help">34 примера · 7 стилей</span></div>
+    <div class="preset-head"><label for="presetSelect">Примеры ритмов</label><span class="preset-help" id="presetCount">Ритмические примеры</span></div>
     <div class="preset-controls"><label class="sr-only" for="categorySelect">Категория ритмов</label><select id="categorySelect" aria-label="Категория ритмов"><option value="bunker">Bunker</option><option value="other">Другие</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="brazil">Бразилия</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option></select><select id="presetSelect" aria-label="Выбрать ритм"></select></div>
   </div>
   <main class="workspace">
@@ -436,7 +436,7 @@ function roots(track){return events(track).map(x=>x.phase)}
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'удар':n>1&&n<5?'удара':'ударов'}`}
-function renderPresets(){ $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Свой ритм';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
+function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} ритмических примеров · ${new Set(PRESETS.map(p=>p.category)).size} категорий`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Свой ритм';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
 function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.forEach((t,i)=>{
  const row=document.createElement('div');row.className='track'+(t.muted?' is-muted':'');row.style.setProperty('--track-color',COLORS[i]);
  const pick=document.createElement('button');pick.type='button';pick.className='track-pick';pick.setAttribute('aria-pressed',String(selectedTrack===i));pick.setAttribute('aria-label',`Редактировать дорожку ${i+1}: ${SOUNDS[t.sound]}, ${hitLabel(roots(t).length)}`);

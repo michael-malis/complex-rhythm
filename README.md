@@ -1,28 +1,32 @@
-# ROOTS / RHYTHM — complex-root rhythm laboratory
+# ROOTS / RHYTHM
 
-**Live URL (if GitHub Pages is enabled):** https://michael-malis.github.io/complex-rhythm/
+**Website:** https://michael-malis.github.io/complex-rhythm/
 
-A mathematical music experiment with four concentric rings. For each sound, the arguments of the `n`th roots of `z = a + bi` specify evenly spaced beat locations.
+An interactive musical experiment: each of four sound tracks is positioned by arguments of the `n`th complex roots of `z=a+bi`; additional complex-root sets create syncopated/quiet accents without replacing the mathematical model.
 
-## Audio upgrade v3
+## v4 — Bossa nova + acoustic audio
 
-- 30 reworked presets across bunker techno, classic polyrhythm, drum & bass, jungle, Brazilian-inspired, hard house, and acid / 303 categories.
-- Drum presets now use recognisable backbeats and genre-conscious BPMs.
-- Fifteen locally hosted, independently decoded CC0 WAV sample entries (14 distinct sounds) for kicks, snare, clap, hats, rim/tick, tom, and shaker. Attribution and exact provenance in [AUDIO_SOURCES.md](AUDIO_SOURCES.md).
-- Synthesised Reese, bass, acid and Brazil-inspired percussion voices are retained.
-- Multiple complex-root sets per instrument can be **unioned** to express syncopated fills and quieter ghost notes. The advanced sets are in a collapsible editor, keeping the main `a,b,n` model intact.
-- Sample loading is asynchronous and non-blocking: fallback Web Audio synth works offline or when sample files are missing.
+- 34 patterns in 7 styles. Four new **Bossa Nova** examples are listed first in Brazilian rhythms: Clássica (116 BPM), Íntima (104), Noturna (108), Balanço (128).
+- Bossa loops span **two 4/4 bars**, not one. The cross-stick line is three hits in bar one (beat 1, & of 2, beat 4), then two in bar two (beat 2, & of 3). The feathered bass drum plays on 1, & of 2, 3, & of 4, against even shaker eighths.
+- New **real, recorded acoustic drum/percussion samples**, from the CC0 Virtuosity Drums library: soft/full kick, cross-stick variations, shaker variations, jazz hi-hat/snare, claves, bongo.
+- Faster drum-and-bass and jungle grooves also gain a quieter acoustic snare/kick body underneath the electronic transient when loaded.
+- The audio engine waits briefly for the necessary samples on first play instead of immediately playing a harsh synthesized substitute. A fallback remains when sample loading fails. Per-hit playback-rate variation and gain staging reduce repetitive 'machine gun' sounds.
+- 1-bar and 2-bar patterns can both be imported/exported; `bars` defaults to 1 for older JSON files.
 
-## Musical limitation
+## How to hear the **actual recorded** audio
 
-A short loop of equal-spaced complex roots, even as a union of sets, is still **not an exact reconstruction** of classic Amen breaks, a complete Brazilian percussion ensemble, or a fully articulated TB-303 melody. These are plausible groove sketches, not recordings or artist-specific recreations. Full realism will eventually need velocity envelopes, pitch/gate sequencer and possibly sample slicing.
+Open GitHub Pages or serve the **entire repository**, including `samples/`. Opening `index.html` alone (file:// without samples) will use the simpler synthesized fallback.
 
-## Run
+In the web page: select **Бразилия** → **Bossa Nova · Clássica** → **▶ Слушать**. In the status line, `сэмплы 4/4` (or similar) shows how many of the required audio files were decoded.
 
-For full sampled sound, use the GitHub Pages version or download the **whole repository ZIP** and serve its directory with a static web server, e.g. `python -m http.server 8000`. Launch `http://localhost:8000`. The standalone `index.html` alone works without network, with synth fallback.
+## Musical scope
 
-To enable Pages: Settings → Pages → Build and deployment → Source: GitHub Actions (the `.github/workflows/pages.yml` deploys `index.html` and `samples/`).
+The new two-bar clave is a recognizable bossa **drum accompaniment**, not a full João Gilberto recording: there is no guitar harmony or bass-note pitch line. Other presets remain original genre-inspired drum sketches, not exact transcriptions. The core remains a mathematical rhythm prototype.
 
-## Data
+## Rights
 
-`roots-rhythm/1` JSON remains backward compatible: old files with 4 tracks and only `a,b,n,sound,muted` continue to import. New track entries may include up to five `layers` with `a,b,n,velocity`, whose root arguments are combined with the main set. Duplicate points are deduplicated.
+See [AUDIO_SOURCES.md](AUDIO_SOURCES.md) for the individual files, origins and licenses. The project includes audio from two CC0 sources. All source files remain attributed here even though CC0 attribution is not legally required.
+
+## QA
+
+See [AUDIO_QA.md](AUDIO_QA.md). Desktop/mobile layout, basic transport and preset behavior were tested in Chromium, but production sample-file fetching and listening on real phones need a separate live-device check.

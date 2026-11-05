@@ -1,27 +1,26 @@
-# Audio sources and license
+# Audio provenance and usage
 
-ROOTS / RHYTHM includes 15 WAV sample entries (14 distinct audio files), sourced from the [octalmusic/octal-samples house-core kit](https://github.com/octalmusic/octal-samples). The upstream kit is dedicated to the public domain under **CC0 1.0 Universal**; see its [LICENSE](https://github.com/octalmusic/octal-samples/blob/main/LICENSE), [manifest.json](https://github.com/octalmusic/octal-samples/blob/main/manifest.json), and [per-file license audit](https://github.com/octalmusic/octal-samples/blob/main/LICENSES.md).
+### Original electronic one-shots (15 paths, 14 distinct audio sources)
 
-Original file paths and included destinations:
+From [octalmusic/octal-samples](https://github.com/octalmusic/octal-samples), project `house-core`, licensed **CC0 1.0**; original [LICENSE](https://github.com/octalmusic/octal-samples/blob/main/LICENSE), [manifest](https://github.com/octalmusic/octal-samples/blob/main/manifest.json) and [per-file audit](https://github.com/octalmusic/octal-samples/blob/main/LICENSES.md). Preserved sample paths: `samples/kick-deep.wav`, `kick-hard.wav`, `kick-tight.wav`, `kick-sub.wav`, `kick-808.wav`, `snare-snap.wav`, `snare-body.wav`, `snare-808.wav`, `clap.wav`, `hat.wav`, `hat-crunch.wav`, `openhat.wav`, `rim.wav`, `tom.wav`, `shaker.wav`. In this application, `kick-808` and `snare-808` are only stylistic labels, not claims of original vintage hardware recordings.
 
-| Destination | Upstream house-core path |
-| --- | --- |
-| samples/kick-deep.wav | samples/kicks/deep-01.wav |
-| samples/kick-hard.wav | samples/kicks/punch-04.wav |
-| samples/kick-tight.wav | samples/kicks/tight-01.wav |
-| samples/kick-sub.wav | samples/kicks/sub-01.wav |
-| samples/kick-808.wav | samples/kicks/tight-03.wav |
-| samples/snare-snap.wav | samples/snares/snap-01.wav |
-| samples/snare-body.wav | samples/snares/body-01.wav |
-| samples/snare-808.wav | samples/snares/snap-01.wav (shared audio) |
-| samples/clap.wav | samples/claps/classic-01.wav |
-| samples/hat.wav | samples/hats/closed-02.wav |
-| samples/hat-crunch.wav | samples/hats/closed-07.wav |
-| samples/openhat.wav | samples/hats/open-01.wav |
-| samples/rim.wav | samples/percs/tick-02.wav |
-| samples/tom.wav | samples/percs/tom-01.wav |
-| samples/shaker.wav | samples/percs/shaker-02.wav |
+### Newly added **acoustic** recordings (10 paths, all distinct sources)
 
-The source file naming in this project is a convenience label, **not** a claim that a source WAV is an authentic historic TR-808 recording. In particular, the "kick-808" and "snare-808" labels are only stylistic mappings. All the downloaded kit WAVs are CC0; the locally generated synth voices (acid, reese, bass, Brazilian-inspired percussion) are not sourced from a recording.
+From [sfzinstruments/virtuosity_drums](https://github.com/sfzinstruments/virtuosity_drums), performed by Austin McMahon at Virtuosity Musical Instruments (Versilian Studios / Karoryfer), licensed **CC0 1.0** — [LICENSE](https://github.com/sfzinstruments/virtuosity_drums/blob/master/LICENSE) and [publisher's description](https://versilian-studios.com/virtuosity-drums/).
 
-Browser audio: WAV playback is decoded through Web Audio AudioBufferSourceNode. On `file://` or when sample loading fails, a synthesized fallback remains audible.
+| File in this project | Original source file under Virtuosity Drums |
+|---|---|
+| `samples/jazz-kick-soft.flac` | `Samples/mid/kick/mid_kick_snon_vl2_rr2.flac` |
+| `samples/jazz-kick-full.flac` | `Samples/mid/kick/mid_kick_snon_vl3_rr1.flac` |
+| `samples/jazz-rim.flac` | `Samples/mid/snare/mid_snare_crossstick_vl8.flac` |
+| `samples/jazz-rim-bright.flac` | `Samples/mid/snare/mid_snare_crossstick_vl11.flac` |
+| `samples/jazz-snare.flac` | `Samples/mid/snare/mid_snare_center_vl8.flac` |
+| `samples/jazz-hat.flac` | `Samples/mid/hh/mid_hh_closed_vl2_rr1.flac` |
+| `samples/jazz-shaker-a.wav` | `Samples/perc/mid/shaker/LShaker_Shake1D_rr1_Mid.wav` |
+| `samples/jazz-shaker-b.wav` | `Samples/perc/mid/shaker/LShaker_Shake1D_rr2_Mid.wav` |
+| `samples/jazz-claves.wav` | `Samples/perc/mid/claves/Claves1_Hit_v1_rr2_Mid.wav` |
+| `samples/jazz-bongo.wav` | `Samples/perc/mid/bongoh/BongoH_Hit1_v1_rr2_Mid.wav` |
+
+Browser decodes FLAC and WAV via `AudioContext.decodeAudioData`. A synthesized fallback is available if a format is unsupported or the audio path fails. Production-server compatibility should be verified on Safari and Android Chrome separately. The samples are unmodified, apart from independent playback gain, very small playback-rate variation, and cross-genre layering.
+
+No commercially licensed or copyrighted song excerpts are distributed.

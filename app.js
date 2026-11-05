@@ -706,9 +706,22 @@ function laneSeconds(track){return barSeconds()*(track.cycleBars||1)}
 function playbackElapsed(){return playing&&audio?Math.max(0,audio.currentTime-beatEpoch):pausedPhase*cycleSeconds()}
 function lanePhase(track){return RhythmMath.phaseAt(playbackElapsed(),track.cycleBars||1,barSeconds())}
 function transportPhase(){if(!playing||!audio)return pausedPhase;return ((Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds())%1+1)%1}
+let pendingVoiceBusDisposals=0,completedVoiceBusDisposals=0,voiceBusGenerations=0;
 function cancelVoices(){
- if(voiceBus&&audio){try{const old=voiceBus;old.gain.setValueAtTime(old.gain.value,audio.currentTime);old.gain.setTargetAtTime(.0001,audio.currentTime,.006);setTimeout(()=>{try{old.disconnect()}catch(_){}},100)}catch(_){}}
- voiceBus=audio?audio.createGain():null;if(voiceBus)voiceBus.connect(master);
+ if(voiceBus&&audio){
+  const old=voiceBus;
+  try{
+   old.gain.setValueAtTime(old.gain.value,audio.currentTime);
+   old.gain.setTargetAtTime(.0001,audio.currentTime,.006);
+  }catch(_){}
+  pendingVoiceBusDisposals++;
+  setTimeout(()=>{
+   try{old.disconnect()}catch(_){}
+   finally{pendingVoiceBusDisposals--;completedVoiceBusDisposals++}
+  },100);
+ }
+ voiceBus=audio?audio.createGain():null;
+ if(voiceBus){voiceBus.connect(master);voiceBusGenerations++}
 }
 function scheduleAhead(){
  if(!playing||!audio||audio.state!=='running')return;
@@ -927,6 +940,15 @@ function setTheme(next,save=false) {
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({
  current:()=>({bpm,tracks:tracks.map(t=>JSON.parse(JSON.stringify(t)))}),
+ transport:()=>({
+  playing,audioState:audio?.state||'uninitialized',
+  timerActive:timerId!==null,
+  activePresetId,bpm,
+  pendingVoiceBusDisposals,completedVoiceBusDisposals,voiceBusGenerations,
+  hasLiveVoiceBus:!!voiceBus,scheduledUntil,
+  audioTime:audio?.currentTime??0,beatEpoch
+ }),
+
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,

@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - index.html
+      - app.js
+      - styles.css
       - tests/ui-smoke.mjs
       - .github/workflows/ui-regression.yml
   workflow_dispatch:

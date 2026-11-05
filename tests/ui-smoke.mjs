@@ -31,7 +31,8 @@ try {
     sceneTop:rect('.visual-stage').top,
     controlTop:rect('.control-panel').top,
     bodyText:document.body.innerText,
-    computedBackground:getComputedStyle(document.body).backgroundColor
+    computedBackground:getComputedStyle(document.body).backgroundColor,
+    fileHidden:getComputedStyle(document.querySelector('#jsonFile')).display==='none'
    };
   });
   verify(data.lang==='en'&&!/[А-Яа-яЁё]/.test(data.bodyText),'English localization '+width);
@@ -40,6 +41,7 @@ try {
   verify(Math.abs(data.canvas[0]-data.canvas[1])<2&&data.canvas[0]>190,'square Canvas '+width);
   verify(data.lanes===4&&data.inputs===12,'four visible mathematical input rows '+width);
   verify(data.fieldHeight>=44,'small input target '+width);
+  verify(data.fileHidden,'native JSON file picker visible '+width);
   if(width<760)verify(data.controlTop<data.sceneTop,'math-first mobile order '+width);
   else verify(data.sceneLeft<data.controlLeft,'desktop/tablet visualization left '+width);
   await page.screenshot({path:'artifacts/workbench-'+width+'x'+height+'.png',fullPage:true});
@@ -73,6 +75,7 @@ try {
  verify((await page.locator('#baseCount').textContent())==='4','rotation preserves degree');
  await page.locator('#themeBtn').click();
  verify((await page.locator('html').getAttribute('data-theme'))==='dark','dark theme enabled');
+ await page.screenshot({path:'artifacts/workbench-dark-theme.png',fullPage:true});
  await page.locator('#themeBtn').click();
  verify((await page.locator('html').getAttribute('data-theme'))==='light','light theme restored');
  await page.locator('#trackA0').fill('1');await page.locator('#trackB0').fill('0');

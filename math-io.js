@@ -81,7 +81,7 @@ function mathPlanEvents(lanes,barSeconds,fromSeconds,toSeconds) {
   toSeconds-fromSeconds>256*barSeconds)throw Error('Invalid bounded polymetric time window');
  const result=[];
  for(let i=0;i<lanes.length;i++){
-  const lane=lanes[i],bars=lane.cycleBars||1;
+  const lane=lanes[i],bars=lane.cycleBars??1;
   if(!Number.isInteger(bars)||bars<1||bars>16)throw Error('Lane cycle length must be 1..16 bars');
   if(lane.muted)continue;
   const period=bars*barSeconds;
@@ -104,7 +104,7 @@ function mathPlanEvents(lanes,barSeconds,fromSeconds,toSeconds) {
 }
 function mathCommonCycle(lanes){
  if(!Array.isArray(lanes)||!lanes.length)throw Error('At least one lane is required');
- return mathLCM(lanes.map(l=>l.cycleBars||1));
+ return mathLCM(lanes.map(l=>l.cycleBars??1));
 }
 function mathPhaseAt(elapsedSeconds,cycleBars,barSeconds){
  if(!Number.isFinite(elapsedSeconds)||!Number.isFinite(barSeconds)||barSeconds<=0||

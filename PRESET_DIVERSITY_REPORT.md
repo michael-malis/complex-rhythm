@@ -30,6 +30,13 @@ The rotation algorithm expands all events over the common LCM period (current ca
 | acid | 4 |
 | other | 3 |
 
+## Mandatory first-lane novelty
+
+- New studies with a nonstandard first lane: **12 / 15** (minimum 12).
+- Standard four-on-the-floor means exactly four equally spaced final onset phases, regardless of common rotation.
+- Exempt traditional studies are not silently excluded; all 15 new studies are counted.
+- Nonstandard studies: industrial-fracture, acid-reactor, schranz-machinery, broken-reactor, acid-singularity, prime-number-riot, eleven-against-seven, mechanical-paradox, complex-roots-overload, hardtek-mobius, breakcore-prime-shards, euclidean-fragments
+
 ## BPM frequency
 
 | Range | Count |

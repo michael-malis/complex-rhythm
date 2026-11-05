@@ -8,7 +8,9 @@ function mathPolarOf(a,b) {
 }
 function mathFromPolar(r,theta) {
  if(!Number.isFinite(r)||r<0||!Number.isFinite(theta))throw Error('Invalid polar coordinates');
- const snap=v=>Math.abs(v)<1e-12?0:Number(v.toPrecision(12));
+ // Relative snapping preserves genuine tiny nonzero radii while removing
+ // floating-point dust in geometrically exact quarter-turns.
+ const snap=v=>Math.abs(v)<=r*1e-12?0:Number(v.toPrecision(12));
  return {a:snap(r*Math.cos(theta)),b:snap(r*Math.sin(theta))};
 }
 function mathAngle(input) {

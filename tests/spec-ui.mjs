@@ -80,7 +80,7 @@ try{
  await page.locator('.lane[data-lane="3"] .lane-select').click();
  await page.waitForTimeout(80);
  const smaller=(await page.locator('#orbitCanvas').boundingBox()).width;
- ok(smaller<spacing.width,'switching selected lane recomputes zoom to new mathematical degree');
+ ok(smaller===900,'a single root has no adjacent-root separation requirement');
  await page.locator('#trackN3').fill('64');
  await page.waitForTimeout(80);
  spacing=await page.evaluate(()=>{

@@ -747,7 +747,7 @@ function refreshPlotZoom(){
   let lo=900,hi=5000;
   while(lo<hi){
    const mid=Math.floor((lo+hi)/2);
-   if(2*getRadii(mid)[lane]*Math.sin(Math.PI/n)>=34)hi=mid;
+   if(n===1||2*getRadii(mid)[lane]*Math.sin(Math.PI/n)>=34)hi=mid;
    else lo=mid+1;
   }
   const size=lo;

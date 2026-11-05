@@ -4,6 +4,7 @@ on:
     branches: [upgrade/spec-2026-11-math-audio]
     paths:
       - scripts/reconcile-ledger.mjs
+      - scripts/sync-report-progress.mjs
       - .github/workflows/reconcile-ledger.yml
   workflow_dispatch:
 permissions:
@@ -20,11 +21,29 @@ jobs:
       - name: Reconcile only documented and previously passing checks
         run: |
           node scripts/reconcile-ledger.mjs
+          node scripts/sync-report-progress.mjs
           node scripts/verify-traceability.mjs
       - name: Commit three-way status ledger and evidence summary
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add TASKS.md TRACEABILITY.md ACCEPTANCE_CRITERIA.md LEDGER_EVIDENCE_SUMMARY.json
-          git diff --cached --quiet || git commit -m 'Reconcile verified task evidence and explicit acceptance blockers'
-          git push origin HEAD:upgrade/spec-2026-11-math-audio
+          set -euo pipefail
+          BRANCH='upgrade/spec-2026-11-math-audio'
+          SOURCE_LEDGER="$(git rev-parse HEAD:scripts/reconcile-ledger.mjs)"
+          git add TASKS.md TRACEABILITY.md ACCEPTANCE_CRITERIA.md LEDGER_EVIDENCE_SUMMARY.json FINAL_REPORT.md README.md QA_REPORT.md
+          if git diff --cached --quiet; then
+            echo 'Ledger/report already current.'
+            exit 0
+          fi
+          git commit -m 'Synchronize verified requirements and final QA reports'
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH"
+            if [[ "$(git rev-parse "origin/$BRANCH:scripts/reconcile-ledger.mjs")" != "$SOURCE_LEDGER" ]]; then
+              echo 'Newer ledger logic exists; stale output is not published.'
+              exit 0
+            fi
+            git rebase "origin/$BRANCH"
+            if git push origin "HEAD:$BRANCH"; then exit 0; fi
+            echo "Concurrent branch update. Retry $attempt."
+          done
+          exit 1

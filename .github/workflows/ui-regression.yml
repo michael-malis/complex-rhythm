@@ -14,6 +14,7 @@ on:
       - tests/transport-race.mjs
       - tests/event-properties.mjs
       - tests/collision-lanes.mjs
+      - tests/expression-safety.mjs
       - tests/required-polyrhythms.mjs
       - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
@@ -95,6 +96,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-collision.log 2>&1 &
           node tests/collision-lanes.mjs
+      - name: Verify restricted complex-number grammar, malicious-input rejection and canonical state
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-expression.log 2>&1 &
+          node tests/expression-safety.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

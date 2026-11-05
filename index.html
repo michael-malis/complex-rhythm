@@ -381,6 +381,14 @@ body{font-size:clamp(13px,calc(14px * var(--ui-scale)),16px);line-height:1.48}
  .workspace{grid-template-columns:minmax(0,1fr)}
  .workspace>.editor{padding:clamp(10px,calc(12px * var(--ui-scale)),14px)}
 }
+@media(min-width:720px) and (max-width:949px){
+ .workspace{grid-template-columns:minmax(0,1.27fr) minmax(292px,.85fr);grid-template-rows:auto auto}
+ .workspace>.visual-stage{grid-column:1;grid-row:1/span 2}
+ .workspace>.editor{grid-column:2;grid-row:1}
+ .workspace>.sound-panel{grid-column:2;grid-row:2}
+ .canvas-shell{width:min(100%,max(290px,calc(100svh - 250px)))}
+ .track-list{grid-template-columns:1fr}
+}
 @media(min-width:950px){
  .workspace{grid-template-columns:minmax(0,1.65fr) minmax(360px,.85fr);gap:var(--lab-gap)}
  .canvas-shell{width:min(100%,clamp(330px,calc(100svh - 212px),800px))}
@@ -783,6 +791,13 @@ function draw(){const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(dr
  const side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],phase=transportPhase(),duration=cycleSeconds();
  // Low-contrast beat grid. The circles and notes remain dominant.
  for(let j=0;j<16;j++){const a=-Math.PI/2+TAU*j/16;ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*(outer+8),cy+Math.sin(a)*(outer+8));ctx.lineTo(cx+Math.cos(a)*(outer+(j%4===0?15:11)),cy+Math.sin(a)*(outer+(j%4===0?15:11)));ctx.strokeStyle=j%4===0?'#728b9955':'#728b9925';ctx.lineWidth=j%4===0?1.4:1;ctx.stroke()}
+ // Quarter-cycle markers describe the timeline, not root magnitudes.
+ ctx.save();ctx.fillStyle='#afc4d0';ctx.font=`${Math.max(10,Math.min(12,side*.023))}px system-ui, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+ for(const [part,label] of [[0,'0'],[.25,'¼'],[.5,'½'],[.75,'¾']]){
+  const angle=-Math.PI/2+TAU*part;
+  ctx.fillText(label,cx+Math.cos(angle)*(outer+18),cy+Math.sin(angle)*(outer+18));
+ }
+ ctx.restore();
  tracks.forEach((t,i)=>{const r=radii[i],active=i===selectedTrack;ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.strokeStyle=rgba(i,t.muted?.075:active?.23:.11);ctx.lineWidth=active?10:7;ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.strokeStyle=rgba(i,t.muted?.2:active?.85:.5);ctx.lineWidth=active?1.9:1.1;ctx.stroke()});
  // Clock hand runs behind the roots.
  const showPhase=reducedMotion?Math.floor(phase*16)/16:phase,hand=-Math.PI/2+TAU*showPhase,tipX=cx+Math.cos(hand)*(outer+4),tipY=cy+Math.sin(hand)*(outer+4);
@@ -856,8 +871,9 @@ function setupEvents(){
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }
 function applyViewportScale(){
- const factor=Math.min(window.innerWidth/1440,window.innerHeight/900);
- document.documentElement.style.setProperty('--ui-scale',String(Math.max(.84,Math.min(1.18,factor))));
+ const relative=Math.min(window.innerWidth/1440,window.innerHeight/900);
+ const factor=.74+.26*relative;
+ document.documentElement.style.setProperty('--ui-scale',String(Math.max(.78,Math.min(1.15,factor))));
 }
 const desktopPresets=window.matchMedia('(min-width:950px)');
 $('presetDetails').open=desktopPresets.matches;

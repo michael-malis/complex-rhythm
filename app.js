@@ -885,6 +885,16 @@ function setTheme(next,save=false) {
  if(save)try{localStorage.setItem('roots-rhythm-theme',theme)}catch(_){}
  if(tracks.length){renderTracks();renderEditor()}
 }
+// Read-only research/CI snapshots; never expose writable runtime state.
+window.RhythmResearch=Object.freeze({
+ presets:()=>PRESETS.map(p=>({
+  id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,
+  character:p.character||'',mathNote:p.mathNote||'',
+  tracks:p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??(p.bars===2?2:1)},i))
+ })),
+ events:track=>events(cleanTrack(track,0)).map(e=>({phase:e.phase,velocity:e.velocity})),
+ rootPhases:track=>rootPhases(cleanTrack(track,0))
+});
 let savedTheme='light';
 try{savedTheme=localStorage.getItem('roots-rhythm-theme')||'light'}catch(_){}
 initMath();setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);

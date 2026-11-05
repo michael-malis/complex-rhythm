@@ -102,6 +102,12 @@ try {
  verify((await page.locator('#unionCount').textContent())==='6','restored 4∪3 after removing extra set');
 
  verify((await page.locator('#extraLayers input[type=number]').count())===3,'additional source editable');
+ await page.locator('#loadRootExample').click();
+ verify((await page.locator('#baseCount').textContent())==='4','worked example base four roots');
+ verify((await page.locator('#addedCount').textContent())==='3','worked example added three roots');
+ verify((await page.locator('#unionCount').textContent())==='6','worked example six unique phases');
+ verify(await page.locator('#exampleProof .katex').count()===1,'worked example displays correctly typeset phase-set identity');
+ verify((await page.locator('#exampleProof').textContent()).includes('Φ'),'mathematical proof explicitly denotes phases, not raw roots');
  await page.locator('#argumentAngle').evaluate(el=>{el.value='90';el.dispatchEvent(new Event('input',{bubbles:true}))});
  const a=Number(await page.locator('#trackA0').inputValue());
  const b=Number(await page.locator('#trackB0').inputValue());

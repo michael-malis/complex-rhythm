@@ -427,6 +427,12 @@ function renderComposition() {
  $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
  $('overlapSummary').textContent=c.overlaps===0?'No coincident phases.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} — each sounds once.`;
+ const example=$('exampleProof'),exampleMatch=t.operation==='union'&&t.n===4&&t.a===1&&t.b===0&&
+ t.layers.length===1&&t.layers[0].n===3&&t.layers[0].a===1&&t.layers[0].b===0&&!t.euclidean;
+ if(example){
+  example.hidden=!exampleMatch;
+  if(exampleMatch)renderTeX(example,String.raw`\Phi(R_4(1)\cup R_3(1))=\left\{0,\frac14,\frac13,\frac12,\frac23,\frac34\right\}`,true);
+ }
  const plot=(target,values,mode)=>{
   target.replaceChildren();
   for(const item of values){
@@ -836,6 +842,15 @@ function setupEvents() {
   markCustom();
  });
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
+ $('loadRootExample').addEventListener('click',()=>{
+  const t=tracks[selectedTrack];
+  t.a=1;t.b=0;t.n=4;t.operation='union';
+  t.layers=[{a:1,b:0,n:3,velocity:.65}];t.euclidean=null;
+  selectedRootIndex=0;
+  renderTracks();renderEditor();markCustom();
+  $('compositionPanel').open=true;
+  showToast('4 evenly spaced phases + 3 evenly spaced phases = 6 unique phases');
+ });
  $('addLayer').addEventListener('click',()=>{
   const t=tracks[selectedTrack];if(t.layers.length>=5)return;
   t.layers.push({a:1,b:0,n:3,velocity:.65});

@@ -57,7 +57,11 @@
   <div class="composition-body">
    <div class="composition-info"><h3 id="compositionHeading" tabindex="-1">Lane 1</h3><div class="composition-equation math-notation" id="compositionEquation"></div></div>
    <div class="selected-root-math"><div class="small-explain">Selected root and its mathematical origin</div><div class="math-notation" id="selectedRootFormula"></div><div class="math-notation" id="rootPhaseFormula"></div></div>
-   <p class="small-explain">Each set is evenly spaced. Their union can be irregular. Coincident phases sound once.</p>
+   <div class="composition-lesson">
+    <div><strong>Why add another root set?</strong><p>A single set has equally spaced events. Combining two regular sets can produce an irregular pattern, without introducing arbitrary steps. Shared positions sound once on this lane.</p></div>
+    <button id="loadRootExample" class="secondary-btn" type="button">Try 4 + 3 roots</button>
+   </div>
+   <div id="exampleProof" class="example-proof math-notation" aria-live="polite" hidden></div>
    <div class="composition-strips" aria-label="Base, additional and resulting event phases">
     <div class="phase-row"><div class="phase-label"><span>Base</span><output id="baseCount">0</output></div><div class="phase-strip" id="baseStrip" aria-label="Base root positions"></div></div>
     <div class="phase-row"><div class="phase-label"><span>Added</span><output id="addedCount">0</output></div><div class="phase-strip" id="addedStrip" aria-label="Additional root positions"></div></div>

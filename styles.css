@@ -210,3 +210,13 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
  .track-list{grid-template-columns:minmax(0,1fr)}
  .visual-stage{margin-bottom:0}
 }
+
+/* One mathematically correct worked example replaces opaque "extra roots" terminology. */
+.composition-lesson{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  border-block:1px solid var(--line);padding:12px 0;margin:9px 0 12px}
+.composition-lesson strong{font-size:18px;color:var(--ink)}
+.composition-lesson p{font-size:17px;line-height:1.48;color:var(--sub);max-width:57ch;margin:5px 0 0}
+.composition-lesson button{flex:none;min-height:44px;font-size:17px}
+.example-proof{max-width:100%;overflow-x:auto;padding:10px 0 13px;color:var(--ink);font-size:18px}
+.example-proof .katex-display{margin:0;text-align:left}
+@media(max-width:800px){.composition-lesson{align-items:stretch;flex-direction:column}.composition-lesson button{align-self:start}}

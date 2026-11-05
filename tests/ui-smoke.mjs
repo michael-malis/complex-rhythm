@@ -109,7 +109,7 @@ try {
    total++;
   }
  }
- verify(total===35,'expected 35 original presets');
+ verify(total===50,'expected 35 original plus 15 experimental presets');
  await page.locator('#categorySelect').selectOption('poly');
  const poly=await page.locator('#presetSelect option').allTextContents();
  for(const ratio of ['2 : 3','3 : 4','3 : 5','4 : 7','5 : 7'])

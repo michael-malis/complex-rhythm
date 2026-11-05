@@ -5,6 +5,7 @@ on:
       - index.html
       - app.js
       - math-io.js
+      - synthesis.js
       - tests/math-io.test.mjs
       - tests/spec-ui.mjs
       - vendor/katex/**

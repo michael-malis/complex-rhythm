@@ -91,7 +91,7 @@ function composePhases(track) {
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
-function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;t.a=Number((radius*Math.cos(ang)).toPrecision(10));t.b=Number((radius*Math.sin(ang)).toPrecision(10));return true}
+function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;const snap=x=>Math.abs(x)<radius*1e-12?0:Number(x.toPrecision(10));t.a=snap(radius*Math.cos(ang));t.b=snap(radius*Math.sin(ang));return true}
 function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Custom rhythm';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
 function renderTracks() {
  const wrap=$('tracks');wrap.replaceChildren();
@@ -461,7 +461,7 @@ function setupEvents() {
  $('previewBtn').addEventListener('click',previewSound);
  $('argumentAngle').addEventListener('input',e=>{
   const t=tracks[selectedTrack];if(!applyRotation(t,Number(e.target.value)*Math.PI/180))return;
-  $('trackA'+selectedTrack).value=String(t.a);$('trackB'+selectedTrack).value=String(t.b);
+  $('trackA'+selectedTrack).value=String(Number(t.a.toFixed(4)));$('trackB'+selectedTrack).value=String(Number(t.b.toFixed(4)));
   updateLaneStatus(selectedTrack);renderReadout();markCustom();
  });
  $('bpm').addEventListener('input',e=>{
@@ -498,7 +498,7 @@ function setupEvents() {
   if(!rootDrag.moved&&Math.abs(delta)<.004)return;
   rootDrag.moved=true;const t=tracks[rootDrag.track];
   applyRotation(t,rootDrag.startArg+t.n*delta);
-  $('trackA'+rootDrag.track).value=String(t.a);$('trackB'+rootDrag.track).value=String(t.b);
+  $('trackA'+rootDrag.track).value=String(Number(t.a.toFixed(4)));$('trackB'+rootDrag.track).value=String(Number(t.b.toFixed(4)));
   updateLaneStatus(rootDrag.track);renderReadout();markCustom();canvas.classList.add('is-dragging');
  });
  function finishDrag(e){if(!rootDrag||rootDrag.id!==e.pointerId)return;rootDrag=null;canvas.classList.remove('is-dragging')}
@@ -507,7 +507,7 @@ function setupEvents() {
   if(e.shiftKey&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
    e.preventDefault();const t=tracks[selectedTrack];
    if(applyRotation(t,Math.atan2(t.b,t.a)+(e.key==='ArrowRight'?1:-1)*t.n*5*Math.PI/180)){
-    $('trackA'+selectedTrack).value=String(t.a);$('trackB'+selectedTrack).value=String(t.b);updateLaneStatus(selectedTrack);renderReadout();markCustom()
+    $('trackA'+selectedTrack).value=String(Number(t.a.toFixed(4)));$('trackB'+selectedTrack).value=String(Number(t.b.toFixed(4)));updateLaneStatus(selectedTrack);renderReadout();markCustom()
    }
    return;
   }

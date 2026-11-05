@@ -72,6 +72,7 @@ try {
  const a=Number(await page.locator('#trackA0').inputValue());
  const b=Number(await page.locator('#trackB0').inputValue());
  verify(Math.abs(a)<1e-4&&Math.abs(b-1)<1e-4,'argument slider preserves magnitude');
+ verify((await page.locator('#trackA0').inputValue())==='0','exact quarter-turn should not display floating-point dust');
  verify((await page.locator('#baseCount').textContent())==='4','rotation preserves degree');
  await page.locator('#themeBtn').click();
  verify((await page.locator('html').getAttribute('data-theme'))==='dark','dark theme enabled');

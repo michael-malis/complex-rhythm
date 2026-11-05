@@ -1,0 +1,36 @@
+name: Rhythm Studio UI regression
+on:
+  push:
+    paths:
+      - index.html
+      - tests/ui-smoke.mjs
+      - .github/workflows/ui-regression.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser and testing library
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test math, layout, presets, transport and JSON
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-http.log 2>&1 &
+          node tests/ui-smoke.mjs
+      - name: Upload viewport screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rhythm-ui-screenshots
+          path: artifacts/
+          if-no-files-found: ignore

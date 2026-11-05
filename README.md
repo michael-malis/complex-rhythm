@@ -4,6 +4,16 @@
 
 An interactive **mathematical visualization of rhythm**. Each of four instrument lanes uses the arguments of the `n`th roots of `z=a+bi` to place evenly spaced events on a circular timeline. Additional complex-root sets allow layered periodic patterns. Sound supports exploration of the geometry; this is not a DAW or general-purpose beat maker.
 
+## Mathematical exploration controls (Nov 2026)
+
+- Enter `z = a + bi` and choose root degree `n` for the selected instrument.
+- Use the **arg(z)** slider to rotate event timing without changing `|z|` or `n`.
+- Drag an original root point on its circle to rotate the corresponding evenly-spaced set; the argument of `z` changes by `n` times the dragged angular distance. Extra root layers remain untouched.
+- On the focused Canvas, press `Shift + Left/Right` to rotate event points by 5°; ordinary arrows switch tracks.
+- The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 35 genre examples remain accessible.
+
+**Automated QA:** [87 passing browser assertions](https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360) across 7 viewport sizes, 35 presets, JSON import/export and Web Audio transport. Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
+
 ## v4 — Bossa nova + acoustic audio
 
 - 35 patterns in 7 styles. Four new **Bossa Nova** examples are listed first in Brazilian rhythms: Clássica (116 BPM), Íntima (104), Noturna (108), Balanço (128).

@@ -49,3 +49,16 @@ No preset payloads, serialized schema (`roots-rhythm/1`), sample files, event ge
 
 ## Validation limit
 Source-level checks passed for tag structure, unique IDs, 35 preset IDs, and CSS brace counts. These do **not** prove real-device or Chromium rendering, playback correctness, or keyboard focus order. Those checks remain open in TASKS.md.
+
+## Direct mathematical manipulation (November 5, 2026)
+- The argument slider shows the principal argument `arg(z)` in degrees (−180° to 180°), updates `a,b` while preserving `|z|`, and is disabled when `z=0`.
+- Dragging an **original/base root** point on its track rotates the complete base-root set. A root-angle change `Δθ` corresponds to a complex-number argument change `nΔθ` modulo `2π`. The event arrangement still consists of equally spaced roots; extra layers are unchanged.
+- `Shift+Left/Right` rotates roots by 5° per keypress. Canvas arrow-key lane selection remains.
+- Touch interaction is confined to Canvas; all mathematical parameters have native numeric input and keyboard alternatives.
+- The UI remains intentionally limited to manipulating geometry, not manual beat sequencing.
+
+## Automated browser evidence
+- [Chromium regression: 87 checks, success](https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360)
+- 7 responsive screenshots are attached to the workflow run as an artifact.
+- Covered: seven viewport widths/heights, square Canvas, no horizontal overflow, math-first mobile layout, slider, root dragging, keyboard, `z=0`, all 35 presets, JSON import/export and Web Audio start/pause.
+- Not covered: subjective screenshot evaluation, real-phone sound quality, exhaustive screen-reader walkthrough or contrast evaluation.

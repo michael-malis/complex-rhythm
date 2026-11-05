@@ -23,6 +23,10 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [x] Keep Canvas the primary scene and enlarge its desktop footprint.
 - [x] Make mathematical inputs the first panel in mobile DOM order, followed by Canvas, then instruments.
 - [x] Use the 3:4 polyrhythm as the default mathematical demonstration.
+- [x] Add accessible live argument slider preserving |z|.
+- [x] Enable direct canvas dragging of base-root points; rotate z by n times the root-phase displacement.
+- [x] Enable Shift+←/→ to rotate visible base roots 5 degrees per keypress.
+- [x] Keep the geometry (n and |z|) invariant during rotation; leave additional root layers untouched.
 - [x] Show |z| and explicitly distinguish magnitude changes from changes to attack times.
 - [x] Return to math controls after track selection on narrow screens; preserve track button focus on desktop and mute focus on all widths.
 - [x] Count presets/categories from source data instead of hardcoding an outdated number.
@@ -40,10 +44,14 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [x] Confirm source structure retains 35 unique preset IDs and sample definitions.
 - [x] Check HTML tag nesting, no duplicate IDs, and balanced CSS brace counts in current source.
 - [ ] Check desktop keyboard focus progression against the desktop two-column visual placement.
-- [ ] Browser visual comparison at 375px, 768px, 1024×768, 1280×800, 1440×900.
-- [ ] Manual playback, sample-loading, all 35 preset selections and import/export regression.
+- [x] Automated Chromium checks and screenshots for 360×640, 375×812, 390×844, 768×1024, 1024×768, 1280×800, 1440×900.
+- [ ] Human visual review of those screenshots for density, crop, and hierarchy.
+- [x] Automated Playwright regression: all 35 preset selections, degree edits, slider/drag/keyboard rotation, z=0 behavior, JSON import/export round-trip, Web Audio play/pause.
+- [x] All 87 assertions pass: https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360
+- [ ] Listen to every one of 35 presets and validate real-device sample loading, particularly mobile browsers.
 - [ ] Keyboard-only traversal, focus, screen-reader smoke test, zoom and reduced-motion check.
-- [ ] Verify text contrast and absence of overflow at actual browser render sizes.
+- [x] Verify absence of horizontal overflow at all 7 Chromium viewport sizes.
+- [ ] Manually verify text contrast, focused navigation, and visual details with screenshots.
 
 ## Phase 6 — Finish
 - [x] Commit revisions to `main`, including the follow-up audit and math-first mobile layout.
@@ -51,4 +59,4 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [ ] Complete browser/manual verification and fix any uncovered issues.
 
 ## Acceptance
-Completed at source level: mathematical prominence, editor-first mobile layout, preserved root/audio core, real skill searches, design system, task tracking, GitHub updates. **Pending**: actual browser rendering/interaction checks, accessibility focus order, full sample playback.
+Completed at source level: mathematical prominence, editor-first mobile layout, preserved root/audio core, real skill searches, design system, task tracking, GitHub updates. **Verified in Chromium:** 87 assertions in 7 viewports covering rendering dimensions, no horizontal overflow, core interactions, 35 presets, JSON round-trip and audio play/pause. **Remaining:** human screenshot review, detailed accessibility audit and real-device listening to every sample.

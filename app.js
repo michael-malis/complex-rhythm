@@ -678,8 +678,11 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         // Real recorded/rended one-shots first; use local synthesis when unavailable.
         const t=Math.max(at-OUTPUT_CHAIN_COMPENSATION,audio.currentTime+.002);
         if(playSample(sound,t,velocity,index))return;
-        perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
+        perHitBus=audio.createGain();perHitBus.gain.value=1;perHitBus.connect(voiceBus||master);
+         // Synthesizers apply velocity in their envelope. A second bus multiplier
+         // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
+         perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
         switch(soundFallback[sound]||sound) {
           case 'kick':

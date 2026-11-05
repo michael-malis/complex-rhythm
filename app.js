@@ -89,6 +89,7 @@ function composePhases(track) {
  return {base,added,merged,overlaps:merged.filter(v=>v.base&&v.added).length};
 }
 let selectedRootIndex=0;
+let magnified=false;
 function renderTeX(target,latex,displayMode=false) {
  const el=typeof target==='string'?document.getElementById(target):target;
  if(!el)return;
@@ -448,6 +449,34 @@ function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEp
 async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0)}
+function refreshPlotZoom(){
+ const plot=$('plotArea'),btn=$('zoomBtn');
+ if(!plot||!btn)return;
+ plot.classList.toggle('focused',magnified);
+ btn.setAttribute('aria-pressed',String(magnified));
+ btn.textContent=magnified?'Fit entire cycle':'Magnify plot';
+ if(magnified){
+  const ratios=[1,.78,.56,.34],lane=selectedTrack;
+  const n=Math.max(1,tracks[lane]?.n||1);
+  const size=Math.max(900,Math.ceil(34*n/(TAU*.427*ratios[lane])));
+  canvas.style.width=size+'px';canvas.style.height=size+'px';
+  requestAnimationFrame(()=>{plot.scrollLeft=Math.max(0,(size-plot.clientWidth)/2);plot.scrollTop=Math.max(0,(size-plot.clientHeight)/2);resizeCanvas()});
+ }else{
+  canvas.style.width='';canvas.style.height='';
+  requestAnimationFrame(resizeCanvas);
+ }
+}
+function selectRootIndexAtPoint(p,t,r) {
+ if(t.a===0&&t.b===0)return -1;
+ const phases=rootPhases(t);
+ let best=-1,distance=Infinity;
+ phases.forEach((phase,k)=>{
+  const a=-Math.PI/2+TAU*phase;
+  const d=Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r);
+  if(d<distance){distance=d;best=k}
+ });
+ return distance<=Math.max(20,p.side*.03)?best:-1;
+}
 function rgba(i,alpha){const c=RGB[i];return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`}
 function getRadii(side){const outer=side*.427;return [outer,outer*.78,outer*.56,outer*.34]}
 function draw() {
@@ -463,10 +492,7 @@ function draw() {
   ctx.lineTo(Math.cos(a)*(outer+(q%4===0?15:10)),Math.sin(a)*(outer+(q%4===0?15:10)));
   ctx.strokeStyle=guide;ctx.lineWidth=q%4===0?1.35:.7;ctx.stroke();
  }
- ctx.fillStyle=baseInk;ctx.font=`${Math.max(10,Math.min(12,side*.021))}px system-ui`;
- for(const [p,label] of [[0,'0'],[.25,'¼'],[.5,'½'],[.75,'¾']]){
-  const a=-Math.PI/2+TAU*p;ctx.fillText(label,Math.cos(a)*(outer+25),Math.sin(a)*(outer+25));
- }
+ // The quarter-cycle fractions are separate live KaTeX DOM labels, not Canvas text.
  tracks.forEach((t,i)=>{
   const r=radii[i],chosen=i===selectedTrack;
   ctx.beginPath();ctx.arc(0,0,r,0,TAU);
@@ -483,11 +509,11 @@ function draw() {
  }
  tracks.forEach((t,i)=>{
   const r=radii[i],c=composePhases(t),spacing=c.merged.length?TAU*r/c.merged.length:40;
-  const size=Math.min(i===selectedTrack?7:6,Math.max(2.6,spacing*.26));
+  const size=14; // 28px visible event diameter, at least twice the original 12–14px
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
    const proximity=((phase-mark.phase)%1+1)%1*duration;
-   const pulse=playing&&!t.muted&&proximity<.16&&!reducedMotion?2.2*Math.pow(1-proximity/.16,2):0;
+   const pulse=playing&&!t.muted&&proximity<.16&&!reducedMotion?6*Math.pow(1-proximity/.16,2):0;
    const radius=size+pulse;
    ctx.beginPath();ctx.arc(x,y,mark.base&&mark.added?radius+2.1:radius,0,TAU);
    ctx.fillStyle=mark.added&&!mark.base?(dark?'#20221d':'#faf8f3'):COLORS[i];
@@ -498,7 +524,7 @@ function draw() {
  });
  const count=events(tracks[selectedTrack]).length;
  ctx.font=`650 ${Math.max(14,Math.min(24,side*.044))}px system-ui`;ctx.fillStyle=baseInk;ctx.fillText(String(count),0,-3);
- ctx.font=`${Math.max(9,Math.min(11,side*.018))}px system-ui`;ctx.fillText('events',0,16);
+ ctx.font='18px system-ui';ctx.fillText('events',0,29);
  ctx.restore();
  if(playing&&audio){const elapsed=Math.max(0,audio.currentTime-beatEpoch);cycles=Math.floor(elapsed/duration)+1}
  const label=cycleBars===2?`Cycle ${Math.max(1,cycles)} · 2 bars`:`Bar ${Math.max(1,cycles)} · 4/4`;
@@ -537,6 +563,7 @@ function setupEvents() {
  $('loadBtn').addEventListener('click',()=>{$('fileMenu').open=false;$('jsonFile').click()});
  $('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
  $('themeBtn').addEventListener('click',()=>setTheme(theme==='light'?'dark':'light',true));
+ $('zoomBtn').addEventListener('click',()=>{magnified=!magnified;refreshPlotZoom()});
  function canvasPoint(e){const b=canvas.getBoundingClientRect();return{x:e.clientX-b.left-b.width/2,y:e.clientY-b.top-b.height/2,side:Math.min(b.width,b.height)}}
  function wrapAngle(x){return Math.atan2(Math.sin(x),Math.cos(x))}
  function onRootDot(p,t,r){return t.a===0&&t.b===0?false:rootPhases(t).some(ph=>{const a=-Math.PI/2+TAU*ph;return Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r)<=Math.max(15,p.side*.025)})}
@@ -545,7 +572,7 @@ function setupEvents() {
   const p=canvasPoint(e),dist=Math.hypot(p.x,p.y);
   const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-dist)})).sort((a,b)=>a.gap-b.gap)[0];
   if(near.gap>Math.max(15,p.side*.06))return;
-  chooseTrack(near.i);const t=tracks[near.i];if(!onRootDot(p,t,near.r))return;
+  chooseTrack(near.i);const t=tracks[near.i];const k=selectRootIndexAtPoint(p,t,near.r);if(k<0)return;selectedRootIndex=k;updateSelectedRootMath();
   rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),moved:false};
   canvas.setPointerCapture(e.pointerId);
  });

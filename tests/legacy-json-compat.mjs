@@ -48,6 +48,34 @@ try{
   results.push({id:original.id,tracks:current.tracks.length,bpm:current.bpm,
    eventCounts:current.tracks.map(t=>t.phases.length)});
  }
+
+ // Unknown legacy data may affect past behavior; reject it explicitly rather than stripping it.
+ const last=originals.at(-1);
+ const base={format:'roots-rhythm/1',name:'Unknown field fixture',bpm:last.bpm,
+   bars:last.bars,tracks:last.tracks.map(t=>({...t,layers:t.layers.map(l=>({...l}))}))};
+ const beforeReject=await page.evaluate(()=>JSON.stringify(window.RhythmResearch.current()));
+ const negatives=[
+  {name:'project',mutate:x=>{x.unrecognizedSongMode='odd';},field:'unrecognizedSongMode'},
+  {name:'track',mutate:x=>{x.tracks[0].unrecognizedSwing=.6;},field:'unrecognizedSwing'},
+  {name:'layer',mutate:x=>{
+   if(!x.tracks[0].layers.length)x.tracks[0].layers.push({a:1,b:0,n:1,velocity:.8});
+   x.tracks[0].layers[0].unrecognizedAccent='x';
+  },field:'unrecognizedAccent'}
+ ];
+ for(const c of negatives){
+  const payload=JSON.parse(JSON.stringify(base));c.mutate(payload);
+  await page.locator('#jsonFile').setInputFiles({
+   name:'unsupported-'+c.name+'.json',mimeType:'application/json',
+   buffer:Buffer.from(JSON.stringify(payload))
+  });
+  await page.waitForFunction(field=>{
+   const msg=document.getElementById('toast').textContent;
+   return msg.startsWith('Import failed: Unsupported')&&msg.includes(field);
+  },c.field);
+  assert.equal(await page.evaluate(()=>JSON.stringify(window.RhythmResearch.current())),
+   beforeReject,'unknown '+c.name+' field must not silently mutate the project');
+ }
+
  assert.deepEqual(errors,[],'no browser JS errors');
  fs.writeFileSync('artifacts/legacy-json-compat.json',JSON.stringify({
   schema:'roots-rhythm/1',legacyPresets:results.length,results,pass:true,

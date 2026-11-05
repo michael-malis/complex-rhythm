@@ -577,6 +577,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         source.playbackRate.value=1+([0,-.012,.009,-.007,.004][index%5]);
         const gain=audio.createGain();gain.gain.value=Math.max(.001,gainValue);
         source.connect(gain);gain.connect(voiceBus||master);
+        const cleanupNodes=[gain];
         if(key==='berlinrumble'||key==='berlinrumble-alt'){
           // A harmonically distorted mid-bass parallel path makes 46 Hz sub audible
           // on phone speakers, without sacrificing the unprocessed fundamental.
@@ -591,7 +592,12 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
           const presenceGain=audio.createGain();presenceGain.gain.value=.24*gainValue;
           source.connect(saturation);saturation.connect(presenceFilter);
           presenceFilter.connect(presenceGain);presenceGain.connect(voiceBus||master);
+          cleanupNodes.push(saturation,presenceFilter,presenceGain);
         }
+        source.onended=()=>{
+          try{source.disconnect()}catch(_){}
+          for(const node of cleanupNodes)try{node.disconnect()}catch(_){}
+        };
         source.start(Math.max(at,audio.currentTime+.002));return true;
       }
       function playSample(sound,at,velocity,index=0){

@@ -76,6 +76,8 @@ const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
+let transportWanted=false,transportTicket=0,pauseBarrier=Promise.resolve();
+let schedulerIntervalsCreated=0,schedulerIntervalsCleared=0;
 let audio=null,master=null,compressor=null,limiter=null,subFilter=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
 const sampleBuffers=new Map();const samplePromises=new Map();
 let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
@@ -818,11 +820,62 @@ function scheduleAhead(){
  }
  scheduledUntil=to;
 }
-function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Pause':'▶ Play';button.setAttribute('aria-pressed',String(playing));const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length;const all=prioritySampleKeys().length;$('audioState').textContent=playing?(`Playing · samples ${ready}/${all}`):'Ready to play'}
-async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();reclaimHitBuses(true);updateTransportText();return}
- if(!initAudio())return;try{await audio.resume()}catch(err){showToast('Audio could not start: '+err.message);return}
- const ready=prioritySampleKeys();if(ready.length){$('audioState').textContent='Loading sounds…';await Promise.race([loadSamples(ready),new Promise(resolve=>setTimeout(resolve,2800))]);}
- cancelVoices();beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();scheduledUntil=audio.currentTime;playing=true;updateTransportText();scheduleAhead();timerId=setInterval(scheduleAhead,25)}
+function updateTransportText(){
+ const button=$('playBtn');
+ button.textContent=playing?'Ⅱ Pause':transportWanted?'Cancel start':'▶ Play';
+ button.setAttribute('aria-pressed',String(playing||transportWanted));
+ const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length,all=prioritySampleKeys().length;
+ $('audioState').textContent=playing?('Playing · samples '+ready+'/'+all):
+  transportWanted?'Preparing audio…':'Ready to play';
+}
+async function togglePlay(){
+ // Intent changes synchronously, before the first await. Two quick Play clicks
+ // must not create duplicate schedulers or start playback after cancellation.
+ if(playing||transportWanted){
+  transportWanted=false;const ticket=++transportTicket;
+  if(playing)pausedPhase=transportPhase();
+  playing=false;
+  if(timerId!==null){clearInterval(timerId);timerId=null;schedulerIntervalsCleared++}
+  if(audio)cancelVoices();
+  // A new start waits for this pause to finish; stale starts never change
+  // playback state after their ticket has been invalidated.
+  pauseBarrier=audio?audio.suspend().catch(()=>{}):Promise.resolve();
+  await pauseBarrier;
+  if(ticket===transportTicket){reclaimHitBuses(true);updateTransportText()}
+  return;
+ }
+ transportWanted=true;
+ const ticket=++transportTicket;
+ updateTransportText();
+ if(!initAudio()){
+  if(ticket===transportTicket){transportWanted=false;updateTransportText()}
+  return;
+ }
+ try{
+  await pauseBarrier;
+  if(ticket!==transportTicket||!transportWanted)return;
+  await audio.resume();
+  if(ticket!==transportTicket||!transportWanted)return;
+  const ready=prioritySampleKeys();
+  if(ready.length){
+   $('audioState').textContent='Loading sounds…';
+   await Promise.race([loadSamples(ready),new Promise(resolve=>setTimeout(resolve,2800))]);
+  }
+  if(ticket!==transportTicket||!transportWanted)return;
+  cancelVoices();
+  beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();
+  scheduledUntil=audio.currentTime;
+  playing=true;
+  updateTransportText();scheduleAhead();
+  if(timerId!==null){clearInterval(timerId);schedulerIntervalsCleared++}
+  timerId=setInterval(scheduleAhead,25);schedulerIntervalsCreated++;
+ }catch(err){
+  if(ticket===transportTicket){
+   transportWanted=false;playing=false;updateTransportText();
+   showToast('Audio could not start: '+err.message);
+  }
+ }
+}
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
 async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
@@ -1057,6 +1110,7 @@ window.RhythmResearch=Object.freeze({
  current:()=>({bpm,tracks:tracks.map(t=>JSON.parse(JSON.stringify(t)))}),
  transport:()=>({
   playing,audioState:audio?.state||'uninitialized',
+  transportWanted,transportTicket,schedulerIntervalsCreated,schedulerIntervalsCleared,
   timerActive:timerId!==null,
   activePresetId,bpm,
   pendingVoiceBusDisposals,completedVoiceBusDisposals,voiceBusGenerations,

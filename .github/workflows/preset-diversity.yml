@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add PRESET_DIVERSITY_REPORT.md
+          git add PRESET_DIVERSITY_REPORT.md PRESET_INVENTORY.md PRESET_INVENTORY.json
           git diff --cached --quiet || git commit -m 'Update mathematical preset diversity report'
           git push origin HEAD:upgrade/spec-2026-11-math-audio
       - name: Preserve report as artifact
@@ -44,5 +44,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: preset-diversity-report
-          path: PRESET_DIVERSITY_REPORT.md
+          path: |
+            PRESET_DIVERSITY_REPORT.md
+            PRESET_INVENTORY.md
+            PRESET_INVENTORY.json
           if-no-files-found: ignore

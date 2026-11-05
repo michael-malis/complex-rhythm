@@ -29,6 +29,8 @@ ok(planned.some(x=>x.lane===0&&close(x.time,6)),'short lane repeats at 3 bars');
 ok(planned.some(x=>x.lane===1&&close(x.time,8)),'long lane repeats at 4 bars');
 ok(close(m.phaseAt(7,3,2),1/6),'independent phase 1 bar into next three-bar cycle');
 ok(close(m.phaseAt(7,4,2),7/8),'independent phase within four-bar cycle');
+const denseEvents=Array.from({length:640},(_,i)=>({phase:i/640,velocity:.3}));
+eq(m.planEvents([{cycleBars:1,events:denseEvents}],1,0,1).length,640,'dense lane >256 periodic events stays mathematically intact');
 const localWindow=m.planEvents(poly,2,14,18);
 ok(localWindow.length>0&&localWindow.every(x=>x.time>=14&&x.time<18),'bounded exploration window');
 eq(m.commonCycle([{cycleBars:13},{cycleBars:14},{cycleBars:15},{cycleBars:16}]),21840,'large but exact LCM, no generated long sequence');

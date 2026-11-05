@@ -86,7 +86,7 @@ function mathPlanEvents(lanes,barSeconds,fromSeconds,toSeconds) {
   if(lane.muted)continue;
   const period=bars*barSeconds;
   const values=lane.events||[];
-  if(values.length>256)throw Error('Too many events in one lane');
+  if(values.length>1024)throw Error('Too many events in one lane (maximum 1024)');
   const fromCycle=Math.max(0,Math.floor(fromSeconds/period)-1);
   const toCycle=Math.ceil(toSeconds/period)+1;
   for(let k=fromCycle;k<=toCycle;k++){

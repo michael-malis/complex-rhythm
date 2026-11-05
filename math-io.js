@@ -97,7 +97,18 @@ function mathPlanEvents(lanes,barSeconds,fromSeconds,toSeconds) {
     if(!Number.isFinite(event.phase)||event.phase<0||event.phase>=1)throw Error('Event phase must be in [0,1)');
     const time=(k+event.phase)*period;
     if(time>=fromSeconds-1e-10 && time<toSeconds-1e-10){
-     result.push({lane:i,cycle:k,sourceEvent:j,phase:event.phase,time,velocity:event.velocity??1});
+     const velocity=event.velocity??1;
+     if(!Number.isFinite(velocity)||velocity<0||velocity>2)throw Error('Invalid event velocity');
+     const sources=Array.isArray(event.sources)?event.sources.map(src=>({...src})):[];
+     result.push({
+      id:i+':'+k+':'+j,
+      lane:i,cycle:k,sourceEvent:j,phase:event.phase,time,velocity,
+      instrument:lane.sound??null,
+      patch:lane.patch??null,
+      gain:lane.gain??1,
+      articulation:{velocity,accent:velocity>=.9},
+      sources
+     });
     }
    }
   }

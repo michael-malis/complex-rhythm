@@ -13,10 +13,10 @@ An **Interactive Mathematics Lab**: visualize arguments of complex roots as peri
 ## Layout / hierarchy
 1. Compact brand and file tools.
 2. Example selection without a marketing hero.
-3. Large interactive Canvas at left/top.
-4. Selected track's complex-number editor **before** the four-track list in visual and DOM order.
-5. Sound preview, additional root layers, and explanatory help remain available.
-6. At desktop >=950px, two-column workbench; below it, stacked layout. Large scene scale responds to viewport height and width.
+3. On desktops (>=950px) the circular visualization is the large **left** pane and a compact complex-root editor is the **upper right** pane.
+4. On smaller screens the DOM follows the learning sequence **complex number → visualization → instruments** so mathematical inputs are encountered before playback and music presets.
+5. Four-track selection/mute, sound preview, additional root sets, and explanatory help remain accessible in the lower instrument section. Selecting a track in the list on narrow screens returns to the mathematical editor.
+6. The default example is **Polyrhythm 3:4** rather than a production-oriented genre; genre presets remain unchanged and available. Preset/category counts are derived from source data.
 
 ## Tokens
 - Background: `#0a0e12`; stage `#0e151c`; math editor `#15232e`; control background `#0d1a24`.
@@ -27,7 +27,7 @@ An **Interactive Mathematics Lab**: visualize arguments of complex roots as peri
 - Buttons, selects, and summaries use subtle 150ms state feedback; motion disabled for reduced-motion preference.
 
 ## Mathematical semantic distinction
-For `z != 0`, the arguments of the `n` roots are evenly spaced. Argument changes rotate event phases by `arg(z)/n`; changing modulus alone does not move those phases. The app's four different circle radii are **track lanes**, not the true mathematical moduli of the roots. Extra root sets represent unions of event phases, not arbitrary direct step sequencing.
+For `z != 0`, the arguments of the `n` roots are evenly spaced. Argument changes rotate event phases by `arg(z)/n`; changing modulus alone does not move those phases. The editor displays `|z|` explicitly, together with this distinction. The app's four different circle radii are **track lanes**, not the true mathematical moduli of the roots. Extra root sets represent unions of event phases, not arbitrary direct step sequencing.
 
 ## Accessibility and responsive
 - Skip link to the primary mathematical editor.
@@ -39,3 +39,13 @@ For `z != 0`, the arguments of the `n` roots are evenly spaced. Argument changes
 
 ## Constraints
 No preset payloads, serialized schema (`roots-rhythm/1`), sample files, event generators or Web Audio timing logic altered. A browser runtime / perceptual check remains necessary on actual devices.
+
+## Source-grounded redesign references (5 November 2026)
+- [GeoGebra: linked algebraic and graphic views](https://geogebra.github.io/docs/manual/en/Views/) — primary inspiration: expression changes should immediately update geometry.
+- [Desmos: sliders and movable points](https://help.desmos.com/hc/en-us/articles/202529069-Sliders-and-Movable-Points-in-a-Graph) — informative direct-manipulation precedent; not a mandate to add new mathematical controls in this UI-only pass.
+- [NN/g: progressive disclosure](https://www.nngroup.com/articles/progressive-disclosure/) — sound-layer complexity stays secondary to mathematical inputs.
+- [W3C WCAG 2.2 target size](https://www.w3.org/TR/wcag/#target-size-minimum) — web Level AA minimum is 24 CSS px subject to exceptions, distinct from the 44px enhanced criterion.
+- [Chrome: responsive design](https://developer.chrome.com/docs/modern-web-guidance/guides/css/responsive-design) — responsive layouts should adapt with available container / viewport dimensions.
+
+## Validation limit
+Source-level checks passed for tag structure, unique IDs, 35 preset IDs, and CSS brace counts. These do **not** prove real-device or Chromium rendering, playback correctness, or keyboard focus order. Those checks remain open in TASKS.md.

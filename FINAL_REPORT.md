@@ -13,11 +13,14 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 651 |
 | Atomic subtasks | 553 |
-| Tasks formally marked VERIFIED | **115** |
+| Tasks formally marked VERIFIED | **166** |
+| Tasks formally marked IN_PROGRESS | 78 |
+| Tasks formally marked TODO | 403 |
+| Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Tasks formally marked BLOCKED | **4** |
+| Parent requirements VERIFIED | **34 of 98** |
 
-The three-way evidence registry was reconciled by [Actions 42114588818](https://github.com/michael-malis/complex-rhythm/actions/runs/42114588818). **26 of 98 parent requirements** are formally VERIFIED, representing 115 of the 651 parent/child task records. A further 86 tasks are IN_PROGRESS, 446 TODO and 4 BLOCKED. Only the explicitly tested requirements were marked VERIFIED. See [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md). No full-acceptance claim is made.
+The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
 ## 7. Implemented changes
 
@@ -99,7 +102,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 50 examples and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are automatically reconciled for known evidence (115 task records VERIFIED; 4 blockers). Gate VII still cannot pass while 446 tasks remain TODO, 86 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are automatically reconciled for known evidence (166 task records VERIFIED; 4 blockers). Gate VII still cannot pass while 403 tasks remain TODO, 78 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -111,12 +114,12 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 98 IDs/651 tasks registered; 26 requirements verified, one annotated source image recovered, second still missing |
+| I — audit and traceability | IN_PROGRESS | 34/98 requirements VERIFIED; one annotated source image located, second missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 115 verified task records, 446 TODO, 86 IN_PROGRESS and 4 BLOCKED; seven-gate signoff not asserted |
+| VII — final verification | NOT PASSED | 166 VERIFIED, 403 TODO, 78 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Release condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. Until then, remain on draft PR rather than silently publishing incomplete work.

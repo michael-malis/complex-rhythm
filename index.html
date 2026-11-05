@@ -68,7 +68,7 @@
     <div class="phase-row"><div class="phase-label"><span>Union</span><output id="unionCount">0</output></div><div class="phase-strip" id="unionStrip" aria-label="Unique resulting positions"></div></div>
    </div>
    <p id="overlapSummary" class="composition-note">No shared phases.</p>
-   <div class="composition-tools"><label for="argumentAngle">Rotate base <code>arg(z)</code></label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0"><output id="argumentText" for="argumentAngle">0°</output></div>
+   <div class="composition-tools"><label for="argumentAngle">Rotate base <span id="argMathLabel" class="math-notation"></span></label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0"><output id="argumentText" for="argumentAngle">0°</output></div>
    <p class="small-explain">Rotation preserves the root count and |z|. A degree-1 set adds a single accent.</p>
    <div id="extraLayers" class="extra-layers"></div><div id="specialRhythms" class="special-rhythms"></div><div id="patchControls" class="patch-controls"></div>
    <div class="composition-actions"><button id="addLayer" type="button" class="secondary-btn">+ Add root set</button><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
@@ -77,7 +77,7 @@
  <details class="math-details"><summary>Mathematical notes</summary>
   <div id="formulaReference" class="formula-reference" aria-label="Mathematical formulas for Cartesian, polar and complex roots"></div>
   <p>For nonzero z, the arguments of its n-th roots form n equally spaced phases. Changing arg(z) rotates them; changing |z| alone does not change event timing.</p>
-  <p>The four circle radii represent instrument lanes, not the moduli of the complex roots. A union merges coincident events: R₄(1) ∪ R₃(1) has six distinct phases, not seven.</p>
+  <p>The four circle radii represent instrument lanes, not the moduli of the complex roots. A union merges coincident events: <span id="mathExampleUnion" class="math-notation"></span> has six distinct phases, not seven.</p>
   <p>A polyrhythm combines different periodicities across instruments. Composed root sets combine rhythms within one instrument. Both differ from an arbitrary step sequencer.</p></details>
 </section>
 </main>

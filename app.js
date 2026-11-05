@@ -162,6 +162,8 @@ function initMath() {
   ['Coordinate identities',String.raw`a=\Re(z),\quad b=\Im(z),\quad r=|z|,\quad \theta=\arg(z)`]
  ];
  renderTeX('cartesianHeading',String.raw`z=a+bi`);
+ renderTeX('argMathLabel',String.raw`\arg(z)`);
+ renderTeX('mathExampleUnion',String.raw`R_4(1)\cup R_3(1)`);
  for(const [id,tex] of [
   ['phaseZero',String.raw`0`],
   ['phaseQuarter',String.raw`\dfrac{1}{4}`],

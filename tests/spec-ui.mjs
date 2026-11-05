@@ -36,6 +36,8 @@ try{
     'mandatory math/controls typography '+item.selector+' '+width+'/'+theme+
     ': '+item.font+' < '+minScale[item.selector]);
   ok(data.labels.every(x=>x.frac),'all quarter fractions are vertically typeset');
+  ok(await page.locator('#argMathLabel .katex').count()===1,'argument slider math typeset with KaTeX');
+  ok(await page.locator('#mathExampleUnion .katex').count()===1,'mathematical prose avoids plain-text root-set surrogate');
   ok(data.input==='64','degree supports 1..64');
   ok(errors.length===0,'JS errors '+errors.join('; '));
   await page.screenshot({path:'artifacts/spec-ui/'+width+'x'+height+'-'+theme+'.png',fullPage:true});

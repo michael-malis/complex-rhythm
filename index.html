@@ -488,8 +488,8 @@ function draw(){const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(dr
  // Clock hand runs behind the roots.
  const showPhase=reducedMotion?Math.floor(phase*16)/16:phase,hand=-Math.PI/2+TAU*showPhase,tipX=cx+Math.cos(hand)*(outer+4),tipY=cy+Math.sin(hand)*(outer+4);
  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(tipX,tipY);ctx.strokeStyle=playing?'#d6f3f7ad':'#99a9b36b';ctx.lineWidth=playing?2:1.1;ctx.stroke();
- tracks.forEach((t,i)=>{const r=radii[i],ps=roots(t),spacing=ps.length?TAU*r/ps.length:40;const size=Math.min(i===selectedTrack?10:8.4,Math.max(2.7,spacing*.3));const allowedPulse=Math.max(.7,Math.min(5.5,spacing*.10));for(const p of ps){const a=-Math.PI/2+TAU*p,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
- const dist=((phase-p)%1+1)%1*duration;const pulse=playing&&!t.muted&&dist<.18?Math.pow(1-dist/.18,2):0;const growth=reducedMotion?0:allowedPulse*pulse;const sz=size+growth;
+ tracks.forEach((t,i)=>{const r=radii[i],es=events(t),spacing=es.length?TAU*r/es.length:40;const baseSize=Math.min(i===selectedTrack?10:8.4,Math.max(2.7,spacing*.3));const allowedPulse=Math.max(.7,Math.min(5.5,spacing*.10));for(const {phase:p,velocity} of es){const size=baseSize*(.68+.32*velocity);const a=-Math.PI/2+TAU*p,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+ const dist=((phase-p)%1+1)%1*duration;const pulse=playing&&!t.muted&&dist<.18?Math.pow(1-dist/.18,2):0;const growth=reducedMotion?0:allowedPulse*pulse*velocity;const sz=size+growth;
  if(!t.muted){ctx.beginPath();ctx.arc(x,y,sz+Math.min(4,spacing*.07),0,TAU);ctx.fillStyle=rgba(i,.14+.14*pulse);ctx.fill();}
  ctx.beginPath();ctx.arc(x,y,sz+1.8,0,TAU);ctx.fillStyle='#0a0e12';ctx.fill();ctx.beginPath();ctx.arc(x,y,sz,0,TAU);ctx.fillStyle=t.muted?rgba(i,.34):rgba(i,.94);ctx.fill();
  if(!t.muted){ctx.strokeStyle=i===selectedTrack?'rgba(255,255,255,.95)':'rgba(231,247,248,.69)';ctx.lineWidth=i===selectedTrack?1.65:1.2;ctx.stroke()}

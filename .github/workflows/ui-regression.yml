@@ -11,6 +11,7 @@ on:
       - tests/audio-offline.mjs
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
+      - tests/required-polyrhythms.mjs
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/touch-targets.mjs
@@ -70,6 +71,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-legacy-http.log 2>&1 &
           node tests/legacy-json-compat.mjs
+      - name: Verify all eight required selectable polyrhythm relations
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-ratio.log 2>&1 &
+          node tests/required-polyrhythms.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,8 +1,9 @@
 'use strict';
 (() => {
 const TAU=2*Math.PI;
-const COLORS=['#72e5ec','#ff9b8c','#ffc77b','#beadff'];
-const RGB=[[114,229,236],[255,155,140],[255,199,123],[190,173,255]];
+let COLORS=['#ab5847','#567a63','#967438','#80618a'];
+let RGB=[[171,88,71],[86,122,99],[150,116,56],[128,97,138]];
+let theme='light';
 const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble'};
 // Every audible time point is still the argument of a complex root.
 const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
@@ -73,40 +74,114 @@ function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0
 // Union of sets of complex roots; exact duplicates combine rather than play twice.
 function events(track){const all=rootPhases(track).map(phase=>({phase,velocity:1}));for(const layer of track.layers||[]){for(const phase of rootPhases(layer))all.push({phase,velocity:layer.velocity??.62})}all.sort((a,b)=>a.phase-b.phase);const out=[];for(const item of all){const last=out[out.length-1];if(last&&Math.abs(last.phase-item.phase)<1e-6)last.velocity=Math.max(last.velocity,item.velocity);else out.push(item)}if(out.length>1&&Math.abs(1+out[0].phase-out[out.length-1].phase)<1e-6){out[0].velocity=Math.max(out[0].velocity,out.pop().velocity)}return out}
 function roots(track){return events(track).map(x=>x.phase)}
+function composePhases(track) {
+ const base=rootPhases(track);
+ const extra=[];
+ for(const layer of track.layers||[])extra.push(...rootPhases(layer));
+ const near=(a,b)=>Math.abs(a-b)<1e-6||Math.abs(Math.abs(a-b)-1)<1e-6;
+ const unique=items=>items.filter((phase,i)=>items.findIndex(v=>near(v,phase))===i).sort((a,b)=>a-b);
+ const added=unique(extra);
+ const merged=events(track).map(ev=>({
+  phase:ev.phase,
+  base:base.some(p=>near(p,ev.phase)),
+  added:added.some(p=>near(p,ev.phase))
+ }));
+ return {base,added,merged,overlaps:merged.filter(v=>v.base&&v.added).length};
+}
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
 function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;t.a=Number((radius*Math.cos(ang)).toPrecision(10));t.b=Number((radius*Math.sin(ang)).toPrecision(10));return true}
 function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Custom rhythm';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
-function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.forEach((t,i)=>{
- const row=document.createElement('div');row.className='track'+(t.muted?' is-muted':'');row.style.setProperty('--track-color',COLORS[i]);
- const pick=document.createElement('button');pick.type='button';pick.className='track-pick';pick.setAttribute('aria-pressed',String(selectedTrack===i));pick.setAttribute('aria-label',`Edit track ${i+1}: ${SOUNDS[t.sound]}, ${hitLabel(roots(t).length)}`);
- const dot=document.createElement('span');dot.className='track-icon';dot.setAttribute('aria-hidden','true');
- const name=document.createElement('span');name.className='track-name';name.textContent=SOUNDS[t.sound];
- const count=document.createElement('span');count.className='track-count';count.textContent=hitLabel(roots(t).length);
- pick.append(dot,name,count);pick.addEventListener('click',()=>chooseTrack(i,true));
- const mute=document.createElement('button');mute.className='ghost track-mute';mute.type='button';mute.title=t.muted?'Unmute instrument':'Mute instrument';mute.setAttribute('aria-label',`${t.muted?'Unmute':'Mute'} ${SOUNDS[t.sound]}`);mute.setAttribute('aria-pressed',String(t.muted));mute.textContent=t.muted?'×':'♫';
- mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();wrap.querySelectorAll('.track-mute')[i]?.focus({preventScroll:true});markCustom();});row.append(pick,mute);wrap.append(row);
-})}
-function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Track ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;$('plotHint').textContent=`Circle ${selectedTrack+1} · ${SOUNDS[t.sound]} — change a, b or n in the editor`;
- for(const k of ['A','B','N'])$('edit'+k).value=String(t[k.toLowerCase()]);
- $('fieldMessage').textContent='';renderReadout();renderLayers()}
-function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} per ${cycleBars===2?'2 bars':'bar'}${t.layers.length?' · '+t.layers.length+' extra':''}`;
- $('eqDisplay').textContent=`z = ${complexDisplay(t)}`;
- const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
- $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: only additional root sets sound':'z = 0: no base-layer events'):`arg(z) = ${fmt(arg)}° · shift = ${fmt(arg/t.n)}°`;
- $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · no timing effect`;
- const angleSlider=$('argumentAngle');angleSlider.disabled=arg===null;angleSlider.value=arg===null?'0':String(Math.round(arg));$('argumentText').textContent=arg===null?'—':`${fmt(arg)}°`;
+function renderTracks() {
+ const wrap=$('tracks');wrap.replaceChildren();
+ tracks.forEach((t,i)=>{
+  const row=document.createElement('article');row.className='lane'+(i===selectedTrack?' selected':'')+(t.muted?' muted':'');row.dataset.lane=String(i);row.style.setProperty('--lane-color',COLORS[i]);
+  const head=document.createElement('div');head.className='lane-head';
+  const pick=document.createElement('button');pick.type='button';pick.className='lane-select';pick.setAttribute('aria-pressed',String(i===selectedTrack));
+  const num=document.createElement('span');num.className='lane-id';num.textContent=String(i+1).padStart(2,'0');
+  const dot=document.createElement('span');dot.className='lane-dot';dot.setAttribute('aria-hidden','true');
+  const name=document.createElement('span');name.textContent='Lane '+(i+1);
+  pick.append(num,dot,name);pick.addEventListener('click',()=>chooseTrack(i,true));
+  const sound=document.createElement('select');sound.className='lane-sound';sound.id='laneSound'+i;sound.setAttribute('aria-label','Instrument for lane '+(i+1));
+  for(const [key,label] of Object.entries(SOUNDS)){const opt=document.createElement('option');opt.value=key;opt.textContent=label;sound.append(opt)}
+  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderReadout();markCustom()});
+  const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
+  const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
+  updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
+  head.append(pick,sound,mute);row.append(head);
+  const fields=document.createElement('div');fields.className='lane-fields';
+  for(const key of ['a','b','n']){
+   const label=document.createElement('label');label.textContent=key==='n'?'n · degree':key==='a'?'a · real':'b · imag';
+   const input=document.createElement('input');input.id='track'+key.toUpperCase()+i;input.type='number';input.inputMode=key==='n'?'numeric':'decimal';
+   input.step=key==='n'?'1':'any';input.min=key==='n'?'1':'-10000';input.max=key==='n'?'24':'10000';input.value=String(t[key]);
+   input.setAttribute('aria-label',`Lane ${i+1} ${key}`);
+   input.addEventListener('input',()=>{
+    const raw=input.value.trim(),v=Number(raw),valid=raw!==''&&Number.isFinite(v)&&(key==='n'?(Number.isInteger(v)&&v>=1&&v<=24):Math.abs(v)<=10000);
+    input.setAttribute('aria-invalid',String(!valid));if(!valid)return;
+    t[key]=v;updateLaneStatus(i);if(selectedTrack===i)renderReadout();markCustom()
+   });
+   input.addEventListener('change',()=>{if(input.getAttribute('aria-invalid')==='true'){input.value=String(t[key]);input.setAttribute('aria-invalid','false')}});
+   label.append(input);fields.append(label);
+  }
+  row.append(fields);
+  const foot=document.createElement('div');foot.className='lane-bottom';
+  const eq=document.createElement('span');eq.className='lane-equation';eq.id='laneEq'+i;
+  const count=document.createElement('span');count.className='lane-count';count.id='laneCount'+i;
+  foot.append(eq,count);row.append(foot);wrap.append(row);updateLaneStatus(i);
+ });
 }
-
-function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('layerSummary').textContent=`Additional root sets · ${t.layers.length}`;$('addLayer').disabled=t.layers.length>=5;
+function updateLaneStatus(i) {
+ const t=tracks[i];if(!t)return;
+ const eq=$('laneEq'+i),count=$('laneCount'+i);
+ if(eq)eq.textContent=`R${t.n}(${complexDisplay(t)})`+(t.layers.length?` ∪ ${t.layers.length} extra`:'');
+ if(count)count.textContent=hitLabel(events(t).length);
+}
+function chooseTrack(i,fromTrackList=false) {
+ selectedTrack=Math.max(0,Math.min(3,i));
+ document.querySelectorAll('.lane').forEach((row,j)=>{
+  row.classList.toggle('selected',j===selectedTrack);
+  row.querySelector('.lane-select')?.setAttribute('aria-pressed',String(j===selectedTrack));
+ });
+ renderEditor();
+ if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
+}
+function renderEditor() {renderReadout();renderLayers()}
+function renderReadout() {
+ const t=tracks[selectedTrack];if(!t)return;
+ const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
+ const slider=$('argumentAngle');slider.disabled=a===null;slider.value=a===null?'0':String(Math.round(a));
+ $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();
+}
+function renderComposition() {
+ const t=tracks[selectedTrack];if(!t)return;
+ const c=composePhases(t),i=selectedTrack;
+ $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
+ $('compositionEquation').textContent=`R${t.n}(${complexDisplay(t)})`+(t.layers.length?` ∪ ${t.layers.map(l=>`R${l.n}(${complexDisplay(l)})`).join(' ∪ ')}`:'');
+ $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
+ $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
+ $('overlapSummary').textContent=c.overlaps===0?'No coincident phases.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} — each sounds once.`;
+ const plot=(target,values,mode)=>{
+  target.replaceChildren();
+  for(const item of values){
+   const phase=typeof item==='number'?item:item.phase;
+   const marker=document.createElement('span'),overlap=mode==='union'&&item.base&&item.added,added=mode==='added'||(mode==='union'&&item.added&&!item.base);
+   marker.className='phase-mark '+(overlap?'overlap':added?'added':'base');
+   marker.style.left=(2+phase*96)+'%';marker.style.borderColor=COLORS[i];
+   if(!added&&!overlap)marker.style.backgroundColor=COLORS[i];
+   if(overlap)marker.style.setProperty('--mark-color',COLORS[i]);
+   marker.title=`${Math.round(phase*3600)/10}°${overlap?' (shared)':''}`;target.append(marker);
+  }
+ };
+ plot($('baseStrip'),c.base,'base');plot($('addedStrip'),c.added,'added');plot($('unionStrip'),c.merged,'union');
+}
+function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('addLayer').disabled=t.layers.length>=5;
  t.layers.forEach((layer,i)=>{const group=document.createElement('div');group.className='layer-row';
   for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Root degree n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=layer[key];input.setAttribute('aria-label',`Extra root set ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>24))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Invalid number or root degree');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
   const remove=document.createElement('button');remove.type='button';remove.className='layer-remove';remove.textContent='×';remove.title='Remove this root set';remove.setAttribute('aria-label',`Remove extra root set ${i+1}`);remove.addEventListener('click',()=>{t.layers.splice(i,1);renderLayers();renderTracks();renderReadout();markCustom()});group.append(remove);
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Set volume';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Volume of extra root set ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
  })}
 
-function chooseTrack(i,fromTrackList=false){selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor();if(fromTrackList){if(window.matchMedia('(max-width:949px)').matches){$('editorHeading').focus({preventScroll:true});$('editor').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'})}else $('tracks').querySelectorAll('.track-pick')[selectedTrack]?.focus({preventScroll:true})}}
 function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}}
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  tracks=p.tracks.map(cleanTrack);bpm=p.bpm;cycleBars=p.bars===2?2:1;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);

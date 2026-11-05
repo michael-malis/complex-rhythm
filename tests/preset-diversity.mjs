@@ -21,6 +21,18 @@ const gcd=(a,b)=>b?gcd(b,a%b):a;
 const lcm=(a,b)=>a/gcd(a,b)*b;
 const Q=1000000;
 const tick=x=>Math.round((((x%1)+1)%1)*Q)%Q;
+const newStudies=presets.slice(35);
+const standardFour=track=>{
+ const points=track.events.map(e=>e.phase).slice().sort((a,b)=>a-b);
+ if(points.length!==4)return false;
+ return points.every((p,i)=>{
+  const next=points[(i+1)%4]+(i===3?1:0);
+  return Math.abs(next-p-.25)<1e-6;
+ });
+};
+const nontrivialLead=newStudies.filter(p=>!standardFour(p.tracks[0]));
+assert.ok(nontrivialLead.length>=12,
+ 'R-PST-002 requires >=12/15 new studies to avoid an unchanged four-on-the-floor first lane; found '+nontrivialLead.length);
 const rows=[];
 for(const p of presets){
  assert.equal(p.tracks.length,4,'four lanes: '+p.id);
@@ -177,6 +189,10 @@ const lines=[
  '| Category | Presets |','|---|---:|'
 ];
 for(const [k,v] of [...categoryCounts.entries()].sort((a,b)=>b[1]-a[1]))lines.push('| '+k+' | '+v+' |');
+lines.push('','## Mandatory first-lane novelty','','- New studies with a nonstandard first lane: **'+nontrivialLead.length+' / 15** (minimum 12).',
+ '- Standard four-on-the-floor means exactly four equally spaced final onset phases, regardless of common rotation.',
+ '- Exempt traditional studies are not silently excluded; all 15 new studies are counted.',
+ '- Nonstandard studies: '+nontrivialLead.map(p=>p.id).join(', '));
 lines.push('','## BPM frequency','','| Range | Count |','|---|---:|');
 for(const [lo,hi] of [[0,119],[120,139],[140,159],[160,179],[180,199],[200,219],[220,260]])
  lines.push('| '+lo+'–'+hi+' | '+rows.filter(p=>p.bpm>=lo&&p.bpm<=hi).length+' |');

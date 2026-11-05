@@ -10,6 +10,7 @@ on:
       - tests/spec-ui.mjs
       - tests/audio-offline.mjs
       - tests/audio-mix-stress.mjs
+      - tests/accessibility-contrast.mjs
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
@@ -50,6 +51,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-stress-http.log 2>&1 &
           node tests/audio-mix-stress.mjs
+      - name: Inspect actual light and dark WCAG contrast at seven viewports
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
+          node tests/accessibility-contrast.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

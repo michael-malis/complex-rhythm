@@ -5,6 +5,12 @@ import assert from 'node:assert/strict';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const configs=[[360,640],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1600,1000]];
 const results=[];
+const authoredCSS=fs.readFileSync('styles.css','utf8');
+const explicitFontSizes=[...authoredCSS.matchAll(/font-size\\s*:\\s*([\\d.]+)px/g)].map(x=>Number(x[1]));
+assert.ok(explicitFontSizes.length>=70,'Audit should cover the full CSS font-size scale');
+assert.ok(explicitFontSizes.every(x=>Number.isFinite(x)&&x>=16),
+ 'No application-authored CSS font-size declaration may fall below 16px');
+
 fs.mkdirSync('artifacts',{recursive:true});
 try{
  for(const [width,height] of configs)for(const theme of ['light','dark']){
@@ -85,5 +91,5 @@ try{
  const graphicFailures=results.flatMap(x=>x.graphics.map(f=>({...f,viewport:[x.width,x.height],theme:x.theme})));
  assert.equal(failures.length,0,'readable text; first failure '+JSON.stringify(failures.slice(0,10)));
  assert.equal(graphicFailures.length,0,'3:1 track palette; '+JSON.stringify(graphicFailures.slice(0,10)));
- console.log('ALL PASS: ',results.length,'light/dark configurations; readable text and root-color palette');
+ console.log('ALL PASS: ',results.length,'light/dark configurations; '+explicitFontSizes.length+' CSS font-size rules (all >=16px); readable text and root-color palette');
 }finally{await browser.close()}

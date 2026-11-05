@@ -1126,6 +1126,7 @@ window.RhythmResearch=Object.freeze({
   tracks:p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??(p.bars===2?2:1)},i))
  })),
  events:track=>events(cleanTrack(track,0)).map(e=>({phase:e.phase,velocity:e.velocity})),
+ eventMetadata:track=>events(cleanTrack(track,0)).map(e=>({phase:e.phase,velocity:e.velocity,sources:e.sources.map(x=>({...x}))})),
  rootPhases:track=>rootPhases(cleanTrack(track,0))
 });
 let savedTheme='light';

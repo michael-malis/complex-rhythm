@@ -24,3 +24,11 @@ From [sfzinstruments/virtuosity_drums](https://github.com/sfzinstruments/virtuos
 Browser decodes FLAC and WAV via `AudioContext.decodeAudioData`. A synthesized fallback is available if a format is unsupported or the audio path fails. Production-server compatibility should be verified on Safari and Android Chrome separately. The samples are unmodified, apart from independent playback gain, very small playback-rate variation, and cross-genre layering.
 
 No commercially licensed or copyrighted song excerpts are distributed.
+
+### Original Berlin bunker bass sample pair (new)
+
+- `samples/berlin-rumble.wav`
+- `samples/berlin-rumble-alt.wav`
+
+Both files were generated specifically for this project from scratch using deterministic DSP: 46.25 Hz fundamental, 2nd/3rd harmonics, gentle saturation, low-pass/high-pass filtering, a short attack and controlled exponential tail. Mono 16-bit PCM, 44,100 Hz, approximately 0.56 s. **No external recording, music loop, or third-party sample was used** for these two files. The algorithm and local verification procedure are documented in the project update history.
+

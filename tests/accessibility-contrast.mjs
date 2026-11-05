@@ -52,7 +52,7 @@ try{
     if(el.closest('.katex') && !el.classList.contains('katex'))continue;
     if(el.matches('canvas,script,style,svg,option,input[type=range],input[type=checkbox],.phase-strip,.phase-mark,.window-lane-events,.window-mark'))continue;
     const direct=[...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent.trim()).join(' ');
-    const fieldValue=el.matches('input[type=number],input[type=text],select,textarea')?el.value||el.placeholder:'';
+    const fieldValue=el.matches('input[type=number],input[type=text],select,textarea')?(el.value||el.placeholder||''):'';
     if(!direct.trim()&&!fieldValue.trim())continue;
     if(el.closest('[aria-hidden=true]'))continue;
     const font=parseFloat(css.fontSize),fg=toRgb(css.color),bg=background(el);

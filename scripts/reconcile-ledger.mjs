@@ -54,6 +54,11 @@ const recentEvidence=[
  ['R-TEX-001','CI:42121936951; KaTeX 0.16.22 local html+MathML; ten annotated math references across 12 states','f6f8daf8351b2291c28f77dcf19d97623aae13e8']
 ];
 for(const [req,evidence,commit] of recentEvidence)verified.set(req,{evidence,commit});
+for(const [req,evidence,commit] of [
+ ['R-UI-001','CI:42123915938; 90 application CSS font sizes >=16px; Chromium 14 responsive theme cases, >=16px text; math wrappers >=18px','2e7a486ecf0ac36240c5261e7cb944c064073ba1'],
+ ['R-NUM-008','CI:42123915938; 146 math assertions; 42 relative-error polar cases and 100 repeated UI coordinate/unit toggles; abs 1e-8 and rel 1e-10','f5364e734c61b79514eb28b4879b360ae83aa8bb'],
+ ['R-ENG-003','CI:42123915938; tests/transport-switching.mjs 24 live transitions; all lanes/math/audio updated, no bus or sample leak, no old scheduler timer','28d5fb7e60c03669ae44c99815ca3d2c8162d7d3']
+])verified.set(req,{evidence,commit});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

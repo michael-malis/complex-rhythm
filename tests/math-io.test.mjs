@@ -33,6 +33,6 @@ const localWindow=m.planEvents(poly,2,14,18);
 ok(localWindow.length>0&&localWindow.every(x=>x.time>=14&&x.time<18),'bounded exploration window');
 eq(m.commonCycle([{cycleBars:13},{cycleBars:14},{cycleBars:15},{cycleBars:16}]),21840,'large but exact LCM, no generated long sequence');
 ok(m.planEvents([{cycleBars:1,muted:true,events:[{phase:0}]}],1,0,2).length===0,'muted lane excluded from scheduler');
-for(const invalid of [0,17,1.5]){let threw=false;try{m.planEvents([{cycleBars:invalid,events:[{phase:.5}]}],1,0,3)}catch(e){threw=true}ok(invalid===0?!threw:threw,'cycle validation '+invalid)}
+for(const invalid of [0,17,1.5]){let threw=false;try{m.planEvents([{cycleBars:invalid,events:[{phase:.5}]}],1,0,3)}catch(e){threw=true}ok(threw,'cycle validation '+invalid)}
 
 console.log('PASS mathematical utility tests:',passed);

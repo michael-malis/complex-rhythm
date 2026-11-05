@@ -253,7 +253,7 @@ function renderTracks() {
   foot.append(eq,count);row.append(foot);wrap.append(row);updateLaneStatus(i);
  });
 }
-function newUpdateLaneStatus(i) {
+function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
  if(eq)renderTeX(eq,String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+(t.layers.length?String.raw`\;\cup\; ${t.layers.length}\ \text{additional set(s)}`:''));

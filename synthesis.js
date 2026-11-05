@@ -242,7 +242,7 @@ function voicesPlay(ctx,out,name,time,velocity=1,index=0,overrides=null){
  drive.curve=voicesCurve(p.drive);drive.oversample='2x';
  amp.gain.setValueAtTime(.0001,at);
  const peak=Math.max(.0002,Math.min(.26,(p.family==='kick'?.23:p.family==='acid'?.12:.11)*Math.max(.1,velocity)));
- amp.gain.exponentialRampToValueAtTime(peak,at+.004);
+ amp.gain.exponentialRampToValueAtTime(peak,at+(p.family==='kick'?.0015:.004));
  amp.gain.exponentialRampToValueAtTime(.0001,at+d);
  mix.connect(filter);filter.connect(drive);drive.connect(amp);amp.connect(out);
  const osc=(type,fStart,fEnd,detune=0,level=1)=>{

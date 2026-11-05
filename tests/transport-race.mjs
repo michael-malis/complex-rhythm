@@ -19,6 +19,8 @@ try{
  assert.equal(state.transportWanted,false,'pending start intent clears');
  assert.equal(state.timerActive,false,'no zombie audio scheduling interval');
  assert.equal(state.schedulerIntervalsCreated,0,'cancelled start never creates a timer');
+ assert.equal(state.audioState,'suspended','cancelling pending start must not leave the audio context running');
+ const cancelledState={...state};
  // Triple click should result in exactly one active transport, not zero or two.
  await page.evaluate(()=>{
   const button=document.querySelector('#playBtn');
@@ -54,7 +56,7 @@ try{
  assert.equal(ended.schedulerIntervalsCreated,ended.schedulerIntervalsCleared,
   'all created scheduling intervals have matching clear calls');
  assert.deepEqual(errors,[],'no JavaScript errors on transport race');
- fs.writeFileSync('artifacts/transport-race.json',JSON.stringify({firstCancelled:state,after:ended,
+ fs.writeFileSync('artifacts/transport-race.json',JSON.stringify({firstCancelled:cancelledState,after:ended,
   cycles:10,errors,accepted:true},null,2));
  console.log('PASS transport cancellation: double-click + triple-click + 10 pause/resume + rapid cancel; timers balanced');
  await page.close();

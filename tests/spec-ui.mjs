@@ -15,13 +15,26 @@ try{
   const data=await page.evaluate(()=>{
    const selectors=['body','.wordmark','.strapline','.eyebrow','.stage-heading h1','.panel-heading h2','.stage-meta','.quiet','.lane-select','.lane-fields label','.lane-fields input','.lane-sound','.lane-count','.figure-legend','.stage-hint','.small-explain','.math-details p','button','.formula-reference'];
    const sizes=selectors.map(sel=>{const e=document.querySelector(sel);return {selector:sel,font:e?parseFloat(getComputedStyle(e).fontSize):NaN}});
-   return {width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,sizes,labels:['phaseQuarter','phaseHalf','phaseThreequarters'].map(id=>({text:document.getElementById(id).innerText,frac:!!document.querySelector('#'+id+' .frac-line')})),renderer:window.katex?.version||null,parts:document.querySelectorAll('#formulaReference .katex').length,root:!!document.querySelector('#selectedRootFormula .katex'),input:document.querySelector('#trackN0')?.max};
+   const exactScale=['.composition-info h3','.lane-select','.lane-fields label','.lane-fields input',
+     '.lane-sound','.lane-count','.lane-length label','.figure-legend','.stage-hint',
+     '.small-explain','.circle-labels','.stage-meta','.panel-heading h2','.stage-heading h1'];
+   const scale=exactScale.map(sel=>{
+      const e=document.querySelector(sel);
+      return {selector:sel,font:e?parseFloat(getComputedStyle(e).fontSize):NaN}
+   });
+   return {width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,sizes,scale,labels:['phaseQuarter','phaseHalf','phaseThreequarters'].map(id=>({text:document.getElementById(id).innerText,frac:!!document.querySelector('#'+id+' .frac-line')})),renderer:window.katex?.version||null,parts:document.querySelectorAll('#formulaReference .katex').length,root:!!document.querySelector('#selectedRootFormula .katex'),input:document.querySelector('#trackN0')?.max};
   });
   ok(data.scroll<=data.width+2,'no whole-page overflow '+width+'/'+theme);
   ok(data.sizes.every(x=>x.font>=16), 'font min 16px '+width+'/'+theme+': '+JSON.stringify(data.sizes.filter(x=>x.font<16)));
   ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===30,'primary heading exactly 30px');
   ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===26,'section heading 26px');
   ok(data.renderer==='0.16.22'&&data.parts>=10&&data.root,'KaTeX rendered with local package');
+  const minScale={'.composition-info h3':22,'.lane-select':20,'.lane-fields label':18,'.lane-fields input':18,
+   '.lane-sound':18,'.lane-count':20,'.lane-length label':18,'.figure-legend':17,'.stage-hint':17,
+   '.small-explain':17,'.circle-labels':20,'.stage-meta':18,'.panel-heading h2':26,'.stage-heading h1':30};
+  for(const item of data.scale)ok(item.font>=minScale[item.selector],
+    'mandatory math/controls typography '+item.selector+' '+width+'/'+theme+
+    ': '+item.font+' < '+minScale[item.selector]);
   ok(data.labels.every(x=>x.frac),'all quarter fractions are vertically typeset');
   ok(data.input==='64','degree supports 1..64');
   ok(errors.length===0,'JS errors '+errors.join('; '));

@@ -159,6 +159,8 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 ## Polyrhythm · 5 : 7 (minimal)
 
 **Group:** original catalog · **Category:** poly · **BPM:** 124 · **Common period:** 1 bars · **Shared phase groups:** 1.
+**Musical role:** Five equally spaced tom hits oppose seven rim hits; hats give an eight-pulse reference and the kick marks the cycle start.
+**Mathematical design:** The first two tracks construct a 5:7 polyrhythm from R₅(1) and R₇(1). Only their cycle-start events coincide.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|

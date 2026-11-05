@@ -105,3 +105,23 @@ html{font-size:18px}
 .canvas-shell.focused #orbitCanvas{width:900px;height:900px;max-width:none;max-height:none}
 .canvas-shell.focused .circle-labels{display:none}
 @media(max-width:519px){.figure-tools{align-items:stretch}.figure-tools-hint{width:100%;text-align:center}.formula-reference .formula-name{width:100%}}
+
+
+/* Canonical coordinate modes and secure expression entry; all four lanes use the same components. */
+.lane-modes{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0 7px}
+.mode-button,.unit-button{font-size:18px;min-height:44px;padding:7px 12px;border:1px solid var(--line)}
+.mode-button[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.unit-button{margin-left:auto;background:var(--panel)}
+.unit-button[hidden]{display:none}
+.lane-alternate-math{font-size:18px;padding:9px 0;color:var(--sub);line-height:1.55;max-width:100%;overflow-x:auto;overflow-y:visible}
+.lane-alternate-math .katex{font-size:1.08em}
+.expression-entry{border-top:1px solid var(--fine);margin-top:5px}
+.expression-entry summary{display:flex;align-items:center;min-height:44px;padding:8px 0;font-size:16px;color:var(--sub);list-style:none}
+.expression-entry summary:before{content:"▸";margin-right:8px;color:var(--accent)}
+.expression-entry[open] summary:before{content:"▾"}
+.expression-entry summary::-webkit-details-marker{display:none}
+.expression-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;padding-bottom:9px}
+.expression-controls input{font-size:18px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px}
+.expression-error{font-size:16px;color:#a53a31;min-height:0;overflow-wrap:anywhere}
+html[data-theme="dark"] .expression-error{color:#ffb0a5}
+@media(max-width:519px){.lane-modes{gap:5px}.mode-button,.unit-button{padding:6px 9px;font-size:18px}.lane-alternate-math{padding:6px 0}.expression-controls{grid-template-columns:minmax(0,1fr)}}

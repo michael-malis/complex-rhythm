@@ -146,7 +146,7 @@ function renderTeX(target,latex,displayMode=false) {
  window.katex.render(latex,el,{throwOnError:false,strict:'warn',displayMode,output:'htmlAndMathml',trust:false});
 }
 function complexLaTeX(t) {
- return `${fmt(t.a)}${t.b<0?' - ':' + '}${fmt(Math.abs(t.b))}i`;
+ return `${fmtMath(t.a)}${t.b<0?' - ':' + '}${fmtMath(Math.abs(t.b))}i`;
 }
 function initMath() {
  const standard=[
@@ -189,14 +189,25 @@ function updateSelectedRootMath() {
  const k=Math.max(0,Math.min(t.n-1,selectedRootIndex));
  const theta=principalArg(t.b,t.a);
  const p=rootPhases(t)[k];
- renderTeX('selectedRootFormula',String.raw`w_{${k}}=\sqrt[${t.n}]{${fmt(r)}}\,e^{i\frac{${fmt(theta)}+2\pi\cdot ${k}}{${t.n}}}`);
- renderTeX('rootPhaseFormula',String.raw`\operatorname{phase}(w_{${k}})=\frac{\theta+2\pi\cdot${k}}{2\pi\cdot${t.n}}\bmod 1=${fmt(p)}`);
+ renderTeX('selectedRootFormula',String.raw`w_{${k}}\approx\sqrt[${t.n}]{${fmtMath(r)}}\,e^{i\frac{${fmtMath(theta)}+2\pi\cdot ${k}}{${t.n}}}`);
+ renderTeX('rootPhaseFormula',String.raw`\operatorname{phase}(w_{${k}})=\frac{\theta+2\pi\cdot${k}}{2\pi\cdot${t.n}}\bmod 1\approx${fmtMath(p)}`);
 }
-function principalArg(b,a) {
- const theta=Math.atan2(b,a);
- return theta<=-Math.PI+1e-12?Math.PI:theta;
+function principalArg(b,a){return RhythmMath.principalArg(b,a)}
+function fmt(n){
+ if(n===0)return '0';
+ const x=Math.abs(n);
+ if(x<.001||x>=1e6)return n.toExponential(3).replace(/e\+?/,'e').replace('e-','e−');
+ return Number(n.toPrecision(6)).toString().replace('-', '−');
 }
-function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
+function fmtMath(n){
+ if(n===0)return '0';
+ if(Math.abs(n)<.001||Math.abs(n)>=1e6){
+  const [m,e]=n.toExponential(3).split('e');
+  return Number(m)+'\\times10^{'+Number(e)+'}';
+ }
+ return Number(n.toPrecision(6)).toString();
+}
+function inputNumber(n){return n===0?'0':Number(n.toPrecision(12)).toString()}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
 function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;const snap=x=>Math.abs(x)<radius*1e-12?0:Number(x.toPrecision(10));t.a=snap(radius*Math.cos(ang));t.b=snap(radius*Math.sin(ang));return true}
@@ -206,7 +217,7 @@ function syncVisibleInputs(i) {
  const values=mode==='cart'?{a:t.a,b:t.b,n:t.n}:{r:polar.r,theta:polar.theta===null?null:polar.theta*(unit==='deg'?180/Math.PI:1),n:t.n};
  for(const [k,v] of Object.entries(values)){
   const el=$('track'+k[0].toUpperCase()+k.slice(1)+i);if(!el)continue;
-  if(document.activeElement!==el)el.value=v===null?'':String(Number(v.toFixed(6)));
+  if(document.activeElement!==el)el.value=v===null?'':inputNumber(v);
   if(k==='theta'){el.disabled=v===null;el.placeholder=v===null?'undefined':''}
  }
 }
@@ -214,7 +225,7 @@ function updateLaneAlt(i) {
  const el=$('laneAlt'+i);if(!el)return;
  const t=tracks[i],polar=RhythmMath.polarOf(t.a,t.b);
  if(laneModes[i]==='cart'){
-  renderTeX(el,polar.theta===null?String.raw`r=0,\;\arg(0)\text{ is undefined}`:String.raw`r=${fmt(polar.r)},\;\theta=${fmt(polar.theta)},\quad z=re^{i\theta}`);
+  renderTeX(el,polar.theta===null?String.raw`r=0,\;\arg(0)\text{ is undefined}`:String.raw`r\approx${fmtMath(polar.r)},\;\theta\approx${fmtMath(polar.theta)},\quad z=re^{i\theta}`);
  }else renderTeX(el,String.raw`z=${complexLaTeX(t)},\quad z=re^{i\theta}`);
 }
 function buildLaneFields(row,t,i) {
@@ -252,7 +263,7 @@ function buildLaneFields(row,t,i) {
    const el=document.createElement('input');el.type='number';el.step=key==='n'?'1':'any';el.inputMode=key==='n'?'numeric':'decimal';
    el.id='track'+key[0].toUpperCase()+key.slice(1)+i;
    const v=key==='a'?t.a:key==='b'?t.b:key==='n'?t.n:key==='r'?value.r:value.theta===null?null:value.theta*(laneUnits[i]==='deg'?180/Math.PI:1);
-   el.value=v===null?'':String(Number(v.toFixed(6)));el.disabled=key==='theta'&&value.theta===null;if(el.disabled)el.placeholder='undefined';
+   el.value=v===null?'':inputNumber(v);el.disabled=key==='theta'&&value.theta===null;if(el.disabled)el.placeholder='undefined';
    el.min=key==='n'?'1':key==='r'?'0':key==='theta'?'-360':'-10000';
    el.max=key==='n'?'64':key==='r'?'14142.136':key==='theta'?'360':'10000';
    el.setAttribute('aria-label',`Lane ${i+1} ${key}`);
@@ -454,7 +465,7 @@ function renderComposition() {
 }
 function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('addLayer').disabled=t.layers.length>=5;
  t.layers.forEach((layer,i)=>{const group=document.createElement('div');group.className='layer-row';const heading=document.createElement('div');heading.className='layer-title';heading.textContent='Additional set '+(i+1)+' · w'+(i+1);group.append(heading);
-  for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Root degree n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=key==='n'?layer[key]:Number(layer[key].toFixed(3));input.setAttribute('aria-label',`Extra root set ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>64))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Invalid number or root degree');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
+  for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Root degree n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=key==='n'?layer[key]:inputNumber(layer[key]);input.setAttribute('aria-label',`Extra root set ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>64))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Invalid number or root degree');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
   const remove=document.createElement('button');remove.type='button';remove.className='layer-remove';remove.textContent='×';remove.title='Remove this root set';remove.setAttribute('aria-label',`Remove extra root set ${i+1}`);remove.addEventListener('click',()=>{t.layers.splice(i,1);renderLayers();renderTracks();renderReadout();markCustom()});group.append(remove);
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Set volume';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Volume of extra root set ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
  })}

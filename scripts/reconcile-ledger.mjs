@@ -68,6 +68,15 @@ verified.set('R-PST-002',{
  evidence:'CI:42131998402; tests/preset-diversity.mjs 12 of 15 new studies have non-four-on-the-floor first lane; PRESET_DIVERSITY_REPORT.md checks repeated patterns across remaining lanes',
  commit:'e205a59c57817c8e667189cb66fa15bbdb8ab882'
 });
+// Verified independently by real Canvas pixels + source-preserving audio planner.
+verified.set('R-GEO-004',{
+ evidence:'CI:42132894856; tests/collision-lanes.mjs physical pixel samples on two concentric rings, distinct colors; 32 preserved sound attacks at 16 shared moments; 40/24 after R4∪R3',
+ commit:'cb67646bf5e02f5ae237ed4737e775bd68363c1c'
+});
+verified.set('R-MDL-006',{
+ evidence:'CI:42132894856; tests/collision-lanes.mjs user-visible base=4, added=3, unique=6, cross-lane shared=16; counts from live events() and RhythmMath.analyzeSchedule',
+ commit:'e91651707fe6e6dd01ba636621636be41197f42c'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

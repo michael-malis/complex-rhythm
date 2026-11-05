@@ -291,7 +291,7 @@ function renderTracks() {
   const lengthInput=document.createElement('input');lengthInput.id='laneBars'+i;lengthInput.type='number';lengthInput.inputMode='numeric';
   lengthInput.min='1';lengthInput.max='16';lengthInput.step='1';lengthInput.value=String(t.cycleBars||1);
   lengthInput.setAttribute('aria-label','Lane '+(i+1)+' cycle length in bars');
-  lengthInput.addEventListener('change',()=>{
+  lengthInput.addEventListener('input',()=>{
    const v=Number(lengthInput.value);
    if(!Number.isInteger(v)||v<1||v>16){lengthInput.setAttribute('aria-invalid','true');lengthInput.value=String(t.cycleBars);return}
    lengthInput.removeAttribute('aria-invalid');
@@ -301,6 +301,7 @@ function renderTracks() {
    else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.008;}
    markCustom();renderWindowTimeline();
   });
+  lengthInput.addEventListener('change',()=>{if(lengthInput.getAttribute('aria-invalid')==='true'){lengthInput.value=String(t.cycleBars);lengthInput.removeAttribute('aria-invalid')}});
   length.append(lengthLabel,lengthInput);row.append(length);
   const foot=document.createElement('div');foot.className='lane-bottom';
   const eq=document.createElement('span');eq.className='lane-equation';eq.id='laneEq'+i;

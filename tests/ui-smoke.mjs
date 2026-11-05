@@ -68,7 +68,7 @@ try {
  verify((await page.locator('.window-lane').count())===4,'four independent time-window lanes');
  verify((await page.locator('#windowStart').getAttribute('max'))==='8','bounded viewport ranges over LCM');
  verify((await page.locator('#windowCounts').textContent()).includes('scheduled lane events'),'window shows real scheduled events');
- await page.locator('#windowStart').fill('7');
+ await page.locator('#windowStart').evaluate(el=>{el.value='7';el.dispatchEvent(new Event('input',{bubbles:true}))});
  verify((await page.locator('#windowStartText').textContent())==='8','explore later bars without generating entire super-cycle');
  await page.locator('#laneBars0').fill('1');
  await page.locator('#laneBars1').fill('1');

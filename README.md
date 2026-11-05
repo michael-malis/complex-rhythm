@@ -2,11 +2,11 @@
 
 **Website:** https://michael-malis.github.io/complex-rhythm/
 
-An interactive musical experiment: each of four sound tracks is positioned by arguments of the `n`th complex roots of `z=a+bi`; additional complex-root sets create syncopated/quiet accents without replacing the mathematical model.
+An interactive **mathematical visualization of rhythm**. Each of four instrument lanes uses the arguments of the `n`th roots of `z=a+bi` to place evenly spaced events on a circular timeline. Additional complex-root sets allow layered periodic patterns. Sound supports exploration of the geometry; this is not a DAW or general-purpose beat maker.
 
 ## v4 — Bossa nova + acoustic audio
 
-- 34 patterns in 7 styles. Four new **Bossa Nova** examples are listed first in Brazilian rhythms: Clássica (116 BPM), Íntima (104), Noturna (108), Balanço (128).
+- 35 patterns in 7 styles. Four new **Bossa Nova** examples are listed first in Brazilian rhythms: Clássica (116 BPM), Íntima (104), Noturna (108), Balanço (128).
 - Bossa loops span **two 4/4 bars**, not one. The cross-stick line is three hits in bar one (beat 1, & of 2, beat 4), then two in bar two (beat 2, & of 3). The feathered bass drum plays on 1, & of 2, 3, & of 4, against even shaker eighths.
 - New **real, recorded acoustic drum/percussion samples**, from the CC0 Virtuosity Drums library: soft/full kick, cross-stick variations, shaker variations, jazz hi-hat/snare, claves, bongo.
 - Faster drum-and-bass and jungle grooves also gain a quieter acoustic snare/kick body underneath the electronic transient when loaded.
@@ -29,7 +29,7 @@ See [AUDIO_SOURCES.md](AUDIO_SOURCES.md) for the individual files, origins and l
 
 ## QA
 
-See [AUDIO_QA.md](AUDIO_QA.md). Desktop/mobile layout, basic transport and preset behavior were tested in Chromium, but production sample-file fetching and listening on real phones need a separate live-device check.
+See [AUDIO_QA.md](AUDIO_QA.md). Earlier desktop/mobile layout, basic transport and presets were tested in Chromium. **The November 5 mathematical UI redesign has not yet received a new full browser or audio regression pass.** See [TASKS.md](TASKS.md) for outstanding checks.
 
 ## Berlin Bunker · Bass Wall (new)
 

@@ -298,6 +298,7 @@ function renderTracks() {
    if(!playing){const old=cycleSeconds();pausedPhase=pausedPhase*old;}
    t.cycleBars=v;
    if(!playing)pausedPhase=((pausedPhase/cycleSeconds())%1+1)%1;
+   else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.008;}
    markCustom();renderWindowTimeline();
   });
   length.append(lengthLabel,lengthInput);row.append(length);
@@ -438,6 +439,49 @@ function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Set volume';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Volume of extra root set ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
  })}
 
+function renderWindowTimeline() {
+ const summary=$('commonCycle');if(!summary||!tracks.length)return;
+ const common=RhythmMath.commonCycle(tracks);
+ summary.textContent=`Common period: ${common} ${common===1?'bar':'bars'}`;
+ const slider=$('windowStart');slider.max=String(Math.max(0,common-4));
+ windowStartBar=Math.max(0,Math.min(windowStartBar,Number(slider.max)));
+ slider.value=String(windowStartBar);
+ $('windowStartText').textContent=String(windowStartBar+1);
+ if(!$('windowPanel').open)return;
+ const start=windowStartBar,span=4,secPerBar=barSeconds();
+ const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,events:events(t)}));
+ const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
+ const container=$('windowTimeline');container.replaceChildren();
+ let simultaneous=0,lastIndex=0;
+ while(lastIndex<scheduled.length){
+  const first=scheduled[lastIndex];let j=lastIndex+1,uniqueLanes=new Set([first.lane]);
+  while(j<scheduled.length&&Math.abs(scheduled[j].time-first.time)<1e-6){
+   uniqueLanes.add(scheduled[j].lane);j++;
+  }
+  if(uniqueLanes.size>1)simultaneous++;
+  lastIndex=j;
+ }
+ for(let i=0;i<tracks.length;i++){
+  const row=document.createElement('div');row.className='window-lane';
+  row.style.setProperty('--lane-color',COLORS[i]);
+  const label=document.createElement('span');label.className='window-lane-label';label.textContent=`Lane ${i+1}`;
+  const markers=document.createElement('div');markers.className='window-lane-events';
+  markers.setAttribute('role','img');
+  const current=scheduled.filter(event=>event.lane===i);
+  markers.setAttribute('aria-label',`${current.length} events on lane ${i+1} over four bars beginning at bar ${start+1}`);
+  const fragment=document.createDocumentFragment();
+  for(const event of current){
+   const dot=document.createElement('span');dot.className='window-mark';
+   dot.style.left=(100*(event.time/secPerBar-start)/span)+'%';
+   dot.title=`Bar ${(event.time/secPerBar+1).toFixed(3)} · source ${event.sourceEvent+1}`;
+   fragment.append(dot);
+  }
+  markers.append(fragment);
+  const count=document.createElement('span');count.className='window-count';count.textContent=`${current.length} hits`;
+  row.append(label,markers,count);container.append(row);
+ }
+ $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
+}
 function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}renderWindowTimeline()}
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
@@ -786,6 +830,8 @@ function setupEvents() {
  $('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
  $('themeBtn').addEventListener('click',()=>setTheme(theme==='light'?'dark':'light',true));
  $('zoomBtn').addEventListener('click',()=>{magnified=!magnified;refreshPlotZoom()});
+ $('windowStart').addEventListener('input',e=>{windowStartBar=Math.max(0,Math.trunc(Number(e.target.value)||0));renderWindowTimeline()});
+ $('windowPanel').addEventListener('toggle',renderWindowTimeline);
  function canvasPoint(e){const b=canvas.getBoundingClientRect();return{x:e.clientX-b.left-b.width/2,y:e.clientY-b.top-b.height/2,side:Math.min(b.width,b.height)}}
  function wrapAngle(x){return Math.atan2(Math.sin(x),Math.cos(x))}
  function onRootDot(p,t,r){return t.a===0&&t.b===0?false:rootPhases(t).some(ph=>{const a=-Math.PI/2+TAU*ph;return Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r)<=Math.max(15,p.side*.025)})}

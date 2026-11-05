@@ -30,6 +30,7 @@ try {
     controlLeft:rect('.control-panel').left,
     sceneTop:rect('.visual-stage').top,
     controlTop:rect('.control-panel').top,
+    cards:[...document.querySelectorAll('.lane')].map(x=>{const r=x.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width}}),
     bodyText:document.body.innerText,
     computedBackground:getComputedStyle(document.body).backgroundColor,
     fileHidden:getComputedStyle(document.querySelector('#jsonFile')).display==='none'
@@ -42,8 +43,16 @@ try {
   verify(data.lanes===4&&data.inputs===16,'four visible mathematical input rows and independent cycle fields '+width);
   verify(data.fieldHeight>=44,'small input target '+width);
   verify(data.fileHidden,'native JSON file picker visible '+width);
-  if(width<760)verify(data.controlTop<data.sceneTop,'math-first mobile order '+width);
-  else verify(data.sceneLeft<data.controlLeft,'desktop/tablet visualization left '+width);
+  if(width<1280)verify(data.sceneTop<data.controlTop,'visualization must appear before settings on tablets and phones '+width);
+  else verify(data.sceneLeft<data.controlLeft,'desktop visualization alongside settings '+width);
+  if(width>=760){
+    verify(Math.abs(data.cards[0].top-data.cards[1].top)<2&&data.cards[1].left>data.cards[0].left,
+      'simultaneous editors: two columns '+width);
+    verify(Math.abs(data.cards[2].top-data.cards[3].top)<2&&data.cards[2].top>data.cards[0].top,
+      'simultaneous editors: second row '+width);
+    verify(data.cards[0].width>=260,'uncompressed editable panel '+width);
+  }
+  if(width<520)verify(data.cards[0].top<data.cards[1].top,'compact mobile uses legible one-column editors '+width);
   await page.screenshot({path:'artifacts/workbench-'+width+'x'+height+'.png',fullPage:true});
   console.log('PASS viewport',width+'x'+height,JSON.stringify({canvas:data.canvas,inputs:data.inputs,fieldHeight:data.fieldHeight}));
   await page.close();

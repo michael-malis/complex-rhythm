@@ -43,6 +43,17 @@ register(["R-TEX-003"],
  "tests/spec-ui.mjs; KaTeX vertical 1/4 1/2 3/4 in 12 theme/viewport combinations");
 register(["R-NUM-001","R-NUM-002","R-NUM-005","R-NUM-006"],
  "tests/spec-ui.mjs; tests/math-io.test.mjs; four-quadrant round-trips; zero; n64");
+// Additional requirements closed only after complete successful regression evidence.
+// 42121936951 includes all 35 legacy JSON imports plus explicit unknown-field tests,
+// 231 responsive touch targets and the 12-state mathematical typography matrix.
+const recentEvidence=[
+ ['R-ENG-004','CI:42121936951; tests/legacy-json-compat.mjs; all 35 originals preserve BPM, instruments and phases; unknown fields reject safely','638400ca797e9286a6da38ff01c705fb1ff30013'],
+ ['R-UI-008','CI:42121936951; tests/touch-targets.mjs 231 mobile controls >=44x44; tests/ui-smoke.mjs 44px Canvas dragging','a6a3aa7bc115ee8ca0a2539c4c7f7007f6d8877e'],
+ ['R-PST-001','CI:42119466325; PRESET_INVENTORY.md 50 itemized coordinate/phase/sound/patch/fingerprint/nearest-neighbor audits','ed4c5d965c3137d59a2a61c814a5916325b8a449'],
+ ['R-UI-002','CI:42121936951; tests/spec-ui.mjs all 14 typographic roles in 12 theme/viewport states','7bd76326640bc99e86275f9362aaa1e5ec168fce'],
+ ['R-TEX-001','CI:42121936951; KaTeX 0.16.22 local html+MathML; ten annotated math references across 12 states','f6f8daf8351b2291c28f77dcf19d97623aae13e8']
+];
+for(const [req,evidence,commit] of recentEvidence)verified.set(req,{evidence,commit});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

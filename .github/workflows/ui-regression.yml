@@ -6,6 +6,7 @@ on:
       - app.js
       - math-io.js
       - tests/math-io.test.mjs
+      - tests/spec-ui.mjs
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
@@ -34,6 +35,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-http.log 2>&1 &
           node tests/ui-smoke.mjs
+      - name: Test minimum font sizes, LaTeX, polar input and zoom
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-spec-http.log 2>&1 &
+          node tests/spec-ui.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

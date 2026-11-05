@@ -249,7 +249,7 @@ small,.small {font-size:12px;color:var(--sub)}
 const TAU=2*Math.PI;
 const COLORS=['#72e5ec','#ff9b8c','#ffc77b','#beadff'];
 const RGB=[[114,229,236],[255,155,140],[255,199,123],[190,173,255]];
-const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo'};
+const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble'};
 // Every audible time point is still the argument of a complex root.
 const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
 // A phase on a 16th-note grid encoded by a degree-1 complex root.
@@ -258,6 +258,8 @@ const L=(step,velocity=.58)=>({a:Math.cos(TAU*step/16),b:Math.sin(TAU*step/16),n
 const L32=(step,velocity=.58)=>({a:Math.cos(TAU*step/32),b:Math.sin(TAU*step/32),n:1,velocity});
 const PRESETS=[
 // Bunker techno: stable four-on-the-floor foundations; less bass/hats clutter.
+// Berlin industrial: dry four-to-the-floor kick + offbeat sub-rumble. Rumble is sampled, not four more kicks.
+ {id:'berlin-bass-wall',category:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,4,'berlinrumble'),P(-1,0,8,'hat'),P(-1,0,2,'rim',[L(15,.32)])]},
  {id:'concrete',category:'bunker',name:'Concrete · Drive',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(1,0,2,'bass',[L(7,.45)])]},
  {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
@@ -302,7 +304,7 @@ const PRESETS=[
 ];
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=138, cycleBars=1, volume=.65, activePresetId='concrete',activeCategory='bunker';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null;
 let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
 const sampleBuffers=new Map();const samplePromises=new Map();
@@ -366,9 +368,10 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         'crossstick':'samples/jazz-rim.flac','crossstick-alt':'samples/jazz-rim-bright.flac',
         'jazzshaker':'samples/jazz-shaker-a.wav','jazzshaker-alt':'samples/jazz-shaker-b.wav',
         'jazzhat':'samples/jazz-hat.flac','jazzsnare':'samples/jazz-snare.flac',
-        'claves':'samples/jazz-claves.wav','bongo':'samples/jazz-bongo.wav'
+        'claves':'samples/jazz-claves.wav','bongo':'samples/jazz-bongo.wav','berlinrumble':'samples/berlin-rumble.wav','berlinrumble-alt':'samples/berlin-rumble-alt.wav'
       };
       function sampleKey(sound,index=0,velocity=1){
+        if(sound==='berlinrumble')return index%2===0?'berlinrumble':'berlinrumble-alt';
         if(sound==='jazzkick')return velocity>.88?'jazzkick-full':'jazzkick';
         if(sound==='crossstick')return index%3===0?'crossstick-alt':'crossstick';
         if(sound==='jazzshaker')return index%2===0?'jazzshaker':'jazzshaker-alt';
@@ -383,6 +386,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
           if(t.sound==='jazzkick')keys.add('jazzkick');
           if(t.sound==='crossstick'){keys.add('crossstick');keys.add('crossstick-alt')}
           if(t.sound==='jazzshaker'){keys.add('jazzshaker');keys.add('jazzshaker-alt')}
+          if(t.sound==='berlinrumble'){keys.add('berlinrumble');keys.add('berlinrumble-alt')}
         }
         if(['dnb','jungle'].includes(activeCategory)){
           if(tracks.some(t=>!t.muted&&t.sound==='kick'))keys.add('jazzkick-full');
@@ -415,7 +419,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       function playSample(sound,at,velocity,index=0){
         const key=sampleKey(sound,index,velocity);
         const gainTable={kick:.51,snare:.45,clap:.36,hat:.18,openhat:.19,rim:.34,tom:.33,shaker:.21,
-           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25};
+           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,berlinrumble:.63};
         const style=activeCategory==='brazil'?.83:1;
         const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index);
         // A restrained acoustic body layer gives fast breakbeats less plastic transients.
@@ -492,6 +496,16 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
             oscillator(80,54,'triangle',.55,t,.36); oscillator(80,54,'sine',.21,t,.38); break;
           case 'shaker':
             noise(t,.11,.084,3400,'highpass'); break;
+          case 'berlinrumble': {
+            // Synth fallback when the custom recorded-quality rumble samples cannot be loaded.
+            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(720,t);filter.frequency.exponentialRampToValueAtTime(195,t+.38);
+            const amp=audio.createGain();envelope(amp,t,.53,.39,.012);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
+            for(const [freq,type,level] of [[46.25,'sine',.85],[92.5,'triangle',.12],[138.75,'sine',.10]]){
+              const osc=audio.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq*1.045,t);osc.frequency.exponentialRampToValueAtTime(freq,t+.09);
+              const g=audio.createGain();g.gain.value=level;osc.connect(g);g.connect(filter);osc.start(t);osc.stop(t+.43);
+            }
+            break;
+          }
           case 'reese': {
             const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(1100,t);filter.frequency.exponentialRampToValueAtTime(280,t+.3);filter.Q.value=1.1;
             const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);

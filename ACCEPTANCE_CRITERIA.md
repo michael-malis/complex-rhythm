@@ -39,7 +39,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-GEO-001 | T-GEO-001, 4 child tasks | замеренный видимый диаметр каждой базовой точки удовлетворяет формуле. | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-GEO-002 | T-GEO-002, 4 child tasks | All explicit conditions in R-GEO-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-GEO-003 | T-GEO-003, 4 child tasks | All explicit conditions in R-GEO-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-GEO-004 | T-GEO-004, 5 child tasks | All explicit conditions in R-GEO-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-GEO-004 | T-GEO-004, 5 child tasks | All explicit conditions in R-GEO-004 pass with reproducible evidence | VERIFIED | CI:42132894856; tests/collision-lanes.mjs physical pixel samples on two concentric rings, distinct colors; 32 preserved sound attacks at 16 shared moments; 40/24 after R4∪R3 |
 | R-GEO-005 | T-GEO-005, 7 child tasks | All explicit conditions in R-GEO-005 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-GEO-006 | T-GEO-006, 5 child tasks | All explicit conditions in R-GEO-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-GEO-007 | T-GEO-007, 8 child tasks | All explicit conditions in R-GEO-007 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
@@ -56,7 +56,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-MDL-003 | T-MDL-003, 4 child tasks | All explicit conditions in R-MDL-003 pass with reproducible evidence | VERIFIED | CI:42107150484; math-io.js; tests/ui-smoke.mjs; 3:4 LCM; multi-operand intersection |
 | R-MDL-004 | T-MDL-004, 4 child tasks | All explicit conditions in R-MDL-004 pass with reproducible evidence | VERIFIED | CI:42107150484; math-io.js; tests/ui-smoke.mjs; 3:4 LCM; multi-operand intersection |
 | R-MDL-005 | T-MDL-005 | All explicit conditions in R-MDL-005 pass with reproducible evidence | VERIFIED | CI:42107150484; math-io.js; tests/ui-smoke.mjs; 3:4 LCM; multi-operand intersection |
-| R-MDL-006 | T-MDL-006, 4 child tasks | All explicit conditions in R-MDL-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-MDL-006 | T-MDL-006, 4 child tasks | All explicit conditions in R-MDL-006 pass with reproducible evidence | VERIFIED | CI:42132894856; tests/collision-lanes.mjs user-visible base=4, added=3, unique=6, cross-lane shared=16; counts from live events() and RhythmMath.analyzeSchedule |
 | R-RES-001 | T-RES-001, 24 child tasks | All explicit conditions in R-RES-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-RES-002 | T-RES-002, 5 child tasks | All explicit conditions in R-RES-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-RES-003 | T-RES-003 | All explicit conditions in R-RES-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |

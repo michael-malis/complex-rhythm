@@ -308,6 +308,14 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
  .workspace>.editor{padding:16px}
  .workspace>.sound-panel{padding:0 16px 16px}
 }
+
+.angle-control{display:grid;grid-template-columns:auto minmax(0,1fr) 50px;gap:9px;align-items:center;margin-top:11px}
+.angle-control label{font-size:13px;color:var(--sub);font-weight:650}
+.angle-control input{margin:0;min-height:32px}
+.angle-control input:disabled{opacity:.3;cursor:not-allowed}
+.angle-control output{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.angle-help{font-size:11.5px;color:var(--muted);margin-bottom:5px}
+@media(max-width:374px){.angle-control{gap:6px}}
 </style>
 </head>
 <body>
@@ -324,12 +332,14 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
   <main class="workspace">
       <section class="editor" id="editor" aria-labelledby="editorHeading">
         <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading" tabindex="-1">Дорожка 1</h3></div><span class="math-tag">z = a + bi</span></div>
-        <p class="editor-intro">Измените a, b или n: аргумент поворачивает точки, а n меняет их число.</p>
+        <p class="editor-intro">Измените a, b или n: ползунок поворачивает все основные точки.</p>
         <div class="params" role="group" aria-label="Комплексное число и степень корня">
           <div class="param"><label for="editA">a · Re(z)</label><input id="editA" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editB">b · Im(z)</label><input id="editB" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editN">n · степень корня</label><input id="editN" type="number" inputmode="numeric" step="1" min="1" max="24"></div>
         </div>
+        <div class="angle-control"><label for="argumentAngle">arg(z)</label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0" aria-describedby="angleHelp"><output id="argumentText" for="argumentAngle">0°</output></div>
+        <p class="angle-help" id="angleHelp">Поворачивает равномерные точки, сохраняя |z|.</p>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
         <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small><small id="modulusDisplay">|z| = 1 · модуль не влияет на время ударов</small></div>
 
@@ -436,6 +446,7 @@ function roots(track){return events(track).map(x=>x.phase)}
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'удар':n>1&&n<5?'удара':'ударов'}`}
+function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;t.a=Number((radius*Math.cos(ang)).toPrecision(10));t.b=Number((radius*Math.sin(ang)).toPrecision(10));return true}
 function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} ритмических примеров · ${new Set(PRESETS.map(p=>p.category)).size} категорий`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Свой ритм';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
 function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.forEach((t,i)=>{
  const row=document.createElement('div');row.className='track'+(t.muted?' is-muted':'');row.style.setProperty('--track-color',COLORS[i]);
@@ -455,6 +466,7 @@ function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent
  const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: звучат только дополнительные корни':'z = 0: нет звучащих ударов'):`arg(z) = ${fmt(arg)}° · сдвиг = ${fmt(arg/t.n)}°`;
  $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · модуль не влияет на время ударов`;
+ const angleSlider=$('argumentAngle');angleSlider.disabled=arg===null;angleSlider.value=arg===null?'0':String(Math.round(arg));$('argumentText').textContent=arg===null?'—':`${fmt(arg)}°`;
 }
 
 function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('layerSummary').textContent=`Дополнительные корни · ${t.layers.length}`;$('addLayer').disabled=t.layers.length>=5;
@@ -706,6 +718,8 @@ function setupEvents(){
  $('categorySelect').addEventListener('change',e=>{activeCategory=e.target.value;const first=PRESETS.find(p=>p.category===activeCategory);if(first)applyPreset(first)});
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('playBtn').addEventListener('click',togglePlay);$('resetBtn').addEventListener('click',reset);$('previewBtn').addEventListener('click',previewSound);$('soundSelect').addEventListener('change',e=>{tracks[selectedTrack].sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());renderTracks();renderEditor();markCustom()});
+ $('argumentAngle').addEventListener('input',e=>{const t=tracks[selectedTrack];if(!applyRotation(t,Number(e.target.value)*Math.PI/180))return;$('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom()});
+ $('argumentAngle').addEventListener('change',()=>renderTracks());
  $('bpm').addEventListener('input',e=>{const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}markCustom()});
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
  for(const [k,id] of [['a','editA'],['b','editB'],['n','editN']]){const inp=$(id);inp.addEventListener('input',()=>{const raw=inp.value;if(raw.trim()==='')return;const num=Number(raw);const valid=k==='n'?Number.isInteger(num)&&num>=1&&num<=24:Number.isFinite(num)&&Math.abs(num)<=10000;const err=$('fieldMessage');if(!valid){err.textContent=k==='n'?'Введите целое n от 1 до 24':'Введите число от −10000 до 10000';inp.setAttribute('aria-invalid','true');return}err.textContent='';inp.removeAttribute('aria-invalid');tracks[selectedTrack][k]=num;renderTracks();renderReadout();markCustom()});inp.addEventListener('change',()=>{const t=tracks[selectedTrack];t[k]=k==='n'?safeInt(inp.value,1,24,t.n):safeReal(inp.value,t[k]);inp.value=String(t[k]);inp.removeAttribute('aria-invalid');$('fieldMessage').textContent='';renderTracks();renderReadout()})}

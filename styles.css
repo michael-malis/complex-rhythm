@@ -1,6 +1,6 @@
 
 /* Roots / Rhythm — a single typographic and component system. */
-:root{--page:#f2efe8;--panel:#fffdfa;--plot:#faf8f3;--ink:#202420;--sub:#414b47;--muted:#46534e;--line:#d8d6ce;--fine:#e7e4dc;--accent:#a95846;--focus:#8d6137;--track-1:#ab5847;--track-2:#567a63;--track-3:#967438;--track-4:#80618a;color-scheme:light}
+:root{--page:#f2efe8;--panel:#fffdfa;--plot:#faf8f3;--ink:#202420;--sub:#414b47;--muted:#46534e;--line:#d8d6ce;--fine:#e7e4dc;--accent:#9d4939;--focus:#8d6137;--track-1:#ab5847;--track-2:#567a63;--track-3:#967438;--track-4:#80618a;color-scheme:light}
 html[data-theme="dark"]{--page:#1b1c19;--panel:#242621;--plot:#20221d;--ink:#f2f0e8;--sub:#d9dfd1;--muted:#c4cdbc;--line:#42453e;--fine:#353831;--accent:#db9176;--focus:#e0b475;--track-1:#df9883;--track-2:#98b39a;--track-3:#d5b16e;--track-4:#bda0ca;color-scheme:dark}
 *,*:before,*:after{box-sizing:border-box}
 html{background:var(--page);scroll-behavior:smooth}

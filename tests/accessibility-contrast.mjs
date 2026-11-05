@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const configs=[[360,640],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1600,1000]];
 const results=[];
 const authoredCSS=fs.readFileSync('styles.css','utf8');
-const explicitFontSizes=[...authoredCSS.matchAll(/font-size\\s*:\\s*([\\d.]+)px/g)].map(x=>Number(x[1]));
+const explicitFontSizes=[...authoredCSS.matchAll(/font-size\s*:\s*([\d.]+)px/g)].map(x=>Number(x[1]));
 assert.ok(explicitFontSizes.length>=70,'Audit should cover the full CSS font-size scale');
 assert.ok(explicitFontSizes.every(x=>Number.isFinite(x)&&x>=16),
  'No application-authored CSS font-size declaration may fall below 16px');

@@ -21,6 +21,11 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 
 ## Phase 4 — Implement
 - [x] Keep Canvas the primary scene and enlarge its desktop footprint.
+- [x] Make mathematical inputs the first panel in mobile DOM order, followed by Canvas, then instruments.
+- [x] Use the 3:4 polyrhythm as the default mathematical demonstration.
+- [x] Show |z| and explicitly distinguish magnitude changes from changes to attack times.
+- [x] Return to math controls after track selection on narrow screens; preserve track button focus on desktop and mute focus on all widths.
+- [x] Count presets/categories from source data instead of hardcoding an outdated number.
 - [x] Promote selected complex number and root degree ahead of instrument list.
 - [x] Retain four track controls, instrument selection, preview, extra roots, transport and presets.
 - [x] Clarify ring radii as instrument lanes (not literal complex root moduli).
@@ -32,16 +37,18 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [x] Static assertion: unique IDs for 15 essential input / transport / import controls.
 - [x] Static assertion: parameter editor precedes four-track list in the DOM.
 - [x] Static comparison: math roots/event functions and Web Audio engine block unchanged.
-- [x] Confirm source structure still retains existing preset and sample definitions.
+- [x] Confirm source structure retains 35 unique preset IDs and sample definitions.
+- [x] Check HTML tag nesting, no duplicate IDs, and balanced CSS brace counts in current source.
+- [ ] Check desktop keyboard focus progression against the desktop two-column visual placement.
 - [ ] Browser visual comparison at 375px, 768px, 1024×768, 1280×800, 1440×900.
-- [ ] Manual playback, sample-loading, all 34 preset selections and import/export regression.
+- [ ] Manual playback, sample-loading, all 35 preset selections and import/export regression.
 - [ ] Keyboard-only traversal, focus, screen-reader smoke test, zoom and reduced-motion check.
 - [ ] Verify text contrast and absence of overflow at actual browser render sizes.
 
 ## Phase 6 — Finish
-- [x] Commit UI changes to `main` as `7d778e60ec7e53fe6e4e19cd3e0336447ca6b546`.
+- [x] Commit revisions to `main`, including the follow-up audit and math-first mobile layout.
 - [x] Publish this checklist and the design rationale in GitHub.
 - [ ] Complete browser/manual verification and fix any uncovered issues.
 
 ## Acceptance
-Completed: mathematical prominence, editability, functionality retention at source level, skill applied, explicit design system, task tracking, committed UI. **Pending**: validated runtime across devices and audio playback.
+Completed at source level: mathematical prominence, editor-first mobile layout, preserved root/audio core, real skill searches, design system, task tracking, GitHub updates. **Pending**: actual browser rendering/interaction checks, accessibility focus order, full sample playback.

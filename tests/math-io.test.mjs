@@ -18,4 +18,21 @@ const a=m.rootPhases(1,0,4),b=m.rootPhases(1,0,3);
 eq(m.unique(a.concat(b)).length,6,'union has six events');eq(m.intersection(a,b).length,1,'intersection one event');
 eq(m.euclidean(5,16).length,5,'Euclidean 5/16');eq(m.euclidean(0,16).length,0,'Euclidean zero');eq(m.euclidean(16,16).length,16,'Euclidean all');
 eq(m.lcm([2,3,4]),12,'LCM');
+
+// Independent polymetric cycles: common period 12 bars, no premature lane reset.
+const poly=[{cycleBars:3,events:[{phase:0},{phase:1/3},{phase:2/3}]},{cycleBars:4,events:[{phase:0},{phase:.5}]}];
+eq(m.commonCycle(poly),12,'3:4 polymeter common period');
+const planned=m.planEvents(poly,2,0,24);
+eq(planned.filter(x=>x.lane===0).length,12,'3-bar lane repeats four times in 12 bars');
+eq(planned.filter(x=>x.lane===1).length,6,'4-bar lane repeats three times in 12 bars');
+ok(planned.some(x=>x.lane===0&&close(x.time,6)),'short lane repeats at 3 bars');
+ok(planned.some(x=>x.lane===1&&close(x.time,8)),'long lane repeats at 4 bars');
+ok(close(m.phaseAt(7,3,2),1/6),'independent phase 1 bar into next three-bar cycle');
+ok(close(m.phaseAt(7,4,2),7/8),'independent phase within four-bar cycle');
+const localWindow=m.planEvents(poly,2,14,18);
+ok(localWindow.length>0&&localWindow.every(x=>x.time>=14&&x.time<18),'bounded exploration window');
+eq(m.commonCycle([{cycleBars:13},{cycleBars:14},{cycleBars:15},{cycleBars:16}]),21840,'large but exact LCM, no generated long sequence');
+ok(m.planEvents([{cycleBars:1,muted:true,events:[{phase:0}]}],1,0,2).length===0,'muted lane excluded from scheduler');
+for(const invalid of [0,17,1.5]){let threw=false;try{m.planEvents([{cycleBars:invalid,events:[{phase:.5}]}],1,0,3)}catch(e){threw=true}ok(invalid===0?!threw:threw,'cycle validation '+invalid)}
+
 console.log('PASS mathematical utility tests:',passed);

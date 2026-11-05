@@ -74,7 +74,45 @@ function mathLCM(nums) {
  if(!Array.isArray(nums)||!nums.length||nums.some(x=>!Number.isInteger(x)||x<1||x>16))throw Error('Cycle lengths must be integers 1..16');
  return nums.reduce((a,b)=>a/gcd(a,b)*b,1);
 }
-const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM};
+
+function mathPlanEvents(lanes,barSeconds,fromSeconds,toSeconds) {
+ if(!Array.isArray(lanes)||lanes.length>32||!Number.isFinite(barSeconds)||barSeconds<=0||
+  !Number.isFinite(fromSeconds)||!Number.isFinite(toSeconds)||fromSeconds<0||toSeconds<fromSeconds||
+  toSeconds-fromSeconds>256*barSeconds)throw Error('Invalid bounded polymetric time window');
+ const result=[];
+ for(let i=0;i<lanes.length;i++){
+  const lane=lanes[i],bars=lane.cycleBars||1;
+  if(!Number.isInteger(bars)||bars<1||bars>16)throw Error('Lane cycle length must be 1..16 bars');
+  if(lane.muted)continue;
+  const period=bars*barSeconds;
+  const values=lane.events||[];
+  if(values.length>256)throw Error('Too many events in one lane');
+  const fromCycle=Math.max(0,Math.floor(fromSeconds/period)-1);
+  const toCycle=Math.ceil(toSeconds/period)+1;
+  for(let k=fromCycle;k<=toCycle;k++){
+   for(let j=0;j<values.length;j++){
+    const event=values[j];
+    if(!Number.isFinite(event.phase)||event.phase<0||event.phase>=1)throw Error('Event phase must be in [0,1)');
+    const time=(k+event.phase)*period;
+    if(time>=fromSeconds-1e-10 && time<toSeconds-1e-10){
+     result.push({lane:i,cycle:k,sourceEvent:j,phase:event.phase,time,velocity:event.velocity??1});
+    }
+   }
+  }
+ }
+ return result.sort((a,b)=>a.time-b.time||a.lane-b.lane||a.sourceEvent-b.sourceEvent);
+}
+function mathCommonCycle(lanes){
+ if(!Array.isArray(lanes)||!lanes.length)throw Error('At least one lane is required');
+ return mathLCM(lanes.map(l=>l.cycleBars||1));
+}
+function mathPhaseAt(elapsedSeconds,cycleBars,barSeconds){
+ if(!Number.isFinite(elapsedSeconds)||!Number.isFinite(barSeconds)||barSeconds<=0||
+ !Number.isInteger(cycleBars)||cycleBars<1||cycleBars>16)throw Error('Invalid phase calculation');
+ const span=barSeconds*cycleBars;
+ return (((elapsedSeconds/span)%1)+1)%1;
+}
+const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM,planEvents:mathPlanEvents,commonCycle:mathCommonCycle,phaseAt:mathPhaseAt};
 root.RhythmMath=Object.freeze(exports);
 if(typeof module!=='undefined'&&module.exports)module.exports=exports;
 })(typeof window!=='undefined'?window:globalThis);

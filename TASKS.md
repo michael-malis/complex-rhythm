@@ -22,6 +22,7 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 ## Phase 4 — Implement
 - [x] Keep Canvas the primary scene and enlarge its desktop footprint.
 - [x] Make mathematical inputs the first panel in mobile DOM order, followed by Canvas, then instruments.
+- [x] Complete English localization: HTML lang, static UI, dynamic messages, ARIA descriptions, validation and help; verify no Cyrillic in displayed browser text.
 - [x] Use the 3:4 polyrhythm as the default mathematical demonstration.
 - [x] Add accessible live argument slider preserving |z|.
 - [x] Enable direct canvas dragging of base-root points; rotate z by n times the root-phase displacement.
@@ -35,7 +36,10 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [x] Clarify ring radii as instrument lanes (not literal complex root moduli).
 - [x] Add a keyboard skip link and contextual circle-selection hint.
 - [x] Adjust responsive sizing, compact spacing and hierarchy without new libraries.
-- [x] Keep schema, root/event functions, Web Audio section, preset definitions unchanged.
+- [x] Scale actual input heights, typography, gaps and Canvas dimensions in response to window width and height, preserving accessible 44px targets.
+- [x] Provide a dedicated 720–949px tablet layout and compact examples disclosure on narrow screens.
+- [x] Add unobtrusive quarter-cycle reference markers to the mathematical scene.
+- [x] Keep schema, root/event functions and Web Audio section unchanged; replace exactly three former Bossa presets with 2:3, 3:5 and 4:7 ratios, retaining one Bossa and 35 total examples.
 
 ## Phase 5 — Verification
 - [x] Static assertion: unique IDs for 15 essential input / transport / import controls.
@@ -47,7 +51,7 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [x] Automated Chromium checks and screenshots for 360×640, 375×812, 390×844, 768×1024, 1024×768, 1280×800, 1440×900.
 - [ ] Human visual review of those screenshots for density, crop, and hierarchy.
 - [x] Automated Playwright regression: all 35 preset selections, degree edits, slider/drag/keyboard rotation, z=0 behavior, JSON import/export round-trip, Web Audio play/pause.
-- [x] All 87 assertions pass: https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360
+- [x] All 110 Chromium assertions pass: https://github.com/michael-malis/complex-rhythm/actions/runs/41990014471
 - [ ] Listen to every one of 35 presets and validate real-device sample loading, particularly mobile browsers.
 - [ ] Keyboard-only traversal, focus, screen-reader smoke test, zoom and reduced-motion check.
 - [x] Verify absence of horizontal overflow at all 7 Chromium viewport sizes.
@@ -59,4 +63,4 @@ Evidence policy: mark only verified work as complete. **Source review is not a s
 - [ ] Complete browser/manual verification and fix any uncovered issues.
 
 ## Acceptance
-Completed at source level: mathematical prominence, editor-first mobile layout, preserved root/audio core, real skill searches, design system, task tracking, GitHub updates. **Verified in Chromium:** 87 assertions in 7 viewports covering rendering dimensions, no horizontal overflow, core interactions, 35 presets, JSON round-trip and audio play/pause. **Remaining:** human screenshot review, detailed accessibility audit and real-device listening to every sample.
+Completed at source level: mathematical prominence, editor-first mobile layout, preserved root/audio core, real skill searches, design system, task tracking, GitHub updates. **Verified in Chromium:** 110 assertions in 7 viewports covering rendering dimensions, no horizontal overflow, core interactions, 35 presets, JSON round-trip and audio play/pause. **Remaining:** human screenshot review, detailed accessibility audit and real-device listening to every sample.

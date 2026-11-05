@@ -10,13 +10,13 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 - Use the **arg(z)** slider to rotate event timing without changing `|z|` or `n`.
 - Drag an original root point on its circle to rotate the corresponding evenly-spaced set; the argument of `z` changes by `n` times the dragged angular distance. Extra root layers remain untouched.
 - On the focused Canvas, press `Shift + Left/Right` to rotate event points by 5°; ordinary arrows switch tracks.
-- The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 35 genre examples remain accessible.
+- The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 35 examples remain accessible, including five polyrhythm studies.
 
-**Automated QA:** [87 passing browser assertions](https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360) across 7 viewport sizes, 35 presets, JSON import/export and Web Audio transport. Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
+**Automated QA:** [110 passing Chromium assertions](https://github.com/michael-malis/complex-rhythm/actions/runs/41990014471) across 7 viewports, including English UI text, responsive element scaling, all presets, JSON import/export and Web Audio transport. Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
 
-## v4 — Bossa nova + acoustic audio
+## Rhythm presets, acoustic audio and poly-rhythmic studies
 
-- 35 patterns in 7 styles. Four new **Bossa Nova** examples are listed first in Brazilian rhythms: Clássica (116 BPM), Íntima (104), Noturna (108), Balanço (128).
+- 35 patterns across 8 categories. **One Bossa Nova** example remains (Classic, 116 BPM). Three previous Bossa variations were replaced by **2:3, 3:5 and 4:7 polyrhythms**; alongside existing 3:4 and 5:7 examples, the **Polyrhythms** category contains five mathematically distinct ratio studies.
 - Bossa loops span **two 4/4 bars**, not one. The cross-stick line is three hits in bar one (beat 1, & of 2, beat 4), then two in bar two (beat 2, & of 3). The feathered bass drum plays on 1, & of 2, 3, & of 4, against even shaker eighths.
 - New **real, recorded acoustic drum/percussion samples**, from the CC0 Virtuosity Drums library: soft/full kick, cross-stick variations, shaker variations, jazz hi-hat/snare, claves, bongo.
 - Faster drum-and-bass and jungle grooves also gain a quieter acoustic snare/kick body underneath the electronic transient when loaded.
@@ -27,7 +27,11 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 
 Open GitHub Pages or serve the **entire repository**, including `samples/`. Opening `index.html` alone (file:// without samples) will use the simpler synthesized fallback.
 
-In the web page: select **Бразилия** → **Bossa Nova · Clássica** → **▶ Слушать**. In the status line, `сэмплы 4/4` (or similar) shows how many of the required audio files were decoded.
+In the web page: open **Explore examples** (already open on desktop), select **Brazilian rhythms** → **Bossa Nova · Classic** → **▶ Play**. The status line shows the number of decoded audio samples.
+
+## Responsive English interface
+
+All UI labels, descriptions, tooltips, validation errors and transport messages are in English (`lang="en"`). Layout, typography, spacing, controls and Canvas size scale with the viewport. On narrow screens, example selection is collapsed by default to give priority to the mathematical editor and circles. Tablet screens use a two-column workbench.
 
 ## Musical scope
 

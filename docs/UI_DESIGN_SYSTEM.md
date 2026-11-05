@@ -58,7 +58,16 @@ Source-level checks passed for tag structure, unique IDs, 35 preset IDs, and CSS
 - The UI remains intentionally limited to manipulating geometry, not manual beat sequencing.
 
 ## Automated browser evidence
-- [Chromium regression: 87 checks, success](https://github.com/michael-malis/complex-rhythm/actions/runs/41971526360)
+- [Chromium regression: 110 checks, success](https://github.com/michael-malis/complex-rhythm/actions/runs/41990014471)
 - 7 responsive screenshots are attached to the workflow run as an artifact.
 - Covered: seven viewport widths/heights, square Canvas, no horizontal overflow, math-first mobile layout, slider, root dragging, keyboard, `z=0`, all 35 presets, JSON import/export and Web Audio start/pause.
 - Not covered: subjective screenshot evaluation, real-phone sound quality, exhaustive screen-reader walkthrough or contrast evaluation.
+
+## English / responsive / polyrhythm update — 5 Nov 2026
+- Entire user-facing HTML and dynamic interface messages are in English, with `<html lang="en">`.
+- Actual element dimensions change with viewport size: calculated `--ui-scale` adjusts text, margins, control dimensions and spacing; controls maintain accessible minimum hit areas.
+- Responsive layouts: narrow screens stack math editor → Canvas → instruments, with preset selection in a compact disclosure; 720–949px tablet and >=950px desktop use distinct two-column compositions.
+- The scene includes four quiet quarter-cycle markers 0, ¼, ½, ¾. These represent proportions of the complete rhythm cycle, not root modulus.
+- Three Bossa Nova variations were replaced with 2:3, 3:5 and 4:7 periodic root structures. One two-bar Bossa example remains. The new Polyrhythms category also contains 3:4 and 5:7.
+- Current [Chromium verification: 110 passed assertions](https://github.com/michael-malis/complex-rhythm/actions/runs/41990014471) across seven viewport configurations; confirms English display, responsive scaling, 35 presets, JSON and playback smoke check.
+- Remaining manual work: subjective review of screenshots, full listening check and screen-reader usability audit.

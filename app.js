@@ -745,7 +745,7 @@ function selectRootIndexAtPoint(p,t,r) {
  return distance<=Math.max(20,p.side*.03)?best:-1;
 }
 function rgba(i,alpha){const c=RGB[i];return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`}
-function getRadii(side){const outer=side*.427;return [outer,outer*.78,outer*.56,outer*.34]}
+function getRadii(side){const outer=side*.427,spacing=Math.min(outer/3-7,Math.max(40,side*.095));return [outer,outer-spacing,outer-2*spacing,outer-3*spacing]}
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
  ctx.clearRect(0,0,w,h);
@@ -783,10 +783,15 @@ function draw() {
    const proximity=((phase-mark.phase)%1+1)%1*duration;
    const pulse=playing&&!t.muted&&proximity<.16&&!reducedMotion?6*Math.pow(1-proximity/.16,2):0;
    const radius=size+pulse;
+   if(pulse>0){
+    ctx.save();ctx.beginPath();ctx.arc(x,y,radius+4.5,0,TAU);
+    ctx.strokeStyle=COLORS[i];ctx.globalAlpha=Math.min(.6,.24+pulse*.035);ctx.lineWidth=2.6;ctx.stroke();ctx.restore();
+   }
    ctx.beginPath();ctx.arc(x,y,mark.base&&mark.added?radius+2.1:radius,0,TAU);
    ctx.fillStyle=mark.added&&!mark.base?(dark?'#20221d':'#faf8f3'):COLORS[i];
    ctx.fill();ctx.lineWidth=mark.base&&mark.added?2.6:1.6;ctx.strokeStyle=COLORS[i];ctx.stroke();
    if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fill()}
+   if(pulse>0){ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(2,radius*.32),0,TAU);ctx.fillStyle=dark?'rgba(255,255,255,.62)':'rgba(255,248,217,.65)';ctx.fill();ctx.restore()}
    if(t.muted){ctx.beginPath();ctx.arc(x,y,radius+1.3,0,TAU);ctx.strokeStyle=dark?'#555951':'#b5b5ab';ctx.lineWidth=2;ctx.stroke()}
   }
  });

@@ -55,8 +55,10 @@ try {
       'examples disclosure does not follow responsive layout at '+width);
     verify(result.chosen === 'afro', 'not a mathematical initial preset at ' + width);
     verify(result.slider, 'argument slider disabled at ' + width);
-    if (width < 950) verify(result.editorTop < result.sceneTop,
+    if (width < 720) verify(result.editorTop < result.sceneTop,
       'mathematical controls not visible before canvas at ' + width);
+    if(width >= 720 && width < 950) verify(Math.abs(result.editorTop-result.sceneTop)<3,
+      'tablet should use two-column workbench at '+width);
     await page.screenshot({ path: 'artifacts/rhythm-' + width + 'x' + height + '.png', fullPage: true });
     console.log('PASS viewport', width + 'x' + height, JSON.stringify(result));
     await page.close();

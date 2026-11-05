@@ -32,6 +32,18 @@
  <div class="circle-labels" id="circleLabels" aria-label="Cycle phases: zero at top, quarter at right, half at bottom, three quarters at left">
    <span class="circle-label label-zero" id="phaseZero"></span><span class="circle-label label-quarter" id="phaseQuarter"></span><span class="circle-label label-half" id="phaseHalf"></span><span class="circle-label label-threequarters" id="phaseThreequarters"></span>
  </div></div>
+ <details id="windowPanel" class="window-panel">
+  <summary>Polymetric time window <output id="commonCycle">Common period: 1 bar</output></summary>
+  <div class="window-body">
+    <label for="windowStart">View from bar <output id="windowStartText">1</output>
+      <input id="windowStart" type="range" min="0" max="0" value="0" step="1">
+    </label>
+    <p class="small-explain">A bounded four-bar view of the actual repeating schedules. The common cycle is the least common multiple of all lane lengths.</p>
+    <div class="window-axis" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4 bars</span></div>
+    <div id="windowTimeline" class="window-timeline" aria-label="Upcoming mathematical events in four-bar time window"></div>
+    <p id="windowCounts" class="window-counts" role="status"></p>
+  </div>
+ </details>
  <div class="figure-tools"><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn">Magnify plot</button><span class="figure-tools-hint">Scroll the magnified plot to explore dense root sets.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
  <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>

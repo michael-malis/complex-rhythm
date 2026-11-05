@@ -282,6 +282,32 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
 .canvas-shell{width:min(100%,max(240px,calc(100svh - 235px)))}
 .stage-description{display:none}}
 @media(prefers-reduced-motion:reduce){button,select,summary{transition:none}}
+
+/* Responsive workbench: semantic DOM order (math → visualization → sounds).
+   No separate mobile/desktop copies of any editable control. */
+.workspace{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;align-items:start}
+.workspace>.editor{min-width:0;margin:0;border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:#15232e}
+.workspace>.visual-stage{min-width:0}
+.workspace>.sound-panel{min-width:0;padding:0 12px 13px}
+.workspace>.sound-panel>.sound-row{margin:2px 0 12px}
+.workspace>.sound-panel>.layers-editor{margin:10px 0 0}
+.workspace>.sound-panel>.panel-head{padding-top:13px}
+@media(min-width:520px){
+ .workspace>.editor{padding:14px}
+ .workspace>.sound-panel{padding:0 14px 15px}
+}
+@media(min-width:950px){
+ .workspace{grid-template-columns:minmax(0,1.55fr) minmax(378px,.87fr);grid-template-rows:auto auto;column-gap:var(--lab-gap);row-gap:9px}
+ .workspace>.visual-stage{grid-column:1;grid-row:1/span 2}
+ .workspace>.editor{grid-column:2;grid-row:1;padding:15px}
+ .workspace>.sound-panel{grid-column:2;grid-row:2}
+ .workspace>.sound-panel>.sound-row{margin-top:10px}
+}
+@media(min-width:1450px){
+ .workspace{grid-template-columns:minmax(0,1.68fr) minmax(420px,.85fr)}
+ .workspace>.editor{padding:16px}
+ .workspace>.sound-panel{padding:0 16px 16px}
+}
 </style>
 </head>
 <body>
@@ -296,14 +322,6 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
     <div class="preset-controls"><label class="sr-only" for="categorySelect">Категория ритмов</label><select id="categorySelect" aria-label="Категория ритмов"><option value="bunker">Bunker</option><option value="other">Другие</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="brazil">Бразилия</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option></select><select id="presetSelect" aria-label="Выбрать ритм"></select></div>
   </div>
   <main class="workspace">
-    <section class="visual-stage" aria-labelledby="orbitHeading">
-      <div class="stage-head"><div><h2 id="orbitHeading">Комплексные корни на окружностях</h2><p class="stage-description">Один оборот — один ритмический цикл</p></div><span class="stage-meta" id="timeDisplay">Такт 1 · 4/4</span></div>
-      <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" role="img" tabindex="0" aria-label="Четыре вложенных ритмических круга. Нажмите на окружность, чтобы выбрать инструмент. Также доступны кнопки дорожек ниже." aria-describedby="plotHint">Canvas недоступен.</canvas></div>
-      <p id="plotHint" class="stage-hint">Выберите окружность, затем измените a, b или n в редакторе</p>
-      <div class="stage-controls"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Слушать</button><div class="tempo-control"><label for="bpm">Темп · BPM</label><output for="bpm" id="bpmText">138</output><input id="bpm" type="range" min="50" max="200" step="1" value="138"></div><button id="resetBtn" type="button" class="ghost reset-button" aria-label="Начать такт сначала" title="Начать такт сначала">↺</button></div>
-      <div class="stage-foot"><div class="volume"><label for="volume">Громкость</label><input id="volume" type="range" min="0" max="100" step="1" value="65"><output id="volumeText" for="volume">65%</output></div><div id="audioState" class="state" role="status" aria-live="polite">Готово к воспроизведению</div></div>
-    </section>
-    <section class="sound-panel" aria-labelledby="instrumentHeading">
       <section class="editor" id="editor" aria-labelledby="editorHeading">
         <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading" tabindex="-1">Дорожка 1</h3></div><span class="math-tag">z = a + bi</span></div>
         <p class="editor-intro">Измените a, b или n: аргумент поворачивает точки, а n меняет их число.</p>
@@ -314,15 +332,25 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
         </div>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
         <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small><small id="modulusDisplay">|z| = 1 · модуль не влияет на время ударов</small></div>
+
+      </section>
+    <section class="visual-stage" aria-labelledby="orbitHeading">
+      <div class="stage-head"><div><h2 id="orbitHeading">Комплексные корни на окружностях</h2><p class="stage-description">Один оборот — один ритмический цикл</p></div><span class="stage-meta" id="timeDisplay">Такт 1 · 4/4</span></div>
+      <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" role="img" tabindex="0" aria-label="Четыре вложенных ритмических круга. Нажмите на окружность, чтобы выбрать инструмент. Управление параметрами расположено рядом или выше, а список инструментов — ниже." aria-describedby="plotHint">Canvas недоступен.</canvas></div>
+      <p id="plotHint" class="stage-hint">Выберите окружность: параметры выбранного инструмента показаны в редакторе</p>
+      <div class="stage-controls"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Слушать</button><div class="tempo-control"><label for="bpm">Темп · BPM</label><output for="bpm" id="bpmText">138</output><input id="bpm" type="range" min="50" max="200" step="1" value="138"></div><button id="resetBtn" type="button" class="ghost reset-button" aria-label="Начать такт сначала" title="Начать такт сначала">↺</button></div>
+      <div class="stage-foot"><div class="volume"><label for="volume">Громкость</label><input id="volume" type="range" min="0" max="100" step="1" value="65"><output id="volumeText" for="volume">65%</output></div><div id="audioState" class="state" role="status" aria-live="polite">Готово к воспроизведению</div></div>
+    </section>
+    <section class="sound-panel" aria-labelledby="instrumentHeading">
+
         <div class="sound-row"><div class="sound-choice"><label for="soundSelect">Звук инструмента</label><select id="soundSelect"></select></div><button class="preview" id="previewBtn" type="button" aria-label="Прослушать выбранный звук">▶ Звук</button></div>
         <details class="layers-editor" id="layerDetails"><summary id="layerSummary">Дополнительные корни · 0</summary>
           <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
           <div id="extraLayers"></div><button class="layer-add" id="addLayer" type="button">+ Добавить набор корней</button>
         </details>
-      </section>
       <div class="panel-head"><h2 id="instrumentHeading">Инструменты и окружности</h2><p>Выберите дорожку для редактирования</p></div>
       <div class="track-list" id="tracks" role="group" aria-label="Выбор дорожки и отключение звука"></div>
-      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в редакторе ниже.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
+      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в разделе инструментов.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
     </section>
   </main>
   <input id="jsonFile" type="file" accept=".json,application/json" aria-label="Загрузить ритм из JSON">

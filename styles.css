@@ -228,3 +228,7 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
  .composition-tools input{grid-column:1;min-width:110px}
  .composition-tools output{grid-column:2}
 }
+
+/* Event statistics derive from the same absolute schedule driving Web Audio. */
+.stage-events{font-size:17px;line-height:1.45;color:var(--sub);margin:6px 14px 10px}
+.lane-equation,.lane-eq{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}

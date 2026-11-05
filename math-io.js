@@ -125,7 +125,21 @@ function mathPhaseAt(elapsedSeconds,cycleBars,barSeconds){
  const span=barSeconds*cycleBars;
  return (((elapsedSeconds/span)%1)+1)%1;
 }
-const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM,planEvents:mathPlanEvents,commonCycle:mathCommonCycle,phaseAt:mathPhaseAt};
+function mathAnalyzeSchedule(schedule,tolerance=1e-6){
+ if(!Array.isArray(schedule)||!Number.isFinite(tolerance)||tolerance<=0)throw Error('Invalid schedule analysis');
+ const ordered=[...schedule].sort((a,b)=>a.time-b.time||a.lane-b.lane);
+ let uniqueMoments=0,sharedMoments=0,sharedLaneEvents=0;
+ for(let i=0;i<ordered.length;){
+  const current=ordered[i];if(!Number.isFinite(current.time)||!Number.isInteger(current.lane))throw Error('Invalid scheduled event');
+  const lanes=new Set([current.lane]);let j=i+1;
+  while(j<ordered.length&&Math.abs(ordered[j].time-current.time)<tolerance){lanes.add(ordered[j].lane);j++}
+  uniqueMoments++;
+  if(lanes.size>1){sharedMoments++;sharedLaneEvents+=j-i}
+  i=j;
+ }
+ return {totalEvents:ordered.length,uniqueMoments,sharedMoments,sharedLaneEvents};
+}
+const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM,planEvents:mathPlanEvents,commonCycle:mathCommonCycle,phaseAt:mathPhaseAt,analyzeSchedule:mathAnalyzeSchedule};
 root.RhythmMath=Object.freeze(exports);
 if(typeof module!=='undefined'&&module.exports)module.exports=exports;
 })(typeof window!=='undefined'?window:globalThis);

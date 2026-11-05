@@ -323,6 +323,7 @@ function renderTracks() {
    lengthInput.removeAttribute('aria-invalid');
    if(!playing){const old=cycleSeconds();pausedPhase=pausedPhase*old;}
    t.cycleBars=v;
+   updateLaneStatus(i);
    if(!playing)pausedPhase=((pausedPhase/cycleSeconds())%1+1)%1;
    else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.008;}
    markCustom();renderWindowTimeline();
@@ -338,8 +339,12 @@ function renderTracks() {
 function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
- if(eq)renderTeX(eq,String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+(t.layers.length?String.raw`\;\cup\; ${t.layers.length}\ \text{additional set(s)}`:''));
- if(count)count.textContent=hitLabel(events(t).length);
+ const setOp=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
+ const equation=String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+
+  t.layers.map((layer,j)=>String.raw`\;${setOp}\;R_{${layer.n}}(u_{${j+1}})`).join('')+
+  (t.euclidean?String.raw`\;${setOp}\;E(${t.euclidean.k},${t.euclidean.n})`:'');
+ if(eq)renderTeX(eq,equation);
+ if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
 }
 function chooseTrack(i,fromTrackList=false) {
@@ -481,20 +486,15 @@ function renderWindowTimeline() {
  windowStartBar=Math.max(0,Math.min(windowStartBar,Number(slider.max)));
  slider.value=String(windowStartBar);
  $('windowStartText').textContent=String(windowStartBar+1);
- if(!$('windowPanel').open)return;
  const start=windowStartBar,span=4,secPerBar=barSeconds();
  const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
+ const analysis=RhythmMath.analyzeSchedule(scheduled);
+ const eventSummary=$('eventSummary');
+ if(eventSummary)eventSummary.textContent=`4-bar view · ${analysis.totalEvents} audible hits · ${analysis.uniqueMoments} distinct times · ${analysis.sharedMoments} shared across lanes`;
+ if(!$('windowPanel').open)return;
  const container=$('windowTimeline');container.replaceChildren();
- let simultaneous=0,lastIndex=0;
- while(lastIndex<scheduled.length){
-  const first=scheduled[lastIndex];let j=lastIndex+1,uniqueLanes=new Set([first.lane]);
-  while(j<scheduled.length&&Math.abs(scheduled[j].time-first.time)<1e-6){
-   uniqueLanes.add(scheduled[j].lane);j++;
-  }
-  if(uniqueLanes.size>1)simultaneous++;
-  lastIndex=j;
- }
+ const simultaneous=analysis.sharedMoments;
  for(let i=0;i<tracks.length;i++){
   const row=document.createElement('div');row.className='window-lane';
   row.style.setProperty('--lane-color',COLORS[i]);

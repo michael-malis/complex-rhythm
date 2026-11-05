@@ -121,6 +121,19 @@ try {
  verify((await page.locator('#unionCount').textContent())==='6','restored 4∪3 after removing extra set');
 
  verify((await page.locator('#extraLayers input[type=number]').count())===3,'additional source editable');
+ const firstStats=await page.evaluate(()=>{
+ const t=window.RhythmResearch.current();
+ const phase=window.RhythmMath.planEvents(t.tracks.map((track,i)=>({
+  cycleBars:track.cycleBars,muted:track.muted,events:window.RhythmResearch.events(track)
+ })),240/t.bpm,0,4*240/t.bpm);
+ return window.RhythmMath.analyzeSchedule(phase);
+ });
+ verify((await page.locator('#eventSummary').textContent()).includes(firstStats.totalEvents+' audible hits'),
+  'global audible hits exactly match actual four-bar planner');
+ verify((await page.locator('#eventSummary').textContent()).includes(firstStats.uniqueMoments+' distinct times'),
+  'global unique event timestamps use canonical planner');
+ verify((await page.locator('#eventSummary').textContent()).includes(firstStats.sharedMoments+' shared across lanes'),
+  'cross-lane collisions are not removed by within-lane union');
  await page.locator('#loadRootExample').click();
  verify((await page.locator('#baseCount').textContent())==='4','worked example base four roots');
  verify((await page.locator('#addedCount').textContent())==='3','worked example added three roots');

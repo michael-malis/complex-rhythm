@@ -68,4 +68,15 @@ for(const r of [1e-16,1e-12,1e-9,1e-6,1e-3,1e4]){
 }
 eq(m.principalArg(-0,-1),Math.PI,'negative signed-zero pi boundary normalizes to (+pi]');
 eq(m.polarOf(0,0).theta,null,'exact zero remains mathematically undefined');
+const collisionSchedule=[
+ {lane:0,time:0},{lane:1,time:0},{lane:0,time:.5},
+ {lane:1,time:1},{lane:2,time:1+1e-9},{lane:2,time:1.5}
+];
+const aggregate=m.analyzeSchedule(collisionSchedule);
+eq(aggregate.totalEvents,6,'total canonical lane events');
+eq(aggregate.uniqueMoments,4,'unique cross-lane timestamps');
+eq(aggregate.sharedMoments,2,'two independent shared time instants');
+eq(aggregate.sharedLaneEvents,4,'four lane events at two shared moments');
+ok(JSON.stringify(m.analyzeSchedule([...collisionSchedule].reverse()))===JSON.stringify(aggregate),
+  'schedule aggregation independent of input event order');
 console.log('PASS mathematical utility tests:',passed);

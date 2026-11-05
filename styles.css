@@ -175,3 +175,38 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .label-quarter{right:4px;top:calc(50% + 55px);transform:translateY(-50%)}
 .label-half{bottom:4px;left:calc(50% - 55px);transform:translateX(-50%)}
 .label-threequarters{left:4px;top:calc(50% - 55px);transform:translateY(-50%)}
+
+/* A scientific instrument, not an infinitely tall settings sidebar:
+   four editors visible in a 2x2 desk grid; graph takes priority on narrow screens.
+   Source: UI/UX Pro Max spacing, responsive and visible-primary-content rules. */
+@media (min-width:1280px){
+ .workspace{display:grid;grid-template-columns:minmax(0,.87fr) minmax(0,1.13fr);gap:16px;align-items:start}
+ .visual-stage{position:sticky;top:12px}
+ .track-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .canvas-shell{width:min(100%,calc(100svh - 255px),700px)}
+ .lane{padding:10px;min-width:0}
+ .lane-head{grid-template-columns:minmax(0,1fr) minmax(120px,1fr) 44px;gap:5px}
+ .lane-select{font-size:19px;white-space:nowrap}
+ .lane-sound{font-size:17px}
+ .lane-fields{gap:5px}
+ .lane-fields label{font-size:17px}
+ .lane-fields input{min-width:0}
+ .lane-alternate-math{padding:5px 0}
+ .lane-modes{margin:6px 0 4px}
+ .lane-length{margin-top:5px}
+}
+@media (min-width:760px) and (max-width:1279px){
+ .workspace{display:flex;flex-direction:column;gap:14px}
+ .visual-stage{order:0;width:100%}
+ .control-panel{order:1;width:100%}
+ .track-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .canvas-shell{width:min(100%,calc(100svh - 235px),700px)}
+}
+@media (max-width:759px){
+ .visual-stage{order:0}
+ .control-panel{order:1}
+}
+@media (max-width:519px){
+ .track-list{grid-template-columns:minmax(0,1fr)}
+ .visual-stage{margin-bottom:0}
+}

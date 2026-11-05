@@ -66,11 +66,11 @@ try {
   const denseHigh=await renderStress(96000,32);
   // Event onset: output attack may ramp for 4 ms, but it must begin within 5 ms of its scheduled time.
   const sr=48000,duration=.6,ctx=new OfflineAudioContext(1,Math.ceil(sr*duration),sr),bus=outputChain(ctx);
-  const scheduledAt=.13;
-  window.RhythmVoices.play(ctx,bus,'technoKick',scheduledAt,.8,0);
+  const scheduledAt=.13,compensatedStart=scheduledAt-.005;
+  window.RhythmVoices.play(ctx,bus,'technoKick',compensatedStart,.8,0);
   const signal=(await ctx.startRendering()).getChannelData(0);
   let first=-1;for(let i=0;i<signal.length;i++)if(Math.abs(signal[i])>0.000025){first=i/sr;break}
-  return {catalog,denseLow,denseHigh,onset:{scheduledAt,first,driftMs:(first-scheduledAt)*1000}};
+  return {catalog,denseLow,denseHigh,onset:{scheduledAt,compensatedStart,first,driftMs:(first-scheduledAt)*1000}};
  });
  await page.close();
 }finally{await browser.close()}

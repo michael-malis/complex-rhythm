@@ -74,6 +74,7 @@ for(const study of EXPERIMENTAL_STUDIES){
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
+const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
 let audio=null,master=null,compressor=null,limiter=null,subFilter=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
 const sampleBuffers=new Map();const samplePromises=new Map();
@@ -620,7 +621,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       }
       function hit(sound, at, velocity=1, index=0, patch=null) {
         // Real recorded/rended one-shots first; use local synthesis when unavailable.
-        const t=Math.max(at,audio.currentTime+.002);
+        const t=Math.max(at-OUTPUT_CHAIN_COMPENSATION,audio.currentTime+.002);
         if(playSample(sound,t,velocity,index))return;
         perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){perHitBus=null;return}

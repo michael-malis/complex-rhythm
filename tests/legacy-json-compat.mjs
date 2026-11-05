@@ -16,6 +16,9 @@ try{
   mathematicalEvents:p.tracks.map(t=>window.RhythmResearch.events(t).map(x=>x.phase))
  })));
  assert.equal(originals.length,35,'all original preset configurations retained');
+ const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/main-35-ids.json',import.meta.url),'utf8'));
+ assert.deepEqual(originals.map(p=>p.id),fixture.ids,
+  'historical main-branch 35 preset IDs and order must stay intact');
  const results=[];
  for(const original of originals){
   const payload={format:'roots-rhythm/1',name:'Legacy '+original.id,

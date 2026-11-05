@@ -198,45 +198,130 @@ small,.small {font-size:12px;color:var(--sub)}
 .layer-velocity input {flex:1;min-width:0}
 .layer-add {border:1px solid var(--line);background:var(--surface);border-radius:8px;color:var(--text);min-height:40px;padding:7px 12px;margin-top:6px}
 @media(max-width:374px){.layer-row{gap:4px}.layer-row input{padding:4px}}
+
+/* Rhythm Studio / Interactive Mathematics Lab — applied ui-ux-pro-max rules */
+:root {--lab-inset:clamp(10px,1.05vw,16px);--lab-gap:clamp(9px,1vw,14px)}
+.skip-link{position:absolute;top:-80px;left:12px;z-index:40;padding:10px 14px;border:2px solid var(--focus);background:var(--bg);color:var(--text);border-radius:8px}
+.skip-link:focus{top:10px}
+.app-header{margin-bottom:var(--lab-gap)}
+.brand-icon{border-color:#4e6978}
+.brand p{font-size:12px;color:var(--sub)}
+.preset-strip{border-bottom:1px solid var(--line-soft);padding-bottom:var(--lab-gap);margin-bottom:var(--lab-gap)}
+.preset-head label{font-size:13px}
+.workspace{gap:var(--lab-gap)}
+.visual-stage{background:#0e151c}
+.stage-head{padding:var(--lab-inset) var(--lab-inset) 2px;align-items:flex-start}
+.stage-head h2{font-size:clamp(14px,1.1vw,16px)}
+.stage-description{font-size:12px;color:var(--sub);margin-top:4px}
+.stage-meta{padding-top:1px}
+.canvas-shell{width:min(100%,560px,max(218px,calc(100svh - 245px)))}
+.stage-hint{color:var(--sub);font-size:12px;min-height:26px;padding:2px 10px 9px;line-height:1.35}
+.stage-controls{padding:10px var(--lab-inset)}
+.stage-foot{padding:3px var(--lab-inset) 12px}
+.state{font-size:12px}
+.sound-panel{padding:0 12px 13px;background:#101820}
+.editor{background:#15232e;border:0;border-bottom:1px solid #405461;border-radius:11px 11px 0 0;margin:0 -12px;padding:14px 12px 16px}
+.editor-head{margin-bottom:2px}
+.editor-head h3{font-size:15px;font-weight:730}
+.math-tag{font-size:13px;color:#b9d4df;font-variant-numeric:tabular-nums;white-space:nowrap}
+.editor-intro{color:var(--sub);font-size:13px;line-height:1.45;margin:5px 0 12px;max-width:57ch}
+.params{gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.param label{font-size:12px;font-weight:650;color:#c5d8e5}
+.param input{height:46px;border-color:#587284;background:#0d1a24;font-weight:650}
+.param input:focus-visible{outline-offset:2px;border-color:var(--ring1)}
+.param input[aria-invalid="true"]{border-color:var(--error)}
+.math-readout{margin-top:9px;border:1px solid #344956;background:#0d1821;padding:10px 11px}
+.math-topline strong{font-size:14px;color:#e5f2f7}
+.math-topline span{font-size:13px;color:#bed1db}
+.math-readout small{font-size:12px;color:#aec6d4}
+.sound-row{margin:12px 0 0}
+.sound-choice label{font-size:12px}
+.layers-editor{margin-top:12px}
+.layers-editor summary{min-height:44px;font-size:13px}
+.layer-add,.layer-remove{min-height:44px}
+.layer-remove{height:44px;width:44px}
+.layer-row input{min-height:44px}
+.panel-head{padding:15px 1px 9px;align-items:center}
+.panel-head h2{font-size:14px}
+.panel-head p{font-size:12px;color:var(--sub)}
+.track-list{gap:6px}
+.track-pick{min-height:51px}
+.math-details{margin-top:13px}
+.math-details summary{min-height:44px}
+button,select,summary{transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+@media(min-width:520px){
+.canvas-shell{width:min(100%,690px,max(260px,calc(100svh - 270px)))}
+.sound-panel{padding:0 14px 15px}
+.editor{margin:0 -14px;padding:15px 14px 16px}}
+@media(min-width:950px){
+.workspace{grid-template-columns:minmax(0,1.55fr) minmax(378px,.87fr)}
+.canvas-shell{width:min(100%,760px,max(292px,calc(100svh - 290px)))}
+.track-list{grid-template-columns:1fr}
+.track-pick{min-height:50px}
+.stage-controls{gap:12px}
+.play-button{min-width:116px}}
+@media(min-width:1450px){
+.workspace{grid-template-columns:minmax(0,1.68fr) minmax(420px,.85fr)}
+.canvas-shell{width:min(100%,800px,max(330px,calc(100svh - 280px)))}
+.sound-panel{padding:0 16px 16px}
+.editor{margin:0 -16px;padding:16px}}
+@media(max-width:519px){
+.stage-head h2{font-size:14px}
+.panel-head{flex-wrap:wrap;row-gap:3px}
+.panel-head p{text-align:left}
+.params{gap:6px}
+.editor-intro{margin-bottom:10px}
+.track-list{grid-template-columns:1fr}}
+@media(max-width:374px){
+.math-tag{font-size:12px}
+.editor-head h3{font-size:14px}
+.stage-meta{font-size:11px}
+.param input{padding:7px 6px}}
+@media(max-height:620px) and (min-width:950px){
+.canvas-shell{width:min(100%,max(240px,calc(100svh - 235px)))}
+.stage-description{display:none}}
+@media(prefers-reduced-motion:reduce){button,select,summary{transition:none}}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#editorHeading">Перейти к математическим параметрам</a>
 <div class="app">
   <header class="app-header">
-    <div class="brand"><span class="brand-icon" aria-hidden="true">ω</span><div><h1>ROOTS <b>/</b> RHYTHM</h1><p>Комплексные корни → музыкальные удары</p></div></div>
+    <div class="brand"><span class="brand-icon" aria-hidden="true">ω</span><div><h1>ROOTS <b>/</b> RHYTHM</h1><p>Интерактивная геометрия ритма</p></div></div>
     <details class="file-actions" id="fileMenu"><summary aria-label="Импорт и экспорт JSON">Файлы <span aria-hidden="true">⌄</span></summary><div class="file-menu"><button id="loadBtn" type="button">Импорт JSON</button><button id="saveBtn" type="button">Экспорт JSON</button></div></details>
   </header>
   <div class="preset-strip">
-    <div class="preset-head"><label for="presetSelect">Готовый ритм</label><span class="preset-help">34 примера · 7 стилей</span></div>
+    <div class="preset-head"><label for="presetSelect">Примеры ритмов</label><span class="preset-help">34 примера · 7 стилей</span></div>
     <div class="preset-controls"><label class="sr-only" for="categorySelect">Категория ритмов</label><select id="categorySelect" aria-label="Категория ритмов"><option value="bunker">Bunker</option><option value="other">Другие</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="brazil">Бразилия</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option></select><select id="presetSelect" aria-label="Выбрать ритм"></select></div>
   </div>
   <main class="workspace">
     <section class="visual-stage" aria-labelledby="orbitHeading">
-      <div class="stage-head"><h2 id="orbitHeading">Удары на окружностях</h2><span class="stage-meta" id="timeDisplay">Такт 1 · 4/4</span></div>
+      <div class="stage-head"><div><h2 id="orbitHeading">Комплексные корни на окружностях</h2><p class="stage-description">Один оборот — один ритмический цикл</p></div><span class="stage-meta" id="timeDisplay">Такт 1 · 4/4</span></div>
       <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" role="img" tabindex="0" aria-label="Четыре вложенных ритмических круга. Нажмите на окружность, чтобы выбрать инструмент. Также доступны кнопки дорожек ниже." aria-describedby="plotHint">Canvas недоступен.</canvas></div>
-      <p id="plotHint" class="stage-hint">Нажми на круг, чтобы настроить его звук</p>
+      <p id="plotHint" class="stage-hint">Выберите окружность, затем измените a, b или n в редакторе</p>
       <div class="stage-controls"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Слушать</button><div class="tempo-control"><label for="bpm">Темп · BPM</label><output for="bpm" id="bpmText">138</output><input id="bpm" type="range" min="50" max="200" step="1" value="138"></div><button id="resetBtn" type="button" class="ghost reset-button" aria-label="Начать такт сначала" title="Начать такт сначала">↺</button></div>
       <div class="stage-foot"><div class="volume"><label for="volume">Громкость</label><input id="volume" type="range" min="0" max="100" step="1" value="65"><output id="volumeText" for="volume">65%</output></div><div id="audioState" class="state" role="status" aria-live="polite">Готово к воспроизведению</div></div>
     </section>
     <section class="sound-panel" aria-labelledby="instrumentHeading">
-      <div class="panel-head"><h2 id="instrumentHeading">Инструменты</h2><p>Нажми дорожку, чтобы настроить</p></div>
-      <div class="track-list" id="tracks" role="group" aria-label="Выбор дорожки и отключение звука"></div>
       <section class="editor" id="editor" aria-labelledby="editorHeading">
-        <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading">Дорожка 1</h3></div><span class="small">z = a + bi</span></div>
-        <div class="sound-row"><div class="sound-choice"><label for="soundSelect">Звук инструмента</label><select id="soundSelect"></select></div><button class="preview" id="previewBtn" type="button" aria-label="Прослушать выбранный звук">▶ Звук</button></div>
-        <div class="params">
+        <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading">Дорожка 1</h3></div><span class="math-tag">z = a + bi</span></div>
+        <p class="editor-intro">Измените число и степень корня — расположение точек сразу изменится.</p>
+        <div class="params" role="group" aria-label="Комплексное число и степень корня">
           <div class="param"><label for="editA">a · Re(z)</label><input id="editA" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editB">b · Im(z)</label><input id="editB" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
-          <div class="param"><label for="editN">Корень n</label><input id="editN" type="number" inputmode="numeric" step="1" min="1" max="24"></div>
+          <div class="param"><label for="editN">n · степень корня</label><input id="editN" type="number" inputmode="numeric" step="1" min="1" max="24"></div>
         </div>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
         <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small></div>
+        <div class="sound-row"><div class="sound-choice"><label for="soundSelect">Звук инструмента</label><select id="soundSelect"></select></div><button class="preview" id="previewBtn" type="button" aria-label="Прослушать выбранный звук">▶ Звук</button></div>
         <details class="layers-editor" id="layerDetails"><summary id="layerSummary">Дополнительные корни · 0</summary>
           <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
           <div id="extraLayers"></div><button class="layer-add" id="addLayer" type="button">+ Добавить набор корней</button>
         </details>
       </section>
-      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в редакторе ниже.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
+      <div class="panel-head"><h2 id="instrumentHeading">Инструменты и окружности</h2><p>Выберите дорожку для редактирования</p></div>
+      <div class="track-list" id="tracks" role="group" aria-label="Выбор дорожки и отключение звука"></div>
+      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в редакторе ниже.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
     </section>
   </main>
   <input id="jsonFile" type="file" accept=".json,application/json" aria-label="Загрузить ритм из JSON">
@@ -333,7 +418,7 @@ function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.for
  const mute=document.createElement('button');mute.className='ghost track-mute';mute.type='button';mute.title=t.muted?'Включить звук':'Отключить звук';mute.setAttribute('aria-label',`${t.muted?'Включить':'Отключить'} ${SOUNDS[t.sound]}`);mute.setAttribute('aria-pressed',String(t.muted));mute.textContent=t.muted?'×':'♫';
  mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();markCustom();});row.append(pick,mute);wrap.append(row);
 })}
-function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Дорожка ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;
+function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Дорожка ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;$('plotHint').textContent=`Окружность ${selectedTrack+1} · ${SOUNDS[t.sound]} — измените a, b или n в редакторе`;
  for(const k of ['A','B','N'])$('edit'+k).value=String(t[k.toLowerCase()]);
  $('fieldMessage').textContent='';renderReadout();renderLayers()}
 function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} за ${cycleBars===2?'2 такта':'такт'}${t.layers.length?' · '+t.layers.length+' доп.':''}`;

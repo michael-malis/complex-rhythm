@@ -201,3 +201,6 @@ None found.
 - This report does NOT validate perceived musical quality, genre authenticity, sound balance or mobile headphone performance.
 - All calculations are derived from the same event function as the visual and audio scheduler.
 - Real device listening and expert musical review remain outstanding.
+
+
+**Full coordinates, source phases, instruments, patch and neighbor audit:** [PRESET_INVENTORY.md](PRESET_INVENTORY.md) and [PRESET_INVENTORY.json](PRESET_INVENTORY.json).

@@ -125,3 +125,26 @@ html{font-size:18px}
 .expression-error{font-size:16px;color:#a53a31;min-height:0;overflow-wrap:anywhere}
 html[data-theme="dark"] .expression-error{color:#ffb0a5}
 @media(max-width:519px){.lane-modes{gap:5px}.mode-button,.unit-button{padding:6px 9px;font-size:18px}.lane-alternate-math{padding:6px 0}.expression-controls{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Secondary model and sound controls. Kept inside one optional inspector. */
+.preset-info{padding:0 12px 12px;color:var(--sub);font-size:16px;line-height:1.5}
+.preset-info:empty{display:none}
+.patch-controls,.special-rhythms{margin:14px 0 0;padding:13px 0;border-top:1px solid var(--fine);min-width:0}
+.patch-controls h4,.special-rhythms h4{font-size:20px;margin:0 0 11px;font-weight:650;color:var(--ink)}
+.patch-controls .small-explain,.special-rhythms .small-explain{font-size:17px;margin:7px 0 12px}
+.patch-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.patch-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;min-width:0;margin-bottom:11px}
+.patch-control>span{font-size:17px;color:var(--sub);overflow-wrap:anywhere}
+.patch-control>output{font-size:18px;font-variant-numeric:tabular-nums;font-weight:650;min-width:45px;text-align:right}
+.patch-control>input{grid-column:1/-1;min-height:44px}
+.patch-osc{display:grid;gap:6px;font-size:18px;min-width:0}
+.math-option{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:18px;margin:0 0 10px}
+.math-option select{width:auto;min-width:180px;font-size:18px}
+.math-check{display:flex;gap:10px;align-items:center;min-height:44px;font-size:18px}
+.math-check input{width:22px;height:22px;accent-color:var(--accent)}
+.euclidean-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+.euclidean-fields[hidden]{display:none}
+.euclidean-fields label{display:grid;gap:5px;font-size:18px;color:var(--sub);min-width:0}
+.euclidean-fields input{font-size:18px}
+@media(max-width:519px){.patch-grid{grid-template-columns:minmax(0,1fr)}.math-option select{width:100%}}

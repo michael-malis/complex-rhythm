@@ -52,4 +52,20 @@ for(const [k,n] of [[0,16],[5,16],[7,13],[16,16]]){
  ok(zero.every(p=>rot.some(q=>Math.min(Math.abs(((p+3/n)%1)-q),1-Math.abs(((p+3/n)%1)-q))<1e-8)),
   'Euclidean cyclic rotation '+k+'/'+n);
 }
+
+for(const r of [1e-16,1e-12,1e-9,1e-6,1e-3,1e4]){
+ for(const theta of [-2.9,-Math.PI/2,-.3,0,.79,Math.PI/2,Math.PI]){
+  const z=m.fromPolar(r,theta);
+  const back=m.polarOf(z.a,z.b);
+  ok(back.r>0&&Math.abs(back.r-r)/r<1e-10,
+   'tiny/large nonzero polar magnitude preserved at radius '+r+' angle '+theta);
+  const phaseExpected=((theta/(2*Math.PI))%1+1)%1;
+  const phaseActual=m.rootPhases(z.a,z.b,1)[0];
+  const delta=Math.abs(phaseExpected-phaseActual);
+  ok(Math.min(delta,1-delta)<1e-8,
+   'tiny/large nonzero phase preserved '+r+' angle '+theta);
+ }
+}
+eq(m.principalArg(-0,-1),Math.PI,'negative signed-zero pi boundary normalizes to (+pi]');
+eq(m.polarOf(0,0).theta,null,'exact zero remains mathematically undefined');
 console.log('PASS mathematical utility tests:',passed);

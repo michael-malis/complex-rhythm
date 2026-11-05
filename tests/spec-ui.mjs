@@ -61,6 +61,16 @@ try{
  await page.locator('.lane[data-lane="0"] .expression-controls button').click();
  ok((await page.locator('.lane[data-lane="0"] .expression-error').textContent()).length>0,'unsafe expressions rejected');
  ok(Math.abs(Number(await page.locator('#trackA0').inputValue())-.5)<1e-5,'invalid syntax retains canonical state');
+ await page.locator('#trackA0').fill('1e-9');
+ await page.locator('#trackB0').fill('0');
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();
+ ok(Math.abs(Number(await page.locator('#trackR0').inputValue())-1e-9)<1e-20,
+  'tiny nonzero modulus is not rounded to zero in polar editor');
+ const tinyMath=await page.locator('#laneAlt0 annotation').textContent();
+ ok(tinyMath.includes('10^{-9}'),'tiny nonzero coefficient is typeset in scientific KaTeX rather than displayed as zero');
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(0).click();
+ ok(Math.abs(Number(await page.locator('#trackA0').inputValue())-1e-9)<1e-20,
+  'tiny input survives cartesian-polar-cartesian round-trip without truncation');
  await page.locator('#trackA0').fill('0');
  await page.locator('#trackB0').fill('0');
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();

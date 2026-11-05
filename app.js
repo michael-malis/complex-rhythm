@@ -845,7 +845,29 @@ function draw() {
  requestAnimationFrame(draw);
 }
 function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:'My complex rhythm',bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function validateImportedFields(project){
+ const validate=(value,allowed,description)=>{
+  if(!value||typeof value!=='object'||Array.isArray(value))throw Error(description+' must be an object');
+  for(const key of Object.keys(value))if(!allowed.has(key))
+   throw Error('Unsupported '+description+' field "'+key+'"; import cancelled to preserve data');
+ };
+ validate(project,new Set(['format','name','bpm','bars','tracks']),'project');
+ project.tracks.forEach((t,i)=>{
+  validate(t,new Set(['a','b','n','sound','muted','layers','operation','gain',
+    'patch','euclidean','cycleBars','laneIndex']),'track '+(i+1));
+  if(t.layers!==undefined){
+   if(!Array.isArray(t.layers))throw Error('Track '+(i+1)+' layers must be an array');
+   t.layers.forEach((l,j)=>validate(l,new Set(['a','b','n','velocity']),
+    'track '+(i+1)+' additional root set '+(j+1)));
+  }
+  if(t.euclidean!=null)validate(t.euclidean,new Set(['k','n','rotation','velocity']),
+   'track '+(i+1)+' Euclidean settings');
+  if(t.patch!=null)validate(t.patch,new Set(['osc','cutoff','q','decay','accent','slide','drive',
+   'modulation','depth','base','start','noise']),'track '+(i+1)+' synthesis patch');
+ });
+}
 async function loadJson(file){try{if(file.size>100000)throw Error('File is too large');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Expected roots-rhythm/1 with four tracks');
+ validateImportedFields(d);
  if(d.tracks.some(t=>!t||typeof t!=='object'||(t.cycleBars!==undefined&&(!Number.isInteger(t.cycleBars)||t.cycleBars<1||t.cycleBars>16))||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>64||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>64||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Check a, b, n and sound for every track');
  const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;cycleBars=d.bars===2?2:1;tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=safeInt(d.bpm,50,260,138);if(audio)loadSamples(prioritySampleKeys());$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
  activePresetId=null;renderPresets();renderTracks();renderEditor();renderWindowTimeline();showToast('Imported rhythm: '+(typeof d.name==='string'?d.name.slice(0,45):file.name))}catch(e){showToast('Import failed: '+e.message)}}

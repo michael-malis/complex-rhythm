@@ -55,6 +55,8 @@ try{
  assert.equal(settled.timerActive,true,'one timer persists after 24 switches');
  assert.ok(settled.voiceBusGenerations>=24,'fresh voice bus used at each preset reconfiguration');
  assert.ok(settled.completedVoiceBusDisposals>=23,'discarded voices detached from master');
+ assert.ok(settled.peakLiveHitBuses>0,'synthesized voice inputs were exercised');
+ assert.ok(settled.liveHitBuses<=512,'per-hit synthesis nodes remain bounded under rapid changes');
  await page.locator('#playBtn').click();
  await page.waitForTimeout(200);
  const paused=await page.evaluate(()=>window.RhythmResearch.transport());
@@ -62,6 +64,10 @@ try{
  assert.equal(paused.timerActive,false,'pause clears scheduler interval');
  assert.equal(paused.pendingVoiceBusDisposals,0,'pause also disconnects previous bus');
  assert.equal(paused.audioState,'suspended','audio context suspends after pause');
+ assert.equal(paused.liveHitBuses,0,'pausing releases all pending per-hit synthetic voice buses');
+ assert.equal(paused.hitCleanupTimerActive,false,'per-hit cleanup timer is not leaked after pause');
+ assert.ok(paused.disposedHitBuses>=paused.peakLiveHitBuses,
+  'all transient voice buses have been reclaimed at least once');
  assert.deepEqual(errors,[],'no browser JavaScript errors');
  fs.writeFileSync('artifacts/preset-switching.json',JSON.stringify({
   tested:cases.length,status:'pass',notes:'Browser Web Audio real-time switching, bus cleanup and DOM mathematical synchronization; not a human listening test',

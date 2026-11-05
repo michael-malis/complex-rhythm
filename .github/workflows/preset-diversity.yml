@@ -1,0 +1,48 @@
+name: Preset diversity audit
+on:
+  push:
+    branches: [upgrade/spec-2026-11-math-audio]
+    paths:
+      - app.js
+      - math-io.js
+      - tests/preset-diversity.mjs
+      - .github/workflows/preset-diversity.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: preset-diversity-research
+  cancel-in-progress: false
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Generate reproducible preset audit
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-diversity.log 2>&1 &
+          node tests/preset-diversity.mjs
+      - name: Save report on working branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add PRESET_DIVERSITY_REPORT.md
+          git diff --cached --quiet || git commit -m 'Update mathematical preset diversity report'
+          git push origin HEAD:upgrade/spec-2026-11-math-audio
+      - name: Preserve report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preset-diversity-report
+          path: PRESET_DIVERSITY_REPORT.md
+          if-no-files-found: ignore

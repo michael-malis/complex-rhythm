@@ -480,7 +480,7 @@ function renderWindowTimeline() {
  $('windowStartText').textContent=String(windowStartBar+1);
  if(!$('windowPanel').open)return;
  const start=windowStartBar,span=4,secPerBar=barSeconds();
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,events:events(t)}));
+ const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
  const container=$('windowTimeline');container.replaceChildren();
  let simultaneous=0,lastIndex=0;
@@ -504,7 +504,11 @@ function renderWindowTimeline() {
   for(const event of current){
    const dot=document.createElement('span');dot.className='window-mark';
    dot.style.left=(100*(event.time/secPerBar-start)/span)+'%';
-   dot.title=`Bar ${(event.time/secPerBar+1).toFixed(3)} · source ${event.sourceEvent+1}`;
+   const sourceDescription=event.sources.map(src=>src.kind==='base'?'base root '+(src.index+1):
+     src.kind==='additional'?'extra root set '+(src.sourceIndex+1)+', root '+(src.index+1):
+     'Euclidean accent '+(src.index+1)).join(' + ')||'mathematical event';
+   dot.title=`Bar ${(event.time/secPerBar+1).toFixed(3)} · ${event.instrument||'instrument'} · ${sourceDescription}`;
+   dot.classList.toggle('window-shared',event.sources.length>1);
    fragment.append(dot);
   }
   markers.append(fragment);
@@ -770,12 +774,12 @@ function scheduleAhead(){
  if(to<=from)return;
  const relFrom=Math.max(0,from-beatEpoch),relTo=Math.max(0,to-beatEpoch);
  if(relTo<=relFrom)return;
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,events:events(t)}));
+ const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
  const future=RhythmMath.planEvents(lanes,barSeconds(),relFrom,relTo);
  for(const hitEvent of future){
-  const tr=tracks[hitEvent.lane],at=beatEpoch+hitEvent.time;
-  if(at>=from&&at<to)hit(tr.sound,at,hitEvent.velocity*(tr.gain??1),
-    hitEvent.cycle*lanes[hitEvent.lane].events.length+hitEvent.sourceEvent,tr.patch);
+  const at=beatEpoch+hitEvent.time;
+  if(at>=from&&at<to)hit(hitEvent.instrument,at,hitEvent.velocity*hitEvent.gain,
+    hitEvent.cycle*lanes[hitEvent.lane].events.length+hitEvent.sourceEvent,hitEvent.patch);
  }
  scheduledUntil=to;
 }

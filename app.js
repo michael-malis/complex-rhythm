@@ -4,7 +4,7 @@ const TAU=2*Math.PI;
 let COLORS=['#ab5847','#567a63','#967438','#80618a'];
 let RGB=[[171,88,71],[86,122,99],[150,116,56],[128,97,138]];
 let theme='light';
-const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble'};
+const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble',technoKick:'Techno kick',hardcoreKick:'Distorted hardcore kick',gabberKick:'Gabber kick',frenchcoreKick:'Frenchcore pitched kick',metallic:'Industrial metallic percussion',fmPerc:'FM percussion',noiseBurst:'Noise burst',hoover:'Hoover bass',raveStab:'Rave stab',acidClassic:'Classic 303 Acid',acidHard:'Hard Acid',acidScreaming:'Screaming Acid',acidDark:'Dark Acid',acidIndustrial:'Industrial Acid',acidPsychedelic:'Psychedelic Acid'};
 // Every audible time point is still the argument of a complex root.
 const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
 // A phase on a 16th-note grid encoded by a degree-1 complex root.
@@ -61,15 +61,24 @@ const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null;
-let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
+let audio=null,master=null,compressor=null,limiter=null,subFilter=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
 const sampleBuffers=new Map();const samplePromises=new Map();
 let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
 let toastTimeout=null,rootDrag=null;
 const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
 function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
 function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
+function sanitizeVoicePatch(raw) {
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+ const limits={cutoff:[70,10000],q:[.2,25],decay:[.06,.8],accent:[0,1],slide:[0,.5],drive:[.2,5],modulation:[0,5],depth:[0,9000],base:[20,1500],start:[20,3000],noise:[0,1]};
+ const out={};for(const [key,[low,high]] of Object.entries(limits)){
+  const v=Number(raw[key]);if(raw[key]!==undefined&&Number.isFinite(v))out[key]=Math.max(low,Math.min(high,v));
+ }
+ if(['sine','triangle','sawtooth','square'].includes(raw.osc))out.osc=raw.osc;
+ return Object.keys(out).length?out:null;
+}
 function cleanLayer(layer){return {a:safeReal(layer.a,1),b:safeReal(layer.b,0),n:safeInt(layer.n,1,64,1),velocity:Math.min(1,Math.max(.1,safeReal(layer.velocity,.62)))}}
-function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,64,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
+function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,64,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),gain:Number.isFinite(Number(t.gain))?Math.max(.05,Math.min(1.5,Number(t.gain))):1,patch:sanitizeVoicePatch(t.patch),euclidean:t.euclidean&&Number.isInteger(t.euclidean.k)&&Number.isInteger(t.euclidean.n)&&t.euclidean.n>=1&&t.euclidean.n<=256&&t.euclidean.k>=0&&t.euclidean.k<=t.euclidean.n?{k:t.euclidean.k,n:t.euclidean.n,rotation:Math.trunc(t.euclidean.rotation||0)}:null,layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
 function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1)}
 // Union of sets of complex roots; exact duplicates combine rather than play twice.
 function events(track){const all=rootPhases(track).map(phase=>({phase,velocity:1}));for(const layer of track.layers||[]){for(const phase of rootPhases(layer))all.push({phase,velocity:layer.velocity??.62})}all.sort((a,b)=>a.phase-b.phase);const out=[];for(const item of all){const last=out[out.length-1];if(last&&Math.abs(last.phase-item.phase)<1e-6)last.velocity=Math.max(last.velocity,item.velocity);else out.push(item)}if(out.length>1&&Math.abs(1+out[0].phase-out[out.length-1].phase)<1e-6){out[0].velocity=Math.max(out[0].velocity,out.pop().velocity)}return out}
@@ -269,7 +278,7 @@ function chooseTrack(i,fromTrackList=false) {
  renderEditor();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
-function renderEditor() {renderReadout();renderLayers()}
+function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
@@ -409,7 +418,12 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         compressor = audio.createDynamicsCompressor();
         compressor.threshold.value = -15; compressor.knee.value = 12; compressor.ratio.value = 4;
         compressor.attack.value = .003; compressor.release.value = .18;
-        master.connect(compressor); compressor.connect(audio.destination);
+        master.connect(compressor);
+         subFilter=audio.createBiquadFilter();subFilter.type='highpass';subFilter.frequency.value=20;subFilter.Q.value=.707;
+         limiter=audio.createWaveShaper();const ceiling=new Float32Array(4096);
+         for(let i=0;i<ceiling.length;i++){const x=2*i/(ceiling.length-1)-1;ceiling[i]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
+         limiter.curve=ceiling;limiter.oversample='2x';
+         compressor.connect(subFilter);subFilter.connect(limiter);limiter.connect(audio.destination);
         const frames = Math.floor(audio.sampleRate * 1.0);
         noiseBuffer = audio.createBuffer(1, frames, audio.sampleRate);
         const samples = noiseBuffer.getChannelData(0);
@@ -437,11 +451,12 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         source.connect(filter); filter.connect(gain); gain.connect(perHitBus || voiceBus || master);
         source.start(at,Math.random()*.45); source.stop(at+length+.03);
       }
-      function hit(sound, at, velocity=1, index=0) {
+      function hit(sound, at, velocity=1, index=0, patch=null) {
         // Real recorded/rended one-shots first; use local synthesis when unavailable.
         const t=Math.max(at,audio.currentTime+.002);
         if(playSample(sound,t,velocity,index))return;
-        perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.1,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
+        perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
+         if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){perHitBus=null;return}
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
         switch(soundFallback[sound]||sound) {
           case 'kick':
@@ -502,17 +517,20 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
 function barSeconds(){return 240/bpm}
 function cycleSeconds(){return barSeconds()*cycleBars}
 function transportPhase(){if(!playing||!audio)return pausedPhase;return ((Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds())%1+1)%1}
-function cancelVoices(){if(voiceBus&&audio){try{voiceBus.gain.setValueAtTime(0,audio.currentTime);voiceBus.disconnect()}catch(_){}}voiceBus=audio?audio.createGain():null;if(voiceBus)voiceBus.connect(master)}
+function cancelVoices(){
+ if(voiceBus&&audio){try{const old=voiceBus;old.gain.setValueAtTime(old.gain.value,audio.currentTime);old.gain.setTargetAtTime(.0001,audio.currentTime,.006);setTimeout(()=>{try{old.disconnect()}catch(_){}},100)}catch(_){}}
+ voiceBus=audio?audio.createGain():null;if(voiceBus)voiceBus.connect(master);
+}
 function scheduleAhead(){if(!playing||!audio||audio.state!=='running')return;const now=audio.currentTime,from=Math.max(scheduledUntil,now+.001),to=now+.09;if(to<=from)return;
  const duration=cycleSeconds(),kStart=Math.floor((from-beatEpoch)/duration)-1,kEnd=Math.ceil((to-beatEpoch)/duration)+1;
- for(let i=0;i<4;i++){const tr=tracks[i];if(tr.muted)continue;const phases=events(tr);for(let k=kStart;k<=kEnd;k++){if(k<0)continue;for(const [j,event] of phases.entries()){const t=beatEpoch+(k+event.phase)*duration;if(t>=from&&t<to)hit(tr.sound,t,event.velocity,k*phases.length+j)}}}scheduledUntil=to}
+ for(let i=0;i<4;i++){const tr=tracks[i];if(tr.muted)continue;const phases=events(tr);for(let k=kStart;k<=kEnd;k++){if(k<0)continue;for(const [j,event] of phases.entries()){const t=beatEpoch+(k+event.phase)*duration;if(t>=from&&t<to)hit(tr.sound,t,event.velocity*(tr.gain??1),k*phases.length+j,tr.patch)}}}scheduledUntil=to}
 function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Pause':'▶ Play';button.setAttribute('aria-pressed',String(playing));const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length;const all=prioritySampleKeys().length;$('audioState').textContent=playing?(`Playing · samples ${ready}/${all}`):'Ready to play'}
 async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();updateTransportText();return}
  if(!initAudio())return;try{await audio.resume()}catch(err){showToast('Audio could not start: '+err.message);return}
  const ready=prioritySampleKeys();if(ready.length){$('audioState').textContent='Loading sounds…';await Promise.race([loadSamples(ready),new Promise(resolve=>setTimeout(resolve,2800))]);}
  cancelVoices();beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();scheduledUntil=audio.currentTime;playing=true;updateTransportText();scheduleAhead();timerId=setInterval(scheduleAhead,25)}
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
-async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014)}catch(err){showToast('Preview failed: '+err.message)}}
+async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0)}
 function refreshPlotZoom(){

@@ -12,6 +12,7 @@ on:
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
+      - tests/event-properties.mjs
       - tests/required-polyrhythms.mjs
       - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
@@ -85,6 +86,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
           node tests/formula-acceptance.mjs
+      - name: Verify root-set event provenance across 400 deterministic random configurations
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-properties.log 2>&1 &
+          node tests/event-properties.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

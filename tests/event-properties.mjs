@@ -63,6 +63,17 @@ try{
        failures.push({q,type:'incorrect intersection source',event});
     }
    }
+   const planned=window.RhythmMath.planEvents([{
+    cycleBars:1,muted:false,sound:'technoKick',gain:.7,
+    patch:{cutoff:500},events:actual
+   }],1,0,1);
+   for(const item of planned){
+    if(item.lane!==0||item.instrument!=='technoKick'||item.patch?.cutoff!==500||
+       item.gain!==.7||!item.articulation||item.articulation.velocity!==item.velocity||
+       Math.abs(item.phase-item.time)>tol||item.sources.length===0||
+       typeof item.id!=='string'||!Number.isInteger(item.sourceEvent))
+      failures.push({q,type:'audio planner loses math/source/instrument/articulation metadata',item});
+   }
    stats.samples++;
    if(track.operation==='intersection')stats.intersection++;else stats.union++;
    if(track.euclidean)stats.withEuclidean++;

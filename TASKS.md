@@ -1,36 +1,40 @@
 # Rhythm Studio V3 — Mathematical Workbench
 
-Source of truth: this checklist, verified by tests. Do not mark any task complete before evidence.
+Evidence policy: check only work verified by source review, Chromium regression or screenshots.
 
 ## Phase 1 / Architecture
-- [x] Audit root-set/event model, old selected-only editor, layer controls and existing Canvas.
-- [x] Choose unified architecture: one Canvas + four simultaneous editable lanes + selected composition inspector.
-- [ ] Replace selected-only editor with four independent a/b/n input groups and live sound/mute controls.
-- [ ] Preserve root geometry, audio scheduling, sample library, presets and JSON v1 schema.
+- [x] Audit root-set/event model, old selected-only editor, layer controls and Canvas.
+- [x] Choose architecture: one Canvas + four simultaneous editable lanes + selected composition inspector.
+- [x] Replace selected-only editor with four independent a/b/n input groups and sound/mute controls.
+- [x] Preserve root geometry, audio scheduling, sample library, 35 presets and JSON v1 schema.
 
 ## Phase 2 / Composition
-- [ ] Rename Extra roots to Compose root sets and explain mathematical union clearly.
-- [ ] Visualize base, additional and result on separate aligned phase timelines, with merged/overlap counts.
-- [ ] Distinguish base, additional and overlap in main Canvas; avoid double-scheduling coincident phases.
-- [ ] Keep degree-one layers as legitimate accent events, without claiming they create an arbitrary-root theorem.
-- [ ] Keep layers editable and import/export-compatible.
+- [x] Rename Extra roots to Compose root sets and explain mathematical union.
+- [x] Visualize base, added and union on aligned phase timelines with unique/overlap counts.
+- [x] Distinguish base-only, added-only and coincident events in the Canvas.
+- [x] Retain degree-one accent events without claiming arbitrary irregularity follows from one root set.
+- [x] Keep extra set numeric, degree, velocity controls and import/export compatibility.
+- [x] Format generated floating-point coordinates for readable numeric inputs.
 
 ## Phase 3 / Visual design
-- [ ] Replace conflicting stacked CSS rules with a single coherent stylesheet.
-- [ ] Default warm off-white scientific notebook, optional graphite dark appearance.
-- [ ] Restrict components to toolbar, canvas, four lane rows, and one composition disclosure.
-- [ ] Responsive 16:10 desktop, compact tablet, scrollable usable mobile, min 44px targets.
-- [ ] Keep all user-facing UI and help text in natural English.
+- [x] Replace all stacked CSS overrides with one coherent external stylesheet.
+- [x] Warm off-white notebook default; optional graphite dark appearance.
+- [x] Restrict core components to toolbar, Canvas, four repeating lane rows and one composition disclosure.
+- [x] Responsive 16:10-oriented desktop, tablet, scrollable mobile, min 44px inputs.
+- [x] Keep static and dynamic UI labels and mathematical notes in English.
+- [x] Remove visible native file-picker input from main document.
 
 ## Phase 4 / Verification
-- [ ] Replace outdated selected-only assumptions in Playwright regression.
-- [ ] Test all four lane edits independently and verify immediate circle/summary updates.
-- [ ] Test root union: 4 ∪ 3 = 6 distinct phases with one collision (at phase zero).
-- [ ] Test JSON round-trip, 35 presets, audio start/stop, theme toggle, reduced motion.
-- [ ] Check 360×640, 390×844, 768×1024, 1024×768, 1280×800, 1440×900, 1520×982.
-- [ ] Review screenshots, UI contrast, focus behavior, horizontal overflow.
+- [x] Replace selected-only assumptions with new Playwright V3 regression.
+- [x] Verify independent lane edits and immediate counts.
+- [x] Verify 4 ∪ 3 = 6 distinct phases and one collision at phase zero.
+- [x] Verify JSON round-trip, 35 presets, audio start/stop, theme toggle and reduced-motion behavior.
+- [x] Check 360×640, 390×844, 768×1024, 1024×768, 1280×800, 1440×900 and 1520×982.
+- [x] Review light/dark screenshots and composition rendering; fix visible file input, long coefficients and desktop height.
+- [x] Browser JS error, horizontal overflow, target-size and dark-theme checks.
+- [ ] Dedicated screen-reader review and physical-device sound listening; outside automated browser coverage.
 
 ## Phase 5 / Release
-- [ ] Update README and design documentation.
-- [ ] Pass GitHub Actions and inspect logs.
-- [ ] Merge to main and verify Pages deployment.
+- [x] Document design decisions and structure in README and docs/UI_DESIGN_SYSTEM.md.
+- [ ] Verify final (post-polish) GitHub Actions run success.
+- [ ] Merge working branch to main and verify Pages deployment.

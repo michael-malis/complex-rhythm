@@ -4,6 +4,20 @@
 
 An interactive **mathematical visualization of rhythm**. Each of four instrument lanes uses the arguments of the `n`th roots of `z=a+bi` to place evenly spaced events on a circular timeline. Additional complex-root sets allow layered periodic patterns. Sound supports exploration of the geometry; this is not a DAW or general-purpose beat maker.
 
+## V3 mathematical workbench — November 2026
+
+The interface is a scientific workbench rather than a music sequencer.
+
+- **Four editable lanes at once:** each instrument has its own `a`, `b`, `n`, sound selector, mute, and immediate event count. Selecting a lane is only needed for focused composition or preview.
+- **Composition of root sets:** open *Compose root sets* to edit additional sets and compare the three aligned phase timelines **Base / Added / Union**. The result contains unique event phases; a coincident root triggers once.
+- **Provenance is visible:** base roots are filled, additional-only events hollow, and shared phases doubly marked. The circular scene and the phase timeline use the same source semantics.
+- **Mathematical distinctions:** a polyrhythm combines sets across instrument lanes; a composed pattern unions sets within one lane. Degree-one layers express individual accents. This does not claim that nth roots themselves produce arbitrary irregular rhythms.
+- **Consistent presentation:** a single warm neutral stylesheet (`styles.css`), an optional graphite dark theme, and standalone vanilla JavaScript (`app.js`). No external UI framework or CSS overrides are required.
+- **Keyboard/mouse:** numerical inputs are keyboard accessible; dragging a filled root rotates its base set; on the focused Canvas `Shift+Left/Right` turns visible roots by 5°. Other arrows select lanes.
+- **Backwards compatibility:** `roots-rhythm/1` import/export, 35 presets, two-bar Bossa Nova, existing audio samples and Web Audio scheduling are retained.
+
+The latest Chromium screenshots and regression run are in [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions). Listening to every sample on real physical devices and a full screen-reader audit remain separate manual validation tasks.
+
 ## Mathematical exploration controls (Nov 2026)
 
 - Enter `z = a + bi` and choose root degree `n` for the selected instrument.
@@ -12,7 +26,7 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 - On the focused Canvas, press `Shift + Left/Right` to rotate event points by 5°; ordinary arrows switch tracks.
 - The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 35 examples remain accessible, including five polyrhythm studies.
 
-**Automated QA:** [110 passing Chromium assertions](https://github.com/michael-malis/complex-rhythm/actions/runs/41990014471) across 7 viewports, including English UI text, responsive element scaling, all presets, JSON import/export and Web Audio transport. Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
+**Automated QA:** V3 Playwright regression covers seven viewports, all 35 presets, independent lane edits, mathematical union, theme switching, JSON round-trip and Web Audio. See [current CI runs](https://github.com/michael-malis/complex-rhythm/actions). Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
 
 ## Rhythm presets, acoustic audio and poly-rhythmic studies
 

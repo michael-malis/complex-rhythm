@@ -17,6 +17,7 @@ try{
  assert.equal(cases.length,24,'24 reproducible preset-switching cases');
  await page.locator('#presetDetails').evaluate(el=>el.open=true);
  await page.locator('#playBtn').click();
+ await page.waitForFunction(()=>window.RhythmResearch.transport().playing,null,{timeout:10000});
  const playing=await page.evaluate(()=>window.RhythmResearch.transport());
  assert.equal(playing.playing,true,'Web Audio transport running before switching');
  assert.equal(playing.timerActive,true,'exactly one scheduling interval is active');

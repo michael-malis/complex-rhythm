@@ -316,7 +316,7 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
 .angle-control output{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
 .angle-help{font-size:11.5px;color:var(--muted);margin-bottom:5px}
 @media(max-width:374px){.angle-control{gap:6px}}
-</style>
+#orbitCanvas{touch-action:none}#orbitCanvas.is-dragging{cursor:grabbing!important}</style>
 </head>
 <body>
 <a class="skip-link" href="#editorHeading">Перейти к математическим параметрам</a>
@@ -346,8 +346,8 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
       </section>
     <section class="visual-stage" aria-labelledby="orbitHeading">
       <div class="stage-head"><div><h2 id="orbitHeading">Комплексные корни на окружностях</h2><p class="stage-description">Один оборот — один ритмический цикл</p></div><span class="stage-meta" id="timeDisplay">Такт 1 · 4/4</span></div>
-      <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" role="img" tabindex="0" aria-label="Четыре вложенных ритмических круга. Нажмите на окружность, чтобы выбрать инструмент. Управление параметрами расположено рядом или выше, а список инструментов — ниже." aria-describedby="plotHint">Canvas недоступен.</canvas></div>
-      <p id="plotHint" class="stage-hint">Выберите окружность: параметры выбранного инструмента показаны в редакторе</p>
+      <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" role="img" tabindex="0" aria-label="Четыре окружности инструментов. Нажмите на окружность для выбора, перетаскивайте основные точки для поворота. Стрелки выбирают дорожку, Shift со стрелками влево или вправо вращает точки." aria-describedby="plotHint">Canvas недоступен.</canvas></div>
+      <p id="plotHint" class="stage-hint">Перетаскивайте основные точки, чтобы поворачивать ритм; нажмите на круг, чтобы выбрать инструмент.</p>
       <div class="stage-controls"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Слушать</button><div class="tempo-control"><label for="bpm">Темп · BPM</label><output for="bpm" id="bpmText">138</output><input id="bpm" type="range" min="50" max="200" step="1" value="138"></div><button id="resetBtn" type="button" class="ghost reset-button" aria-label="Начать такт сначала" title="Начать такт сначала">↺</button></div>
       <div class="stage-foot"><div class="volume"><label for="volume">Громкость</label><input id="volume" type="range" min="0" max="100" step="1" value="65"><output id="volumeText" for="volume">65%</output></div><div id="audioState" class="state" role="status" aria-live="polite">Готово к воспроизведению</div></div>
     </section>
@@ -360,7 +360,7 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
           <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
           <div id="extraLayers"></div><button class="layer-add" id="addLayer" type="button">+ Добавить набор корней</button>
         </details>
-      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в разделе инструментов.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
+      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в разделе инструментов.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Основные точки можно перетаскивать по окружности, поворачивая весь набор; Shift + ← / → поворачивает его на 5° при фокусе на Canvas. Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
     </section>
   </main>
   <input id="jsonFile" type="file" accept=".json,application/json" aria-label="Загрузить ритм из JSON">
@@ -433,7 +433,7 @@ let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null;
 let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
 const sampleBuffers=new Map();const samplePromises=new Map();
 let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
-let toastTimeout=null;
+let toastTimeout=null,rootDrag=null;
 const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
 function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
 function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
@@ -725,8 +725,35 @@ function setupEvents(){
  for(const [k,id] of [['a','editA'],['b','editB'],['n','editN']]){const inp=$(id);inp.addEventListener('input',()=>{const raw=inp.value;if(raw.trim()==='')return;const num=Number(raw);const valid=k==='n'?Number.isInteger(num)&&num>=1&&num<=24:Number.isFinite(num)&&Math.abs(num)<=10000;const err=$('fieldMessage');if(!valid){err.textContent=k==='n'?'Введите целое n от 1 до 24':'Введите число от −10000 до 10000';inp.setAttribute('aria-invalid','true');return}err.textContent='';inp.removeAttribute('aria-invalid');tracks[selectedTrack][k]=num;renderTracks();renderReadout();markCustom()});inp.addEventListener('change',()=>{const t=tracks[selectedTrack];t[k]=k==='n'?safeInt(inp.value,1,24,t.n):safeReal(inp.value,t[k]);inp.value=String(t[k]);inp.removeAttribute('aria-invalid');$('fieldMessage').textContent='';renderTracks();renderReadout()})}
  $('addLayer').addEventListener('click',()=>{const t=tracks[selectedTrack];if(t.layers.length<5){t.layers.push({a:0,b:1,n:1,velocity:.65});renderLayers();renderTracks();renderReadout();markCustom()}});
  $('saveBtn').addEventListener('click',()=>{saveJson();$('fileMenu').open=false});$('loadBtn').addEventListener('click',()=>{$('fileMenu').open=false;$('jsonFile').click()});$('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
- canvas.addEventListener('pointerdown',e=>{const bounds=canvas.getBoundingClientRect();const side=Math.min(bounds.width,bounds.height),radii=getRadii(side),cx=bounds.width/2,cy=bounds.height/2;const distance=Math.hypot(e.clientX-bounds.left-cx,e.clientY-bounds.top-cy);const nearest=radii.map((r,i)=>({i,d:Math.abs(r-distance)})).sort((a,b)=>a.d-b.d)[0];if(nearest.d<=Math.max(13,side*.06)){chooseTrack(nearest.i)}});
- canvas.addEventListener('keydown',e=>{if(['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();chooseTrack((selectedTrack+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:3))%4)}else if(e.key==='Enter'){e.preventDefault();previewSound()}});
+ function canvasPoint(e){const b=canvas.getBoundingClientRect();return{x:e.clientX-b.left-b.width/2,y:e.clientY-b.top-b.height/2,side:Math.min(b.width,b.height)}}
+ function wrapAngle(x){return Math.atan2(Math.sin(x),Math.cos(x))}
+ function onRootDot(p,t,r){return t.a===0&&t.b===0?false:rootPhases(t).some(ph=>{const a=-Math.PI/2+TAU*ph;return Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r)<=Math.max(15,p.side*.024)})}
+ canvas.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  const p=canvasPoint(e),distance=Math.hypot(p.x,p.y);
+  const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-distance)})).sort((a,b)=>a.gap-b.gap)[0];
+  if(near.gap>Math.max(15,p.side*.06))return;
+  chooseTrack(near.i);const t=tracks[near.i];if(!onRootDot(p,t,near.r))return;
+  rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),moved:false};
+  canvas.setPointerCapture(e.pointerId);
+ });
+ canvas.addEventListener('pointermove',e=>{
+  if(!rootDrag||rootDrag.id!==e.pointerId)return;
+  const p=canvasPoint(e),delta=wrapAngle(Math.atan2(p.y,p.x)-rootDrag.startPointer);
+  if(!rootDrag.moved&&Math.abs(delta)<.004)return;
+  rootDrag.moved=true;const t=tracks[rootDrag.track];
+  applyRotation(t,rootDrag.startArg+t.n*delta);
+  $('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom();canvas.classList.add('is-dragging');
+ });
+ function finishRootDrag(e){if(!rootDrag||rootDrag.id!==e.pointerId)return;const moved=rootDrag.moved;rootDrag=null;canvas.classList.remove('is-dragging');if(moved)renderTracks()}
+ canvas.addEventListener('pointerup',finishRootDrag);canvas.addEventListener('pointercancel',finishRootDrag);canvas.addEventListener('lostpointercapture',finishRootDrag);
+ canvas.addEventListener('keydown',e=>{
+   if(e.shiftKey&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
+    e.preventDefault();const t=tracks[selectedTrack];if(applyRotation(t,Math.atan2(t.b,t.a)+(e.key==='ArrowRight'?1:-1)*t.n*5*Math.PI/180)){$('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom()}return;
+   }
+   if(['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();chooseTrack((selectedTrack+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:3))%4)}
+   else if(e.key==='Enter'){e.preventDefault();previewSound()}
+  });
  document.addEventListener('keydown',e=>{const tag=e.target?.tagName;if(e.code==='Space'&&!['INPUT','SELECT','BUTTON','TEXTAREA','SUMMARY'].includes(tag)&&e.target!==canvas){e.preventDefault();togglePlay()}});
  document.addEventListener('pointerdown',e=>{const menu=$('fileMenu');if(menu.open&&!menu.contains(e.target))menu.open=false});
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);

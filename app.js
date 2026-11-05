@@ -648,12 +648,32 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         source.connect(filter); filter.connect(gain); gain.connect(perHitBus || voiceBus || master);
         source.start(at,Math.random()*.45); source.stop(at+length+.03);
       }
+      const liveHitBuses=new Map();
+      let hitCleanupTimer=null,disposedHitBuses=0,peakLiveHitBuses=0;
+      function reclaimHitBuses(force=false){
+        const now=audio?.currentTime??0;
+        for(const [bus,expiry] of liveHitBuses){
+          if(force||now>=expiry){
+            try{bus.disconnect()}catch(_){}
+            liveHitBuses.delete(bus);disposedHitBuses++;
+          }
+        }
+        if(!liveHitBuses.size&&hitCleanupTimer!==null){
+          clearInterval(hitCleanupTimer);hitCleanupTimer=null;
+        }
+      }
+      function retainHitBus(bus,time){
+        // Bounded, batched cleanup; no timer per oscillator strike.
+        liveHitBuses.set(bus,time+1.05);
+        peakLiveHitBuses=Math.max(peakLiveHitBuses,liveHitBuses.size);
+        if(hitCleanupTimer===null)hitCleanupTimer=setInterval(()=>reclaimHitBuses(),150);
+      }
       function hit(sound, at, velocity=1, index=0, patch=null) {
         // Real recorded/rended one-shots first; use local synthesis when unavailable.
         const t=Math.max(at-OUTPUT_CHAIN_COMPENSATION,audio.currentTime+.002);
         if(playSample(sound,t,velocity,index))return;
         perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
-         if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){perHitBus=null;return}
+         if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
         switch(soundFallback[sound]||sound) {
           case 'kick':
@@ -708,6 +728,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
           case 'tamborim':
             oscillator(315,240,'triangle',.12,t,.065);noise(t,.06,.24,2200,'highpass');break;
         }
+        retainHitBus(perHitBus,t);
         perHitBus=null;
       }
 
@@ -750,7 +771,7 @@ function scheduleAhead(){
  scheduledUntil=to;
 }
 function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Pause':'▶ Play';button.setAttribute('aria-pressed',String(playing));const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length;const all=prioritySampleKeys().length;$('audioState').textContent=playing?(`Playing · samples ${ready}/${all}`):'Ready to play'}
-async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();updateTransportText();return}
+async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();reclaimHitBuses(true);updateTransportText();return}
  if(!initAudio())return;try{await audio.resume()}catch(err){showToast('Audio could not start: '+err.message);return}
  const ready=prioritySampleKeys();if(ready.length){$('audioState').textContent='Loading sounds…';await Promise.race([loadSamples(ready),new Promise(resolve=>setTimeout(resolve,2800))]);}
  cancelVoices();beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();scheduledUntil=audio.currentTime;playing=true;updateTransportText();scheduleAhead();timerId=setInterval(scheduleAhead,25)}
@@ -978,6 +999,7 @@ window.RhythmResearch=Object.freeze({
   timerActive:timerId!==null,
   activePresetId,bpm,
   pendingVoiceBusDisposals,completedVoiceBusDisposals,voiceBusGenerations,
+  liveHitBuses:liveHitBuses.size,peakLiveHitBuses,disposedHitBuses,hitCleanupTimerActive:hitCleanupTimer!==null,
   hasLiveVoiceBus:!!voiceBus,scheduledUntil,
   audioTime:audio?.currentTime??0,beatEpoch
  }),

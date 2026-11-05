@@ -316,7 +316,95 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
 .angle-control output{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
 .angle-help{font-size:11.5px;color:var(--muted);margin-bottom:5px}
 @media(max-width:374px){.angle-control{gap:6px}}
-#orbitCanvas{touch-action:none}#orbitCanvas.is-dragging{cursor:grabbing!important}</style>
+#orbitCanvas{touch-action:none}#orbitCanvas.is-dragging{cursor:grabbing!important}
+/* Rhythm Studio 2026.11 — mathematically focused, truly responsive design.
+   Values scale with BOTH viewport width and height; touch targets stay >=44px. */
+:root{
+  --ui-scale:1;
+  --bg:#091118; --stage:#0e1922; --surface:#14232e; --surface-alt:#1b2c38;
+  --line:#354954; --line-soft:#273945; --sub:#bccbd4; --muted:#96acba;
+  --radius:10px; --radius-sm:6px; --control:clamp(44px,calc(46px * var(--ui-scale)),51px);
+  --lab-gap:clamp(9px,calc(13px * var(--ui-scale)),16px);
+  --lab-inset:clamp(10px,calc(16px * var(--ui-scale)),18px);
+}
+body{font-size:clamp(13px,calc(14px * var(--ui-scale)),16px);line-height:1.48}
+.app{width:min(calc(100% - 24px),1520px);padding-top:clamp(8px,calc(16px * var(--ui-scale)),20px)}
+.app-header{padding-bottom:clamp(9px,calc(12px * var(--ui-scale)),15px);border-bottom:1px solid var(--line-soft);margin-bottom:var(--lab-gap)}
+.brand-icon{width:clamp(31px,calc(38px * var(--ui-scale)),45px);height:clamp(31px,calc(38px * var(--ui-scale)),45px);border-radius:9px;font-size:clamp(20px,calc(25px * var(--ui-scale)),29px)}
+.brand h1{font-size:clamp(16px,calc(21px * var(--ui-scale)),25px);letter-spacing:.016em}
+.brand p{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px);letter-spacing:.075em}
+.preset-strip{display:block;border:1px solid var(--line);border-radius:9px;background:#101d26;padding:0;margin-bottom:var(--lab-gap)}
+.preset-summary{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:8px 12px;list-style:none;font-weight:650;color:var(--text);font-size:clamp(12px,calc(13px * var(--ui-scale)),14px)}
+.preset-summary::-webkit-details-marker{display:none}
+.preset-summary:before{content:'▸';font-size:14px;color:var(--accent);margin-right:2px}
+.preset-strip[open]>.preset-summary:before{content:'▾'}
+.preset-summary span:first-of-type{margin-right:auto}
+.preset-summary .preset-help{display:inline!important;font-size:11px;font-weight:450;color:var(--muted);white-space:nowrap}
+.preset-controls{padding:0 12px 12px;grid-template-columns:minmax(110px,1fr) minmax(0,2fr);max-width:none}
+.preset-controls select{height:var(--control);font-size:clamp(12px,calc(13px * var(--ui-scale)),14px)}
+.workspace{gap:var(--lab-gap)}
+.workspace>.editor{padding:var(--lab-inset);border:1px solid #466371;border-left:3px solid var(--active-color,var(--ring1));border-radius:10px;background:#142530;box-shadow:0 6px 18px #0002}
+.editor-head h3{font-size:clamp(14px,calc(16px * var(--ui-scale)),18px)}
+.editor-intro{font-size:clamp(12px,calc(13px * var(--ui-scale)),14px);margin:5px 0 11px;color:var(--sub)}
+.math-tag{font-size:clamp(12px,calc(13px * var(--ui-scale)),14px);font-weight:600}
+.param label{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px);color:#cbdde5}
+.param input{height:var(--control);font-size:clamp(15px,calc(16px * var(--ui-scale)),18px)}
+.angle-control{margin-top:clamp(8px,calc(12px * var(--ui-scale)),14px)}
+.angle-help{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px)}
+.math-readout{border-radius:7px;padding:clamp(8px,calc(10px * var(--ui-scale)),12px);background:#0d1c25}
+.math-topline strong{font-size:clamp(13px,calc(15px * var(--ui-scale)),17px);color:var(--accent)}
+.math-topline span{font-size:clamp(12px,calc(13px * var(--ui-scale)),14px)}
+.math-readout small{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px)}
+.visual-stage{border:1px solid var(--line);background-color:#0c171f;background-image:linear-gradient(#7296ac08 1px,transparent 1px),linear-gradient(90deg,#7296ac08 1px,transparent 1px);background-size:28px 28px}
+.stage-head{padding:var(--lab-inset) var(--lab-inset) 0}
+.stage-head h2{font-size:clamp(14px,calc(17px * var(--ui-scale)),19px);color:var(--text)}
+.stage-description{font-size:clamp(10px,calc(11px * var(--ui-scale)),13px);letter-spacing:.065em}
+.stage-hint{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px);color:var(--sub)}
+.canvas-shell{width:min(100%,clamp(240px,calc(100svh - 210px),800px))}
+.stage-controls{padding:clamp(8px,calc(12px * var(--ui-scale)),14px) var(--lab-inset);gap:clamp(7px,calc(12px * var(--ui-scale)),15px)}
+.play-button{min-height:var(--control);border-radius:7px;min-width:110px}
+.ghost{min-height:44px}
+.stage-foot{padding:0 var(--lab-inset) var(--lab-inset)}
+.workspace>.sound-panel{padding:0 var(--lab-inset) var(--lab-inset);border:1px solid var(--line);border-radius:10px;background:#101e27}
+.panel-head{padding-top:var(--lab-inset)}
+.panel-head h2{font-size:clamp(13px,calc(15px * var(--ui-scale)),16px)}
+.panel-head p{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px)}
+.track-pick{min-height:clamp(44px,calc(51px * var(--ui-scale)),58px);border-radius:7px;background:#162733}
+.track-pick[aria-pressed="true"]{background:#203744;box-shadow:inset 3px 0 var(--track-color)}
+.track-count{font-size:clamp(11px,calc(12px * var(--ui-scale)),13px)}
+.track-mute{min-height:44px;min-width:44px}
+.sound-choice select,.preview{height:var(--control);min-height:44px}
+.layers-editor summary,.math-details summary{min-height:44px}
+@media(max-width:949px){
+ .preset-strip{margin-bottom:var(--lab-gap)}
+ .canvas-shell{width:min(100%,max(220px,calc(100svh - 220px)))}
+ .workspace{grid-template-columns:minmax(0,1fr)}
+ .workspace>.editor{padding:clamp(10px,calc(12px * var(--ui-scale)),14px)}
+}
+@media(min-width:950px){
+ .workspace{grid-template-columns:minmax(0,1.65fr) minmax(360px,.85fr);gap:var(--lab-gap)}
+ .canvas-shell{width:min(100%,clamp(330px,calc(100svh - 212px),800px))}
+ .workspace>.visual-stage{grid-row:1/span 2}
+ .workspace>.sound-panel{grid-row:2}
+ .preset-controls{grid-template-columns:minmax(135px,.34fr) minmax(250px,.66fr)}
+}
+@media(min-width:1450px){
+ .workspace{grid-template-columns:minmax(0,1.8fr) minmax(390px,.9fr)}
+ .canvas-shell{width:min(100%,clamp(340px,calc(100svh - 190px),850px))}
+}
+@media(max-width:430px){
+ .preset-summary .preset-help{display:none!important}
+ .preset-controls{grid-template-columns:minmax(0,1fr)}
+ .stage-meta{font-size:11px}
+ .params{gap:6px}
+ .param label{font-size:11px}
+ .play-button{min-width:100px}
+}
+@media(max-height:620px) and (min-width:950px){
+ .canvas-shell{width:min(100%,max(230px,calc(100svh - 185px)))}
+}
+@media(prefers-reduced-motion:reduce){.app *{transition:none!important}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#editorHeading">Skip to complex-number controls</a>
@@ -767,6 +855,15 @@ function setupEvents(){
  document.addEventListener('pointerdown',e=>{const menu=$('fileMenu');if(menu.open&&!menu.contains(e.target))menu.open=false});
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }
+function applyViewportScale(){
+ const factor=Math.min(window.innerWidth/1440,window.innerHeight/900);
+ document.documentElement.style.setProperty('--ui-scale',String(Math.max(.84,Math.min(1.18,factor))));
+}
+const desktopPresets=window.matchMedia('(min-width:950px)');
+$('presetDetails').open=desktopPresets.matches;
+desktopPresets.addEventListener('change',e=>{$('presetDetails').open=e.matches});
+window.addEventListener('resize',applyViewportScale,{passive:true});
+applyViewportScale();
 setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);resizeCanvas();requestAnimationFrame(draw);
 })();
 </script>

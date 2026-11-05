@@ -38,13 +38,11 @@ try {
   }
   function outputChain(ctx){
    const bus=ctx.createGain();bus.gain.value=.52;
-   const comp=ctx.createDynamicsCompressor();
-   comp.threshold.value=-15;comp.knee.value=12;comp.ratio.value=4;comp.attack.value=.003;comp.release.value=.18;
    const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=20;hp.Q.value=.707;
    const limit=ctx.createWaveShaper(),curve=new Float32Array(4096);
    for(let k=0;k<curve.length;k++){const x=2*k/(curve.length-1)-1;curve[k]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
    limit.curve=curve;limit.oversample='2x';
-   bus.connect(comp);comp.connect(hp);hp.connect(limit);limit.connect(ctx.destination);
+   bus.connect(hp);hp.connect(limit);limit.connect(ctx.destination);
    return bus;
   }
   async function renderStress(sr,degree){

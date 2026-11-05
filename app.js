@@ -583,15 +583,14 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         if (!AC) { showToast('This browser does not support Web Audio.'); return false; }
         audio = new AC();
         master = audio.createGain(); master.gain.value = volume * .80;
-        compressor = audio.createDynamicsCompressor();
-        compressor.threshold.value = -15; compressor.knee.value = 12; compressor.ratio.value = 4;
-        compressor.attack.value = .003; compressor.release.value = .18;
-        master.connect(compressor);
-         subFilter=audio.createBiquadFilter();subFilter.type='highpass';subFilter.frequency.value=20;subFilter.Q.value=.707;
+        // Avoid Web Audio DynamicsCompressor look-ahead: it delayed measured onsets >5 ms.
+        // Rely on pre-limiter headroom, a subsonic high-pass, and a smooth output ceiling.
+        compressor=null;
+         subFilter=audio.createBiquadFilter();subFilter.type='highpass';subFilter.frequency.value=20;subFilter.Q.value=.707;master.connect(subFilter);
          limiter=audio.createWaveShaper();const ceiling=new Float32Array(4096);
          for(let i=0;i<ceiling.length;i++){const x=2*i/(ceiling.length-1)-1;ceiling[i]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
          limiter.curve=ceiling;limiter.oversample='2x';
-         compressor.connect(subFilter);subFilter.connect(limiter);limiter.connect(audio.destination);
+         subFilter.connect(limiter);limiter.connect(audio.destination);
         const frames = Math.floor(audio.sampleRate * 1.0);
         noiseBuffer = audio.createBuffer(1, frames, audio.sampleRate);
         const samples = noiseBuffer.getChannelData(0);

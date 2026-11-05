@@ -43,11 +43,12 @@ try{
  // Ensure we also handle immediate cancel during sample loading.
  await page.evaluate(()=>{
   const button=document.querySelector('#playBtn');
-  button.click();button.click();button.click();button.click();
+  // Starting from PLAYING: Pause, Start, Cancel -> stopped.
+  button.click();button.click();button.click();
  });
  await page.waitForTimeout(180);
  const ended=await page.evaluate(()=>window.RhythmResearch.transport());
- assert.equal(ended.playing,false,'last click cancels transport');
+ assert.equal(ended.playing,false,'last click cancels pending restart');
  assert.equal(ended.transportWanted,false,'no stale pending intent');
  assert.equal(ended.timerActive,false,'stopped scheduler');
  assert.equal(ended.schedulerIntervalsCreated,ended.schedulerIntervalsCleared,

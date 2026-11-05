@@ -37,6 +37,22 @@ try{
  assert.ok(state.radii[0]>state.radii[1]&&state.radii[1]>state.radii[2]&&state.radii[2]>state.radii[3],
   'four roots visualized on distinct concentric rings');
  assert.ok(state.radii[0]-state.radii[1]>=39.9,'neighboring rings have independent visible marker space');
+ await page.waitForTimeout(80);
+ const pixels=await page.evaluate(()=>{
+  const canvas=document.querySelector('#orbitCanvas'),rect=canvas.getBoundingClientRect(),
+   ctx=canvas.getContext('2d'),size=Math.min(rect.width,rect.height),
+   radii=window.RhythmResearch.radiiForSize(size),scale=canvas.width/rect.width;
+  return [0,1].map(lane=>{
+   const x=Math.round((rect.width/2+radii[lane])*scale),y=Math.round(rect.height/2*scale),
+    rgb=[...ctx.getImageData(x,y,1,1).data].slice(0,3),
+    css=document.querySelector('.lane[data-lane="'+lane+'"]').style.getPropertyValue('--lane-color').trim();
+   const expected=[1,3,5].map(i=>parseInt(css.slice(i,i+2),16));
+   return {lane,rgb,expected,delta:Math.max(...rgb.map((v,i)=>Math.abs(v-expected[i])))};
+  });
+ });
+ assert.ok(pixels.every(p=>p.delta<=35),
+  'both coincident right-quarter root dots render in their own lane colors: '+JSON.stringify(pixels));
+
  assert.ok(state.planned.every(e=>['technoKick','metallic'].includes(e.instrument)),
   'unmuted audio sources remain distinct instruments');
  assert.ok(state.summary.includes('32 audible hits')&&state.summary.includes('16 distinct times')&&
@@ -75,6 +91,7 @@ try{
  fs.mkdirSync('artifacts',{recursive:true});
  fs.writeFileSync('artifacts/collision-lanes.json',JSON.stringify({
   before:{analysis:state.analysis,radii:state.radii,visibleTimelineMarkers:state.strips,summary:state.summary},
+  canvasPixelEvidence:pixels,
   after,source:'real Playwright DOM, imported four-track fixture, same RhythmMath events as sound engine',
   pass:true
  },null,2));

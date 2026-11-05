@@ -94,7 +94,7 @@ function sanitizeVoicePatch(raw) {
 }
 function cleanLayer(layer){return {a:safeReal(layer.a,1),b:safeReal(layer.b,0),n:safeInt(layer.n,1,64,1),velocity:Math.min(1,Math.max(.1,safeReal(layer.velocity,.62)))}}
 function cleanTrack(t,i){return {cycleBars:safeInt(t.cycleBars,1,16,1),a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,64,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),laneIndex:i,operation:t.operation==='intersection'?'intersection':'union',gain:Number.isFinite(Number(t.gain))?Math.max(.05,Math.min(1.5,Number(t.gain))):1,patch:sanitizeVoicePatch(t.patch),euclidean:t.euclidean&&Number.isInteger(t.euclidean.k)&&Number.isInteger(t.euclidean.n)&&t.euclidean.n>=1&&t.euclidean.n<=256&&t.euclidean.k>=0&&t.euclidean.k<=t.euclidean.n?{k:t.euclidean.k,n:t.euclidean.n,rotation:Math.trunc(t.euclidean.rotation||0),velocity:Number.isFinite(Number(t.euclidean.velocity))?Math.max(.1,Math.min(1,Number(t.euclidean.velocity))):.58}:null,layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
-function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1)}
+function rootPhases({a,b,n}){return RhythmMath.rootPhases(a,b,n)}
 // Union of sets of complex roots; exact duplicates combine rather than play twice.
 function events(track) {
  const tol=1e-6,all=[];
@@ -269,7 +269,9 @@ function buildLaneFields(row,t,i) {
      t.a=z.a;t.b=z.b;
      if(key==='r'&&p.theta===null&&v>0){const angle=$('trackTheta'+i);if(angle){angle.disabled=false;angle.placeholder='';angle.value='0'}}
     }
-    updateLaneStatus(i);if(selectedTrack===i)renderReadout();markCustom();
+    updateLaneStatus(i);if(selectedTrack===i)renderReadout();
+    if(key==='n'&&magnified&&selectedTrack===i)refreshPlotZoom();
+    markCustom();
    });
    el.addEventListener('change',()=>{if(el.getAttribute('aria-invalid')==='true'){el.setAttribute('aria-invalid','false');syncVisibleInputs(i)}});
    label.append(el);fields.append(label);
@@ -333,6 +335,7 @@ function chooseTrack(i,fromTrackList=false) {
   row.querySelector('.lane-select')?.setAttribute('aria-pressed',String(j===selectedTrack));
  });
  renderEditor();
+ if(magnified)refreshPlotZoom();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
 function renderSoundControls() {
@@ -738,9 +741,16 @@ function refreshPlotZoom(){
  btn.setAttribute('aria-pressed',String(magnified));
  btn.textContent=magnified?'Fit entire cycle':'Magnify plot';
  if(magnified){
-  const ratios=[1,.78,.56,.34],lane=selectedTrack;
-  const n=Math.max(1,tracks[lane]?.n||1);
-  const size=Math.max(900,Math.ceil(34*n/(TAU*.427*ratios[lane])));
+  const lane=selectedTrack,n=Math.max(1,tracks[lane]?.n||1);
+  // Solve the actual four-ring geometry, rather than using stale fixed ratios.
+  // Chord separation between adjacent nth roots must be >=34 CSS pixels.
+  let lo=900,hi=5000;
+  while(lo<hi){
+   const mid=Math.floor((lo+hi)/2);
+   if(2*getRadii(mid)[lane]*Math.sin(Math.PI/n)>=34)hi=mid;
+   else lo=mid+1;
+  }
+  const size=lo;
   canvas.style.width=size+'px';canvas.style.height=size+'px';
   requestAnimationFrame(()=>{plot.scrollLeft=Math.max(0,(size-plot.clientWidth)/2);plot.scrollTop=Math.max(0,(size-plot.clientHeight)/2);resizeCanvas()});
  }else{
@@ -917,6 +927,7 @@ function setTheme(next,save=false) {
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({
  current:()=>({bpm,tracks:tracks.map(t=>JSON.parse(JSON.stringify(t)))}),
+ radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,
   character:p.character||'',mathNote:p.mathNote||'',

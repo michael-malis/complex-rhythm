@@ -1,41 +1,28 @@
-# ROOTS / RHYTHM
+# ROOTS / RHYTHM — complex-root rhythm laboratory
 
-An interactive rhythm experiment built around the **nth roots of complex numbers**.
+**Live URL (if GitHub Pages is enabled):** https://michael-malis.github.io/complex-rhythm/
 
-For each of four instruments, set `z = a + bi` and a root degree `n`. The arguments of the resulting complex roots become rhythmic hit positions on four concentric circles. Tap **Слушать** to hear the rhythm and watch the rotating beat hand.
+A mathematical music experiment with four concentric rings. For each sound, the arguments of the `n`th roots of `z = a + bi` specify evenly spaced beat locations.
 
-**Live site (once Pages is enabled):** https://michael-malis.github.io/complex-rhythm/
+## Audio upgrade v3
 
-## Presets
+- 30 reworked presets across bunker techno, classic polyrhythm, drum & bass, jungle, Brazilian-inspired, hard house, and acid / 303 categories.
+- Drum presets now use recognisable backbeats and genre-conscious BPMs.
+- Fifteen locally hosted, independently decoded CC0 WAV sample entries (14 distinct sounds) for kicks, snare, clap, hats, rim/tick, tom, and shaker. Attribution and exact provenance in [AUDIO_SOURCES.md](AUDIO_SOURCES.md).
+- Synthesised Reese, bass, acid and Brazil-inspired percussion voices are retained.
+- Multiple complex-root sets per instrument can be **unioned** to express syncopated fills and quieter ghost notes. The advanced sets are in a collapsible editor, keeping the main `a,b,n` model intact.
+- Sample loading is asynchronous and non-blocking: fallback Web Audio synth works offline or when sample files are missing.
 
-30 built-in patterns in 7 categories:
+## Musical limitation
 
-- Bunker techno — 5
-- Other / mathematical polyrhythms — 5
-- Drum & Bass — 4
-- Jungle — 4
-- Brazilian-inspired — 4
-- Hard House — 4
-- Acid / 303-inspired — 4
+A short loop of equal-spaced complex roots, even as a union of sets, is still **not an exact reconstruction** of classic Amen breaks, a complete Brazilian percussion ensemble, or a fully articulated TB-303 melody. These are plausible groove sketches, not recordings or artist-specific recreations. Full realism will eventually need velocity envelopes, pitch/gate sequencer and possibly sample slicing.
 
-These are mathematically constrained **genre-inspired sketches**. Each instrument produces equally spaced hits per bar, so the model does not yet support arbitrary breakbeat patterns, accents, swing, or melodic sequences.
+## Run
 
-14 synthesised sounds include kick, snare, clap, hats, rim click, tom, sub bass, shaker, Reese bass, acid synth, surdo, agogô, and tamborim.
+For full sampled sound, use the GitHub Pages version or download the **whole repository ZIP** and serve its directory with a static web server, e.g. `python -m http.server 8000`. Launch `http://localhost:8000`. The standalone `index.html` alone works without network, with synth fallback.
 
-## Start
+To enable Pages: Settings → Pages → Build and deployment → Source: GitHub Actions (the `.github/workflows/pages.yml` deploys `index.html` and `samples/`).
 
-Open `index.html` directly in a modern browser or visit the GitHub Pages site once enabled. No libraries, installation, external assets or network required. A tap/click is required to unlock browser audio.
+## Data
 
-- Select a category and preset.
-- Tap/click a circle or an instrument row to select one of four tracks.
-- Choose a sound and edit `a`, `b`, `n` (1–24).
-- Tap **▶ Звук** to preview a sound.
-- Use **Файлы** to import/export `roots-rhythm/1` JSON.
-
-## Mathematical model
-
-For `z != 0`, root arguments are `(arg(z) + 2πk) / n` for `k = 0, ..., n-1`. Only the argument changes hit timing, not the magnitude. The four displayed ring radii are purely visual.
-
-## Publishing
-
-An automated GitHub Pages workflow lives at `.github/workflows/pages.yml`. If the URL is not yet active, a repository administrator must open **Settings → Pages → Build and deployment → Source: GitHub Actions** and rerun the Pages workflow under **Actions**. A workflow file alone does not guarantee that Pages is enabled for a newly created repository.
+`roots-rhythm/1` JSON remains backward compatible: old files with 4 tracks and only `a,b,n,sound,muted` continue to import. New track entries may include up to five `layers` with `a,b,n,velocity`, whose root arguments are combined with the main set. Duplicate points are deduplicated.

@@ -186,6 +186,18 @@ small,.small {font-size:12px;color:var(--sub)}
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after {scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+/* Compact optional mathematics editor: hidden for the normal four-track workflow */
+.layers-editor {margin-top:10px;border-top:1px solid var(--line-soft);padding-top:9px}
+.layers-editor summary {color:var(--sub);font-size:12px;font-weight:650;min-height:36px;display:flex;align-items:center;cursor:pointer}
+.layers-help {color:var(--sub);font-size:12px;margin:0 0 10px;line-height:1.5}
+.layer-row {display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:7px;align-items:end;margin:8px 0}
+.layer-row label {color:var(--sub);font-size:11px;display:block;margin-bottom:3px}
+.layer-row input {height:40px;padding:6px;font-size:16px}
+.layer-remove {width:40px;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:7px}
+.layer-velocity {grid-column:1/-1;display:flex;align-items:center;gap:9px;color:var(--sub);font-size:12px;margin-bottom:5px}
+.layer-velocity input {flex:1;min-width:0}
+.layer-add {border:1px solid var(--line);background:var(--surface);border-radius:8px;color:var(--text);min-height:40px;padding:7px 12px;margin-top:6px}
+@media(max-width:374px){.layer-row{gap:4px}.layer-row input{padding:4px}}
 </style>
 </head>
 <body>
@@ -219,8 +231,12 @@ small,.small {font-size:12px;color:var(--sub)}
         </div>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
         <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small></div>
+        <details class="layers-editor" id="layerDetails"><summary id="layerSummary">Дополнительные корни · 0</summary>
+          <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
+          <div id="extraLayers"></div><button class="layer-add" id="addLayer" type="button">+ Добавить набор корней</button>
+        </details>
       </section>
-      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
+      <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в редакторе ниже.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
     </section>
   </main>
   <input id="jsonFile" type="file" accept=".json,application/json" aria-label="Загрузить ритм из JSON">
@@ -234,51 +250,66 @@ const TAU=2*Math.PI;
 const COLORS=['#72e5ec','#ff9b8c','#ffc77b','#beadff'];
 const RGB=[[114,229,236],[255,155,140],[255,199,123],[190,173,255]];
 const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim'};
-const P=(a,b,n,sound)=>({a,b,n,sound,muted:false});
+// Every audible time point is still the argument of a complex root.
+const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
+// A phase on a 16th-note grid encoded by a degree-1 complex root.
+const L=(step,velocity=.58)=>({a:Math.cos(TAU*step/16),b:Math.sin(TAU*step/16),n:1,velocity});
 const PRESETS=[
- {id:'concrete',category:'bunker',name:'Concrete',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,8,'hat'),P(.7,.7,3,'bass')]},
- {id:'shaft',category:'bunker',name:'Ventilation Shaft',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,4,'rim'),P(1,0,12,'hat'),P(-1,.4,5,'bass')]},
- {id:'dust',category:'bunker',name:'Dust Chamber',bpm:132,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,4,'openhat'),P(0,1,7,'tom')]},
- {id:'iron',category:'bunker',name:'Iron Floor',bpm:152,tracks:[P(1,0,8,'kick'),P(-1,0,2,'clap'),P(1,0,16,'hat'),P(-1,0,3,'bass')]},
- {id:'pressure',category:'bunker',name:'Low Pressure',bpm:140,tracks:[P(1,0,3,'kick'),P(-1,0,2,'snare'),P(-1,0,11,'hat'),P(-.5,-.9,5,'bass')]},
- {id:'house',category:'other',name:'Four on the Floor',bpm:124,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,8,'shaker')]},
- {id:'dub',category:'other',name:'Dub / Half-Time',bpm:78,tracks:[P(1,0,2,'kick'),P(-1,0,1,'snare'),P(1,0,8,'hat'),P(0,1,3,'bass')]},
- {id:'afro',category:'other',name:'3 against 4',bpm:116,tracks:[P(1,0,3,'kick'),P(1,0,4,'rim'),P(-1,0,6,'shaker'),P(0,1,5,'tom')]},
- {id:'minimal',category:'other',name:'5 against 7',bpm:126,tracks:[P(1,0,5,'kick'),P(-1,0,7,'rim'),P(1,0,10,'hat'),P(0,1,2,'bass')]},
- {id:'ambient',category:'other',name:'Slow Orbit',bpm:64,tracks:[P(1,0,1,'kick'),P(0,1,3,'tom'),P(-1,0,5,'openhat'),P(0,-1,2,'bass')]},
- {id:'neuro-burst',category:'dnb',name:'Neuro Burst',bpm:176,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,16,'hat'),P(.6,-.8,7,'reese')]},
- {id:'double-drop',category:'dnb',name:'Double Drop',bpm:174,tracks:[P(1,0,8,'kick'),P(-1,0,2,'snare'),P(1,0,20,'hat'),P(0,-1,5,'bass')]},
- {id:'subpressure',category:'dnb',name:'Subpressure',bpm:180,tracks:[P(1,0,4,'kick'),P(-1,0,4,'snare'),P(0,1,12,'shaker'),P(-1,.2,3,'reese')]},
- {id:'velocity-grid',category:'dnb',name:'Velocity Grid',bpm:170,tracks:[P(1,0,5,'kick'),P(-1,0,2,'clap'),P(-1,0,24,'hat'),P(1,1,8,'bass')]},
- {id:'ragga-spiral',category:'jungle',name:'Ragga Spiral',bpm:162,tracks:[P(1,0,5,'kick'),P(-1,0,2,'snare'),P(1,0,16,'hat'),P(-1,1,7,'bass')]},
- {id:'break-torrent',category:'jungle',name:'Break Torrent',bpm:168,tracks:[P(1,0,7,'kick'),P(-1,0,3,'snare'),P(-1,0,20,'shaker'),P(0,1,4,'reese')]},
- {id:'ghostline',category:'jungle',name:'Ghostline',bpm:158,tracks:[P(1,0,3,'kick'),P(-1,0,2,'rim'),P(-1,0,14,'hat'),P(1,-1,5,'bass')]},
- {id:'chopped-orbit',category:'jungle',name:'Chopped Orbit',bpm:172,tracks:[P(1,0,8,'kick'),P(0,1,3,'snare'),P(1,0,24,'hat'),P(-1,0,7,'reese')]},
- {id:'baile-funk',category:'brazil',name:'Baile Funk Pulse',bpm:132,tracks:[P(1,0,4,'kick'),P(-1,0,3,'clap'),P(0,1,8,'tamborim'),P(1,-1,5,'bass')]},
- {id:'samba-drive',category:'brazil',name:'Samba Drive',bpm:112,tracks:[P(1,0,4,'surdo'),P(-1,0,8,'tamborim'),P(0,1,12,'shaker'),P(-1,1,5,'agogo')]},
- {id:'batucada',category:'brazil',name:'Batucada Orbit',bpm:124,tracks:[P(1,0,4,'surdo'),P(-1,0,8,'tamborim'),P(1,0,16,'shaker'),P(1,1,7,'agogo')]},
- {id:'maracatu',category:'brazil',name:'Maracatu Steps',bpm:108,tracks:[P(1,0,3,'surdo'),P(-1,0,4,'clap'),P(0,1,7,'agogo'),P(1,-1,6,'tom')]},
- {id:'warehouse-hammer',category:'hardhouse',name:'Warehouse Hammer',bpm:148,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,8,'openhat'),P(1,0,8,'bass')]},
- {id:'steel-rave',category:'hardhouse',name:'Steel Rave',bpm:154,tracks:[P(1,0,8,'kick'),P(-1,0,4,'snare'),P(0,1,16,'hat'),P(-1,0,5,'acid')]},
- {id:'stomp-circuit',category:'hardhouse',name:'Stomp Circuit',bpm:150,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,12,'hat'),P(1,1,7,'bass')]},
- {id:'peak-pressure',category:'hardhouse',name:'Peak Pressure',bpm:158,tracks:[P(1,0,8,'kick'),P(0,1,3,'clap'),P(-1,0,16,'openhat'),P(-1,0,6,'acid')]},
- {id:'acid-303',category:'acid',name:'Acid 303',bpm:136,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,8,'hat'),P(.8,.6,7,'acid')]},
- {id:'resonance-rush',category:'acid',name:'Resonance Rush',bpm:142,tracks:[P(1,0,4,'kick'),P(-1,0,4,'rim'),P(1,0,16,'hat'),P(-1,1,9,'acid')]},
- {id:'liquid-corrosion',category:'acid',name:'Liquid Corrosion',bpm:128,tracks:[P(1,0,3,'kick'),P(-1,0,2,'clap'),P(0,-1,8,'shaker'),P(.3,-1,5,'acid')]},
- {id:'303-pressure',category:'acid',name:'303 Pressure',bpm:150,tracks:[P(1,0,8,'kick'),P(-1,0,2,'snare'),P(-1,0,16,'hat'),P(-1,-.2,11,'acid')]}
+// Bunker techno: stable four-on-the-floor foundations; less bass/hats clutter.
+ {id:'concrete',category:'bunker',name:'Concrete · Drive',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(1,0,2,'bass',[L(7,.45)])]},
+ {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
+ {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
+ {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
+ {id:'pressure',category:'bunker',name:'Pressure · Dub',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,4,'hat'),P(1,0,1,'bass',[L(10,.72)])]},
+// Essential rhythmic studies.
+ {id:'house',category:'other',name:'Classic House · 4/4',bpm:125,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,8,'shaker')]},
+ {id:'dub',category:'other',name:'Dub · Half-time',bpm:78,tracks:[P(1,0,2,'kick',[L(11,.68)]),P(-1,0,1,'snare'),P(-1,0,4,'hat'),P(1,0,2,'bass')]},
+ {id:'afro',category:'other',name:'Polyrhythm · 3 : 4',bpm:116,tracks:[P(1,0,3,'tom'),P(1,0,4,'rim'),P(1,0,8,'shaker'),P(1,0,1,'bass')]},
+ {id:'minimal',category:'other',name:'Polyrhythm · 5 : 7',bpm:124,tracks:[P(1,0,5,'tom'),P(1,0,7,'rim'),P(1,0,8,'hat'),P(1,0,1,'kick')]},
+ {id:'ambient',category:'other',name:'Slow Orbit · Space',bpm:70,tracks:[P(1,0,1,'kick'),P(0,1,3,'tom'),P(-1,0,4,'openhat'),P(1,0,2,'bass')]},
+// DnB: kick 1 + &3 (grid 0,10) and backbeat on 2 + 4; softer ghost notes.
+ {id:'neuro-burst',category:'dnb',name:'Neuro · 2-Step',bpm:174,tracks:[P(1,0,1,'kick',[L(10,.92)]),P(-1,0,2,'snare',[L(7,.27)]),P(1,0,8,'hat',[L(3,.42),L(11,.42)]),P(1,0,2,'reese')]},
+ {id:'double-drop',category:'dnb',name:'Roller · Ghosts',bpm:176,tracks:[P(1,0,1,'kick',[L(10,.96),L(14,.38)]),P(-1,0,2,'snare',[L(7,.30),L(15,.30)]),P(1,0,8,'hat'),P(-1,0,2,'bass',[L(11,.48)])]},
+ {id:'subpressure',category:'dnb',name:'Sub Pressure · Half-time',bpm:172,tracks:[P(1,0,1,'kick',[L(10,.83)]),P(-1,0,1,'snare',[L(15,.25)]),P(1,0,8,'shaker'),P(1,0,2,'reese')]},
+ {id:'velocity-grid',category:'dnb',name:'Break Grid · 16ths',bpm:178,tracks:[P(1,0,1,'kick',[L(6,.57),L(10,.9)]),P(-1,0,2,'snare',[L(7,.27),L(15,.31)]),P(1,0,8,'hat',[L(3,.4),L(11,.45)]),P(1,0,2,'bass')]},
+// Jungle: off-beat kick pick-ups, ghost snares and a busier break-like top.
+ {id:'ragga-spiral',category:'jungle',name:'Ragga · Break Step',bpm:164,tracks:[P(1,0,1,'kick',[L(6,.75),L(10,.85)]),P(-1,0,2,'snare',[L(7,.31),L(15,.38)]),P(1,0,8,'hat',[L(3,.35),L(11,.42)]),P(1,0,2,'reese')]},
+ {id:'break-torrent',category:'jungle',name:'Break Torrent · Chops',bpm:169,tracks:[P(1,0,1,'kick',[L(3,.55),L(10,.9),L(14,.48)]),P(-1,0,2,'snare',[L(6,.31),L(15,.29)]),P(1,0,8,'shaker',[L(7,.38),L(15,.42)]),P(1,0,2,'bass')]},
+ {id:'ghostline',category:'jungle',name:'Ghostline · Half-roll',bpm:160,tracks:[P(1,0,1,'kick',[L(10,.84)]),P(-1,0,2,'snare',[L(3,.25),L(7,.3)]),P(1,0,8,'hat'),P(1,0,1,'bass',[L(11,.63)])]},
+ {id:'chopped-orbit',category:'jungle',name:'Chopped Orbit · Fast',bpm:172,tracks:[P(1,0,1,'kick',[L(6,.5),L(10,.92)]),P(-1,0,2,'snare',[L(7,.34),L(15,.28)]),P(1,0,8,'hat',[L(3,.48),L(11,.48)]),P(1,0,2,'reese')]},
+// Brazilian-inspired studies; not claims of exact traditional percussion performance.
+ {id:'baile-funk',category:'brazil',name:'Baile Funk · Tamborzão',bpm:132,tracks:[P(1,0,2,'kick',[L(6,.73),L(14,.78)]),P(-1,0,2,'clap',[L(11,.6)]),P(1,0,8,'tamborim'),P(1,0,2,'bass',[L(3,.58)])]},
+ {id:'samba-drive',category:'brazil',name:'Samba · Surdo Pulse',bpm:108,tracks:[P(1,0,2,'surdo',[L(12,.58)]),P(-1,0,4,'tamborim',[L(2,.5),L(10,.5)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(11,.6)])]},
+ {id:'batucada',category:'brazil',name:'Batucada · Layers',bpm:118,tracks:[P(1,0,2,'surdo',[L(14,.51)]),P(-1,0,4,'tamborim',[L(3,.56),L(11,.62)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(6,.7)])]},
+ {id:'maracatu',category:'brazil',name:'Maracatu · Pulse Sketch',bpm:104,tracks:[P(1,0,2,'surdo',[L(13,.53)]),P(-1,0,2,'clap',[L(7,.42)]),P(-1,0,4,'agogo'),P(1,0,2,'tom',[L(10,.66)])]},
+// House keeps true four-on-floor kicks and backbeats.
+ {id:'warehouse-hammer',category:'hardhouse',name:'Warehouse · Hard Drive',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(-1,0,4,'bass',[L(14,.57)])]},
+ {id:'steel-rave',category:'hardhouse',name:'Steel Rave · Stabs',bpm:152,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(11,.59)])]},
+ {id:'stomp-circuit',category:'hardhouse',name:'Stomp Circuit · Push',bpm:148,tracks:[P(1,0,4,'kick',[L(14,.52)]),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(11,.63)])]},
+ {id:'peak-pressure',category:'hardhouse',name:'Peak Pressure · Rave',bpm:156,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(3,.6),L(11,.6)])]},
+// Acid: regular house foundation with syncopated, resonant bass stabs.
+ {id:'acid-303',category:'acid',name:'Acid 303 · Classic',bpm:128,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(-1,0,4,'acid',[L(2,.65),L(10,.66)])]},
+ {id:'resonance-rush',category:'acid',name:'Resonance · Twister',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(7,.55),L(15,.55)])]},
+ {id:'liquid-corrosion',category:'acid',name:'Liquid · Acid Dub',bpm:124,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'acid',[L(3,.62),L(11,.57)])]},
+ {id:'303-pressure',category:'acid',name:'303 Pressure · Peak',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(1,.56),L(9,.58)])]}
 ];
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=138, volume=.65, activePresetId='concrete',activeCategory='bunker';
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null;
-let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,cycles=1;
+let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
+const sampleBuffers=new Map();let samplePromise=null;
 let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
 let toastTimeout=null;
 const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
 function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
 function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
-function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,24,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted)}}
-function roots(track){const {a,b,n}=track;if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1).sort((a,b)=>a-b)}
+function cleanLayer(layer){return {a:safeReal(layer.a,1),b:safeReal(layer.b,0),n:safeInt(layer.n,1,24,1),velocity:Math.min(1,Math.max(.1,safeReal(layer.velocity,.62)))}}
+function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,24,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
+function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1)}
+// Union of sets of complex roots; exact duplicates combine rather than play twice.
+function events(track){const all=rootPhases(track).map(phase=>({phase,velocity:1}));for(const layer of track.layers||[]){for(const phase of rootPhases(layer))all.push({phase,velocity:layer.velocity??.62})}all.sort((a,b)=>a.phase-b.phase);const out=[];for(const item of all){const last=out[out.length-1];if(last&&Math.abs(last.phase-item.phase)<1e-6)last.velocity=Math.max(last.velocity,item.velocity);else out.push(item)}if(out.length>1&&Math.abs(1+out[0].phase-out[out.length-1].phase)<1e-6){out[0].velocity=Math.max(out[0].velocity,out.pop().velocity)}return out}
+function roots(track){return events(track).map(x=>x.phase)}
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'удар':n>1&&n<5?'удара':'ударов'}`}
@@ -295,12 +326,20 @@ function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.for
 })}
 function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Дорожка ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;
  for(const k of ['A','B','N'])$('edit'+k).value=String(t[k.toLowerCase()]);
- $('fieldMessage').textContent='';renderReadout()}
-function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} за такт`;
+ $('fieldMessage').textContent='';renderReadout();renderLayers()}
+function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} за такт${t.layers.length?' · '+t.layers.length+' доп.':''}`;
  $('eqDisplay').textContent=`z = ${complexDisplay(t)}`;
  const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  $('phaseDisplay').textContent=arg===null?'z = 0: нет звучащих ударов':`arg(z) = ${fmt(arg)}° · сдвиг = ${fmt(arg/t.n)}°`;
 }
+
+function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('layerSummary').textContent=`Дополнительные корни · ${t.layers.length}`;$('addLayer').disabled=t.layers.length>=5;
+ t.layers.forEach((layer,i)=>{const group=document.createElement('div');group.className='layer-row';
+  for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Степень n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=layer[key];input.setAttribute('aria-label',`Доп. корни ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>24))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Некорректное число или степень');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
+  const remove=document.createElement('button');remove.type='button';remove.className='layer-remove';remove.textContent='×';remove.title='Удалить этот набор корней';remove.setAttribute('aria-label',`Удалить дополнительные корни ${i+1}`);remove.addEventListener('click',()=>{t.layers.splice(i,1);renderLayers();renderTracks();renderReadout();markCustom()});group.append(remove);
+  const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Громкость набора';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Громкость дополнительных корней ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
+ })}
+
 function chooseTrack(i){selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor()}
 function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}}
 function applyPreset(p){const phase=transportPhase(),oldBar=barSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldBar):0;
@@ -308,7 +347,34 @@ function applyPreset(p){const phase=transportPhase(),oldBar=barSeconds();const c
  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*barSeconds();scheduledUntil=audio.currentTime+.006}
  renderPresets();renderTracks();renderEditor()}
 function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
-      // Audio is synthesized locally with the Web Audio API. No samples or network requests.
+      // CC0 house-core/808 one-shots are loaded on demand. File:// has a synth fallback.
+      const SAMPLE_FILES={
+        'kick':'samples/kick-deep.wav','kick-hard':'samples/kick-hard.wav','kick-tight':'samples/kick-tight.wav',
+        'kick-sub':'samples/kick-sub.wav','kick-808':'samples/kick-808.wav',
+        'snare':'samples/snare-snap.wav','snare-body':'samples/snare-body.wav','snare-808':'samples/snare-808.wav',
+        'clap':'samples/clap.wav','hat':'samples/hat.wav','hat-crunch':'samples/hat-crunch.wav',
+        'openhat':'samples/openhat.wav','rim':'samples/rim.wav','tom':'samples/tom.wav','shaker':'samples/shaker.wav'
+      };
+      function sampleKey(sound){
+        if(sound==='kick')return ({bunker:'kick-hard',dnb:'kick-tight',jungle:'kick-808',brazil:'kick-sub',hardhouse:'kick-hard',acid:'kick-hard'})[activeCategory]||'kick';
+        if(sound==='snare')return activeCategory==='jungle'?'snare-808':activeCategory==='bunker'?'snare-body':'snare';
+        if(sound==='hat')return activeCategory==='bunker'?'hat-crunch':'hat';
+        return sound;
+      }
+      function loadSamples(){if(samplePromise||!audio)return samplePromise;
+        // Deferred on first playback; independently decodable and gracefully optional.
+        samplePromise=Promise.allSettled(Object.entries(SAMPLE_FILES).map(async ([key,path])=>{
+          const response=await fetch(path);if(!response.ok)throw Error(`${response.status}: ${path}`);
+          const data=await response.arrayBuffer();sampleBuffers.set(key,await audio.decodeAudioData(data));
+        })).then(()=>{if(playing)updateTransportText();return sampleBuffers.size});
+        return samplePromise;
+      }
+      function playSample(sound,at,velocity){const key=sampleKey(sound),buffer=sampleBuffers.get(key);if(!buffer)return false;
+        const source=audio.createBufferSource();source.buffer=buffer;
+        const gain=audio.createGain();const gains={kick:.62,snare:.56,clap:.44,hat:.25,openhat:.25,rim:.42,tom:.46,shaker:.30};
+        gain.gain.value=(gains[sound]||.45)*Math.max(.1,velocity);
+        source.connect(gain);gain.connect(voiceBus||master);source.start(Math.max(at,audio.currentTime+.002));return true;
+      }
       function initAudio() {
         if (audio) return true;
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -323,6 +389,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         noiseBuffer = audio.createBuffer(1, frames, audio.sampleRate);
         const samples = noiseBuffer.getChannelData(0);
         for (let i=0; i<frames; i++) samples[i] = Math.random()*2 - 1;
+        loadSamples();
         return true;
       }
       function envelope(gain, time, peak, release, attack=.002) {
@@ -336,19 +403,21 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         osc.frequency.setValueAtTime(freq,at);
         if (finalFreq !== freq) osc.frequency.exponentialRampToValueAtTime(Math.max(1,finalFreq),at+length);
         const gain=audio.createGain(); envelope(gain,at,gainValue,length);
-        osc.connect(gain); gain.connect(voiceBus || master); osc.start(at); osc.stop(at+length+.025);
+        osc.connect(gain); gain.connect(perHitBus || voiceBus || master); osc.start(at); osc.stop(at+length+.025);
       }
       function noise(at, length, peak, cutoff=2000, type='highpass') {
         const source=audio.createBufferSource(); source.buffer=noiseBuffer;
         // Random offsets avoid identical noise textures.
         const filter=audio.createBiquadFilter(); filter.type=type; filter.frequency.value=cutoff;
         const gain=audio.createGain(); envelope(gain,at,peak,length);
-        source.connect(filter); filter.connect(gain); gain.connect(voiceBus || master);
+        source.connect(filter); filter.connect(gain); gain.connect(perHitBus || voiceBus || master);
         source.start(at,Math.random()*.45); source.stop(at+length+.03);
       }
-      function hit(sound, at) {
-        // Transport lookahead can race with state changes; safely clamp scheduled time.
+      function hit(sound, at, velocity=1, index=0) {
+        // Real recorded/rended one-shots first; use local synthesis when unavailable.
         const t=Math.max(at,audio.currentTime+.002);
+        if(playSample(sound,t,velocity))return;
+        perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.1,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
         switch(sound) {
           case 'kick':
             oscillator(150,44,'sine',1.0,t,.29);
@@ -375,15 +444,15 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
             noise(t,.11,.084,3400,'highpass'); break;
           case 'reese': {
             const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(1100,t);filter.frequency.exponentialRampToValueAtTime(280,t+.3);filter.Q.value=1.1;
-            const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(voiceBus||master);
+            const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
             for(const detune of [-9,9]){const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime(53,t);osc.detune.value=detune;osc.connect(filter);osc.start(t);osc.stop(t+.39)}
             break;
           }
           case 'acid': {
             const filter=audio.createBiquadFilter();filter.type='lowpass';filter.Q.value=11;
             filter.frequency.setValueAtTime(2800,t);filter.frequency.exponentialRampToValueAtTime(210,t+.20);
-            const amp=audio.createGain();envelope(amp,t,.15,.26,.003);filter.connect(amp);amp.connect(voiceBus||master);
-            const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime(110,t);osc.connect(filter);osc.start(t);osc.stop(t+.28);break;
+            const amp=audio.createGain();envelope(amp,t,.15,.26,.003);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
+            const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime([82.41,98.00,110,123.47,146.83,164.81][index%6],t);osc.connect(filter);osc.start(t);osc.stop(t+.28);break;
           }
           case 'surdo':
             oscillator(114,58,'sine',.69,t,.38);noise(t,.018,.07,600,'lowpass');break;
@@ -392,6 +461,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
           case 'tamborim':
             oscillator(315,240,'triangle',.12,t,.065);noise(t,.06,.24,2200,'highpass');break;
         }
+        perHitBus=null;
       }
 
 function barSeconds(){return 240/bpm}
@@ -399,8 +469,8 @@ function transportPhase(){if(!playing||!audio)return pausedPhase;return ((Math.m
 function cancelVoices(){if(voiceBus&&audio){try{voiceBus.gain.setValueAtTime(0,audio.currentTime);voiceBus.disconnect()}catch(_){}}voiceBus=audio?audio.createGain():null;if(voiceBus)voiceBus.connect(master)}
 function scheduleAhead(){if(!playing||!audio||audio.state!=='running')return;const now=audio.currentTime,from=Math.max(scheduledUntil,now+.001),to=now+.09;if(to<=from)return;
  const duration=barSeconds(),kStart=Math.floor((from-beatEpoch)/duration)-1,kEnd=Math.ceil((to-beatEpoch)/duration)+1;
- for(let i=0;i<4;i++){const tr=tracks[i];if(tr.muted)continue;const phases=roots(tr);for(let k=kStart;k<=kEnd;k++){if(k<0)continue;for(const p of phases){const t=beatEpoch+(k+p)*duration;if(t>=from&&t<to)hit(tr.sound,t)}}}scheduledUntil=to}
-function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Пауза':'▶ Слушать';button.setAttribute('aria-pressed',String(playing));$('audioState').textContent=playing?'Играет · синтез в реальном времени':'Готово к воспроизведению'}
+ for(let i=0;i<4;i++){const tr=tracks[i];if(tr.muted)continue;const phases=events(tr);for(let k=kStart;k<=kEnd;k++){if(k<0)continue;for(const [j,event] of phases.entries()){const t=beatEpoch+(k+event.phase)*duration;if(t>=from&&t<to)hit(tr.sound,t,event.velocity,k*phases.length+j)}}}scheduledUntil=to}
+function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Пауза':'▶ Слушать';button.setAttribute('aria-pressed',String(playing));$('audioState').textContent=playing?(sampleBuffers.size>=8?'Играет · CC0 сэмплы + синтез':'Играет · загрузка сэмплов / синтез'):'Готово к воспроизведению'}
 async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();updateTransportText();return}
  if(!initAudio())return;try{await audio.resume()}catch(err){showToast('Ошибка запуска звука: '+err.message);return}
  cancelVoices();beatEpoch=audio.currentTime+.055-pausedPhase*barSeconds();scheduledUntil=audio.currentTime;playing=true;updateTransportText();scheduleAhead();timerId=setInterval(scheduleAhead,25)}
@@ -433,7 +503,7 @@ function draw(){const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(dr
  requestAnimationFrame(draw)}
 function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:'My complex rhythm',bpm,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function loadJson(file){try{if(file.size>100000)throw Error('Файл слишком большой');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Ожидается roots-rhythm/1 и 4 дорожки');
- if(d.tracks.some(t=>!t||typeof t!=='object'||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>24||!Object.hasOwn(SOUNDS,t.sound)))throw Error('Проверь a, b, n и звук в каждой дорожке');
+ if(d.tracks.some(t=>!t||typeof t!=='object'||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>24||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>24||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Проверь a, b, n и звук в каждой дорожке');
  const phase=transportPhase(),oldBar=barSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldBar):0;tracks=d.tracks.map(cleanTrack);bpm=safeInt(d.bpm,50,200,138);$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*barSeconds();scheduledUntil=audio.currentTime+.008}
  activePresetId=null;renderPresets();renderTracks();renderEditor();showToast('Импортирован ритм: '+(typeof d.name==='string'?d.name.slice(0,45):file.name))}catch(e){showToast('Ошибка импорта: '+e.message)}}
 function setupEvents(){
@@ -443,6 +513,7 @@ function setupEvents(){
  $('bpm').addEventListener('input',e=>{const phase=transportPhase(),oldBar=barSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldBar):0;bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*barSeconds();scheduledUntil=audio.currentTime+.008}markCustom()});
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
  for(const [k,id] of [['a','editA'],['b','editB'],['n','editN']]){const inp=$(id);inp.addEventListener('input',()=>{const raw=inp.value;if(raw.trim()==='')return;const num=Number(raw);const valid=k==='n'?Number.isInteger(num)&&num>=1&&num<=24:Number.isFinite(num)&&Math.abs(num)<=10000;const err=$('fieldMessage');if(!valid){err.textContent=k==='n'?'Введите целое n от 1 до 24':'Введите число от −10000 до 10000';inp.setAttribute('aria-invalid','true');return}err.textContent='';inp.removeAttribute('aria-invalid');tracks[selectedTrack][k]=num;renderTracks();renderReadout();markCustom()});inp.addEventListener('change',()=>{const t=tracks[selectedTrack];t[k]=k==='n'?safeInt(inp.value,1,24,t.n):safeReal(inp.value,t[k]);inp.value=String(t[k]);inp.removeAttribute('aria-invalid');$('fieldMessage').textContent='';renderTracks();renderReadout()})}
+ $('addLayer').addEventListener('click',()=>{const t=tracks[selectedTrack];if(t.layers.length<5){t.layers.push({a:0,b:1,n:1,velocity:.65});renderLayers();renderTracks();renderReadout();markCustom()}});
  $('saveBtn').addEventListener('click',()=>{saveJson();$('fileMenu').open=false});$('loadBtn').addEventListener('click',()=>{$('fileMenu').open=false;$('jsonFile').click()});$('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
  canvas.addEventListener('pointerdown',e=>{const bounds=canvas.getBoundingClientRect();const side=Math.min(bounds.width,bounds.height),radii=getRadii(side),cx=bounds.width/2,cy=bounds.height/2;const distance=Math.hypot(e.clientX-bounds.left-cx,e.clientY-bounds.top-cy);const nearest=radii.map((r,i)=>({i,d:Math.abs(r-distance)})).sort((a,b)=>a.d-b.d)[0];if(nearest.d<=Math.max(13,side*.06)){chooseTrack(nearest.i)}});
  canvas.addEventListener('keydown',e=>{if(['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();chooseTrack((selectedTrack+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:3))%4)}else if(e.key==='Enter'){e.preventDefault();previewSound()}});

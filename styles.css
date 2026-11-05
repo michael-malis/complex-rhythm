@@ -36,7 +36,7 @@ button:active{transform:translateY(1px)}
 .stage-heading,.panel-heading{padding:17px 17px 8px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
 .stage-heading h1{font-size:30px;line-height:1.2;font-weight:630;margin-top:5px;letter-spacing:-.025em}.panel-heading h2{font-size:26px;font-weight:640;margin-top:3px;letter-spacing:-.015em}
 .stage-meta{font-size:18px;color:var(--muted);white-space:nowrap}
- .canvas-shell{width:min(100%,calc(100svh - 370px),760px);aspect-ratio:1;margin:auto;overflow:hidden;touch-action:none;background:var(--plot)}
+ .canvas-shell{position:relative;width:min(100%,calc(100svh - 370px),760px);aspect-ratio:1;margin:auto;overflow:hidden;touch-action:none;background:var(--plot)}
 #orbitCanvas{display:block;width:100%;height:100%;outline-offset:-4px;cursor:crosshair;touch-action:none}#orbitCanvas.is-dragging{cursor:grabbing}
 .figure-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:4px 8px;font-size:17px;color:var(--sub)}.figure-legend>span{display:flex;gap:7px;align-items:center}
 .legend-mark{display:inline-block;width:18px;height:18px;border:1.5px solid currentColor;border-radius:50%}.legend-mark.filled{background:currentColor}.legend-mark.hollow{background:var(--panel)}.legend-mark.both{box-shadow:0 0 0 2px var(--panel),0 0 0 3px currentColor;background:currentColor}
@@ -80,3 +80,28 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border
 
 /* Minimum readable scale is intentional; use reflow/vertical scrolling instead of reduced text. */
 html{font-size:18px}
+
+
+/* Semantic mathematics: KaTeX is self-hosted, with a native DOM overlay over Canvas. */
+.math-notation,.selected-root-math,.formula-reference{font-size:18px;color:var(--ink);line-height:1.6}
+.math-notation .katex,.formula-reference .katex{font-size:1.08em}
+.math-notation .katex-display,.formula-reference .katex-display{margin:.45em 0;max-width:100%;overflow:visible}
+.circle-labels{position:absolute;inset:0;pointer-events:none;color:var(--ink);font-size:20px}
+.circle-label{position:absolute;display:grid;place-items:center;min-width:35px;min-height:33px;line-height:1.1;background:var(--plot);border-radius:4px}
+.circle-label .katex{font-size:1.05em}
+.label-zero{top:0;left:50%;transform:translateX(-50%)}
+.label-quarter{right:0;top:50%;transform:translateY(-50%)}
+.label-half{bottom:0;left:50%;transform:translateX(-50%)}
+.label-threequarters{left:0;top:50%;transform:translateY(-50%)}
+.figure-tools{display:flex;gap:15px;align-items:center;justify-content:center;flex-wrap:wrap;padding:9px 11px}
+.figure-tools-hint{font-size:16px;color:var(--sub)}
+.selected-root-math{border-top:1px solid var(--fine);border-bottom:1px solid var(--fine);margin-top:13px;padding:9px 0;overflow-wrap:anywhere}
+.selected-root-math>.math-notation{padding:4px 0}
+.formula-reference{display:grid;gap:11px;padding:16px 0}
+.formula-reference>div{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--fine)}
+.formula-reference .formula-name{width:145px;flex:none;color:var(--sub);font-size:17px}
+.formula-reference .formula-math{flex:1;min-width:0;font-size:18px;overflow-wrap:anywhere}
+.canvas-shell.focused{overflow:auto;max-height:min(90svh,750px);aspect-ratio:auto;scrollbar-gutter:stable}
+.canvas-shell.focused #orbitCanvas{width:900px;height:900px;max-width:none;max-height:none}
+.canvas-shell.focused .circle-labels{display:none}
+@media(max-width:519px){.figure-tools{align-items:stretch}.figure-tools-hint{width:100%;text-align:center}.formula-reference .formula-name{width:100%}}

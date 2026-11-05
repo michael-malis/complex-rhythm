@@ -443,7 +443,7 @@ function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.for
  const dot=document.createElement('span');dot.className='track-icon';dot.setAttribute('aria-hidden','true');
  const name=document.createElement('span');name.className='track-name';name.textContent=SOUNDS[t.sound];
  const count=document.createElement('span');count.className='track-count';count.textContent=hitLabel(roots(t).length);
- pick.append(dot,name,count);pick.addEventListener('click',()=>chooseTrack(i));
+ pick.append(dot,name,count);pick.addEventListener('click',()=>chooseTrack(i,true));
  const mute=document.createElement('button');mute.className='ghost track-mute';mute.type='button';mute.title=t.muted?'Включить звук':'Отключить звук';mute.setAttribute('aria-label',`${t.muted?'Включить':'Отключить'} ${SOUNDS[t.sound]}`);mute.setAttribute('aria-pressed',String(t.muted));mute.textContent=t.muted?'×':'♫';
  mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();wrap.querySelectorAll('.track-mute')[i]?.focus({preventScroll:true});markCustom();});row.append(pick,mute);wrap.append(row);
 })}
@@ -464,7 +464,7 @@ function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Громкость набора';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Громкость дополнительных корней ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
  })}
 
-function chooseTrack(i){const keepTrackFocus=document.activeElement?.classList.contains('track-pick');selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor();if(keepTrackFocus)$('tracks').querySelectorAll('.track-pick')[selectedTrack]?.focus({preventScroll:true})}
+function chooseTrack(i,fromTrackList=false){selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor();if(fromTrackList){if(window.matchMedia('(max-width:949px)').matches){$('editorHeading').focus({preventScroll:true});$('editor').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'})}else $('tracks').querySelectorAll('.track-pick')[selectedTrack]?.focus({preventScroll:true})}}
 function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}}
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  tracks=p.tracks.map(cleanTrack);bpm=p.bpm;cycleBars=p.bars===2?2:1;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);

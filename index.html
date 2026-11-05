@@ -6,7 +6,9 @@
 <meta name="theme-color" content="#f2efe8">
 <title>Roots / Rhythm — Mathematical rhythm workbench</title>
 <meta name="description" content="Explore mathematical rhythm through complex roots and their unions.">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
 <link rel="stylesheet" href="styles.css">
+<script defer src="vendor/katex/katex.min.js"></script>
 <script defer src="app.js"></script>
 </head>
 <body>
@@ -24,18 +26,23 @@
 <main class="workspace">
 <section class="visual-stage" aria-labelledby="orbitHeading">
  <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">One cycle, four rhythms</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>
- <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular timelines. Click a ring to select a lane. Drag a filled base root to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas></div>
+ <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular timelines. Click a ring to select a lane. Drag a filled base root to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas>
+ <div class="circle-labels" id="circleLabels" aria-label="Cycle phases: zero at top, quarter at right, half at bottom, three quarters at left">
+   <span class="circle-label label-zero" id="phaseZero"></span><span class="circle-label label-quarter" id="phaseQuarter"></span><span class="circle-label label-half" id="phaseHalf"></span><span class="circle-label label-threequarters" id="phaseThreequarters"></span>
+ </div></div>
+ <div class="figure-tools"><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn">Magnify plot</button><span class="figure-tools-hint">Scroll the magnified plot to explore dense root sets.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
  <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>
  <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="200" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
  <div class="statusbar"><div class="range-field volume-control"><label for="volume">Volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" value="65"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
 </section>
 <section class="control-panel" aria-labelledby="tracksHeading">
- <div class="panel-heading"><div><div class="eyebrow">PARAMETERS / FOUR LANES</div><h2 id="tracksHeading" tabindex="-1">Complex root sets</h2></div><span class="quiet">z = a + bi</span></div>
+ <div class="panel-heading"><div><div class="eyebrow">PARAMETERS / FOUR LANES</div><h2 id="tracksHeading" tabindex="-1">Complex root sets</h2></div><span class="quiet math-notation" id="cartesianHeading"></span></div>
  <div id="tracks" class="track-list" role="group" aria-label="Four independently editable complex-root rhythms"></div>
  <details id="compositionPanel" class="composition-panel"><summary><span>Compose root sets</span><span class="quiet" id="compositionMetrics">Select a lane</span></summary>
   <div class="composition-body">
-   <div class="composition-info"><h3 id="compositionHeading" tabindex="-1">Lane 1</h3><p id="compositionEquation">Rₙ(z)</p></div>
+   <div class="composition-info"><h3 id="compositionHeading" tabindex="-1">Lane 1</h3><div class="composition-equation math-notation" id="compositionEquation"></div></div>
+   <div class="selected-root-math"><div class="small-explain">Selected root and its mathematical origin</div><div class="math-notation" id="selectedRootFormula"></div><div class="math-notation" id="rootPhaseFormula"></div></div>
    <p class="small-explain">Each set is evenly spaced. Their union can be irregular. Coincident phases sound once.</p>
    <div class="composition-strips" aria-label="Base, additional and resulting event phases">
     <div class="phase-row"><div class="phase-label"><span>Base</span><output id="baseCount">0</output></div><div class="phase-strip" id="baseStrip" aria-label="Base root positions"></div></div>
@@ -50,6 +57,7 @@
   </div>
  </details>
  <details class="math-details"><summary>Mathematical notes</summary>
+  <div id="formulaReference" class="formula-reference" aria-label="Mathematical formulas for Cartesian, polar and complex roots"></div>
   <p>For nonzero z, the arguments of its n-th roots form n equally spaced phases. Changing arg(z) rotates them; changing |z| alone does not change event timing.</p>
   <p>The four circle radii represent instrument lanes, not the moduli of the complex roots. A union merges coincident events: R₄(1) ∪ R₃(1) has six distinct phases, not seven.</p>
   <p>A polyrhythm combines different periodicities across instruments. Composed root sets combine rhythms within one instrument. Both differ from an arbitrary step sequencer.</p></details>

@@ -748,7 +748,7 @@ function getRadii(side){const outer=side*.427;return [outer,outer*.78,outer*.56,
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
  ctx.clearRect(0,0,w,h);
- const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],phase=transportPhase(),duration=cycleSeconds();
+ const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],elapsed=playbackElapsed(),selectedPhase=lanePhase(tracks[selectedTrack]);
  ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fillRect(0,0,w,h);
  ctx.save();ctx.translate(cx,cy);ctx.textAlign='center';ctx.textBaseline='middle';
  const guide=dark?'#4d5046':'#d8d5cd',baseInk=dark?'#dcded3':'#55584f';
@@ -764,8 +764,8 @@ function draw() {
   ctx.beginPath();ctx.arc(0,0,r,0,TAU);
   ctx.strokeStyle=chosen?COLORS[i]:(dark?'#63675e':'#c4c5bc');ctx.lineWidth=chosen?2:1.2;ctx.stroke();
  });
- const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(phase*16)/16:phase);
- ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(angle)*outer,Math.sin(angle)*outer);
+ const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(selectedPhase*16)/16:selectedPhase);
+ ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(angle)*radii[selectedTrack],Math.sin(angle)*radii[selectedTrack]);
  ctx.strokeStyle=playing?(dark?'#c4c9ba':'#676d62'):(dark?'#5a5e54':'#cfcec5');ctx.lineWidth=1.3;ctx.stroke();
  if(rootDrag&&rootDrag.moved){
   const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;
@@ -775,6 +775,7 @@ function draw() {
  }
  tracks.forEach((t,i)=>{
   const r=radii[i],c=composePhases(t),spacing=c.merged.length?TAU*r/c.merged.length:40;
+  const phase=RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()),duration=laneSeconds(t);
   const size=14; // 28px visible event diameter, at least twice the original 12–14px
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
@@ -792,8 +793,10 @@ function draw() {
  ctx.font=`650 ${Math.max(14,Math.min(24,side*.044))}px system-ui`;ctx.fillStyle=baseInk;ctx.fillText(String(count),0,-3);
  ctx.font='18px system-ui';ctx.fillText('events',0,29);
  ctx.restore();
- if(playing&&audio){const elapsed=Math.max(0,audio.currentTime-beatEpoch);cycles=Math.floor(elapsed/duration)+1}
- const label=cycleBars===2?`Cycle ${Math.max(1,cycles)} · 2 bars`:`Bar ${Math.max(1,cycles)} · 4/4`;
+ if(playing&&audio){cycles=Math.floor(elapsed/cycleSeconds())+1}
+ const common=RhythmMath.commonCycle(tracks);
+ const currentBar=Math.floor(elapsed/barSeconds())%common;
+ const label=`Bar ${currentBar+1} / ${common} · 4/4`;
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
  requestAnimationFrame(draw);
 }

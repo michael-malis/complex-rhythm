@@ -12,6 +12,7 @@ on:
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
       - tests/required-polyrhythms.mjs
+      - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/touch-targets.mjs
@@ -75,6 +76,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-ratio.log 2>&1 &
           node tests/required-polyrhythms.mjs
+      - name: Check all mathematical formulas, time geometry and live updates
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
+          node tests/formula-acceptance.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

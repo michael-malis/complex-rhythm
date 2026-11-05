@@ -54,8 +54,8 @@ try{
  assert.equal(voices.length,15,'15 synthesized instrument types');
  for(const row of voices){
   assert.equal(row.started,true,'voice activation '+row.name);
-  assert.ok(Number.isFinite(row.peak)&&row.peak>.0004&&row.peak<=.85,'bounded nonzero output '+row.name+' '+row.peak);
-  assert.ok(row.rms>.0002,'audible energy '+row.name+' '+row.rms);
+  assert.ok(Number.isFinite(row.peak)&&row.peak>.07&&row.peak<=.85,'bounded useful transient output '+row.name+' '+row.peak);
+  assert.ok(row.rms>.005,'voice must not be excessively quiet: '+row.name+' RMS '+row.rms);
   assert.ok(row.firstSample>=0,'attack onset '+row.name);
   assert.ok(row.centroid>0,'spectral profile '+row.name);
   fs.writeFileSync('artifacts/audio-renders/'+row.name+'.wav',wav(row.data,32000));

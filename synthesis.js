@@ -241,7 +241,7 @@ function voicesPlay(ctx,out,name,time,velocity=1,index=0,overrides=null){
  filter.frequency.exponentialRampToValueAtTime(endFreq,at+d*.86);
  drive.curve=voicesCurve(p.drive);drive.oversample='2x';
  amp.gain.setValueAtTime(.0001,at);
- const peak=Math.max(.0002,Math.min(.26,(p.family==='kick'?.23:p.family==='acid'?.12:.11)*Math.max(.1,velocity)));
+ const peak=Math.max(.0002,Math.min(.26,(p.family==='kick'?.23:p.family==='noise'?.16:p.family==='acid'?.12:.11)*Math.max(.1,velocity)));
  amp.gain.exponentialRampToValueAtTime(peak,at+(p.family==='kick'?.0015:.004));
  amp.gain.exponentialRampToValueAtTime(.0001,at+d);
  mix.connect(filter);filter.connect(drive);drive.connect(amp);amp.connect(out);
@@ -273,7 +273,7 @@ function voicesPlay(ctx,out,name,time,velocity=1,index=0,overrides=null){
  }else if(p.family==='stab'){
   for(const ratio of [1,1.189,1.498])osc('sawtooth',p.start*ratio,p.base*ratio,0,.32);
  }
- if(p.noise>0)voicesNoise(ctx,at,Math.min(d,.2),name.length*163+index*71,Math.min(.12,p.noise*.08)*velocity,mix,p.family==='kick'?1000:2400);
+ if(p.noise>0)voicesNoise(ctx,at,Math.min(d,.2),name.length*163+index*71,(p.family==='noise'?.55:Math.min(.12,p.noise*.08))*velocity,mix,p.family==='kick'?1000:2400);
  return true;
 }
 const exposed=Object.freeze({definitions:voicesDefinitions,play:voicesPlay});root.RhythmVoices=exposed;

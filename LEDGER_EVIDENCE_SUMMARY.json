@@ -1,0 +1,45 @@
+{
+  "generatedFrom": "Evidence at CI run https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
+  "tasks": {
+    "VERIFIED": 115,
+    "BLOCKED": 4,
+    "IN_PROGRESS": 86,
+    "TODO": 446,
+    "FAILED": 0
+  },
+  "verifiedRequirementIds": [
+    "R-PROC-003",
+    "R-TEX-003",
+    "R-NUM-001",
+    "R-NUM-002",
+    "R-NUM-005",
+    "R-NUM-006",
+    "R-MDL-003",
+    "R-MDL-004",
+    "R-MDL-005",
+    "R-SND-002",
+    "R-PST-003",
+    "R-PST-005",
+    "R-ENG-001",
+    "R-ENG-002",
+    "R-QM-001",
+    "R-QM-002",
+    "R-QM-003",
+    "R-QM-004",
+    "R-QM-005",
+    "R-QM-006",
+    "R-QM-007",
+    "R-QM-008",
+    "R-QM-009",
+    "R-QM-010",
+    "R-QM-011",
+    "R-QM-012"
+  ],
+  "blockedRequirementIds": [
+    "R-AUD-002",
+    "R-UI-003",
+    "R-SND-007",
+    "R-PST-004"
+  ],
+  "note": "An engineering proof does not replace the missing human audio and original screenshot acceptance."
+}

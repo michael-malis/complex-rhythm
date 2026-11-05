@@ -37,4 +37,19 @@ eq(m.commonCycle([{cycleBars:13},{cycleBars:14},{cycleBars:15},{cycleBars:16}]),
 ok(m.planEvents([{cycleBars:1,muted:true,events:[{phase:0}]}],1,0,2).length===0,'muted lane excluded from scheduler');
 for(const invalid of [0,17,1.5]){let threw=false;try{m.planEvents([{cycleBars:invalid,events:[{phase:.5}]}],1,0,3)}catch(e){threw=true}ok(threw,'cycle validation '+invalid)}
 
+
+// Adding 2π to the argument of a nonzero number leaves its entire root phase set invariant.
+for(const n of [2,3,4,7,17,32,64]){
+ const theta=.79;
+ const roots=(angle)=>Array.from({length:n},(_,k)=>(((angle+2*Math.PI*k)/(2*Math.PI*n))%1+1)%1).sort((x,y)=>x-y);
+ const a=roots(theta),b=roots(theta+2*Math.PI);
+ ok(a.every(x=>b.some(y=>Math.min(Math.abs(x-y),1-Math.abs(x-y))<1e-8)),
+  'root phases unchanged by 2π source argument at degree '+n);
+}
+for(const [k,n] of [[0,16],[5,16],[7,13],[16,16]]){
+ const zero=m.euclidean(k,n,0),rot=m.euclidean(k,n,3);
+ eq(zero.length,k,'Euclidean event count '+k+'/'+n);
+ ok(zero.every(p=>rot.some(q=>Math.min(Math.abs(((p+3/n)%1)-q),1-Math.abs(((p+3/n)%1)-q))<1e-8)),
+  'Euclidean cyclic rotation '+k+'/'+n);
+}
 console.log('PASS mathematical utility tests:',passed);

@@ -129,7 +129,8 @@ try {
  await page.locator('#categorySelect').selectOption('brazil');
  verify((await page.locator('#presetSelect option').allTextContents()).filter(t=>t.includes('Bossa Nova')).length===1,'one Bossa Nova preset');
 
- await page.locator('#fileMenu summary').click();
+ const beforeJsonEvents=await page.evaluate(()=>JSON.stringify(window.RhythmResearch.current().tracks.map(t=>window.RhythmResearch.events(t))));
+await page.locator('#fileMenu summary').click();
  const downloadPromise=page.waitForEvent('download');
  await page.locator('#saveBtn').click();
  const download=await downloadPromise;
@@ -138,6 +139,8 @@ try {
  await page.locator('#jsonFile').setInputFiles({name:'roundtrip.json',mimeType:'application/json',buffer:Buffer.from(raw)});
  await page.waitForTimeout(90);
  verify((await page.locator('#toast').textContent()).includes('Imported'),'JSON round trip');
+ const afterJsonEvents=await page.evaluate(()=>JSON.stringify(window.RhythmResearch.current().tracks.map(t=>window.RhythmResearch.events(t))));
+ verify(beforeJsonEvents===afterJsonEvents,'JSON mathematically restores identical event sets');
  await page.locator('#playBtn').click();
  await page.waitForFunction(()=>document.querySelector('#playBtn').textContent.includes('Pause'),{timeout:8000});
  verify((await page.locator('#playBtn').textContent()).includes('Pause'),'audio transport starts');

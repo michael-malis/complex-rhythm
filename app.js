@@ -892,6 +892,7 @@ function setTheme(next,save=false) {
 }
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({
+ current:()=>({bpm,tracks:tracks.map(t=>JSON.parse(JSON.stringify(t)))}),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,
   character:p.character||'',mathNote:p.mathNote||'',

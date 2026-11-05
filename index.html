@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <script defer src="vendor/katex/katex.min.js"></script>
 <script defer src="math-io.js"></script>
+<script defer src="synthesis.js"></script>
 <script defer src="app.js"></script>
 </head>
 <body>
@@ -22,8 +23,8 @@
 </header>
 <details class="preset-strip" id="presetDetails"><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">35 examples</span></summary>
  <div class="preset-controls">
- <label>Category<select id="categorySelect" aria-label="Rhythm category"><option value="poly">Polyrhythms</option><option value="brazil">Brazilian rhythms</option><option value="bunker">Bunker techno</option><option value="other">Other studies</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option></select></label>
- <label>Example<select id="presetSelect" aria-label="Choose a rhythm example"></select></label></div></details>
+ <label>Category<select id="categorySelect" aria-label="Rhythm category"><option value="poly">Polyrhythms</option><option value="brazil">Brazilian rhythms</option><option value="bunker">Bunker techno</option><option value="other">Other studies</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option><option value="hardcore">Hardcore / Gabber</option><option value="experimental">Mathematical experiments</option></select></label>
+ <label>Example<select id="presetSelect" aria-label="Choose a rhythm example"></select></label></div><div id="presetInfo" class="preset-info" aria-live="polite"></div></details>
 <main class="workspace">
 <section class="visual-stage" aria-labelledby="orbitHeading">
  <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">One cycle, four rhythms</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>
@@ -34,7 +35,7 @@
  <div class="figure-tools"><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn">Magnify plot</button><span class="figure-tools-hint">Scroll the magnified plot to explore dense root sets.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
  <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>
- <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="200" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
+ <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="260" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
  <div class="statusbar"><div class="range-field volume-control"><label for="volume">Volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" value="65"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
 </section>
 <section class="control-panel" aria-labelledby="tracksHeading">
@@ -53,7 +54,7 @@
    <p id="overlapSummary" class="composition-note">No shared phases.</p>
    <div class="composition-tools"><label for="argumentAngle">Rotate base <code>arg(z)</code></label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0"><output id="argumentText" for="argumentAngle">0°</output></div>
    <p class="small-explain">Rotation preserves the root count and |z|. A degree-1 set adds a single accent.</p>
-   <div id="extraLayers" class="extra-layers"></div>
+   <div id="extraLayers" class="extra-layers"></div><div id="specialRhythms" class="special-rhythms"></div><div id="patchControls" class="patch-controls"></div>
    <div class="composition-actions"><button id="addLayer" type="button" class="secondary-btn">+ Add root set</button><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
   </div>
  </details>

@@ -3,6 +3,18 @@
 **Date:** 5 November 2026  
 **Purpose:** provide source-grounded production references for mathematical rhythm examples and specific audio-engine choices. This is **not** a claim that a four-lane complex-root visualizer reproduces full commercial tracks, arrangement, groove, mastering, or historically authentic genres. Report status: **research documented; human listening acceptance pending**.
 
+## Independent source re-verification (2026-11-05)
+
+All five mandatory article URLs were fetched and their text checked in a fresh external review on 5 November 2026. Findings were compared with the existing implementation, rather than treating all genre BPM values as settled facts:
+
+- **Roland, Mastering the TB-303 Sequencer (3 Mar 2025):** explicitly states accents raise both volume and filter cutoff; slides and accents are sequenced separately. Our `accent` and `slide` parameters are real audible controls, but the synthesizer uses triggered voices and does not claim exact legato gate behavior.
+- **Roland, Beyond Acid (3 Mar 2025):** identifies saw/square configurations, resonant sweeps and different roles from lead synth to percussion/sub-bass. This supports *different signal architectures*, not merely six volume presets.
+- **Attack Magazine, Industrial Techno:** its 126–130 BPM / 50–60% swing is a **single programmed example**. It documents analog 909 hits, processed hats, distorted toms and volume ducking on collisions. These are genre *reference techniques*, not mandatory BPM limits.
+- **Attack Magazine, Processing Berghain Kicks:** explains multiband separation/distortion, layered kick + rumble/reverb. Our single-band waveshaping does not represent an implementation of its multiband rack; that limitation remains explicit.
+- **MusicRadar, Producer's Guide to the Roland TB-303 (3 Mar 2024):** describes the single-oscillator engine, resonant filter and separate note/slide sequencing; this supports the original 303 design reference without representing our mathematical root scheduler as a cloned TB-303.
+
+**Evidence:** source title, date and method are inspectable at the five URLs in the source table below. Where a technical feature differs (true legato and multiband distortion), the gap is recorded rather than silently claiming parity.
+
 ## 1. Required source audit
 
 | Required URL | Availability checked | Technical finding and application |

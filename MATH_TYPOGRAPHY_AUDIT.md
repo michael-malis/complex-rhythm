@@ -1,0 +1,74 @@
+# Mathematical typography and geometry audit
+
+**Scope:** before/after the scientific-workbench typography upgrade, KaTeX integration, root geometry and both interface themes. This is an evidence-backed engineering audit; do not infer that missing human review or unsupplied annotated screenshots have been checked.
+
+## Baseline measurement
+
+Captured against the previous interface at [GitHub Actions baseline run](https://github.com/michael-malis/complex-rhythm/actions/runs/42011738339). The workflow retained 12 actual Chromium screenshots and reported the smallest CSS text size, including system labels, for each viewport/theme.
+
+| Viewport | Before min font (light / dark) | After min font threshold | Baseline Canvas size |
+|---|---:|---:|---:|
+| 1600×1000 | 10 / 10 px | ≥16 px | 630×630 |
+| 1440×900 | 10 / 10 px | ≥16 px | 530×530 |
+| 1280×800 | 10 / 10 px | ≥16 px | 430×430 |
+| 1024×768 | 10 / 10 px | ≥16 px | 398×398 |
+| 768×1024 | 10 / 10 px | ≥16 px | 382×382 |
+| 390×844 | 9 / 9 px | ≥16 px | 368×368 |
+
+The after-column is the **automated acceptance threshold**, not a claim that all text is exactly 16 px. [New responsive/KaTeX regression](https://github.com/michael-malis/complex-rhythm/actions) checks all listed viewport/theme combinations and that main heading =30 px and panel heading =26 px.
+
+## Typography contract
+
+| Role | Target CSS size | Implementation |
+|---|---:|---|
+| Body | 18 px | `styles.css`, system-ui |
+| Main heading | 30 px | `.stage-heading h1` |
+| Section heading | 26 px | `.panel-heading h2` |
+| Formula and mathematical readouts | ≥18 px | KaTeX, `.math-notation` |
+| Fractions on graph | ≥20 px outer label | KaTeX `\dfrac` in HTML overlay |
+| Secondary explanations | ≥16 px | `.quiet`, `.small-explain`, tooltips |
+| Parameter inputs | ≥18 px font, 44 px high | All four lanes and advanced options |
+| Touch controls | ≥44 px high | Main buttons and fields |
+
+No browser-responsive override may reduce secondary text to 9–12 px. The site reflows instead of shrinking text to fit.
+
+## Mathematical rendering
+
+- **Renderer:** vendored [KaTeX 0.16.22](vendor/katex/), loaded before `app.js`, including locally served font files.
+- **Fractions:** `0`, `\frac14`, `\frac12`, `\frac34` at positions tied to the cycle; right/left/top/bottom labels use `\dfrac`, not Unicode fraction substitutes or raster text.
+- **Ten reference formulas:** Cartesian `a+bi`, polar, exponential, modulus, argument, roots, root set, index range, nonzero condition and coordinate identities.
+- **Selected-root formula:** dynamically displays `w_k` and its phase using the current `a`, `b`, `n` and chosen root index.
+- **Zero case:** `z=0` has no nonzero rhythm-root arguments; the UI states the undefined argument and suppresses phase dragging.
+- **No raster formulas:** all mathematical text is accessible KaTeX HTML + MathML in a DOM overlay or a dedicated inspector. The four circles are drawn on Canvas and resized together with the overlay.
+
+## Geometry and collision constraints
+
+| Metric | Before (source-derived, selected 3-root lane) | Current (source-derived) |
+|---|---:|---:|
+| Base marker radius | 7 px | 14 px |
+| Base marker visible diameter | 14 px | 28 px |
+| Beat-active radius | Original smaller pulse, see baseline source | 20 px |
+| Beat-active diameter | — | 40 px (40/28 ≈ 1.429×) |
+| Mobile adjacent-ring radial separation at 338 px plot | about 32 px | 40 px |
+| Active animation | Size emphasis only | Expansion + light inner flash + non-neon 2.6 px outline |
+| High-density view | Standard zoom only | Selectable magnified scroll/pan |
+
+The prior 14px and current 28px diameters follow the explicit Canvas radius code; they are not inferred from CSS button hit boxes. The new 40px active diameter is 1.429× the normal visible diameter. For dense high-degree patterns, event markers may overlap on a small default chart. A **magnified, pannable** plot remains the designed inspection mode; no automatic reduction to unreadable root dots is permitted.
+
+The quarter-cycle labels have been offset 55px from crowded cardinal axes to reduce collisions with event markers. Pixel-level image overlap inspection remains separate from mathematical radius calculations.
+
+## Automated evidence
+
+- `tests/spec-ui.mjs`: 12 viewport/theme checks of computed font sizes, native KaTeX version, fraction DOM structures, root formulas, coordinate forms and magnification.
+- `tests/math-io.test.mjs`: coordinate round-trips across quadrants, roots of ±1 and i, zero, degrees 17/32/64, set operations, Euclidean distribution and LCM polymetry.
+- `tests/ui-smoke.mjs`: full responsive layout, direct point dragging, slider/keyboard, four independent lanes, composed union, presets and JSON.
+- `tests/spec-baseline.mjs`: 12 baseline screenshots with measured original fonts (see previous GitHub Actions run).
+- `tests/audio-mix-stress.mjs`: separate audio-onset, high-density and master-output check; **does not substitute for a human visual audit**.
+
+## Unresolved evidence
+
+1. The two user-annotated screenshots referred to in `MASTER_IMPLEMENTATION_SPEC.md` were **not included in the received document**. The specific highlighted-text locations therefore cannot be compared pixel-for-pixel against those original annotations.
+2. Independent visual review on actual mobile devices and screen-reader assessment are not established by headless browser screenshots.
+3. A universal no-overlap guarantee for four 28–40px rings at 360px width and n=64 is geometrically impossible without zoom/pan or a different presentation; the current design supplies zoom/pan rather than shrinking the mathematical markers.
+
+**Status:** mathematical font rendering and automated responsive checks exist; full human acceptance for every requirement remains pending.

@@ -32,13 +32,36 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-diversity.log 2>&1 &
           node tests/preset-diversity.mjs
-      - name: Save report on working branch
+      - name: Save report without overwriting newer source revisions
         run: |
+          set -euo pipefail
+          BRANCH='upgrade/spec-2026-11-math-audio'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          SOURCE_APP_SHA="$(git rev-parse HEAD:app.js)"
+          SOURCE_MATH_SHA="$(git rev-parse HEAD:math-io.js)"
           git add PRESET_DIVERSITY_REPORT.md PRESET_INVENTORY.md PRESET_INVENTORY.json
-          git diff --cached --quiet || git commit -m 'Update mathematical preset diversity report'
-          git push origin HEAD:upgrade/spec-2026-11-math-audio
+          if git diff --cached --quiet; then
+            echo 'No changes to reproducible mathematical inventory.'
+            exit 0
+          fi
+          git commit -m 'Update mathematical preset diversity report'
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH"
+            REMOTE_APP_SHA="$(git rev-parse "origin/$BRANCH:app.js")"
+            REMOTE_MATH_SHA="$(git rev-parse "origin/$BRANCH:math-io.js")"
+            if [[ "$REMOTE_APP_SHA" != "$SOURCE_APP_SHA" || "$REMOTE_MATH_SHA" != "$SOURCE_MATH_SHA" ]]; then
+              echo 'Newer app/math model exists. Stale report is retained as an artifact; a newer workflow owns publication.'
+              exit 0
+            fi
+            git rebase "origin/$BRANCH"
+            if git push origin "HEAD:$BRANCH"; then
+              exit 0
+            fi
+            echo "Concurrent branch update detected; retry $attempt."
+          done
+          echo 'Unable to publish report after 3 safely rebased attempts.'
+          exit 1
       - name: Preserve report as artifact
         if: always()
         uses: actions/upload-artifact@v4

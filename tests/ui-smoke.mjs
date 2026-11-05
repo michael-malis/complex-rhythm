@@ -14,6 +14,7 @@ const browser = await chromium.launch({ headless: true, args: [
 const context = await browser.newContext({ acceptDownloads: true, reducedMotion: 'reduce' });
 fs.mkdirSync('artifacts', { recursive: true });
 let passes = 0;
+const uiMetrics = new Map();
 const verify = (condition, message) => { assert.ok(condition, message); passes++; };
 
 try {
@@ -35,14 +36,23 @@ try {
         editorTop: editor.top, sceneTop: scene.top,
         chosen: document.querySelector('#presetSelect').value,
         tracks: document.querySelectorAll('#tracks .track-pick').length,
-        slider: !document.querySelector('#argumentAngle').disabled
+        slider: !document.querySelector('#argumentAngle').disabled,
+        fieldHeight: document.querySelector('#editA').getBoundingClientRect().height,
+        headingSize: parseFloat(getComputedStyle(document.querySelector('.brand h1')).fontSize),
+        disclosureOpen: document.querySelector('#presetDetails').open,
+        language: document.documentElement.lang,
+        textHasCyrillic: /[А-Яа-яЁё]/.test(document.body.innerText)
       };
     });
     verify(result.scroll <= result.viewport + 2,
       'horizontal overflow at ' + width + ': ' + JSON.stringify(result));
     verify(result.cw > 190 && Math.abs(result.cw - result.ch) < 1.5,
       'canvas not square at ' + width + ': ' + JSON.stringify(result));
+    uiMetrics.set(width,result);
     verify(result.tracks === 4, 'missing tracks at ' + width);
+    verify(result.language === 'en' && !result.textHasCyrillic,'UI is not fully English at '+width);
+    verify(width >= 950 ? result.disclosureOpen : !result.disclosureOpen,
+      'examples disclosure does not follow responsive layout at '+width);
     verify(result.chosen === 'afro', 'not a mathematical initial preset at ' + width);
     verify(result.slider, 'argument slider disabled at ' + width);
     if (width < 950) verify(result.editorTop < result.sceneTop,
@@ -52,12 +62,18 @@ try {
     await page.close();
   }
 
+  verify(uiMetrics.get(1440).cw > uiMetrics.get(1024).cw,'canvas is not scaling up at desktop widths');
+  verify(uiMetrics.get(1440).fieldHeight > uiMetrics.get(360).fieldHeight,
+    'actual input controls are not scaling with viewport');
+  verify(uiMetrics.get(1440).headingSize > uiMetrics.get(360).headingSize,
+    'typography is not scaling with viewport');
+
   const page = await context.newPage();
   await page.setViewportSize({ width: 1440, height: 900 });
   page.on('pageerror', error => errors.push('interaction: ' + error.message));
   await page.goto(base, { waitUntil: 'domcontentloaded' });
   await page.locator('#editN').fill('6');
-  verify((await page.locator('#hitCount').textContent()).includes('6 ударов'),
+  verify((await page.locator('#hitCount').textContent()).includes('6 hits'),
     'degree does not change hit count');
 
   await page.locator('#editN').fill('3');
@@ -68,7 +84,7 @@ try {
   let b = Number(await page.locator('#editB').inputValue());
   verify(Math.abs(a) < .0001 && Math.abs(b-1) < .0001,
     'angle slider does not rotate complex number to +i');
-  verify((await page.locator('#hitCount').textContent()).includes('3 удара'),
+  verify((await page.locator('#hitCount').textContent()).includes('3 hits'),
     'angle slider changed hit count');
 
   await page.locator('#editA').fill('0');
@@ -124,6 +140,14 @@ try {
     }
   }
   verify(total === 35, 'expected 35 examples; got ' + total);
+  await page.locator('#categorySelect').selectOption('poly');
+  const polyNames=await page.locator('#presetSelect option').allTextContents();
+  for(const name of ['2 : 3','3 : 4','3 : 5','4 : 7','5 : 7'])
+    verify(polyNames.some(n=>n.includes(name)),'missing polyrhythm '+name);
+  await page.locator('#categorySelect').selectOption('brazil');
+  const remainingBossa=await page.locator('#presetSelect option').allTextContents();
+  verify(remainingBossa.filter(n=>n.includes('Bossa Nova')).length===1,'expected one Bossa Nova');
+  await page.locator('#categorySelect').selectOption('poly');
   console.log('PASS all presets:', total);
 
   // JSON serialization and deserialization.
@@ -141,13 +165,13 @@ try {
     buffer: Buffer.from(text)
   });
   await page.waitForTimeout(70);
-  verify((await page.locator('#toast').textContent()).includes('Импортирован'),
+  verify((await page.locator('#toast').textContent()).includes('Imported'),
     'JSON import failed');
 
   // Real Web Audio transport smoke check; sample loading may remain asynchronous.
   await page.locator('#playBtn').click();
   await page.waitForTimeout(900);
-  verify((await page.locator('#playBtn').textContent()).includes('Пауза'),
+  verify((await page.locator('#playBtn').textContent()).includes('Pause'),
     'Web Audio transport failed to start');
   await page.locator('#playBtn').click();
   console.log('PASS transport start/pause');

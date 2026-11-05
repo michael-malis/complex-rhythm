@@ -266,7 +266,7 @@ function renderTracks() {
   pick.append(num,dot,name);pick.addEventListener('click',()=>chooseTrack(i,true));
   const sound=document.createElement('select');sound.className='lane-sound';sound.id='laneSound'+i;sound.setAttribute('aria-label','Instrument for lane '+(i+1));
   for(const [key,label] of Object.entries(SOUNDS)){const opt=document.createElement('option');opt.value=key;opt.textContent=label;sound.append(opt)}
-  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderReadout();markCustom()});
+  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderEditor();markCustom()});
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
@@ -294,6 +294,82 @@ function chooseTrack(i,fromTrackList=false) {
  renderEditor();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
+function renderSoundControls() {
+ const wrap=$('patchControls');if(!wrap)return;wrap.replaceChildren();
+ const t=tracks[selectedTrack];if(!t)return;
+ const h=document.createElement('h4');h.textContent='Instrument dynamics';wrap.append(h);
+ const row=document.createElement('label');row.className='patch-control';
+ const label=document.createElement('span');label.textContent='Lane gain';
+ const output=document.createElement('output');output.textContent=(t.gain??1).toFixed(2);
+ const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
+ input.addEventListener('input',()=>{t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);markCustom()});
+ row.append(label,output,input);wrap.append(row);
+ const defaults=window.RhythmVoices?.definitions?.[t.sound];if(!defaults)return;
+ const sub=document.createElement('h4');sub.textContent='Sound synthesis · '+SOUNDS[t.sound];wrap.append(sub);
+ const p=document.createElement('p');p.className='small-explain';p.textContent='These controls modify the actual Web Audio voice for this instrument.';wrap.append(p);
+ const grid=document.createElement('div');grid.className='patch-grid';
+ const settings=[
+  ['cutoff','Filter cutoff (Hz)',70,10000,10],
+  ['q','Resonance',.2,25,.1],
+  ['decay','Decay (s)',.06,.8,.01],
+  ['accent','Accent',0,1,.01],
+  ['slide','Slide (s)',0,.5,.01],
+  ['drive','Saturation',.2,5,.1],
+  ['modulation','Pitch / FM modulation',0,5,.05],
+  ['depth','Filter envelope',0,9000,50]
+ ];
+ const oscLabel=document.createElement('label');oscLabel.className='patch-osc';oscLabel.textContent='Oscillator';
+ const osc=document.createElement('select');osc.id='patchOsc';osc.setAttribute('aria-label','Synthesizer oscillator type');
+ for(const type of ['sine','triangle','sawtooth','square']){
+  const op=document.createElement('option');op.value=type;op.textContent=type;osc.append(op);
+ }
+ osc.value=t.patch?.osc||defaults.osc;osc.addEventListener('change',()=>{t.patch={...(t.patch||{}),osc:osc.value};markCustom()});
+ oscLabel.append(osc);grid.append(oscLabel);
+ for(const [key,title,min,max,step] of settings){
+  const label=document.createElement('label');label.className='patch-control';
+  const name=document.createElement('span');name.textContent=title;
+  const out=document.createElement('output');const initial=t.patch?.[key]??defaults[key]??0;out.textContent=String(initial);
+  const slider=document.createElement('input');slider.type='range';slider.id='patch'+key;slider.min=min;slider.max=max;slider.step=step;slider.value=initial;
+  slider.setAttribute('aria-label',title);
+  slider.addEventListener('input',()=>{const n=Number(slider.value);t.patch={...(t.patch||{}),[key]:n};out.textContent=String(n);markCustom()});
+  label.append(name,out,slider);grid.append(label);
+ }
+ wrap.append(grid);
+}
+function renderSpecialRhythms() {
+ const wrap=$('specialRhythms');if(!wrap)return;wrap.replaceChildren();
+ const t=tracks[selectedTrack];if(!t)return;
+ const heading=document.createElement('h4');heading.textContent='Mathematical operations';wrap.append(heading);
+ const opRow=document.createElement('label');opRow.className='math-option';opRow.textContent='Set operation';
+ const choice=document.createElement('select');choice.id='setOperation';choice.setAttribute('aria-label','Root set operation');
+ for(const [value,text] of [['union','Union ∪'],['intersection','Intersection ∩']]){const opt=document.createElement('option');opt.value=value;opt.textContent=text;choice.append(opt)}
+ choice.value=t.operation||'union';
+ choice.addEventListener('change',()=>{t.operation=choice.value;updateLaneStatus(selectedTrack);renderReadout();markCustom()});
+ opRow.append(choice);wrap.append(opRow);
+ const euRow=document.createElement('label');euRow.className='math-check';
+ const cb=document.createElement('input');cb.type='checkbox';cb.id='euclidEnabled';cb.checked=Boolean(t.euclidean);cb.setAttribute('aria-label','Enable Euclidean rhythm generator');
+ const cap=document.createElement('span');cap.textContent='Euclidean rhythm E(k, N)';
+ euRow.append(cb,cap);wrap.append(euRow);
+ const info=document.createElement('p');info.className='small-explain';info.textContent='An independent evenly distributed grid pattern, not the roots of a single complex number.';wrap.append(info);
+ const fields=document.createElement('div');fields.className='euclidean-fields';wrap.append(fields);
+ function fillFields(){
+  fields.replaceChildren();fields.hidden=!t.euclidean;if(!t.euclidean)return;
+  for(const [key,title,min,max] of [['k','Pulses k',0,256],['n','Positions N',1,256],['rotation','Shift (steps)',-256,256],['velocity','Velocity',.1,1]]){
+   const label=document.createElement('label');label.textContent=title;
+   const el=document.createElement('input');el.id='euclid'+key[0].toUpperCase()+key.slice(1);el.type='number';el.step=key==='velocity'?'0.05':'1';el.min=min;el.max=max;el.value=String(t.euclidean[key]??(key==='velocity'?.58:0));
+   el.setAttribute('aria-label','Euclidean '+title);
+   el.addEventListener('change',()=>{
+    const v=Number(el.value),integer=key==='velocity'||Number.isInteger(v);
+    const valid=Number.isFinite(v)&&integer&&v>=min&&v<=max&&(key==='k'?v<=t.euclidean.n:key==='n'?v>=t.euclidean.k:true);
+    if(!valid){el.value=String(t.euclidean[key]);el.setAttribute('aria-invalid','true');return}
+    el.removeAttribute('aria-invalid');t.euclidean[key]=v;updateLaneStatus(selectedTrack);renderReadout();markCustom();
+   });
+   label.append(el);fields.append(label);
+  }
+ }
+ cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
+ fillFields();
+}
 function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
@@ -305,7 +381,9 @@ function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
  const c=composePhases(t),i=selectedTrack;
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
- renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>String.raw`\;\cup\;R_{${l.n}}(u_{${j+1}})`).join(''):''));
+ const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
+  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
+  const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);

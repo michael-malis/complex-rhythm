@@ -112,7 +112,14 @@ function events(track) {
  if(merged.length>1&&1+merged[0].phase-merged[merged.length-1].phase<tol){
   const last=merged.pop();merged[0].velocity=Math.max(merged[0].velocity,last.velocity);merged[0].sources.push(...last.sources);
  }
- if(track.operation==='intersection')return merged.filter(item=>item.sources.some(s=>s.kind==='base')&&item.sources.some(s=>s.kind!=='base'));
+ if(track.operation==='intersection'){
+  // True intersection of ALL explicitly supplied sets, not base ∩ union(extras).
+  return merged.filter(event=>
+    event.sources.some(s=>s.kind==='base')&&
+    (track.layers||[]).every((_,index)=>event.sources.some(s=>s.kind==='additional'&&s.sourceIndex===index))&&
+    (!track.euclidean||event.sources.some(s=>s.kind==='euclidean'))
+  );
+ }
  return merged;
 }
 function roots(track){return events(track).map(x=>x.phase)}

@@ -79,6 +79,19 @@ try {
  verify((await page.locator('#addedCount').textContent())==='3','added set count three');
  verify((await page.locator('#unionCount').textContent())==='6','union of fourth and third roots has six events');
  verify((await page.locator('#unionStrip .overlap').count())===1,'exact coincidence at phase zero');
+ await page.locator('#setOperation').selectOption('intersection');
+ verify((await page.locator('#unionCount').textContent())==='1','R4(1) intersect R3(1) is one phase');
+ await page.locator('#addLayer').click();
+ await page.locator('#layer1a').fill('-1');
+ await page.locator('#layer1a').dispatchEvent('change');
+ await page.locator('#layer1n').fill('2');
+ await page.locator('#layer1n').dispatchEvent('change');
+ verify((await page.locator('#unionCount').textContent())==='0',
+  'intersection across ALL three sets, not union of extras');
+ await page.locator('#setOperation').selectOption('union');
+ await page.locator('#extraLayers .layer-remove').last().click();
+ verify((await page.locator('#unionCount').textContent())==='6','restored 4∪3 after removing extra set');
+
  verify((await page.locator('#extraLayers input[type=number]').count())===3,'additional source editable');
  await page.locator('#argumentAngle').evaluate(el=>{el.value='90';el.dispatchEvent(new Event('input',{bubbles:true}))});
  const a=Number(await page.locator('#trackA0').inputValue());

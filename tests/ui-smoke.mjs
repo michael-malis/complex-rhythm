@@ -39,7 +39,7 @@ try {
   verify(data.theme==='light'&&data.computedBackground==='rgb(242, 239, 232)','warm-paper initial theme '+width);
   verify(data.scroll<=data.viewport+2,'horizontal overflow '+width+': '+JSON.stringify(data));
   verify(Math.abs(data.canvas[0]-data.canvas[1])<2&&data.canvas[0]>190,'square Canvas '+width);
-  verify(data.lanes===4&&data.inputs===12,'four visible mathematical input rows '+width);
+  verify(data.lanes===4&&data.inputs===16,'four visible mathematical input rows and independent cycle fields '+width);
   verify(data.fieldHeight>=44,'small input target '+width);
   verify(data.fileHidden,'native JSON file picker visible '+width);
   if(width<760)verify(data.controlTop<data.sceneTop,'math-first mobile order '+width);
@@ -60,6 +60,18 @@ try {
  verify((await page.locator('#laneCount1').textContent()).includes('5 hits'),'lane1 independent edits');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 unaffected by lane1 edit');
  await page.locator('#trackN1').fill('4');
+ await page.locator('#laneBars0').fill('3');
+ await page.locator('#laneBars1').fill('4');
+ verify((await page.locator('#commonCycle').textContent()).includes('12 bars'),'3:4 polymetry common cycle');
+ await page.locator('#windowPanel').evaluate(el=>el.open=true);
+ await page.waitForTimeout(60);
+ verify((await page.locator('.window-lane').count())===4,'four independent time-window lanes');
+ verify((await page.locator('#windowStart').getAttribute('max'))==='8','bounded viewport ranges over LCM');
+ verify((await page.locator('#windowCounts').textContent()).includes('scheduled lane events'),'window shows real scheduled events');
+ await page.locator('#windowStart').fill('7');
+ verify((await page.locator('#windowStartText').textContent())==='8','explore later bars without generating entire super-cycle');
+ await page.locator('#laneBars0').fill('1');
+ await page.locator('#laneBars1').fill('1');
  await page.locator('#trackN0').fill('4');
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
  await page.locator('#addLayer').click();

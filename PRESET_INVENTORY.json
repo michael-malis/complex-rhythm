@@ -7793,26 +7793,26 @@
       "bpm": 155,
       "commonCycleBars": 1,
       "character": "Dry broken-pressure impacts against metal clicks and a slow detuned bass contour.",
-      "mathNote": "Independent 5:7:9:11 grids; phase shifts separate the downbeats.",
-      "eventFingerprint": "0:0;1:28571;2:44444;3:51948;3:142857;2:155556;1:171429;0:200000;3:233766;2:266667;1:314286;3:324675;2:377778;0:400000;3:415584;1:457143;2:488889;3:506494;3:597403;0:600000;1:600000;2:600000;3:688312;2:711111;1:742857;3:779221;0:800000;2:822222;3:870130;1:885714;2:933333;3:961039",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:0;3:88312;2:111111;1:142857;3:179221;0:200000;2:222222;3:270130;1:285714;2:333333;3:361039;0:400000;1:428571;2:444444;3:451948;3:542857;2:555556;1:571429;0:600000;3:633766;2:666667;1:714286;3:724675;2:777778;0:800000;3:815584;1:857143;2:888889;3:906494;3:997403",
+      "mathNote": "5:7:11 polyrhythm in the first three lanes, supported by a shifted nine-root bass contour.",
+      "eventFingerprint": "0:0;2:25974;1:28571;3:49383;2:116883;3:160494;1:171429;0:200000;2:207792;3:271605;2:298701;1:314286;3:382716;2:389610;0:400000;1:457143;2:480519;3:493827;2:571429;0:600000;1:600000;3:604938;2:662338;3:716049;1:742857;2:753247;0:800000;3:827160;2:844156;1:885714;2:935065;3:938272",
+      "rotationCanonicalFingerprint": "0:0;1:0;3:4938;2:62338;3:116049;1:142857;2:153247;0:200000;3:227160;2:244156;1:285714;2:335065;3:338272;0:400000;2:425974;1:428571;3:449383;2:516883;3:560494;1:571429;0:600000;2:607792;3:671605;2:698701;1:714286;3:782716;2:789610;0:800000;1:857143;2:880519;3:893827;2:971429",
       "sharedPhaseGroups": 1,
       "totalScheduledEvents": 32,
       "nearestMathematicalNeighbors": [
-        {
-          "id": "terror-geometry",
-          "similarity": 0.4667,
-          "bpm": 220
-        },
         {
           "id": "hardtek-mobius",
           "similarity": 0.2667,
           "bpm": 178
         },
         {
-          "id": "acid-reactor",
-          "similarity": 0.2609,
-          "bpm": 148
+          "id": "minimal",
+          "similarity": 0.1042,
+          "bpm": 124
+        },
+        {
+          "id": "poly-3-5",
+          "similarity": 0.05,
+          "bpm": 112
         }
       ],
       "lanes": [
@@ -7926,13 +7926,13 @@
           "lane": 3,
           "sound": "hat",
           "complex": {
-            "a": -0.809016994375,
-            "b": 0.587785252292
+            "a": -0.222520933956,
+            "b": 0.974927912182
           },
-          "modulus": 0.9999999999997643,
-          "argumentRadians": 2.5132741228722484,
-          "argumentDegrees": 144.00000000002373,
-          "rootDegree": 9,
+          "modulus": 1.000000000000102,
+          "argumentRadians": 1.7951958020509649,
+          "argumentDegrees": 102.85714285712307,
+          "rootDegree": 11,
           "cycleBars": 1,
           "operation": "union",
           "gain": 0.24,
@@ -7940,67 +7940,77 @@
           "euclidean": null,
           "additionalRootSets": [],
           "baseRootPhases": [
-            0.0444444444,
-            0.1555555556,
-            0.2666666667,
-            0.3777777778,
-            0.4888888889,
-            0.6,
-            0.7111111111,
-            0.8222222222,
-            0.9333333333
+            0.025974026,
+            0.1168831169,
+            0.2077922078,
+            0.2987012987,
+            0.3896103896,
+            0.4805194805,
+            0.5714285714,
+            0.6623376623,
+            0.7532467532,
+            0.8441558442,
+            0.9350649351
           ],
           "actualEventPhases": [
             {
-              "phase": 0.0444444444,
+              "phase": 0.025974026,
               "velocity": 1
             },
             {
-              "phase": 0.1555555556,
+              "phase": 0.1168831169,
               "velocity": 1
             },
             {
-              "phase": 0.2666666667,
+              "phase": 0.2077922078,
               "velocity": 1
             },
             {
-              "phase": 0.3777777778,
+              "phase": 0.2987012987,
               "velocity": 1
             },
             {
-              "phase": 0.4888888889,
+              "phase": 0.3896103896,
               "velocity": 1
             },
             {
-              "phase": 0.6,
+              "phase": 0.4805194805,
               "velocity": 1
             },
             {
-              "phase": 0.7111111111,
+              "phase": 0.5714285714,
               "velocity": 1
             },
             {
-              "phase": 0.8222222222,
+              "phase": 0.6623376623,
               "velocity": 1
             },
             {
-              "phase": 0.9333333333,
+              "phase": 0.7532467532,
+              "velocity": 1
+            },
+            {
+              "phase": 0.8441558442,
+              "velocity": 1
+            },
+            {
+              "phase": 0.9350649351,
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 9
+          "rhythmicEventCount": 11
         },
         {
           "lane": 4,
           "sound": "reese",
           "complex": {
-            "a": -0.900968867902,
-            "b": -0.433883739118
+            "a": -0.939692620786,
+            "b": 0.342020143326
           },
-          "modulus": 0.9999999999998141,
-          "argumentRadians": -2.6927937030763855,
-          "argumentDegrees": -154.28571428568105,
-          "rootDegree": 11,
+          "modulus": 1.0000000000001994,
+          "argumentRadians": 2.7925268031906474,
+          "argumentDegrees": 159.99999999998397,
+          "rootDegree": 9,
           "cycleBars": 1,
           "operation": "union",
           "gain": 0.28,
@@ -8008,65 +8018,55 @@
           "euclidean": null,
           "additionalRootSets": [],
           "baseRootPhases": [
-            0.0519480519,
-            0.1428571429,
-            0.2337662338,
-            0.3246753247,
-            0.4155844156,
-            0.5064935065,
-            0.5974025974,
-            0.6883116883,
-            0.7792207792,
-            0.8701298701,
-            0.961038961
+            0.049382716,
+            0.1604938272,
+            0.2716049383,
+            0.3827160494,
+            0.4938271605,
+            0.6049382716,
+            0.7160493827,
+            0.8271604938,
+            0.9382716049
           ],
           "actualEventPhases": [
             {
-              "phase": 0.0519480519,
+              "phase": 0.049382716,
               "velocity": 1
             },
             {
-              "phase": 0.1428571429,
+              "phase": 0.1604938272,
               "velocity": 1
             },
             {
-              "phase": 0.2337662338,
+              "phase": 0.2716049383,
               "velocity": 1
             },
             {
-              "phase": 0.3246753247,
+              "phase": 0.3827160494,
               "velocity": 1
             },
             {
-              "phase": 0.4155844156,
+              "phase": 0.4938271605,
               "velocity": 1
             },
             {
-              "phase": 0.5064935065,
+              "phase": 0.6049382716,
               "velocity": 1
             },
             {
-              "phase": 0.5974025974,
+              "phase": 0.7160493827,
               "velocity": 1
             },
             {
-              "phase": 0.6883116883,
+              "phase": 0.8271604938,
               "velocity": 1
             },
             {
-              "phase": 0.7792207792,
-              "velocity": 1
-            },
-            {
-              "phase": 0.8701298701,
-              "velocity": 1
-            },
-            {
-              "phase": 0.961038961,
+              "phase": 0.9382716049,
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 9
         }
       ]
     },
@@ -8085,11 +8085,6 @@
       "totalScheduledEvents": 26,
       "nearestMathematicalNeighbors": [
         {
-          "id": "industrial-fracture",
-          "similarity": 0.2609,
-          "bpm": 155
-        },
-        {
           "id": "prime-number-riot",
           "similarity": 0.1818,
           "bpm": 175
@@ -8098,6 +8093,11 @@
           "id": "poly-3-5",
           "similarity": 0.0909,
           "bpm": 112
+        },
+        {
+          "id": "afro",
+          "similarity": 0.0769,
+          "bpm": 116
         }
       ],
       "lanes": [
@@ -8345,14 +8345,14 @@
           "bpm": 205
         },
         {
+          "id": "terror-geometry",
+          "similarity": 0.234,
+          "bpm": 220
+        },
+        {
           "id": "shaft",
           "similarity": 0.1667,
           "bpm": 143
-        },
-        {
-          "id": "iron",
-          "similarity": 0.1579,
-          "bpm": 151
         }
       ],
       "lanes": [
@@ -8916,7 +8916,7 @@
       "nearestMathematicalNeighbors": [
         {
           "id": "terror-geometry",
-          "similarity": 0.2281,
+          "similarity": 0.2321,
           "bpm": 220
         },
         {
@@ -9225,14 +9225,14 @@
           "bpm": 180
         },
         {
+          "id": "terror-geometry",
+          "similarity": 0.2245,
+          "bpm": 220
+        },
+        {
           "id": "shaft",
           "similarity": 0.1579,
           "bpm": 143
-        },
-        {
-          "id": "iron",
-          "similarity": 0.15,
-          "bpm": 151
         }
       ],
       "lanes": [
@@ -9490,9 +9490,9 @@
           "bpm": 124
         },
         {
-          "id": "poly-4-7",
-          "similarity": 0.0208,
-          "bpm": 118
+          "id": "industrial-fracture",
+          "similarity": 0.0303,
+          "bpm": 155
         }
       ],
       "lanes": [
@@ -10663,26 +10663,26 @@
       "bpm": 220,
       "commonCycleBars": 1,
       "character": "Fast low-end impacts and densely shifting high-frequency shards, peak-controlled.",
-      "mathNote": "5:7:9:13 against a shared cyclic reference.",
-      "eventFingerprint": "0:0;3:21978;1:28571;2:44444;3:98901;2:155556;1:171429;3:175824;0:200000;3:252747;2:266667;1:314286;3:329670;2:377778;0:400000;3:406593;1:457143;3:483516;2:488889;3:560440;0:600000;1:600000;2:600000;3:637363;2:711111;3:714286;1:742857;3:791209;0:800000;2:822222;3:868132;1:885714;2:933333;3:945055",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:0;3:37363;2:111111;3:114286;1:142857;3:191209;0:200000;2:222222;3:268132;1:285714;2:333333;3:345055;0:400000;3:421978;1:428571;2:444444;3:498901;2:555556;1:571429;3:575824;0:600000;3:652747;2:666667;1:714286;3:729670;2:777778;0:800000;3:806593;1:857143;3:883516;2:888889;3:960440",
+      "mathNote": "4:7:9:13 four-lane polyrhythm: a fixed four-root kick against independently offset seven, nine and thirteen-root layers.",
+      "eventFingerprint": "0:0;3:21978;1:35714;2:44444;3:98901;2:155556;3:175824;1:178571;0:250000;3:252747;2:266667;1:321429;3:329670;2:377778;3:406593;1:464286;3:483516;2:488889;0:500000;3:560440;2:600000;1:607143;3:637363;2:711111;3:714286;0:750000;1:750000;3:791209;2:822222;3:868132;1:892857;2:933333;3:945055",
+      "rotationCanonicalFingerprint": "0:0;1:0;3:41209;2:72222;3:118132;1:142857;2:183333;3:195055;0:250000;3:271978;1:285714;2:294444;3:348901;2:405556;3:425824;1:428571;0:500000;3:502747;2:516667;1:571429;3:579670;2:627778;3:656593;1:714286;3:733516;2:738889;0:750000;3:810440;2:850000;1:857143;3:887363;2:961111;3:964286",
       "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 34,
+      "totalScheduledEvents": 33,
       "nearestMathematicalNeighbors": [
         {
-          "id": "industrial-fracture",
-          "similarity": 0.4667,
-          "bpm": 155
-        },
-        {
-          "id": "hardtek-mobius",
-          "similarity": 0.2553,
-          "bpm": 178
+          "id": "rotterdam-collision",
+          "similarity": 0.234,
+          "bpm": 180
         },
         {
           "id": "broken-reactor",
-          "similarity": 0.2281,
+          "similarity": 0.2321,
           "bpm": 172
+        },
+        {
+          "id": "frenchcore-spiral",
+          "similarity": 0.2245,
+          "bpm": 205
         }
       ],
       "lanes": [
@@ -10696,7 +10696,7 @@
           "modulus": 1,
           "argumentRadians": 0,
           "argumentDegrees": 0,
-          "rootDegree": 5,
+          "rootDegree": 4,
           "cycleBars": 1,
           "operation": "union",
           "gain": 0.55,
@@ -10705,10 +10705,9 @@
           "additionalRootSets": [],
           "baseRootPhases": [
             0,
-            0.2,
-            0.4,
-            0.6,
-            0.8
+            0.25,
+            0.5,
+            0.75
           ],
           "actualEventPhases": [
             {
@@ -10716,34 +10715,30 @@
               "velocity": 1
             },
             {
-              "phase": 0.2,
+              "phase": 0.25,
               "velocity": 1
             },
             {
-              "phase": 0.4,
+              "phase": 0.5,
               "velocity": 1
             },
             {
-              "phase": 0.6,
-              "velocity": 1
-            },
-            {
-              "phase": 0.8,
+              "phase": 0.75,
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 4
         },
         {
           "lane": 2,
           "sound": "noiseBurst",
           "complex": {
-            "a": 0.309016994375,
-            "b": 0.951056516295
+            "a": 0,
+            "b": 1
           },
-          "modulus": 0.9999999999998702,
-          "argumentRadians": 1.2566370614358198,
-          "argumentDegrees": 71.99999999999442,
+          "modulus": 1,
+          "argumentRadians": 1.5707963267948966,
+          "argumentDegrees": 90,
           "rootDegree": 7,
           "cycleBars": 1,
           "operation": "union",
@@ -10752,41 +10747,41 @@
           "euclidean": null,
           "additionalRootSets": [],
           "baseRootPhases": [
-            0.0285714286,
-            0.1714285714,
-            0.3142857143,
-            0.4571428571,
-            0.6,
-            0.7428571429,
-            0.8857142857
+            0.0357142857,
+            0.1785714286,
+            0.3214285714,
+            0.4642857143,
+            0.6071428571,
+            0.75,
+            0.8928571429
           ],
           "actualEventPhases": [
             {
-              "phase": 0.0285714286,
+              "phase": 0.0357142857,
               "velocity": 1
             },
             {
-              "phase": 0.1714285714,
+              "phase": 0.1785714286,
               "velocity": 1
             },
             {
-              "phase": 0.3142857143,
+              "phase": 0.3214285714,
               "velocity": 1
             },
             {
-              "phase": 0.4571428571,
+              "phase": 0.4642857143,
               "velocity": 1
             },
             {
-              "phase": 0.6,
+              "phase": 0.6071428571,
               "velocity": 1
             },
             {
-              "phase": 0.7428571429,
+              "phase": 0.75,
               "velocity": 1
             },
             {
-              "phase": 0.8857142857,
+              "phase": 0.8928571429,
               "velocity": 1
             }
           ],
@@ -11335,14 +11330,14 @@
           "bpm": 155
         },
         {
-          "id": "terror-geometry",
-          "similarity": 0.2553,
-          "bpm": 220
-        },
-        {
           "id": "minimal",
           "similarity": 0.122,
           "bpm": 124
+        },
+        {
+          "id": "303-pressure",
+          "similarity": 0.0714,
+          "bpm": 140
         }
       ],
       "lanes": [

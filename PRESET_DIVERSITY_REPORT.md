@@ -49,8 +49,8 @@ The rotation algorithm expands all events over the common LCM period (current ca
 | 1 | 22 |
 | 2 | 48 |
 | 3 | 8 |
-| 4 | 42 |
-| 5 | 13 |
+| 4 | 43 |
+| 5 | 12 |
 | 6 | 1 |
 | 7 | 17 |
 | 8 | 21 |
@@ -127,10 +127,10 @@ None found.
 
 ## Repeated first-lane patterns
 
-- berlin-bass-wall, concrete, shaft, dust, pressure, house, poly-4-7, warehouse-hammer, steel-rave, peak-pressure, acid-303, resonance-rush, liquid-corrosion, 303-pressure, rotterdam-collision, frenchcore-spiral
+- berlin-bass-wall, concrete, shaft, dust, pressure, house, poly-4-7, warehouse-hammer, steel-rave, peak-pressure, acid-303, resonance-rush, liquid-corrosion, 303-pressure, rotterdam-collision, frenchcore-spiral, terror-geometry
 - iron, stomp-circuit
 - afro, poly-3-5, acid-reactor, prime-number-riot
-- minimal, industrial-fracture, terror-geometry, hardtek-mobius
+- minimal, industrial-fracture, hardtek-mobius
 - neuro-burst, subpressure, ghostline
 - schranz-machinery, eleven-against-seven, euclidean-fragments
 - complex-roots-overload, breakcore-prime-shards
@@ -178,7 +178,7 @@ None found.
 | resonance-rush | acid | 134 | 4:2:8:4 | 4/2/8/6 | 2,4 | 8 | kick/clap/hat/acid |
 | liquid-corrosion | acid | 124 | 4:2:4:2 | 4/2/4/4 | 2,3 | 4 | kick/rim/openhat/acid |
 | 303-pressure | acid | 140 | 4:2:8:4 | 4/2/8/6 | 2,4 | 8 | kick/snare/hat/acid |
-| industrial-fracture | experimental | 155 | 5:7:9:11 | 5/7/9/11 | 2,3,4 | 1 | hardcoreKick/metallic/hat/reese |
+| industrial-fracture | experimental | 155 | 5:7:11:9 | 5/7/11/9 | 2,3,4 | 1 | hardcoreKick/metallic/hat/reese |
 | acid-reactor | experimental | 148 | 3:5:7:11 | 3/5/7/11 | 2,3,4 | 1 | technoKick/acidHard/metallic/hat |
 | rotterdam-collision | hardcore | 180 | 4:7:11:3 | 4/7/11/3 | 2,3,4 | 2 | gabberKick/metallic/noiseBurst/hoover |
 | schranz-machinery | hardcore | 158 | 7:9:11:13 | 7/9/11/13 | 2,3,4 | 2 | hardcoreKick/metallic/fmPerc/acidIndustrial |
@@ -188,7 +188,7 @@ None found.
 | prime-number-riot | experimental | 175 | 3:5:7:11 | 3/5/7/11 | 2,3,4 | 1 | gabberKick/metallic/raveStab/acidClassic |
 | eleven-against-seven | experimental | 146 | 7:11:5:13 | 7/11/5/13 | 2,3,4 | 2 | hardcoreKick/fmPerc/hat/acidIndustrial |
 | mechanical-paradox | experimental | 168 | 9:13:7:11 | 9/13/7/11 | 1,2,3,4 | 0 | technoKick/metallic/raveStab/noiseBurst |
-| terror-geometry | hardcore | 220 | 5:7:9:13 | 5/7/9/13 | 2,3,4 | 1 | gabberKick/noiseBurst/acidScreaming/metallic |
+| terror-geometry | hardcore | 220 | 4:7:9:13 | 4/7/9/13 | 2,3,4 | 1 | gabberKick/noiseBurst/acidScreaming/metallic |
 | complex-roots-overload | experimental | 186 | 7:11:13:17 | 7/11/13/17 | 1,2,3,4 | 0 | hardcoreKick/fmPerc/hoover/metallic |
 | hardtek-mobius | hardcore | 178 | 5:7:9:4 | 5/7/9/4 | 2,3,4 | 1 | frenchcoreKick/raveStab/fmPerc/acidHard |
 | breakcore-prime-shards | experimental | 190 | 7:5:11:3 | 7/5/11/3 | 1,2,3,4 | 0 | hardcoreKick/snare/noiseBurst/reese |

@@ -602,20 +602,20 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Group:** new mathematical study · **Category:** experimental · **BPM:** 155 · **Common period:** 1 bars · **Shared phase groups:** 1.
 **Musical role:** Dry broken-pressure impacts against metal clicks and a slow detuned bass contour.
-**Mathematical design:** Independent 5:7:9:11 grids; phase shifts separate the downbeats.
+**Mathematical design:** 5:7:11 polyrhythm in the first three lanes, supported by a shifted nine-root bass contour.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 5 | 1 | hardcoreKick | 0, 0.2, 0.4, 0.6, 0.8 | 0@1, 0.2@1, 0.4@1, 0.6@1, 0.8@1 |
 | 2 | 0.309017 + 0.951057i | 72 | 7 | 1 | metallic | 0.028571, 0.171429, 0.314286, 0.457143, 0.6, 0.742857, 0.885714 | 0.028571@1, 0.171429@1, 0.314286@1, 0.457143@1, 0.6@1, 0.742857@1, 0.885714@1 |
-| 3 | -0.809017 + 0.587785i | 144 | 9 | 1 | hat | 0.044444, 0.155556, 0.266667, 0.377778, 0.488889, 0.6, 0.711111, 0.822222, 0.933333 | 0.044444@1, 0.155556@1, 0.266667@1, 0.377778@1, 0.488889@1, 0.6@1, 0.711111@1, 0.822222@1, 0.933333@1 |
-| 4 | -0.900969 − 0.433884i | -154.285714 | 11 | 1 | reese | 0.051948, 0.142857, 0.233766, 0.324675, 0.415584, 0.506494, 0.597403, 0.688312, 0.779221, 0.87013, 0.961039 | 0.051948@1, 0.142857@1, 0.233766@1, 0.324675@1, 0.415584@1, 0.506494@1, 0.597403@1, 0.688312@1, 0.779221@1, 0.87013@1, 0.961039@1 |
+| 3 | -0.222521 + 0.974928i | 102.857143 | 11 | 1 | hat | 0.025974, 0.116883, 0.207792, 0.298701, 0.38961, 0.480519, 0.571429, 0.662338, 0.753247, 0.844156, 0.935065 | 0.025974@1, 0.116883@1, 0.207792@1, 0.298701@1, 0.38961@1, 0.480519@1, 0.571429@1, 0.662338@1, 0.753247@1, 0.844156@1, 0.935065@1 |
+| 4 | -0.939693 + 0.34202i | 160 | 9 | 1 | reese | 0.049383, 0.160494, 0.271605, 0.382716, 0.493827, 0.604938, 0.716049, 0.82716, 0.938272 | 0.049383@1, 0.160494@1, 0.271605@1, 0.382716@1, 0.493827@1, 0.604938@1, 0.716049@1, 0.82716@1, 0.938272@1 |
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.75 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.5 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.24 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.28
 
-**Nearest timing neighbors (Jaccard):** terror-geometry (0.4667), hardtek-mobius (0.2667), acid-reactor (0.2609)
+**Nearest timing neighbors (Jaccard):** hardtek-mobius (0.2667), minimal (0.1042), poly-3-5 (0.05)
 
-**Fingerprint:** 0:0;1:28571;2:44444;3:51948;3:142857;2:155556;1:171429;0:200000;3:233766;2:266667;1:314286;3:324675;2:377778;0:400000;3:415584;1:457143;2:488889;3:506494;3:597403;0:600000;1:600000;2:600000;3:688312;2:711111;1:742857;3:779221;0:800000;2:822222;3:870130;1:885714;2:933333;3:961039
+**Fingerprint:** 0:0;2:25974;1:28571;3:49383;2:116883;3:160494;1:171429;0:200000;2:207792;3:271605;2:298701;1:314286;3:382716;2:389610;0:400000;1:457143;2:480519;3:493827;2:571429;0:600000;1:600000;3:604938;2:662338;3:716049;1:742857;2:753247;0:800000;3:827160;2:844156;1:885714;2:935065;3:938272
 
 ## Acid Reactor (acid-reactor)
 
@@ -632,7 +632,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.82 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.45 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.29 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2
 
-**Nearest timing neighbors (Jaccard):** industrial-fracture (0.2609), prime-number-riot (0.1818), poly-3-5 (0.0909)
+**Nearest timing neighbors (Jaccard):** prime-number-riot (0.1818), poly-3-5 (0.0909), afro (0.0769)
 
 **Fingerprint:** 0:0;3:51948;1:66667;2:85714;3:142857;2:228571;3:233766;1:266667;3:324675;0:333333;2:371429;3:415584;1:466667;3:506494;2:514286;3:597403;2:657143;0:666667;1:666667;3:688312;3:779221;2:800000;1:866667;3:870130;2:942857;3:961039
 
@@ -651,7 +651,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.62 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.26 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.19 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2
 
-**Nearest timing neighbors (Jaccard):** frenchcore-spiral (0.2683), shaft (0.1667), iron (0.1579)
+**Nearest timing neighbors (Jaccard):** frenchcore-spiral (0.2683), terror-geometry (0.234), shaft (0.1667)
 
 **Fingerprint:** 0:0;1:35714;2:45455;3:111111;2:136364;1:178571;2:227273;0:250000;2:318182;1:321429;2:409091;3:444444;1:464286;0:500000;2:500000;2:590909;1:607143;2:681818;0:750000;1:750000;2:772727;3:777778;2:863636;1:892857;2:954545
 
@@ -689,7 +689,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.65 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.31 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.18 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.15
 
-**Nearest timing neighbors (Jaccard):** terror-geometry (0.2281), mechanical-paradox (0.1014), poly-3-5 (0.0222)
+**Nearest timing neighbors (Jaccard):** terror-geometry (0.2321), mechanical-paradox (0.1014), poly-3-5 (0.0222)
 
 **Fingerprint:** 3:21978;1:36364;0:40000;2:47619;3:98901;1:127273;3:175824;2:190476;1:218182;0:240000;3:252747;1:309091;3:329670;2:333333;1:400000;3:406593;0:440000;2:476190;3:483516;1:490909;3:560440;1:581818;2:619048;3:637363;0:640000;1:672727;3:714286;2:761905;1:763636;3:791209;0:840000;1:854545;3:868132;2:904762;3:945055;1:945455
 
@@ -708,7 +708,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.58 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.27 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.3 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.15
 
-**Nearest timing neighbors (Jaccard):** rotterdam-collision (0.2683), shaft (0.1579), iron (0.15)
+**Nearest timing neighbors (Jaccard):** rotterdam-collision (0.2683), terror-geometry (0.2245), shaft (0.1579)
 
 **Fingerprint:** 0:0;1:35714;3:36364;2:50000;3:127273;1:178571;3:218182;0:250000;2:250000;3:309091;1:321429;3:400000;2:450000;1:464286;3:490909;0:500000;3:581818;1:607143;2:650000;3:672727;0:750000;1:750000;3:763636;2:850000;3:854545;1:892857;3:945455
 
@@ -727,7 +727,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.44 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.22 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.17 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.23
 
-**Nearest timing neighbors (Jaccard):** euclidean-fragments (0.0694), minimal (0.0364), poly-4-7 (0.0208)
+**Nearest timing neighbors (Jaccard):** euclidean-fragments (0.0694), minimal (0.0364), industrial-fracture (0.0303)
 
 **Fingerprint:** 1:25974;0:28571;2:32967;3:40000;2:109890;1:116883;0:171429;2:186813;1:207792;3:240000;2:263736;1:298701;0:314286;2:340659;1:389610;2:417582;3:440000;0:457143;1:480519;2:494505;1:571429;2:571429;0:600000;3:640000;2:648352;1:662338;2:725275;0:742857;1:753247;2:802198;3:840000;1:844156;2:879121;0:885714;1:935065;2:956044
 
@@ -792,20 +792,20 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Group:** new mathematical study · **Category:** hardcore · **BPM:** 220 · **Common period:** 1 bars · **Shared phase groups:** 1.
 **Musical role:** Fast low-end impacts and densely shifting high-frequency shards, peak-controlled.
-**Mathematical design:** 5:7:9:13 against a shared cyclic reference.
+**Mathematical design:** 4:7:9:13 four-lane polyrhythm: a fixed four-root kick against independently offset seven, nine and thirteen-root layers.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 5 | 1 | gabberKick | 0, 0.2, 0.4, 0.6, 0.8 | 0@1, 0.2@1, 0.4@1, 0.6@1, 0.8@1 |
-| 2 | 0.309017 + 0.951057i | 72 | 7 | 1 | noiseBurst | 0.028571, 0.171429, 0.314286, 0.457143, 0.6, 0.742857, 0.885714 | 0.028571@1, 0.171429@1, 0.314286@1, 0.457143@1, 0.6@1, 0.742857@1, 0.885714@1 |
+| 1 | 1 + 0i | 0 | 4 | 1 | gabberKick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
+| 2 | 0 + 1i | 90 | 7 | 1 | noiseBurst | 0.035714, 0.178571, 0.321429, 0.464286, 0.607143, 0.75, 0.892857 | 0.035714@1, 0.178571@1, 0.321429@1, 0.464286@1, 0.607143@1, 0.75@1, 0.892857@1 |
 | 3 | -0.809017 + 0.587785i | 144 | 9 | 1 | acidScreaming | 0.044444, 0.155556, 0.266667, 0.377778, 0.488889, 0.6, 0.711111, 0.822222, 0.933333 | 0.044444@1, 0.155556@1, 0.266667@1, 0.377778@1, 0.488889@1, 0.6@1, 0.711111@1, 0.822222@1, 0.933333@1 |
 | 4 | -0.222521 + 0.974928i | 102.857143 | 13 | 1 | metallic | 0.021978, 0.098901, 0.175824, 0.252747, 0.32967, 0.406593, 0.483516, 0.56044, 0.637363, 0.714286, 0.791209, 0.868132, 0.945055 | 0.021978@1, 0.098901@1, 0.175824@1, 0.252747@1, 0.32967@1, 0.406593@1, 0.483516@1, 0.56044@1, 0.637363@1, 0.714286@1, 0.791209@1, 0.868132@1, 0.945055@1 |
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.55 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.23 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.13 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.11
 
-**Nearest timing neighbors (Jaccard):** industrial-fracture (0.4667), hardtek-mobius (0.2553), broken-reactor (0.2281)
+**Nearest timing neighbors (Jaccard):** rotterdam-collision (0.234), broken-reactor (0.2321), frenchcore-spiral (0.2245)
 
-**Fingerprint:** 0:0;3:21978;1:28571;2:44444;3:98901;2:155556;1:171429;3:175824;0:200000;3:252747;2:266667;1:314286;3:329670;2:377778;0:400000;3:406593;1:457143;3:483516;2:488889;3:560440;0:600000;1:600000;2:600000;3:637363;2:711111;3:714286;1:742857;3:791209;0:800000;2:822222;3:868132;1:885714;2:933333;3:945055
+**Fingerprint:** 0:0;3:21978;1:35714;2:44444;3:98901;2:155556;3:175824;1:178571;0:250000;3:252747;2:266667;1:321429;3:329670;2:377778;3:406593;1:464286;3:483516;2:488889;0:500000;3:560440;2:600000;1:607143;3:637363;2:711111;3:714286;0:750000;1:750000;3:791209;2:822222;3:868132;1:892857;2:933333;3:945055
 
 ## Complex Roots Overload (complex-roots-overload)
 
@@ -841,7 +841,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.5 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.33 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.19 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.22
 
-**Nearest timing neighbors (Jaccard):** industrial-fracture (0.2667), terror-geometry (0.2553), minimal (0.122)
+**Nearest timing neighbors (Jaccard):** industrial-fracture (0.2667), minimal (0.122), 303-pressure (0.0714)
 
 **Fingerprint:** 0:0;1:28571;2:37037;3:62500;2:148148;1:171429;0:200000;2:259259;3:312500;1:314286;2:370370;0:400000;1:457143;2:481481;3:562500;2:592593;0:600000;1:600000;2:703704;1:742857;0:800000;3:812500;2:814815;1:885714;2:925926
 

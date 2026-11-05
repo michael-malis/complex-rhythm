@@ -58,6 +58,25 @@ try {
   await page.close();
  }
 
+ // A 28px visible root must have at least a 44px effective interaction zone.
+ // Click 21px tangent to the center of a known root (outside old 20px radius),
+ // then drag and verify the canonical complex argument really changes.
+ const mobileHit=await context.newPage();
+ await mobileHit.setViewportSize({width:390,height:844});
+ await mobileHit.goto(base,{waitUntil:'domcontentloaded'});
+ const hitInfo=await mobileHit.evaluate(()=>{
+   const rect=document.querySelector('#orbitCanvas').getBoundingClientRect();
+   return {x:rect.left+rect.width/2,y:rect.top+rect.height/2-rect.width*.427};
+ });
+ const zBefore=await mobileHit.locator('#trackA0').inputValue();
+ await mobileHit.mouse.move(hitInfo.x+21,hitInfo.y);
+ await mobileHit.mouse.down();
+ await mobileHit.mouse.move(hitInfo.x+47,hitInfo.y+14,{steps:8});
+ await mobileHit.mouse.up();
+ const zAfter=await mobileHit.locator('#trackA0').inputValue();
+ verify(zBefore!==zAfter,'44px canvas root touch radius permits tangent drag at 21px offset');
+ await mobileHit.close();
+
  const page=await context.newPage();
  await page.setViewportSize({width:1440,height:900});
  page.on('pageerror',e=>errors.push('interactions: '+e.message));

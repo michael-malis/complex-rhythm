@@ -10,7 +10,7 @@ try {
  presets=await page.evaluate(()=>{
   if(!window.RhythmResearch)throw Error('Read-only preset research interface unavailable');
   return window.RhythmResearch.presets().map(p=>({
-   ...p,tracks:p.tracks.map(t=>({...t,events:window.RhythmResearch.events(t)}))
+   ...p,tracks:p.tracks.map(t=>({...t,events:window.RhythmResearch.events(t),basePhases:window.RhythmResearch.rootPhases(t)}))
   }));
  });
  await page.close();
@@ -58,6 +58,91 @@ for(const p of presets){
   geom:JSON.stringify(p.tracks.map(t=>({a:t.a,b:t.b,n:t.n,cycleBars:t.cycleBars,layers:t.layers,euclidean:t.euclidean,operation:t.operation}))),
   instr:sounds.join('/')});
 }
+
+const rowById=new Map(rows.map(r=>[r.id,r]));
+function expandedSet(row,fullBars){
+ const set=new Set();
+ const n=fullBars/row.bars;
+ for(let rep=0;rep<n;rep++){
+  for(const item of row.raw.split(';')){
+   if(!item)continue;
+   const [lane,phase]=item.split(':').map(Number);
+   const pos=Math.round((rep*Q+phase)*row.bars/fullBars)%Q;
+   set.add(lane+':'+pos);
+  }
+ }
+ return set;
+}
+function jaccard(a,b){
+ const common=lcm(a.bars,b.bars),left=expandedSet(a,common),right=expandedSet(b,common);
+ let shared=0;for(const entry of left)if(right.has(entry))shared++;
+ return shared/(left.size+right.size-shared||1);
+}
+const inventory=presets.map((p,index)=>{
+ const row=rowById.get(p.id);
+ const nearest=rows.filter(r=>r.id!==p.id).map(r=>({id:r.id,
+  similarity:Number(jaccard(row,r).toFixed(4)),bpm:r.bpm}))
+  .sort((a,b)=>b.similarity-a.similarity||a.id.localeCompare(b.id)).slice(0,3);
+ return {
+  id:p.id,name:p.name,category:p.category,origin:index<35?'original catalog':'new mathematical study',
+  bpm:p.bpm,commonCycleBars:row.bars,
+  character:p.character||null,mathNote:p.mathNote||null,
+  eventFingerprint:row.raw,rotationCanonicalFingerprint:row.shifted,
+  sharedPhaseGroups:row.shared,totalScheduledEvents:row.counts.reduce((a,b)=>a+b,0),
+  nearestMathematicalNeighbors:nearest,
+  lanes:p.tracks.map((t,i)=>({
+   lane:i+1,sound:t.sound,complex:{a:t.a,b:t.b},
+   modulus:Math.hypot(t.a,t.b),argumentRadians:t.a===0&&t.b===0?null:Math.atan2(t.b,t.a),
+   argumentDegrees:t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI,
+   rootDegree:t.n,cycleBars:t.cycleBars,operation:t.operation,gain:t.gain,
+   synthPatch:t.patch||null,euclidean:t.euclidean||null,
+   additionalRootSets:t.layers||[],
+   baseRootPhases:t.basePhases.map(x=>Number(x.toFixed(10))).sort((a,b)=>a-b),
+   actualEventPhases:t.events.map(e=>({phase:Number(e.phase.toFixed(10)),
+     velocity:Number(e.velocity.toFixed(5))})),
+   rhythmicEventCount:t.events.length
+  }))
+ };
+});
+fs.writeFileSync('PRESET_INVENTORY.json',JSON.stringify({
+ schema:'roots-rhythm-preset-inventory/1',
+ generatedBy:'tests/preset-diversity.mjs',
+ units:{phase:'fraction of its own lane cycle',argument:'radians or degrees as labelled'},
+ similarityMethod:'Four-lane Jaccard of exact event positions over pairwise LCM; timing only; not a listening score',
+ total:inventory.length,originals:35,newStudies:15,
+ presets:inventory
+},null,2)+'\n');
+const inventoryLines=[
+ '# All 50 preset configurations: source parameters and actual phases','',
+ 'Generated from the live event model. Phase fractions are relative to each lane cycle.',
+ 'Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical score.',''
+];
+for(const p of inventory){
+ inventoryLines.push('## '+p.name+' ('+p.id+')','',
+  '**Group:** '+p.origin+' · **Category:** '+p.category+' · **BPM:** '+p.bpm+
+  ' · **Common period:** '+p.commonCycleBars+' bars · **Shared phase groups:** '+p.sharedPhaseGroups+'.');
+ if(p.character)inventoryLines.push('**Musical role:** '+p.character);
+ if(p.mathNote)inventoryLines.push('**Mathematical design:** '+p.mathNote);
+ inventoryLines.push('','| Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |','|---|---|---:|---:|---:|---|---|---|');
+ for(const lane of p.lanes){
+  const numeric=x=>Number(x.toFixed(6)).toString();
+  const z=numeric(lane.complex.a)+(lane.complex.b<0?' − ':' + ')+numeric(Math.abs(lane.complex.b))+'i';
+  const phases=lane.baseRootPhases.map(numeric).join(', ')||'none (z=0)';
+  const events=lane.actualEventPhases.map(x=>numeric(x.phase)+'@'+numeric(x.velocity)).join(', ')||'none';
+  inventoryLines.push('| '+lane.lane+' | '+z+' | '+(lane.argumentDegrees===null?'undefined':numeric(lane.argumentDegrees))+
+  ' | '+lane.rootDegree+' | '+lane.cycleBars+' | '+lane.sound+' | '+phases+' | '+events+' |');
+ }
+ inventoryLines.push('', '**Operations, patches and accents:** '+
+  p.lanes.map(l=>'L'+l.lane+': '+l.operation+', '+l.additionalRootSets.length+
+  ' additional sets, '+(l.euclidean?'E('+l.euclidean.k+','+l.euclidean.n+')':'no Euclidean overlay')+
+  ', patch '+(l.synthPatch?JSON.stringify(l.synthPatch):'default')+
+  ', gain '+l.gain).join(' · '),
+  '','**Nearest timing neighbors (Jaccard):** '+
+  p.nearestMathematicalNeighbors.map(n=>n.id+' ('+n.similarity+')').join(', '),
+  '','**Fingerprint:** '+p.eventFingerprint,'');
+}
+fs.writeFileSync('PRESET_INVENTORY.md',inventoryLines.join('\n'));
+
 function repeated(key,subset=rows){
  const map=new Map();
  subset.forEach(p=>map.set(p[key],(map.get(p[key])||[]).concat([p.id])));
@@ -125,6 +210,7 @@ lines.push('','## Interpretation',
  '- All calculations are derived from the same event function as the visual and audio scheduler.',
  '- Real device listening and expert musical review remain outstanding.',
  '');
+lines.push('','**Full coordinates, source phases, instruments, patch and neighbor audit:** [PRESET_INVENTORY.md](PRESET_INVENTORY.md) and [PRESET_INVENTORY.json](PRESET_INVENTORY.json).');
 const report=lines.join('\n');
 fs.writeFileSync('PRESET_DIVERSITY_REPORT.md',report);
 console.log(JSON.stringify({presets:rows.length,categories:categoryCounts.size,

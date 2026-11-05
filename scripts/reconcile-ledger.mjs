@@ -59,6 +59,15 @@ for(const [req,evidence,commit] of [
  ['R-NUM-008','CI:42123915938; 146 math assertions; 42 relative-error polar cases and 100 repeated UI coordinate/unit toggles; abs 1e-8 and rel 1e-10','f5364e734c61b79514eb28b4879b360ae83aa8bb'],
  ['R-ENG-003','CI:42123915938; tests/transport-switching.mjs 24 live transitions; all lanes/math/audio updated, no bus or sample leak, no old scheduler timer','28d5fb7e60c03669ae44c99815ca3d2c8162d7d3']
 ])verified.set(req,{evidence,commit});
+// Newly proven requirements: both acceptance tests completed in real CI.
+verified.set('R-MDL-001',{
+ evidence:'CI:42132119969; tests/event-properties.mjs 400 deterministic independent phase/source/patch/articulation checks; math-io.js single planEvents source; app.js draw and Web Audio share events()',
+ commit:'a07982dbb001583ccf1f177d3baea6de8a8bd92e'
+});
+verified.set('R-PST-002',{
+ evidence:'CI:42131998402; tests/preset-diversity.mjs 12 of 15 new studies have non-four-on-the-floor first lane; PRESET_DIVERSITY_REPORT.md checks repeated patterns across remaining lanes',
+ commit:'e205a59c57817c8e667189cb66fa15bbdb8ab882'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

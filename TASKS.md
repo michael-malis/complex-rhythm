@@ -36,5 +36,5 @@ Evidence policy: check only work verified by source review, Chromium regression 
 
 ## Phase 5 / Release
 - [x] Document design decisions and structure in README and docs/UI_DESIGN_SYSTEM.md.
-- [ ] Verify final (post-polish) GitHub Actions run success.
-- [ ] Merge working branch to main and verify Pages deployment.
+- [x] Verify final (post-polish) GitHub Actions run success: https://github.com/michael-malis/complex-rhythm/actions/runs/41997205463
+- [x] Merge working branch into main and verify Pages deployment: https://github.com/michael-malis/complex-rhythm/actions/runs/41997205477

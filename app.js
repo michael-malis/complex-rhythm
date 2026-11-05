@@ -78,22 +78,38 @@ function sanitizeVoicePatch(raw) {
  return Object.keys(out).length?out:null;
 }
 function cleanLayer(layer){return {a:safeReal(layer.a,1),b:safeReal(layer.b,0),n:safeInt(layer.n,1,64,1),velocity:Math.min(1,Math.max(.1,safeReal(layer.velocity,.62)))}}
-function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,64,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),gain:Number.isFinite(Number(t.gain))?Math.max(.05,Math.min(1.5,Number(t.gain))):1,patch:sanitizeVoicePatch(t.patch),euclidean:t.euclidean&&Number.isInteger(t.euclidean.k)&&Number.isInteger(t.euclidean.n)&&t.euclidean.n>=1&&t.euclidean.n<=256&&t.euclidean.k>=0&&t.euclidean.k<=t.euclidean.n?{k:t.euclidean.k,n:t.euclidean.n,rotation:Math.trunc(t.euclidean.rotation||0)}:null,layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
+function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,64,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),laneIndex:i,operation:t.operation==='intersection'?'intersection':'union',gain:Number.isFinite(Number(t.gain))?Math.max(.05,Math.min(1.5,Number(t.gain))):1,patch:sanitizeVoicePatch(t.patch),euclidean:t.euclidean&&Number.isInteger(t.euclidean.k)&&Number.isInteger(t.euclidean.n)&&t.euclidean.n>=1&&t.euclidean.n<=256&&t.euclidean.k>=0&&t.euclidean.k<=t.euclidean.n?{k:t.euclidean.k,n:t.euclidean.n,rotation:Math.trunc(t.euclidean.rotation||0),velocity:Number.isFinite(Number(t.euclidean.velocity))?Math.max(.1,Math.min(1,Number(t.euclidean.velocity))):.58}:null,layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
 function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1)}
 // Union of sets of complex roots; exact duplicates combine rather than play twice.
-function events(track){const all=rootPhases(track).map(phase=>({phase,velocity:1}));for(const layer of track.layers||[]){for(const phase of rootPhases(layer))all.push({phase,velocity:layer.velocity??.62})}all.sort((a,b)=>a.phase-b.phase);const out=[];for(const item of all){const last=out[out.length-1];if(last&&Math.abs(last.phase-item.phase)<1e-6)last.velocity=Math.max(last.velocity,item.velocity);else out.push(item)}if(out.length>1&&Math.abs(1+out[0].phase-out[out.length-1].phase)<1e-6){out[0].velocity=Math.max(out[0].velocity,out.pop().velocity)}return out}
+function events(track) {
+ const tol=1e-6,all=[];
+ const add=(phase,velocity,kind,index,sourceIndex=0)=>all.push({phase,velocity,sources:[{lane:track.laneIndex??-1,kind,index,sourceIndex}]});
+ rootPhases(track).forEach((phase,k)=>add(phase,1,'base',k));
+ for(const [i,layer] of (track.layers||[]).entries())rootPhases(layer).forEach((phase,k)=>add(phase,layer.velocity??.62,'additional',k,i));
+ if(track.euclidean)RhythmMath.euclidean(track.euclidean.k,track.euclidean.n,track.euclidean.rotation).forEach((phase,k)=>add(phase,track.euclidean.velocity??.58,'euclidean',k));
+ all.sort((a,b)=>a.phase-b.phase);
+ const merged=[];
+ for(const item of all){
+  const last=merged[merged.length-1];
+  if(last&&item.phase-last.phase<tol){last.velocity=Math.max(last.velocity,item.velocity);last.sources.push(...item.sources)}
+  else merged.push({...item,sources:[...item.sources]});
+ }
+ if(merged.length>1&&1+merged[0].phase-merged[merged.length-1].phase<tol){
+  const last=merged.pop();merged[0].velocity=Math.max(merged[0].velocity,last.velocity);merged[0].sources.push(...last.sources);
+ }
+ if(track.operation==='intersection')return merged.filter(item=>item.sources.some(s=>s.kind==='base')&&item.sources.some(s=>s.kind!=='base'));
+ return merged;
+}
 function roots(track){return events(track).map(x=>x.phase)}
 function composePhases(track) {
- const base=rootPhases(track);
- const extra=[];
+ const base=rootPhases(track),extra=[];
  for(const layer of track.layers||[])extra.push(...rootPhases(layer));
- const near=(a,b)=>Math.abs(a-b)<1e-6||Math.abs(Math.abs(a-b)-1)<1e-6;
- const unique=items=>items.filter((phase,i)=>items.findIndex(v=>near(v,phase))===i).sort((a,b)=>a-b);
- const added=unique(extra);
+ if(track.euclidean)extra.push(...RhythmMath.euclidean(track.euclidean.k,track.euclidean.n,track.euclidean.rotation));
+ const near=(a,b)=>Math.min(Math.abs(a-b),1-Math.abs(a-b))<1e-6;
+ const added=RhythmMath.unique(extra);
  const merged=events(track).map(ev=>({
-  phase:ev.phase,
-  base:base.some(p=>near(p,ev.phase)),
-  added:added.some(p=>near(p,ev.phase))
+  phase:ev.phase,base:ev.sources.some(s=>s.kind==='base'),added:ev.sources.some(s=>s.kind!=='base'),
+  euclidean:ev.sources.some(s=>s.kind==='euclidean')
  }));
  return {base,added,merged,overlaps:merged.filter(v=>v.base&&v.added).length};
 }

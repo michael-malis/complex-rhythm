@@ -18,15 +18,15 @@ jobs:
           node-version: '22'
       - name: Fetch pinned package and retain distributable files locally
         run: |
-          npm pack katex@0.16.22 --silent
+          npm install --no-save --ignore-scripts katex@0.16.22
           mkdir -p vendor/katex
-          tar -xzf katex-0.16.22.tgz --wildcards 'package/dist/katex.min.js' 'package/dist/katex.min.css' 'package/dist/fonts/*' --strip-components=2 -C vendor/katex
+          cp node_modules/katex/dist/katex.min.js vendor/katex/katex.min.js
+          cp node_modules/katex/dist/katex.min.css vendor/katex/katex.min.css
+          cp -R node_modules/katex/dist/fonts vendor/katex/fonts
           test -s vendor/katex/katex.min.js
           test -s vendor/katex/katex.min.css
-          echo 'VENDORED FILES:'
-          find vendor/katex -maxdepth 2 -type f | head -30
-          test -d vendor/katex/fonts
-          find vendor/katex/fonts -name '*.woff2' | grep -q .
+          test -s vendor/katex/fonts/KaTeX_Main-Regular.woff2
+          echo 'Vendor assets validated'
       - name: Commit frozen vendor distribution to upgrade branch
         run: |
           git config user.name 'github-actions[bot]'

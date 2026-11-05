@@ -494,13 +494,15 @@ function renderWindowTimeline() {
  if(eventSummary)eventSummary.textContent=`4-bar view · ${analysis.totalEvents} audible hits · ${analysis.uniqueMoments} distinct times · ${analysis.sharedMoments} shared across lanes`;
  if(!$('windowPanel').open)return;
  const container=$('windowTimeline');container.replaceChildren();
+ $('eventInspection').textContent='Select a timeline row, then use arrow keys to inspect individual mathematical events.';
  const simultaneous=analysis.sharedMoments;
  for(let i=0;i<tracks.length;i++){
   const row=document.createElement('div');row.className='window-lane';
   row.style.setProperty('--lane-color',COLORS[i]);
   const label=document.createElement('span');label.className='window-lane-label';label.textContent=`Lane ${i+1}`;
   const markers=document.createElement('div');markers.className='window-lane-events';
-  markers.setAttribute('role','img');
+  markers.setAttribute('role','button');
+  markers.tabIndex=0;
   const current=scheduled.filter(event=>event.lane===i);
   markers.setAttribute('aria-label',`${current.length} events on lane ${i+1} over four bars beginning at bar ${start+1}`);
   const fragment=document.createDocumentFragment();
@@ -515,6 +517,36 @@ function renderWindowTimeline() {
    fragment.append(dot);
   }
   markers.append(fragment);
+  const describeSource=src=>src.kind==='base'?'base root '+(src.index+1):
+   src.kind==='additional'?'additional root set '+(src.sourceIndex+1)+', root '+(src.index+1):
+   'Euclidean accent '+(src.index+1);
+  let focusedEvent=0;
+  const inspect=(index)=>{
+   if(!current.length){$('eventInspection').textContent='Lane '+(i+1)+' is silent in this four-bar window.';return}
+   focusedEvent=((index%current.length)+current.length)%current.length;
+   const event=current[focusedEvent];
+   [...markers.children].forEach((dot,k)=>dot.classList.toggle('window-selected',k===focusedEvent));
+   const bar=event.time/secPerBar+1;
+   $('eventInspection').textContent=`Lane ${i+1} · bar ${bar.toFixed(3)} · ${SOUNDS[tracks[i].sound]} · velocity ${event.velocity.toFixed(2)} · ${event.sources.map(describeSource).join(' + ')}`;
+   markers.setAttribute('aria-label','Inspect lane '+(i+1)+', event '+(focusedEvent+1)+' of '+current.length+'. '+$('eventInspection').textContent);
+  };
+  markers.addEventListener('click',e=>{
+   if(!current.length){inspect(0);return}
+   const rect=markers.getBoundingClientRect(),fraction=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+   let nearest=0,distance=Infinity;
+   current.forEach((event,k)=>{
+    const d=Math.abs((event.time/secPerBar-start)/span-fraction);
+    if(d<distance){distance=d;nearest=k}
+   });
+   inspect(nearest);
+  });
+  markers.addEventListener('keydown',e=>{
+   if(['ArrowRight','ArrowLeft','Home','End','Enter',' '].includes(e.key)){
+    e.preventDefault();
+    inspect(e.key==='ArrowRight'?focusedEvent+1:e.key==='ArrowLeft'?focusedEvent-1:
+      e.key==='End'?current.length-1:e.key==='Home'?0:focusedEvent);
+   }
+  });
   const count=document.createElement('span');count.className='window-count';count.textContent=`${current.length} hits`;
   row.append(label,markers,count);container.append(row);
  }

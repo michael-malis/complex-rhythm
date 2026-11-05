@@ -232,3 +232,10 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 /* Event statistics derive from the same absolute schedule driving Web Audio. */
 .stage-events{font-size:17px;line-height:1.45;color:var(--sub);margin:6px 14px 10px}
 .lane-equation,.lane-eq{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+
+/* Touch / keyboard event inspection works without tiny per-marker hit targets. */
+.window-lane-events{cursor:crosshair;outline-offset:3px;touch-action:pan-y}
+.window-lane-events:focus-visible{outline:3px solid var(--accent)}
+.window-mark.window-selected{outline:3px solid var(--ink);outline-offset:3px;z-index:2}
+.event-inspection{font-size:17px;line-height:1.5;color:var(--ink);padding:8px 11px;
+  border:1px solid var(--line);border-radius:5px;background:var(--panel);min-height:44px}

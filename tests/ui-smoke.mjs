@@ -140,6 +140,17 @@ try {
  verify((await page.locator('#unionCount').textContent())==='6','worked example six unique phases');
  verify(await page.locator('#exampleProof .katex').count()===1,'worked example displays correctly typeset phase-set identity');
  verify((await page.locator('#exampleProof').textContent()).includes('Φ'),'mathematical proof explicitly denotes phases, not raw roots');
+ await page.locator('#windowPanel').evaluate(el=>el.open=true);
+ await page.waitForTimeout(50);
+ const timeline=page.locator('.window-lane-events').first();
+ await timeline.click({position:{x:4,y:24}});
+ verify((await page.locator('#eventInspection').textContent()).includes('base root 1'),
+  'timeline inspection displays base mathematical source');
+ verify((await page.locator('#eventInspection').textContent()).includes('additional root set 1'),
+  'timeline inspection identifies the overlapping additional root');
+ await timeline.focus();await page.keyboard.press('ArrowRight');
+ verify((await page.locator('#eventInspection').textContent()).includes('velocity'),
+  'timeline events are keyboard-inspectable with velocity and source');
  await page.locator('#argumentAngle').evaluate(el=>{el.value='90';el.dispatchEvent(new Event('input',{bubbles:true}))});
  const a=Number(await page.locator('#trackA0').inputValue());
  const b=Number(await page.locator('#trackB0').inputValue());

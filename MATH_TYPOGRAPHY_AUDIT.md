@@ -1,6 +1,6 @@
 # Mathematical typography and geometry audit
 
-**Scope:** before/after the scientific-workbench typography upgrade, KaTeX integration, root geometry and both interface themes. This is an evidence-backed engineering audit; do not infer that missing human review or unsupplied annotated screenshots have been checked.
+**Scope:** before/after the scientific-workbench typography upgrade, KaTeX integration, root geometry and both interface themes. This is an evidence-backed engineering audit; do not infer that missing human review or the second unsupplied annotated screenshot have been checked.
 
 ## Baseline measurement
 
@@ -67,8 +67,19 @@ The quarter-cycle labels have been offset 55px from crowded cardinal axes to red
 
 ## Unresolved evidence
 
-1. The two user-annotated screenshots referred to in `MASTER_IMPLEMENTATION_SPEC.md` were **not included in the received document**. The specific highlighted-text locations therefore cannot be compared pixel-for-pixel against those original annotations.
+1. The two highlighted screenshots are not embedded in `MASTER_IMPLEMENTATION_SPEC.md`. **One user-uploaded image (506×556) was recovered from conversation files**, covering cramped Track 1 explanatory text, Cartesian captions and small phase/readout text. The second source image is still unavailable, so complete pixel-by-pixel source acceptance cannot be asserted; see issue #2.
 2. Independent visual review on actual mobile devices and screen-reader assessment are not established by headless browser screenshots.
 3. A universal no-overlap guarantee for four 28–40px rings at 360px width and n=64 is geometrically impossible without zoom/pan or a different presentation; the current design supplies zoom/pan rather than shrinking the mathematical markers.
 
 **Status:** mathematical font rendering and automated responsive checks exist; full human acceptance for every requirement remains pending.
+
+## 2026-11-05 responsive and touch verification extension
+
+- Desktop 1280–1520px uses a genuine **two-by-two lane editor grid**, alongside the complex-plane root diagram. At 760–1279px, the diagram appears before a two-column editor grid; below 520px, the diagram comes before one-column editors.
+- All four edit cards remain separately visible, with degree, Cartesian/Polar mode, sound and independent cycle length. The code does not shrink its font scale merely to fit all cards.
+- `tests/spec-ui.mjs` now checks the full 14-role typography ladder across 12 viewport/theme scenarios, for **276 runtime assertions** in the latest passing batch.
+- `tests/touch-targets.mjs` evaluates 77 visible interactive surfaces each at 360, 390 and 768px widths: **231 interactive targets inspected with zero undersized controls**, after correcting four 40px-high range inputs and a squeezed argument slider.
+- `tests/accessibility-contrast.mjs` inspects visible text/plot colors under both themes; **all 14 viewport/theme cases passed** in the final measured contrast run.
+- A worked `R_4(1)\cup R_3(1)` lesson now states the mathematical **phase** identity `\Phi(R_4(1)\cup R_3(1))`, rather than incorrectly equating complex numbers with fractional beat positions.
+
+Evidence: [full UI, audio, typography and touch suite](https://github.com/michael-malis/complex-rhythm/actions/runs/42117874127); [screenshot/layout first pass](https://github.com/michael-malis/complex-rhythm/actions/runs/42114210506).

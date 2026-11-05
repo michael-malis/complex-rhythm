@@ -25,3 +25,9 @@ Status: **PRELIMINARY / NOT COMPLETE**. Started before modifying application cod
 - Existing Chromium screenshots and previous successful test run: https://github.com/michael-malis/complex-rhythm/actions/runs/41997205463
 - Initial `qa/baseline` will capture measured fonts, contrast, marker diameters and geometry before functional changes.
 - This document records only observed or source-supported gaps; no task is marked VERIFIED by the existence of this audit.
+
+## 2026-11-05 source-image recovery and responsive design correction
+
+The original text-only specification does not embed its two highlighted screenshots. However, **one real user-uploaded `image.png` (506×556 px) was recovered from conversation files** after the initial audit. It marks the prior cramped Track 1 editor: truncated explanatory prose, the `a · Re(z)`/`b · Im(z)` labels, the argument slider caption and the small `3 hits per bar` / `arg(z)` / modulus readouts. The second referenced image remains unavailable. See [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2).
+
+The actual UI now shows four simultaneous 2×2 edit cards on desktop and places the root diagram first on tablets and mobile. All 7 viewport geometries passed [Playwright regression 42114210506](https://github.com/michael-malis/complex-rhythm/actions/runs/42114210506). Later checks extend this to 276 typography/KaTeX assertions and 231 touch-target measurements. This update does **not** retroactively change the historic before-state evidence.

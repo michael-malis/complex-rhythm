@@ -10,9 +10,9 @@
 | Requirement registry | 98 IDs, 651 tasks, reverse references, acceptance and status consistency | Integrity check passed on initial registry; remaining statuses are pending reconciliation | [Actions 42106152581](https://github.com/michael-malis/complex-rhythm/actions/runs/42106152581) |
 | Original baseline | 1600×1000, 1440×900, 1280×800, 1024×768, 768×1024, 390×844, each in light/dark | 12 screenshots and font/color/contrast/panel metrics archived | [Actions 42011738339](https://github.com/michael-malis/complex-rhythm/actions/runs/42011738339) |
 | Pure mathematics | Roots of 1/−1/i, coordinate round-trips, zero, degree17/32/64, Euclidean/LCM, 2π periodicity, 640-event dense planner | 60 mathematical assertions passed | [Actions 42105929881](https://github.com/michael-malis/complex-rhythm/actions/runs/42105929881) |
-| Seven-screen UI regression | Four independent editors, root dragging, composition/true intersection, 35 original +15 new presets, JSON round-trip | 144 assertions passed, no user-facing JS errors | [Actions 42106425023](https://github.com/michael-malis/complex-rhythm/actions/runs/42106425023) |
-| Accessibility and contrast | Seven responsive sizes × light/dark themes, 160 visible text elements per configuration, key values 7:1 and track palette 3:1 | **14/14 configurations passed, 0 text and 0 track palette failures** after accent color correction | [Actions 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484) |
-| Mathematical typography | Self-hosted KaTeX 0.16.22, `\dfrac{}` geometry, six screen sizes × two themes, Cartesian/Polar, direct zoom | 108 assertions passed | [Actions 42106425023](https://github.com/michael-malis/complex-rhythm/actions/runs/42106425023) |
+| Seven-screen UI regression | Four independent editors, root dragging, composition/true intersection, 35 original +15 new presets, JSON round-trip | 166 assertions passed, no user-facing JS errors | [Actions 42106425023](https://github.com/michael-malis/complex-rhythm/actions/runs/42106425023) |
+| Accessibility and contrast | Seven responsive sizes × light/dark themes, 162 visible text elements per configuration, key values 7:1 and track palette 3:1 | **14/14 configurations passed, 0 text and 0 track palette failures** after accent color correction | [Actions 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484) |
+| Mathematical typography | Self-hosted KaTeX 0.16.22, `\dfrac{}` geometry, six screen sizes × two themes, Cartesian/Polar, direct zoom | 276 assertions passed | [Actions 42106425023](https://github.com/michael-malis/complex-rhythm/actions/runs/42106425023) |
 | Synthesizer voices | 15 distinct offline Web Audio voices, WAV files, peak, RMS, onset segment, spectrum proxy | 15/15 rendered; sample peaks ≤0.85 in isolated voice tests | [Actions 42105120394](https://github.com/michael-malis/complex-rhythm/actions/runs/42105120394) |
 | Full mix stress + schedule | 50 preset mathematical schedules, 256 voices @22,050Hz, 128 voices @96,000Hz, onset @48kHz | Pass: mix sample peaks 0.5391 and 0.3586; onset offset 0.354ms; −1dBFS sample ceiling respected | [Actions 42105120394](https://github.com/michael-malis/complex-rhythm/actions/runs/42105120394) |
 | Preset uniqueness | Real 50×4 event calculation; exact structure, absolute schedules, schedules up to one common phase rotation | 50 unique IDs, 50 distinct absolute and cyclic-equivalence schedules; 37 distinct instrument quartets | [PRESET_DIVERSITY_REPORT.md](PRESET_DIVERSITY_REPORT.md) |
@@ -49,12 +49,22 @@ These are real failure records, not hypothetical problems. Earlier failed CI run
 
 ## 4. Outstanding mandatory validation
 
-1. Two user-annotated screenshots mentioned by the specification are absent from the supplied master document. Their exact marked areas cannot be confirmed pixel by pixel.
+1. One user-uploaded annotated `image.png` (506×556px) was recovered from conversation files and compared with the redesigned Track 1 controls. The second screenshot cited by the master specification remains missing; see issue #2.
 2. No documented **human listening** across all 50 presets and six acid voices. Technical output is measured, but musical quality remains unverified as explicitly mandated in `R-SND-007`.
 3. No actual-phone audio/gesture assessment, assistive-technology screen-reader walkthrough or independent subjective design review.
 4. Dense high-degree markers can overlap geometrically at default 360px width; magnified scrollable view is implemented rather than shrinking all dots. Need a human review of navigation usability.
-5. `TASKS.md` still requires exhaustive evidence/status reconciliation; integration cannot be marked fully accepted without Gate VII.
+5. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` were reconciled through CI: 115 task records VERIFIED, 4 BLOCKED, 86 IN_PROGRESS and 446 TODO. Seven-gate acceptance remains unfinished.
 
 ## 5. Test protocol
 
 Run the repository's workflows `ui-regression.yml`, `spec-baseline.yml`, `preset-diversity.yml`; inspect **both** screenshot and audio artifact archives. Re-run full regression after the final production code change. Do not replace human listening with automatic statistics, do not hide failed CI runs, and do not merge an unfinished version solely because a subset of CI is green.
+
+## 6. Later defect tests and documented fixes
+
+| ID | Observed failure | Fix | Automated evidence |
+|---|---|---|---|
+| FIX-007 | Four range sliders had only 40px vertical target area on 360, 390 and 768px; argument slider was only 39px wide on 360px | Raise all range inputs to ≥44px and reflow argument slider as separate row on narrow devices | 231 controls measured at 3 touch viewports: zero remaining undersized targets, Actions 42117874127 |
+| FIX-008 | Extra-root terminology required considerable inference for first-time math users | Add interactive worked example: fourth plus third roots with six actual phases and one collision, correctly labelled using `\Phi` | Browser tests confirm base=4, added=3, result=6, KaTeX phase-set formula |
+| FIX-009 | New industrial `noiseBurst` voice had RMS ≈0.0008 versus other voices typically ≈0.013–0.069 in identical offline renders | Boost only the noise-source synthesis/amplitude envelope, retain master limiter; add minimum RMS and transient assertions for all 15 voices | Updated audio-offline test and high-density mix stress passed, Actions 42117874127 |
+
+These remain **technical acceptance records**. Hearing quality and exact genre authenticity still require human assessment.

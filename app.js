@@ -1,0 +1,415 @@
+'use strict';
+(() => {
+const TAU=2*Math.PI;
+const COLORS=['#72e5ec','#ff9b8c','#ffc77b','#beadff'];
+const RGB=[[114,229,236],[255,155,140],[255,199,123],[190,173,255]];
+const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble'};
+// Every audible time point is still the argument of a complex root.
+const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
+// A phase on a 16th-note grid encoded by a degree-1 complex root.
+const L=(step,velocity=.58)=>({a:Math.cos(TAU*step/16),b:Math.sin(TAU*step/16),n:1,velocity});
+// A two-bar cycle contains 32 equal 16th-note positions. Every accent is still a 1st complex root.
+const L32=(step,velocity=.58)=>({a:Math.cos(TAU*step/32),b:Math.sin(TAU*step/32),n:1,velocity});
+const PRESETS=[
+// Bunker techno: stable four-on-the-floor foundations; less bass/hats clutter.
+// Berlin industrial: dry four-to-the-floor kick + offbeat sub-rumble. Rumble is sampled, not four more kicks.
+ {id:'berlin-bass-wall',category:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,4,'berlinrumble'),P(-1,0,8,'hat'),P(-1,0,2,'rim',[L(15,.32)])]},
+ {id:'concrete',category:'bunker',name:'Concrete · Drive',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(1,0,2,'bass',[L(7,.45)])]},
+ {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
+ {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
+ {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
+ {id:'pressure',category:'bunker',name:'Pressure · Dub',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,4,'hat'),P(1,0,1,'bass',[L(10,.72)])]},
+// Essential rhythmic studies.
+ {id:'house',category:'other',name:'Classic House · 4/4',bpm:125,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,8,'shaker')]},
+ {id:'dub',category:'other',name:'Dub · Half-time',bpm:78,tracks:[P(1,0,2,'kick',[L(11,.68)]),P(-1,0,1,'snare'),P(-1,0,4,'hat'),P(1,0,2,'bass')]},
+ {id:'afro',category:'poly',name:'Polyrhythm · 3 : 4',bpm:116,tracks:[P(1,0,3,'tom'),P(1,0,4,'rim'),P(1,0,8,'shaker'),P(1,0,1,'bass')]},
+ {id:'minimal',category:'poly',name:'Polyrhythm · 5 : 7',bpm:124,tracks:[P(1,0,5,'tom'),P(1,0,7,'rim'),P(1,0,8,'hat'),P(1,0,1,'kick')]},
+ {id:'ambient',category:'other',name:'Slow Orbit · Space',bpm:70,tracks:[P(1,0,1,'kick'),P(0,1,3,'tom'),P(-1,0,4,'openhat'),P(1,0,2,'bass')]},
+// DnB: kick 1 + &3 (grid 0,10) and backbeat on 2 + 4; softer ghost notes.
+ {id:'neuro-burst',category:'dnb',name:'Neuro · 2-Step',bpm:174,tracks:[P(1,0,1,'kick',[L(10,.92)]),P(-1,0,2,'snare',[L(7,.27)]),P(1,0,8,'hat',[L(3,.42),L(11,.42)]),P(1,0,2,'reese')]},
+ {id:'double-drop',category:'dnb',name:'Roller · Ghosts',bpm:176,tracks:[P(1,0,1,'kick',[L(10,.96),L(14,.38)]),P(-1,0,2,'snare',[L(7,.30),L(15,.30)]),P(1,0,8,'hat'),P(-1,0,2,'bass',[L(11,.48)])]},
+ {id:'subpressure',category:'dnb',name:'Sub Pressure · Half-time',bpm:172,tracks:[P(1,0,1,'kick',[L(10,.83)]),P(-1,0,1,'snare',[L(15,.25)]),P(1,0,8,'shaker'),P(1,0,2,'reese')]},
+ {id:'velocity-grid',category:'dnb',name:'Break Grid · 16ths',bpm:178,tracks:[P(1,0,1,'kick',[L(6,.57),L(10,.9)]),P(-1,0,2,'snare',[L(7,.27),L(15,.31)]),P(1,0,8,'hat',[L(3,.4),L(11,.45)]),P(1,0,2,'bass')]},
+// Jungle: off-beat kick pick-ups, ghost snares and a busier break-like top.
+ {id:'ragga-spiral',category:'jungle',name:'Ragga · Break Step',bpm:164,tracks:[P(1,0,1,'kick',[L(6,.75),L(10,.85)]),P(-1,0,2,'snare',[L(7,.31),L(15,.38)]),P(1,0,8,'hat',[L(3,.35),L(11,.42)]),P(1,0,2,'reese')]},
+ {id:'break-torrent',category:'jungle',name:'Break Torrent · Chops',bpm:169,tracks:[P(1,0,1,'kick',[L(3,.55),L(10,.9),L(14,.48)]),P(-1,0,2,'snare',[L(6,.31),L(15,.29)]),P(1,0,8,'shaker',[L(7,.38),L(15,.42)]),P(1,0,2,'bass')]},
+ {id:'ghostline',category:'jungle',name:'Ghostline · Half-roll',bpm:160,tracks:[P(1,0,1,'kick',[L(10,.84)]),P(-1,0,2,'snare',[L(3,.25),L(7,.3)]),P(1,0,8,'hat'),P(1,0,1,'bass',[L(11,.63)])]},
+ {id:'chopped-orbit',category:'jungle',name:'Chopped Orbit · Fast',bpm:172,tracks:[P(1,0,1,'kick',[L(6,.5),L(10,.92)]),P(-1,0,2,'snare',[L(7,.34),L(15,.28)]),P(1,0,8,'hat',[L(3,.48),L(11,.48)]),P(1,0,2,'reese')]},
+// One Bossa Nova study spans two bars; three former Bossa variants are now polyrhythm studies.
+ {id:'bossa-classic',category:'brazil',name:'Bossa Nova · Classic',bpm:116,bars:2,tracks:[P(1,0,4,'jazzkick',[L32(6,.46),L32(14,.42),L32(22,.46),L32(30,.42)]),P(1,0,1,'crossstick',[L32(6,.8),L32(12,.92),L32(20,.82),L32(26,.84)]),P(1,0,16,'jazzshaker'),P(0,0,1,'bongo',[L32(11,.28),L32(27,.32)])]},
+ {id:'poly-2-3',category:'poly',name:'Polyrhythm · 2 : 3',bpm:108,tracks:[P(1,0,2,'tom'),P(1,0,3,'rim'),P(1,0,6,'shaker'),P(1,0,1,'bass')]},
+ {id:'poly-3-5',category:'poly',name:'Polyrhythm · 3 : 5',bpm:112,tracks:[P(1,0,3,'tom'),P(1,0,5,'rim'),P(1,0,1,'jazzkick'),P(1,0,1,'shaker')]},
+ {id:'poly-4-7',category:'poly',name:'Polyrhythm · 4 : 7',bpm:118,tracks:[P(1,0,4,'kick'),P(1,0,7,'rim'),P(1,0,1,'tom'),P(1,0,1,'shaker')]},
+// Other Brazilian-inspired studies; not exact transcriptions.
+ {id:'baile-funk',category:'brazil',name:'Baile Funk · Tamborzão',bpm:132,tracks:[P(1,0,2,'kick',[L(6,.73),L(14,.78)]),P(-1,0,2,'clap',[L(11,.6)]),P(1,0,8,'tamborim'),P(1,0,2,'bass',[L(3,.58)])]},
+ {id:'samba-drive',category:'brazil',name:'Samba · Surdo Pulse',bpm:108,tracks:[P(1,0,2,'surdo',[L(12,.58)]),P(-1,0,4,'tamborim',[L(2,.5),L(10,.5)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(11,.6)])]},
+ {id:'batucada',category:'brazil',name:'Batucada · Layers',bpm:118,tracks:[P(1,0,2,'surdo',[L(14,.51)]),P(-1,0,4,'tamborim',[L(3,.56),L(11,.62)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(6,.7)])]},
+ {id:'maracatu',category:'brazil',name:'Maracatu · Pulse Sketch',bpm:104,tracks:[P(1,0,2,'surdo',[L(13,.53)]),P(-1,0,2,'clap',[L(7,.42)]),P(-1,0,4,'agogo'),P(1,0,2,'tom',[L(10,.66)])]},
+// House keeps true four-on-floor kicks and backbeats.
+ {id:'warehouse-hammer',category:'hardhouse',name:'Warehouse · Hard Drive',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(-1,0,4,'bass',[L(14,.57)])]},
+ {id:'steel-rave',category:'hardhouse',name:'Steel Rave · Stabs',bpm:152,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(11,.59)])]},
+ {id:'stomp-circuit',category:'hardhouse',name:'Stomp Circuit · Push',bpm:148,tracks:[P(1,0,4,'kick',[L(14,.52)]),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(11,.63)])]},
+ {id:'peak-pressure',category:'hardhouse',name:'Peak Pressure · Rave',bpm:156,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(3,.6),L(11,.6)])]},
+// Acid: regular house foundation with syncopated, resonant bass stabs.
+ {id:'acid-303',category:'acid',name:'Acid 303 · Classic',bpm:128,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(-1,0,4,'acid',[L(2,.65),L(10,.66)])]},
+ {id:'resonance-rush',category:'acid',name:'Resonance · Twister',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(7,.55),L(15,.55)])]},
+ {id:'liquid-corrosion',category:'acid',name:'Liquid · Acid Dub',bpm:124,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'acid',[L(3,.62),L(11,.57)])]},
+ {id:'303-pressure',category:'acid',name:'303 Pressure · Peak',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(1,.56),L(9,.58)])]}
+];
+const $=id=>document.getElementById(id);
+const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
+let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null;
+let audio=null,master=null,compressor=null,noiseBuffer=null,voiceBus=null,perHitBus=null,cycles=1;
+const sampleBuffers=new Map();const samplePromises=new Map();
+let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
+let toastTimeout=null,rootDrag=null;
+const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
+function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
+function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
+function cleanLayer(layer){return {a:safeReal(layer.a,1),b:safeReal(layer.b,0),n:safeInt(layer.n,1,24,1),velocity:Math.min(1,Math.max(.1,safeReal(layer.velocity,.62)))}}
+function cleanTrack(t,i){return {a:safeReal(t.a,1),b:safeReal(t.b,0),n:safeInt(t.n,1,24,4),sound:Object.hasOwn(SOUNDS,t.sound)?t.sound:['kick','clap','hat','bass'][i],muted:Boolean(t.muted),layers:Array.isArray(t.layers)?t.layers.slice(0,5).map(cleanLayer):[]}}
+function rootPhases({a,b,n}){if(!Number.isFinite(a)||!Number.isFinite(b)||(a===0&&b===0))return [];const arg=Math.atan2(b,a);return Array.from({length:n},(_,k)=>((((arg+TAU*k)/n)/TAU)+1)%1)}
+// Union of sets of complex roots; exact duplicates combine rather than play twice.
+function events(track){const all=rootPhases(track).map(phase=>({phase,velocity:1}));for(const layer of track.layers||[]){for(const phase of rootPhases(layer))all.push({phase,velocity:layer.velocity??.62})}all.sort((a,b)=>a.phase-b.phase);const out=[];for(const item of all){const last=out[out.length-1];if(last&&Math.abs(last.phase-item.phase)<1e-6)last.velocity=Math.max(last.velocity,item.velocity);else out.push(item)}if(out.length>1&&Math.abs(1+out[0].phase-out[out.length-1].phase)<1e-6){out[0].velocity=Math.max(out[0].velocity,out.pop().velocity)}return out}
+function roots(track){return events(track).map(x=>x.phase)}
+function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
+function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
+function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
+function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;t.a=Number((radius*Math.cos(ang)).toPrecision(10));t.b=Number((radius*Math.sin(ang)).toPrecision(10));return true}
+function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Custom rhythm';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__'}
+function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.forEach((t,i)=>{
+ const row=document.createElement('div');row.className='track'+(t.muted?' is-muted':'');row.style.setProperty('--track-color',COLORS[i]);
+ const pick=document.createElement('button');pick.type='button';pick.className='track-pick';pick.setAttribute('aria-pressed',String(selectedTrack===i));pick.setAttribute('aria-label',`Edit track ${i+1}: ${SOUNDS[t.sound]}, ${hitLabel(roots(t).length)}`);
+ const dot=document.createElement('span');dot.className='track-icon';dot.setAttribute('aria-hidden','true');
+ const name=document.createElement('span');name.className='track-name';name.textContent=SOUNDS[t.sound];
+ const count=document.createElement('span');count.className='track-count';count.textContent=hitLabel(roots(t).length);
+ pick.append(dot,name,count);pick.addEventListener('click',()=>chooseTrack(i,true));
+ const mute=document.createElement('button');mute.className='ghost track-mute';mute.type='button';mute.title=t.muted?'Unmute instrument':'Mute instrument';mute.setAttribute('aria-label',`${t.muted?'Unmute':'Mute'} ${SOUNDS[t.sound]}`);mute.setAttribute('aria-pressed',String(t.muted));mute.textContent=t.muted?'×':'♫';
+ mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();wrap.querySelectorAll('.track-mute')[i]?.focus({preventScroll:true});markCustom();});row.append(pick,mute);wrap.append(row);
+})}
+function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Track ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;$('plotHint').textContent=`Circle ${selectedTrack+1} · ${SOUNDS[t.sound]} — change a, b or n in the editor`;
+ for(const k of ['A','B','N'])$('edit'+k).value=String(t[k.toLowerCase()]);
+ $('fieldMessage').textContent='';renderReadout();renderLayers()}
+function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent=`${hitLabel(roots(t).length)} per ${cycleBars===2?'2 bars':'bar'}${t.layers.length?' · '+t.layers.length+' extra':''}`;
+ $('eqDisplay').textContent=`z = ${complexDisplay(t)}`;
+ const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
+ $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: only additional root sets sound':'z = 0: no base-layer events'):`arg(z) = ${fmt(arg)}° · shift = ${fmt(arg/t.n)}°`;
+ $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · no timing effect`;
+ const angleSlider=$('argumentAngle');angleSlider.disabled=arg===null;angleSlider.value=arg===null?'0':String(Math.round(arg));$('argumentText').textContent=arg===null?'—':`${fmt(arg)}°`;
+}
+
+function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('layerSummary').textContent=`Additional root sets · ${t.layers.length}`;$('addLayer').disabled=t.layers.length>=5;
+ t.layers.forEach((layer,i)=>{const group=document.createElement('div');group.className='layer-row';
+  for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Root degree n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=layer[key];input.setAttribute('aria-label',`Extra root set ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>24))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Invalid number or root degree');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
+  const remove=document.createElement('button');remove.type='button';remove.className='layer-remove';remove.textContent='×';remove.title='Remove this root set';remove.setAttribute('aria-label',`Remove extra root set ${i+1}`);remove.addEventListener('click',()=>{t.layers.splice(i,1);renderLayers();renderTracks();renderReadout();markCustom()});group.append(remove);
+  const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Set volume';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Volume of extra root set ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
+ })}
+
+function chooseTrack(i,fromTrackList=false){selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor();if(fromTrackList){if(window.matchMedia('(max-width:949px)').matches){$('editorHeading').focus({preventScroll:true});$('editor').scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'start'})}else $('tracks').querySelectorAll('.track-pick')[selectedTrack]?.focus({preventScroll:true})}}
+function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}}
+function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ tracks=p.tracks.map(cleanTrack);bpm=p.bpm;cycleBars=p.bars===2?2:1;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ if(audio){loadSamples(prioritySampleKeys())}
+ if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
+ renderPresets();renderTracks();renderEditor()}
+function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
+      // Independently licensed samples, CC0. The brazil/jazz bank is acoustic, not a synth simulation.
+      const SAMPLE_FILES={
+        'kick':'samples/kick-deep.wav','kick-hard':'samples/kick-hard.wav','kick-tight':'samples/kick-tight.wav',
+        'kick-sub':'samples/kick-sub.wav','kick-808':'samples/kick-808.wav',
+        'snare':'samples/snare-snap.wav','snare-body':'samples/snare-body.wav','snare-808':'samples/snare-808.wav',
+        'clap':'samples/clap.wav','hat':'samples/hat.wav','hat-crunch':'samples/hat-crunch.wav',
+        'openhat':'samples/openhat.wav','rim':'samples/rim.wav','tom':'samples/tom.wav','shaker':'samples/shaker.wav',
+        'jazzkick':'samples/jazz-kick-soft.flac','jazzkick-full':'samples/jazz-kick-full.flac',
+        'crossstick':'samples/jazz-rim.flac','crossstick-alt':'samples/jazz-rim-bright.flac',
+        'jazzshaker':'samples/jazz-shaker-a.wav','jazzshaker-alt':'samples/jazz-shaker-b.wav',
+        'jazzhat':'samples/jazz-hat.flac','jazzsnare':'samples/jazz-snare.flac',
+        'claves':'samples/jazz-claves.wav','bongo':'samples/jazz-bongo.wav','berlinrumble':'samples/berlin-rumble.wav','berlinrumble-alt':'samples/berlin-rumble-alt.wav'
+      };
+      function sampleKey(sound,index=0,velocity=1){
+        if(sound==='berlinrumble')return index%2===0?'berlinrumble':'berlinrumble-alt';
+        if(sound==='jazzkick')return velocity>.88?'jazzkick-full':'jazzkick';
+        if(sound==='crossstick')return index%3===0?'crossstick-alt':'crossstick';
+        if(sound==='jazzshaker')return index%2===0?'jazzshaker':'jazzshaker-alt';
+        if(sound==='kick')return ({bunker:'kick-hard',dnb:'kick-tight',jungle:'kick-808',brazil:'kick-sub',hardhouse:'kick-hard',acid:'kick-hard'})[activeCategory]||'kick';
+        if(sound==='snare')return activeCategory==='jungle'?'snare-808':activeCategory==='bunker'?'snare-body':'snare';
+        if(sound==='hat')return activeCategory==='bunker'?'hat-crunch':'hat';
+        return sound;
+      }
+      function prioritySampleKeys(){
+        const keys=new Set();for(const t of tracks){if(t.muted)continue;
+          keys.add(sampleKey(t.sound,0,1));
+          if(t.sound==='jazzkick')keys.add('jazzkick');
+          if(t.sound==='crossstick'){keys.add('crossstick');keys.add('crossstick-alt')}
+          if(t.sound==='jazzshaker'){keys.add('jazzshaker');keys.add('jazzshaker-alt')}
+          if(t.sound==='berlinrumble'){keys.add('berlinrumble');keys.add('berlinrumble-alt')}
+        }
+        if(['dnb','jungle'].includes(activeCategory)){
+          if(tracks.some(t=>!t.muted&&t.sound==='kick'))keys.add('jazzkick-full');
+          if(tracks.some(t=>!t.muted&&t.sound==='snare'))keys.add('jazzsnare');
+        }
+        return [...keys].filter(key=>SAMPLE_FILES[key]);
+      }
+      function loadSamples(keys=prioritySampleKeys()){
+        if(!audio)return Promise.resolve(0);
+        const jobs=keys.filter(k=>SAMPLE_FILES[k]).map(key=>{
+          if(sampleBuffers.has(key))return Promise.resolve();
+          if(!samplePromises.has(key))samplePromises.set(key,fetch(SAMPLE_FILES[key])
+            .then(response=>{if(!response.ok)throw Error(`${response.status}: ${key}`);return response.arrayBuffer()})
+            .then(data=>audio.decodeAudioData(data))
+            .then(buffer=>sampleBuffers.set(key,buffer))
+            .catch(err=>{console.warn('Sample unavailable; synthesizer fallback:',key,err.message)}));
+          return samplePromises.get(key);
+        });
+        return Promise.allSettled(jobs).then(()=>{if(playing)updateTransportText();return sampleBuffers.size});
+      }
+      function triggerSample(key,at,gainValue,index=0){
+        const buffer=sampleBuffers.get(key);if(!buffer)return false;
+        const source=audio.createBufferSource();source.buffer=buffer;
+        // Repetition variation is deliberately small; no timing jitter, roots stay exact.
+        source.playbackRate.value=1+([0,-.012,.009,-.007,.004][index%5]);
+        const gain=audio.createGain();gain.gain.value=Math.max(.001,gainValue);
+        source.connect(gain);gain.connect(voiceBus||master);
+        if(key==='berlinrumble'||key==='berlinrumble-alt'){
+          // A harmonically distorted mid-bass parallel path makes 46 Hz sub audible
+          // on phone speakers, without sacrificing the unprocessed fundamental.
+          const curve=new Float32Array(1024);
+          for(let i=0;i<curve.length;i++){
+            const x=(2*i/(curve.length-1))-1;
+            curve[i]=Math.tanh(7*x)/Math.tanh(7);
+          }
+          const saturation=audio.createWaveShaper();saturation.curve=curve;saturation.oversample='2x';
+          const presenceFilter=audio.createBiquadFilter();presenceFilter.type='bandpass';
+          presenceFilter.frequency.value=260;presenceFilter.Q.value=.65;
+          const presenceGain=audio.createGain();presenceGain.gain.value=.24*gainValue;
+          source.connect(saturation);saturation.connect(presenceFilter);
+          presenceFilter.connect(presenceGain);presenceGain.connect(voiceBus||master);
+        }
+        source.start(Math.max(at,audio.currentTime+.002));return true;
+      }
+      function playSample(sound,at,velocity,index=0){
+        const key=sampleKey(sound,index,velocity);
+        const gainTable={kick:.51,snare:.45,clap:.36,hat:.18,openhat:.19,rim:.34,tom:.33,shaker:.21,
+           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,berlinrumble:.63};
+        const style=activeCategory==='brazil'?.83:1;
+        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index);
+        // A restrained acoustic body layer gives fast breakbeats less plastic transients.
+        if(played&&['dnb','jungle'].includes(activeCategory)){
+          if(sound==='snare'&&sampleBuffers.has('jazzsnare'))triggerSample('jazzsnare',at,.095*velocity,index);
+          if(sound==='kick'&&sampleBuffers.has('jazzkick-full'))triggerSample('jazzkick-full',at,.09*velocity,index);
+        }
+        return played;
+      }
+      function initAudio() {
+        if (audio) return true;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) { showToast('This browser does not support Web Audio.'); return false; }
+        audio = new AC();
+        master = audio.createGain(); master.gain.value = volume * .80;
+        compressor = audio.createDynamicsCompressor();
+        compressor.threshold.value = -15; compressor.knee.value = 12; compressor.ratio.value = 4;
+        compressor.attack.value = .003; compressor.release.value = .18;
+        master.connect(compressor); compressor.connect(audio.destination);
+        const frames = Math.floor(audio.sampleRate * 1.0);
+        noiseBuffer = audio.createBuffer(1, frames, audio.sampleRate);
+        const samples = noiseBuffer.getChannelData(0);
+        for (let i=0; i<frames; i++) samples[i] = Math.random()*2 - 1;
+        return true;
+      }
+      function envelope(gain, time, peak, release, attack=.002) {
+        const g = gain.gain;
+        g.setValueAtTime(0.0001,time);
+        g.exponentialRampToValueAtTime(Math.max(.0002,peak),time+attack);
+        g.exponentialRampToValueAtTime(.0001,time+Math.max(release,attack+.01));
+      }
+      function oscillator(freq, finalFreq, type, gainValue, at, length) {
+        const osc=audio.createOscillator(); osc.type=type;
+        osc.frequency.setValueAtTime(freq,at);
+        if (finalFreq !== freq) osc.frequency.exponentialRampToValueAtTime(Math.max(1,finalFreq),at+length);
+        const gain=audio.createGain(); envelope(gain,at,gainValue,length);
+        osc.connect(gain); gain.connect(perHitBus || voiceBus || master); osc.start(at); osc.stop(at+length+.025);
+      }
+      function noise(at, length, peak, cutoff=2000, type='highpass') {
+        const source=audio.createBufferSource(); source.buffer=noiseBuffer;
+        // Random offsets avoid identical noise textures.
+        const filter=audio.createBiquadFilter(); filter.type=type; filter.frequency.value=cutoff;
+        const gain=audio.createGain(); envelope(gain,at,peak,length);
+        source.connect(filter); filter.connect(gain); gain.connect(perHitBus || voiceBus || master);
+        source.start(at,Math.random()*.45); source.stop(at+length+.03);
+      }
+      function hit(sound, at, velocity=1, index=0) {
+        // Real recorded/rended one-shots first; use local synthesis when unavailable.
+        const t=Math.max(at,audio.currentTime+.002);
+        if(playSample(sound,t,velocity,index))return;
+        perHitBus=audio.createGain();perHitBus.gain.value=Math.max(.1,Math.min(1,velocity));perHitBus.connect(voiceBus||master);
+        const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
+        switch(soundFallback[sound]||sound) {
+          case 'kick':
+            oscillator(150,44,'sine',1.0,t,.29);
+            noise(t,.026,.10,1400,'lowpass');
+            break;
+          case 'snare':
+            noise(t,.17,.35,1450,'highpass');
+            oscillator(180,120,'triangle',.15,t,.11);
+            break;
+          case 'clap':
+            noise(t,.05,.23,1050,'highpass'); noise(t+.025,.09,.21,1100,'highpass'); noise(t+.055,.18,.18,900,'highpass');
+            break;
+          case 'hat':
+            noise(t,.07,.13,5900,'highpass'); break;
+          case 'openhat':
+            noise(t,.37,.115,4900,'highpass'); break;
+          case 'rim':
+            oscillator(800,570,'square',.072,t,.034); noise(t,.025,.13,2600,'highpass'); break;
+          case 'tom':
+            oscillator(215,94,'sine',.39,t,.27); break;
+          case 'bass':
+            oscillator(80,54,'triangle',.55,t,.36); oscillator(80,54,'sine',.21,t,.38); break;
+          case 'shaker':
+            noise(t,.11,.084,3400,'highpass'); break;
+          case 'berlinrumble': {
+            // Synth fallback when the custom recorded-quality rumble samples cannot be loaded.
+            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(720,t);filter.frequency.exponentialRampToValueAtTime(195,t+.38);
+            const amp=audio.createGain();envelope(amp,t,.53,.39,.012);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
+            for(const [freq,type,level] of [[46.25,'sine',.85],[92.5,'triangle',.12],[138.75,'sine',.10]]){
+              const osc=audio.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq*1.045,t);osc.frequency.exponentialRampToValueAtTime(freq,t+.09);
+              const g=audio.createGain();g.gain.value=level;osc.connect(g);g.connect(filter);osc.start(t);osc.stop(t+.43);
+            }
+            break;
+          }
+          case 'reese': {
+            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(1100,t);filter.frequency.exponentialRampToValueAtTime(280,t+.3);filter.Q.value=1.1;
+            const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
+            for(const detune of [-9,9]){const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime(53,t);osc.detune.value=detune;osc.connect(filter);osc.start(t);osc.stop(t+.39)}
+            break;
+          }
+          case 'acid': {
+            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.Q.value=11;
+            filter.frequency.setValueAtTime(2800,t);filter.frequency.exponentialRampToValueAtTime(210,t+.20);
+            const amp=audio.createGain();envelope(amp,t,.15,.26,.003);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
+            const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime([82.41,98.00,110,123.47,146.83,164.81][index%6],t);osc.connect(filter);osc.start(t);osc.stop(t+.28);break;
+          }
+          case 'surdo':
+            oscillator(114,58,'sine',.69,t,.38);noise(t,.018,.07,600,'lowpass');break;
+          case 'agogo':
+            oscillator(770,700,'sine',.20,t,.17);oscillator(1155,1010,'sine',.13,t,.12);break;
+          case 'tamborim':
+            oscillator(315,240,'triangle',.12,t,.065);noise(t,.06,.24,2200,'highpass');break;
+        }
+        perHitBus=null;
+      }
+
+function barSeconds(){return 240/bpm}
+function cycleSeconds(){return barSeconds()*cycleBars}
+function transportPhase(){if(!playing||!audio)return pausedPhase;return ((Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds())%1+1)%1}
+function cancelVoices(){if(voiceBus&&audio){try{voiceBus.gain.setValueAtTime(0,audio.currentTime);voiceBus.disconnect()}catch(_){}}voiceBus=audio?audio.createGain():null;if(voiceBus)voiceBus.connect(master)}
+function scheduleAhead(){if(!playing||!audio||audio.state!=='running')return;const now=audio.currentTime,from=Math.max(scheduledUntil,now+.001),to=now+.09;if(to<=from)return;
+ const duration=cycleSeconds(),kStart=Math.floor((from-beatEpoch)/duration)-1,kEnd=Math.ceil((to-beatEpoch)/duration)+1;
+ for(let i=0;i<4;i++){const tr=tracks[i];if(tr.muted)continue;const phases=events(tr);for(let k=kStart;k<=kEnd;k++){if(k<0)continue;for(const [j,event] of phases.entries()){const t=beatEpoch+(k+event.phase)*duration;if(t>=from&&t<to)hit(tr.sound,t,event.velocity,k*phases.length+j)}}}scheduledUntil=to}
+function updateTransportText(){const button=$('playBtn');button.textContent=playing?'Ⅱ Pause':'▶ Play';button.setAttribute('aria-pressed',String(playing));const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length;const all=prioritySampleKeys().length;$('audioState').textContent=playing?(`Playing · samples ${ready}/${all}`):'Ready to play'}
+async function togglePlay(){if(playing){pausedPhase=transportPhase();playing=false;clearInterval(timerId);timerId=null;cancelVoices();if(audio)await audio.suspend();updateTransportText();return}
+ if(!initAudio())return;try{await audio.resume()}catch(err){showToast('Audio could not start: '+err.message);return}
+ const ready=prioritySampleKeys();if(ready.length){$('audioState').textContent='Loading sounds…';await Promise.race([loadSamples(ready),new Promise(resolve=>setTimeout(resolve,2800))]);}
+ cancelVoices();beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();scheduledUntil=audio.currentTime;playing=true;updateTransportText();scheduleAhead();timerId=setInterval(scheduleAhead,25)}
+function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
+async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014)}catch(err){showToast('Preview failed: '+err.message)}}
+function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
+ canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0)}
+function rgba(i,alpha){const c=RGB[i];return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`}
+function getRadii(side){const outer=side*.427;return [outer,outer*.78,outer*.56,outer*.34]}
+function draw(){const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}ctx.clearRect(0,0,w,h);
+ const side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],phase=transportPhase(),duration=cycleSeconds();
+ // Low-contrast beat grid. The circles and notes remain dominant.
+ for(let j=0;j<16;j++){const a=-Math.PI/2+TAU*j/16;ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*(outer+8),cy+Math.sin(a)*(outer+8));ctx.lineTo(cx+Math.cos(a)*(outer+(j%4===0?15:11)),cy+Math.sin(a)*(outer+(j%4===0?15:11)));ctx.strokeStyle=j%4===0?'#728b9955':'#728b9925';ctx.lineWidth=j%4===0?1.4:1;ctx.stroke()}
+ // Quarter-cycle markers describe the timeline, not root magnitudes.
+ ctx.save();ctx.fillStyle='#afc4d0';ctx.font=`${Math.max(10,Math.min(12,side*.023))}px system-ui, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+ for(const [part,label] of [[0,'0'],[.25,'¼'],[.5,'½'],[.75,'¾']]){
+  const angle=-Math.PI/2+TAU*part;
+  ctx.fillText(label,cx+Math.cos(angle)*(outer+18),cy+Math.sin(angle)*(outer+18));
+ }
+ ctx.restore();
+ tracks.forEach((t,i)=>{const r=radii[i],active=i===selectedTrack;ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.strokeStyle=rgba(i,t.muted?.075:active?.23:.11);ctx.lineWidth=active?10:7;ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.strokeStyle=rgba(i,t.muted?.2:active?.85:.5);ctx.lineWidth=active?1.9:1.1;ctx.stroke()});
+ // Clock hand runs behind the roots.
+ const showPhase=reducedMotion?Math.floor(phase*16)/16:phase,hand=-Math.PI/2+TAU*showPhase,tipX=cx+Math.cos(hand)*(outer+4),tipY=cy+Math.sin(hand)*(outer+4);
+ ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(tipX,tipY);ctx.strokeStyle=playing?'#d6f3f7ad':'#99a9b36b';ctx.lineWidth=playing?2:1.1;ctx.stroke();
+ if(rootDrag&&rootDrag.moved){
+  const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;
+  ctx.save();ctx.lineWidth=1.5;ctx.strokeStyle=rgba(i,.6);ctx.setLineDash([3,3]);
+  for(let k=0;k<n;k++){const a=-Math.PI/2+(arg+TAU*k)/n;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,Math.max(3,side*.008),0,TAU);ctx.stroke()}
+  ctx.restore();
+ }
+ tracks.forEach((t,i)=>{const r=radii[i],es=events(t),spacing=es.length?TAU*r/es.length:40;const baseSize=Math.min(i===selectedTrack?10:8.4,Math.max(2.7,spacing*.3));const allowedPulse=Math.max(.7,Math.min(5.5,spacing*.10));for(const {phase:p,velocity} of es){const size=baseSize*(.68+.32*velocity);const a=-Math.PI/2+TAU*p,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+ const dist=((phase-p)%1+1)%1*duration;const pulse=playing&&!t.muted&&dist<.18?Math.pow(1-dist/.18,2):0;const growth=reducedMotion?0:allowedPulse*pulse*velocity;const sz=size+growth;
+ if(!t.muted){ctx.beginPath();ctx.arc(x,y,sz+Math.min(4,spacing*.07),0,TAU);ctx.fillStyle=rgba(i,.14+.14*pulse);ctx.fill();}
+ ctx.beginPath();ctx.arc(x,y,sz+1.8,0,TAU);ctx.fillStyle='#0a0e12';ctx.fill();ctx.beginPath();ctx.arc(x,y,sz,0,TAU);ctx.fillStyle=t.muted?rgba(i,.34):rgba(i,.94);ctx.fill();
+ if(!t.muted){ctx.strokeStyle=i===selectedTrack?'rgba(255,255,255,.95)':'rgba(231,247,248,.69)';ctx.lineWidth=i===selectedTrack?1.65:1.2;ctx.stroke()}
+ if(sz>4.2&&!t.muted){ctx.beginPath();ctx.arc(x,y,1.6+Math.min(2.5,pulse*2),0,TAU);ctx.fillStyle='rgba(255,255,255,.96)';ctx.fill()}
+ }});
+ // Centre is a deliberately quiet information readout.
+ const inner=radii[3],r0=Math.max(13,inner*.57);ctx.beginPath();ctx.arc(cx,cy,r0,0,TAU);ctx.fillStyle='#0b1116';ctx.fill();ctx.strokeStyle='#405362';ctx.lineWidth=1;ctx.stroke();
+ const count=roots(tracks[selectedTrack]).length;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#edf7f8';ctx.font=`700 ${Math.max(13,Math.min(22,side*.045))}px system-ui, sans-serif`;ctx.fillText(String(count),cx,cy-3);
+ ctx.font=`${Math.max(8,Math.min(11,side*.022))}px system-ui, sans-serif`;ctx.fillStyle='#9eb1bf';ctx.fillText(cycleBars===2?'over 2 bars':'hits',cx,cy+Math.max(12,side*.034));
+ if(playing&&audio){const elapsed=Math.max(0,audio.currentTime-beatEpoch);cycles=Math.floor(elapsed/duration)+1}const c=cycleBars===2?`Cycle ${Math.max(1,cycles)} · 2 bars`:`Bar ${Math.max(1,cycles)} · 4/4`;if(c!==lastCycleText){$('timeDisplay').textContent=c;lastCycleText=c}
+ requestAnimationFrame(draw)}
+function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:'My complex rhythm',bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function loadJson(file){try{if(file.size>100000)throw Error('File is too large');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Expected roots-rhythm/1 with four tracks');
+ if(d.tracks.some(t=>!t||typeof t!=='object'||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>24||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>24||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Check a, b, n and sound for every track');
+ const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;tracks=d.tracks.map(cleanTrack);bpm=safeInt(d.bpm,50,200,138);cycleBars=d.bars===2?2:1;if(audio)loadSamples(prioritySampleKeys());$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
+ activePresetId=null;renderPresets();renderTracks();renderEditor();showToast('Imported rhythm: '+(typeof d.name==='string'?d.name.slice(0,45):file.name))}catch(e){showToast('Import failed: '+e.message)}}
+function setupEvents(){
+ $('categorySelect').addEventListener('change',e=>{activeCategory=e.target.value;const first=PRESETS.find(p=>p.category===activeCategory);if(first)applyPreset(first)});
+ $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
+ $('playBtn').addEventListener('click',togglePlay);$('resetBtn').addEventListener('click',reset);$('previewBtn').addEventListener('click',previewSound);$('soundSelect').addEventListener('change',e=>{tracks[selectedTrack].sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());renderTracks();renderEditor();markCustom()});
+ $('argumentAngle').addEventListener('input',e=>{const t=tracks[selectedTrack];if(!applyRotation(t,Number(e.target.value)*Math.PI/180))return;$('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom()});
+ $('argumentAngle').addEventListener('change',()=>renderTracks());
+ $('bpm').addEventListener('input',e=>{const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}markCustom()});
+ $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
+ for(const [k,id] of [['a','editA'],['b','editB'],['n','editN']]){const inp=$(id);inp.addEventListener('input',()=>{const raw=inp.value;if(raw.trim()==='')return;const num=Number(raw);const valid=k==='n'?Number.isInteger(num)&&num>=1&&num<=24:Number.isFinite(num)&&Math.abs(num)<=10000;const err=$('fieldMessage');if(!valid){err.textContent=k==='n'?'Enter an integer degree from 1 to 24':'Enter a number from −10000 to 10000';inp.setAttribute('aria-invalid','true');return}err.textContent='';inp.removeAttribute('aria-invalid');tracks[selectedTrack][k]=num;renderTracks();renderReadout();markCustom()});inp.addEventListener('change',()=>{const t=tracks[selectedTrack];t[k]=k==='n'?safeInt(inp.value,1,24,t.n):safeReal(inp.value,t[k]);inp.value=String(t[k]);inp.removeAttribute('aria-invalid');$('fieldMessage').textContent='';renderTracks();renderReadout()})}
+ $('addLayer').addEventListener('click',()=>{const t=tracks[selectedTrack];if(t.layers.length<5){t.layers.push({a:0,b:1,n:1,velocity:.65});renderLayers();renderTracks();renderReadout();markCustom()}});
+ $('saveBtn').addEventListener('click',()=>{saveJson();$('fileMenu').open=false});$('loadBtn').addEventListener('click',()=>{$('fileMenu').open=false;$('jsonFile').click()});$('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
+ function canvasPoint(e){const b=canvas.getBoundingClientRect();return{x:e.clientX-b.left-b.width/2,y:e.clientY-b.top-b.height/2,side:Math.min(b.width,b.height)}}
+ function wrapAngle(x){return Math.atan2(Math.sin(x),Math.cos(x))}
+ function onRootDot(p,t,r){return t.a===0&&t.b===0?false:rootPhases(t).some(ph=>{const a=-Math.PI/2+TAU*ph;return Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r)<=Math.max(15,p.side*.024)})}
+ canvas.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  const p=canvasPoint(e),distance=Math.hypot(p.x,p.y);
+  const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-distance)})).sort((a,b)=>a.gap-b.gap)[0];
+  if(near.gap>Math.max(15,p.side*.06))return;
+  chooseTrack(near.i);const t=tracks[near.i];if(!onRootDot(p,t,near.r))return;
+  rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),moved:false};
+  canvas.setPointerCapture(e.pointerId);
+ });
+ canvas.addEventListener('pointermove',e=>{
+  if(!rootDrag||rootDrag.id!==e.pointerId)return;
+  const p=canvasPoint(e),delta=wrapAngle(Math.atan2(p.y,p.x)-rootDrag.startPointer);
+  if(!rootDrag.moved&&Math.abs(delta)<.004)return;
+  rootDrag.moved=true;const t=tracks[rootDrag.track];
+  applyRotation(t,rootDrag.startArg+t.n*delta);
+  $('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom();canvas.classList.add('is-dragging');
+ });
+ function finishRootDrag(e){if(!rootDrag||rootDrag.id!==e.pointerId)return;const moved=rootDrag.moved;rootDrag=null;canvas.classList.remove('is-dragging');if(moved)renderTracks()}
+ canvas.addEventListener('pointerup',finishRootDrag);canvas.addEventListener('pointercancel',finishRootDrag);canvas.addEventListener('lostpointercapture',finishRootDrag);
+ canvas.addEventListener('keydown',e=>{
+   if(e.shiftKey&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
+    e.preventDefault();const t=tracks[selectedTrack];if(applyRotation(t,Math.atan2(t.b,t.a)+(e.key==='ArrowRight'?1:-1)*t.n*5*Math.PI/180)){$('editA').value=String(t.a);$('editB').value=String(t.b);renderReadout();markCustom()}return;
+   }
+   if(['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();chooseTrack((selectedTrack+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:3))%4)}
+   else if(e.key==='Enter'){e.preventDefault();previewSound()}
+  });
+ document.addEventListener('keydown',e=>{const tag=e.target?.tagName;if(e.code==='Space'&&!['INPUT','SELECT','BUTTON','TEXTAREA','SUMMARY'].includes(tag)&&e.target!==canvas){e.preventDefault();togglePlay()}});
+ document.addEventListener('pointerdown',e=>{const menu=$('fileMenu');if(menu.open&&!menu.contains(e.target))menu.open=false});
+ if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
+}
+function applyViewportScale(){
+ const relative=Math.min(window.innerWidth/1440,window.innerHeight/900);
+ const factor=.74+.26*relative;
+ document.documentElement.style.setProperty('--ui-scale',String(Math.max(.78,Math.min(1.15,factor))));
+}
+const desktopPresets=window.matchMedia('(min-width:950px)');
+$('presetDetails').open=desktopPresets.matches;
+desktopPresets.addEventListener('change',e=>{$('presetDetails').open=e.matches});
+window.addEventListener('resize',applyViewportScale,{passive:true});
+applyViewportScale();
+setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);resizeCanvas();requestAnimationFrame(draw);
+})();

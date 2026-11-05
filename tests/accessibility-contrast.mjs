@@ -15,6 +15,11 @@ try{
     await page.locator(selector).evaluate(el=>{el.open=true});
   const measured=await page.evaluate(()=>{
    const toRgb=value=>{
+    const hex=value.trim().match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i);
+    if(hex){
+      const h=hex[1].length===3?[...hex[1]].map(x=>x+x).join(''):hex[1];
+      return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));
+    }
     const n=(value.match(/[\d.]+/g)||[]).map(Number);
     return n.length>=3?[n[0],n[1],n[2]]:null;
    };

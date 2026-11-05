@@ -21,14 +21,14 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-AUD-002 | T-AUD-002 | All explicit conditions in R-AUD-002 pass with reproducible evidence | BLOCKED | User image.png annotated control text recovered; second source reference remains unavailable; issues/2 |
 | R-AUD-003 | T-AUD-003, 8 child tasks | результаты последующих изменений допускают объективное сравнение с исходным состоянием. | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-UI-001 | T-UI-001, 13 child tasks | All explicit conditions in R-UI-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-UI-002 | T-UI-002 | All explicit conditions in R-UI-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-UI-002 | T-UI-002 | All explicit conditions in R-UI-002 pass with reproducible evidence | VERIFIED | CI:42121936951; tests/spec-ui.mjs all 14 typographic roles in 12 theme/viewport states |
 | R-UI-003 | T-UI-003, 23 child tasks | все элементы читаемы, соответствуют типографической шкале и проходят проверку контраста. | BLOCKED | User image.png annotated control text recovered; issue/2; tests/spec-ui.mjs |
 | R-UI-004 | T-UI-004, 6 child tasks | All explicit conditions in R-UI-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-UI-005 | T-UI-005, 3 child tasks | All explicit conditions in R-UI-005 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-UI-006 | T-UI-006, 7 child tasks | All explicit conditions in R-UI-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-UI-007 | T-UI-007, 13 child tasks | All explicit conditions in R-UI-007 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-UI-008 | T-UI-008 | All explicit conditions in R-UI-008 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-TEX-001 | T-TEX-001 | All explicit conditions in R-TEX-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-UI-008 | T-UI-008 | All explicit conditions in R-UI-008 pass with reproducible evidence | VERIFIED | CI:42121936951; tests/touch-targets.mjs 231 mobile controls >=44x44; tests/ui-smoke.mjs 44px Canvas dragging |
+| R-TEX-001 | T-TEX-001 | All explicit conditions in R-TEX-001 pass with reproducible evidence | VERIFIED | CI:42121936951; KaTeX 0.16.22 local html+MathML; ten annotated math references across 12 states |
 | R-TEX-002 | T-TEX-002, 14 child tasks | All explicit conditions in R-TEX-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-TEX-003 | T-TEX-003, 12 child tasks | All explicit conditions in R-TEX-003 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/spec-ui.mjs; KaTeX vertical 1/4 1/2 3/4 in 12 theme/viewport combinations |
 | R-TEX-004 | T-TEX-004 | All explicit conditions in R-TEX-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
@@ -67,7 +67,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-SND-005 | T-SND-005, 7 child tasks | All explicit conditions in R-SND-005 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-SND-006 | T-SND-006 | All explicit conditions in R-SND-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-SND-007 | T-SND-007, 7 child tasks | All explicit conditions in R-SND-007 pass with reproducible evidence | BLOCKED | CI:42107150484; 15 generated WAVs and technical metrics; issues/3 |
-| R-PST-001 | T-PST-001, 13 child tasks | All explicit conditions in R-PST-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-PST-001 | T-PST-001, 13 child tasks | All explicit conditions in R-PST-001 pass with reproducible evidence | VERIFIED | CI:42119466325; PRESET_INVENTORY.md 50 itemized coordinate/phase/sound/patch/fingerprint/nearest-neighbor audits |
 | R-PST-002 | T-PST-002 | All explicit conditions in R-PST-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-PST-003 | T-PST-003, 9 child tasks | All explicit conditions in R-PST-003 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/preset-diversity.mjs; PRESET_DIVERSITY_REPORT.md; 35+15=50 studies |
 | R-PST-004 | T-PST-004 | All explicit conditions in R-PST-004 pass with reproducible evidence | BLOCKED | PRESET_DIVERSITY_REPORT.md; all 15 mathematically distinct; issues/3 |
@@ -76,7 +76,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-ENG-001 | T-ENG-001, 6 child tasks | All explicit conditions in R-ENG-001 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/audio-mix-stress.mjs; 50 schedule comparisons; 0.354ms onset |
 | R-ENG-002 | T-ENG-002 | All explicit conditions in R-ENG-002 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/audio-mix-stress.mjs; 50 schedule comparisons; 0.354ms onset |
 | R-ENG-003 | T-ENG-003, 8 child tasks | All explicit conditions in R-ENG-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-ENG-004 | T-ENG-004 | All explicit conditions in R-ENG-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-ENG-004 | T-ENG-004 | All explicit conditions in R-ENG-004 pass with reproducible evidence | VERIFIED | CI:42121936951; tests/legacy-json-compat.mjs; all 35 originals preserve BPM, instruments and phases; unknown fields reject safely |
 | R-QM-001 | T-QM-001 | All explicit conditions in R-QM-001 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
 | R-QM-002 | T-QM-002 | All explicit conditions in R-QM-002 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
 | R-QM-003 | T-QM-003 | All explicit conditions in R-QM-003 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |

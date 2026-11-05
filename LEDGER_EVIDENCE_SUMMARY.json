@@ -1,14 +1,17 @@
 {
   "generatedFrom": "Evidence at CI run https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
   "tasks": {
-    "VERIFIED": 115,
+    "VERIFIED": 133,
     "BLOCKED": 4,
-    "IN_PROGRESS": 86,
-    "TODO": 446,
+    "IN_PROGRESS": 81,
+    "TODO": 433,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
     "R-PROC-003",
+    "R-UI-002",
+    "R-UI-008",
+    "R-TEX-001",
     "R-TEX-003",
     "R-NUM-001",
     "R-NUM-002",
@@ -18,10 +21,12 @@
     "R-MDL-004",
     "R-MDL-005",
     "R-SND-002",
+    "R-PST-001",
     "R-PST-003",
     "R-PST-005",
     "R-ENG-001",
     "R-ENG-002",
+    "R-ENG-004",
     "R-QM-001",
     "R-QM-002",
     "R-QM-003",

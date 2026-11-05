@@ -11,6 +11,7 @@ on:
       - tests/audio-offline.mjs
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
+      - tests/transport-race.mjs
       - tests/required-polyrhythms.mjs
       - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
@@ -68,6 +69,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-switch-http.log 2>&1 &
           node tests/transport-switching.mjs
+      - name: Verify rapid Play cancellation and balanced Web Audio schedulers
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-transport-race.log 2>&1 &
+          node tests/transport-race.mjs
       - name: Import all 35 legacy JSON projects and verify precise root phases
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-legacy-http.log 2>&1 &

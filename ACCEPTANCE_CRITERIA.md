@@ -20,7 +20,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-AUD-001 | T-AUD-001, 13 child tasks | All explicit conditions in R-AUD-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-AUD-002 | T-AUD-002 | All explicit conditions in R-AUD-002 pass with reproducible evidence | BLOCKED | User image.png annotated control text recovered; second source reference remains unavailable; issues/2 |
 | R-AUD-003 | T-AUD-003, 8 child tasks | результаты последующих изменений допускают объективное сравнение с исходным состоянием. | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-UI-001 | T-UI-001, 13 child tasks | All explicit conditions in R-UI-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-UI-001 | T-UI-001, 13 child tasks | All explicit conditions in R-UI-001 pass with reproducible evidence | VERIFIED | CI:42123915938; 90 application CSS font sizes >=16px; Chromium 14 responsive theme cases, >=16px text; math wrappers >=18px |
 | R-UI-002 | T-UI-002 | All explicit conditions in R-UI-002 pass with reproducible evidence | VERIFIED | CI:42121936951; tests/spec-ui.mjs all 14 typographic roles in 12 theme/viewport states |
 | R-UI-003 | T-UI-003, 23 child tasks | все элементы читаемы, соответствуют типографической шкале и проходят проверку контраста. | BLOCKED | User image.png annotated control text recovered; issue/2; tests/spec-ui.mjs |
 | R-UI-004 | T-UI-004, 6 child tasks | All explicit conditions in R-UI-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
@@ -50,7 +50,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-NUM-005 | T-NUM-005 | All explicit conditions in R-NUM-005 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/spec-ui.mjs; tests/math-io.test.mjs; four-quadrant round-trips; zero; n64 |
 | R-NUM-006 | T-NUM-006, 4 child tasks | All explicit conditions in R-NUM-006 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/spec-ui.mjs; tests/math-io.test.mjs; four-quadrant round-trips; zero; n64 |
 | R-NUM-007 | T-NUM-007 | All explicit conditions in R-NUM-007 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-NUM-008 | T-NUM-008, 9 child tasks | All explicit conditions in R-NUM-008 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-NUM-008 | T-NUM-008, 9 child tasks | All explicit conditions in R-NUM-008 pass with reproducible evidence | VERIFIED | CI:42123915938; 146 math assertions; 42 relative-error polar cases and 100 repeated UI coordinate/unit toggles; abs 1e-8 and rel 1e-10 |
 | R-MDL-001 | T-MDL-001, 6 child tasks | All explicit conditions in R-MDL-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-MDL-002 | T-MDL-002, 8 child tasks | All explicit conditions in R-MDL-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-MDL-003 | T-MDL-003, 4 child tasks | All explicit conditions in R-MDL-003 pass with reproducible evidence | VERIFIED | CI:42107150484; math-io.js; tests/ui-smoke.mjs; 3:4 LCM; multi-operand intersection |
@@ -75,7 +75,7 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-PST-006 | T-PST-006, 6 child tasks | All explicit conditions in R-PST-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-ENG-001 | T-ENG-001, 6 child tasks | All explicit conditions in R-ENG-001 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/audio-mix-stress.mjs; 50 schedule comparisons; 0.354ms onset |
 | R-ENG-002 | T-ENG-002 | All explicit conditions in R-ENG-002 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/audio-mix-stress.mjs; 50 schedule comparisons; 0.354ms onset |
-| R-ENG-003 | T-ENG-003, 8 child tasks | All explicit conditions in R-ENG-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-ENG-003 | T-ENG-003, 8 child tasks | All explicit conditions in R-ENG-003 pass with reproducible evidence | VERIFIED | CI:42123915938; tests/transport-switching.mjs 24 live transitions; all lanes/math/audio updated, no bus or sample leak, no old scheduler timer |
 | R-ENG-004 | T-ENG-004 | All explicit conditions in R-ENG-004 pass with reproducible evidence | VERIFIED | CI:42121936951; tests/legacy-json-compat.mjs; all 35 originals preserve BPM, instruments and phases; unknown fields reject safely |
 | R-QM-001 | T-QM-001 | All explicit conditions in R-QM-001 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
 | R-QM-002 | T-QM-002 | All explicit conditions in R-QM-002 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |

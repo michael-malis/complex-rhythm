@@ -343,13 +343,13 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
     </section>
     <section class="sound-panel" aria-labelledby="instrumentHeading">
 
+      <div class="panel-head"><h2 id="instrumentHeading">Инструменты и окружности</h2><p>Выберите дорожку для редактирования</p></div>
+      <div class="track-list" id="tracks" role="group" aria-label="Выбор дорожки и отключение звука"></div>
         <div class="sound-row"><div class="sound-choice"><label for="soundSelect">Звук инструмента</label><select id="soundSelect"></select></div><button class="preview" id="previewBtn" type="button" aria-label="Прослушать выбранный звук">▶ Звук</button></div>
         <details class="layers-editor" id="layerDetails"><summary id="layerSummary">Дополнительные корни · 0</summary>
           <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
           <div id="extraLayers"></div><button class="layer-add" id="addLayer" type="button">+ Добавить набор корней</button>
         </details>
-      <div class="panel-head"><h2 id="instrumentHeading">Инструменты и окружности</h2><p>Выберите дорожку для редактирования</p></div>
-      <div class="track-list" id="tracks" role="group" aria-label="Выбор дорожки и отключение звука"></div>
       <details class="math-details"><summary>Как число задаёт ритм</summary><p>Каждому инструменту соответствует число <code>z = a + bi</code> и степень <code>n</code>. Аргументы <code>n</code> корней задают <code>n</code> равномерно расположенных ударов за один оборот. Обычно оборот равен одному такту, а в босса-нове — двум тактам. Жанровые пресеты могут использовать объединение нескольких наборов корней внутри одного инструмента; дополнительные наборы доступны в разделе инструментов.</p><p>Изменение направления числа сдвигает удары. Изменение его модуля при том же аргументе не меняет их время. Радиусы четырёх окружностей здесь нужны для разделения инструментов, а не показывают модули комплексных корней. При <code>z = 0</code> ударов нет.</p><p>Нажми <strong>Слушать</strong>, чтобы услышать все четыре дорожки. Нажми <strong>▶ Звук</strong>, чтобы проверить один инструмент. Пробел управляет воспроизведением, стрелки на Canvas выбирают дорожку.</p></details>
     </section>
   </main>

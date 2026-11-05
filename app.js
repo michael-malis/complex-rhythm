@@ -88,6 +88,62 @@ function composePhases(track) {
  }));
  return {base,added,merged,overlaps:merged.filter(v=>v.base&&v.added).length};
 }
+let selectedRootIndex=0;
+function renderTeX(target,latex,displayMode=false) {
+ const el=typeof target==='string'?document.getElementById(target):target;
+ if(!el)return;
+ if(!window.katex){el.textContent='Mathematics rendering unavailable';return}
+ window.katex.render(latex,el,{throwOnError:false,strict:'warn',displayMode,output:'htmlAndMathml',trust:false});
+}
+function complexLaTeX(t) {
+ return `${fmt(t.a)}${t.b<0?' - ':' + '}${fmt(Math.abs(t.b))}i`;
+}
+function initMath() {
+ const standard=[
+  ['Cartesian form',String.raw`z=a+bi`],
+  ['Polar form',String.raw`z=r\left(\cos\theta+i\sin\theta\right)`],
+  ['Exponential form',String.raw`z=re^{i\theta}`],
+  ['Modulus',String.raw`r=\sqrt{a^2+b^2}`],
+  ['Argument',String.raw`\theta=\operatorname{atan2}(b,a)`],
+  ['Roots',String.raw`w_k=\sqrt[n]{r}\,e^{i\frac{\theta+2\pi k}{n}}`],
+  ['Root set',String.raw`R_n(z)=\{w_0,w_1,\ldots,w_{n-1}\}`],
+  ['Root indices',String.raw`k=0,\ldots,n-1`],
+  ['Nonzero condition',String.raw`z\ne0`],
+  ['Coordinate identities',String.raw`a=\Re(z),\quad b=\Im(z),\quad r=|z|,\quad \theta=\arg(z)`]
+ ];
+ renderTeX('cartesianHeading',String.raw`z=a+bi`);
+ for(const [id,tex] of [
+  ['phaseZero',String.raw`0`],
+  ['phaseQuarter',String.raw`\dfrac{1}{4}`],
+  ['phaseHalf',String.raw`\dfrac{1}{2}`],
+  ['phaseThreequarters',String.raw`\dfrac{3}{4}`]
+ ])renderTeX(id,tex);
+ const wrap=$('formulaReference');wrap.replaceChildren();
+ for(const [name,tex] of standard) {
+  const row=document.createElement('div'),nameEl=document.createElement('span'),math=document.createElement('span');
+  nameEl.className='formula-name';nameEl.textContent=name;
+  math.className='formula-math math-notation';renderTeX(math,tex);
+  row.append(nameEl,math);wrap.append(row);
+ }
+}
+function updateSelectedRootMath() {
+ const t=tracks[selectedTrack];if(!t)return;
+ const r=Math.hypot(t.a,t.b);
+ if(r===0){
+  renderTeX('selectedRootFormula',String.raw`z=0\implies w_k=0`);
+  renderTeX('rootPhaseFormula',String.raw`\arg(0)\text{ is undefined; no rhythm event}`);
+  return;
+ }
+ const k=Math.max(0,Math.min(t.n-1,selectedRootIndex));
+ const theta=principalArg(t.b,t.a);
+ const p=rootPhases(t)[k];
+ renderTeX('selectedRootFormula',String.raw`w_{${k}}=\sqrt[${t.n}]{${fmt(r)}}\,e^{i\frac{${fmt(theta)}+2\pi\cdot ${k}}{${t.n}}}`);
+ renderTeX('rootPhaseFormula',String.raw`\operatorname{phase}(w_{${k}})=\frac{\theta+2\pi\cdot${k}}{2\pi\cdot${t.n}}\bmod 1=${fmt(p)}`);
+}
+function principalArg(b,a) {
+ const theta=Math.atan2(b,a);
+ return theta<=-Math.PI+1e-12?Math.PI:theta;
+}
 function fmt(n){return Number(n.toFixed(3)).toString().replace('-', '−')}
 function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
@@ -134,7 +190,7 @@ function renderTracks() {
 function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
- if(eq)eq.textContent=`R${t.n}(${complexDisplay(t)})`+(t.layers.length?` ∪ ${t.layers.length} extra`:'');
+ if(eq)renderTeX(eq,String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+(t.layers.length?String.raw`\;\cup\; ${t.layers.length}\ \text{additional set(s)}`:''));
  if(count)count.textContent=hitLabel(events(t).length);
 }
 function chooseTrack(i,fromTrackList=false) {
@@ -157,7 +213,8 @@ function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
  const c=composePhases(t),i=selectedTrack;
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
- $('compositionEquation').textContent=`R${t.n}(z)`+(t.layers.length?` ∪ ${t.layers.map((l,j)=>`R${l.n}(w${j+1})`).join(' ∪ ')}`:'');
+ renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>String.raw`\;\cup\;R_{${l.n}}(u_{${j+1}})`).join(''):''));
+ updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
  $('overlapSummary').textContent=c.overlaps===0?'No coincident phases.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} — each sounds once.`;
@@ -531,6 +588,6 @@ function setTheme(next,save=false) {
 }
 let savedTheme='light';
 try{savedTheme=localStorage.getItem('roots-rhythm-theme')||'light'}catch(_){}
-setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);
+initMath();setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);
 resizeCanvas();requestAnimationFrame(draw);
 })();

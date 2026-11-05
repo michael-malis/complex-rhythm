@@ -1,0 +1,30 @@
+name: Reconcile verified requirement evidence
+on:
+  push:
+    branches: [upgrade/spec-2026-11-math-audio]
+    paths:
+      - scripts/reconcile-ledger.mjs
+      - .github/workflows/reconcile-ledger.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  ledger:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reconcile only documented and previously passing checks
+        run: |
+          node scripts/reconcile-ledger.mjs
+          node scripts/verify-traceability.mjs
+      - name: Commit three-way status ledger and evidence summary
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add TASKS.md TRACEABILITY.md ACCEPTANCE_CRITERIA.md LEDGER_EVIDENCE_SUMMARY.json
+          git diff --cached --quiet || git commit -m 'Reconcile verified task evidence and explicit acceptance blockers'
+          git push origin HEAD:upgrade/spec-2026-11-math-audio

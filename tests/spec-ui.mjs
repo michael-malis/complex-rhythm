@@ -44,6 +44,7 @@ try{
   await page.close();
  }
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+ const finalErrors=[];page.on('pageerror',e=>finalErrors.push(e.message));
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();
  ok(await page.locator('#trackR0').count()===1&&await page.locator('#trackTheta0').count()===1,'polar edit fields');
@@ -71,6 +72,22 @@ try{
  await page.locator('.lane[data-lane="0"] .mode-button').nth(0).click();
  ok(Math.abs(Number(await page.locator('#trackA0').inputValue())-1e-9)<1e-20,
   'tiny input survives cartesian-polar-cartesian round-trip without truncation');
+ const stability=await page.evaluate(()=>{
+  const before=window.RhythmResearch.current().tracks[0];
+  const lane=document.querySelector('.lane[data-lane="0"]');
+  const cart=lane.querySelectorAll('.mode-button')[0],polar=lane.querySelectorAll('.mode-button')[1];
+  const unit=lane.querySelector('.unit-button');
+  for(let i=0;i<100;i++){polar.click();unit.click();unit.click();cart.click()}
+  const after=window.RhythmResearch.current().tracks[0];
+  return {before:{a:before.a,b:before.b},after:{a:after.a,b:after.b},
+    input:document.getElementById('trackA0').value,
+    isCartesian:cart.getAttribute('aria-pressed')==='true'};
+ });
+ ok(stability.before.a===stability.after.a&&stability.before.b===stability.after.b,
+  '100 Cartesian↔polar and radians↔degrees mode cycles retain canonical a,b');
+ ok(stability.isCartesian&&Math.abs(Number(stability.input)-1e-9)<1e-20,
+  '100 coordinate mode cycles preserve tiny numeric input instead of rounding to zero');
+ ok(finalErrors.length===0,'no rendering recursion or script error during 100 coordinate-mode cycles');
  await page.locator('#trackA0').fill('0');
  await page.locator('#trackB0').fill('0');
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();

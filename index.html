@@ -234,6 +234,7 @@ small,.small {font-size:12px;color:var(--sub)}
 .math-topline strong{font-size:14px;color:#e5f2f7}
 .math-topline span{font-size:13px;color:#bed1db}
 .math-readout small{font-size:12px;color:#aec6d4}
+#modulusDisplay{color:var(--muted);font-size:11.5px}
 .sound-row{margin:12px 0 0}
 .sound-choice label{font-size:12px}
 .layers-editor{margin-top:12px}
@@ -304,15 +305,15 @@ button,select,summary{transition:background-color .15s ease,border-color .15s ea
     </section>
     <section class="sound-panel" aria-labelledby="instrumentHeading">
       <section class="editor" id="editor" aria-labelledby="editorHeading">
-        <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading">Дорожка 1</h3></div><span class="math-tag">z = a + bi</span></div>
-        <p class="editor-intro">Измените число и степень корня — расположение точек сразу изменится.</p>
+        <div class="editor-head"><div class="editor-kicker"><h3 id="editorHeading" tabindex="-1">Дорожка 1</h3></div><span class="math-tag">z = a + bi</span></div>
+        <p class="editor-intro">Измените a, b или n: аргумент поворачивает точки, а n меняет их число.</p>
         <div class="params" role="group" aria-label="Комплексное число и степень корня">
           <div class="param"><label for="editA">a · Re(z)</label><input id="editA" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editB">b · Im(z)</label><input id="editB" type="number" step="any" inputmode="decimal" min="-10000" max="10000"></div>
           <div class="param"><label for="editN">n · степень корня</label><input id="editN" type="number" inputmode="numeric" step="1" min="1" max="24"></div>
         </div>
         <p id="fieldMessage" class="field-error" role="status" aria-live="polite"></p>
-        <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small></div>
+        <div class="math-readout"><div class="math-topline"><strong id="hitCount">4 удара за такт</strong><span id="eqDisplay">z = 1 + 0i</span></div><small id="phaseDisplay">arg(z) = 0° · фаза 0%</small><small id="modulusDisplay">|z| = 1 · модуль не влияет на время ударов</small></div>
         <div class="sound-row"><div class="sound-choice"><label for="soundSelect">Звук инструмента</label><select id="soundSelect"></select></div><button class="preview" id="previewBtn" type="button" aria-label="Прослушать выбранный звук">▶ Звук</button></div>
         <details class="layers-editor" id="layerDetails"><summary id="layerSummary">Дополнительные корни · 0</summary>
           <p class="layers-help">В сложных пресетах несколько комплексных чисел задают объединение точек ударов. Здесь можно изменить дополнительные слои, не используя обычный секвенсор.</p>
@@ -416,7 +417,7 @@ function renderTracks(){const wrap=$('tracks');wrap.replaceChildren();tracks.for
  const count=document.createElement('span');count.className='track-count';count.textContent=hitLabel(roots(t).length);
  pick.append(dot,name,count);pick.addEventListener('click',()=>chooseTrack(i));
  const mute=document.createElement('button');mute.className='ghost track-mute';mute.type='button';mute.title=t.muted?'Включить звук':'Отключить звук';mute.setAttribute('aria-label',`${t.muted?'Включить':'Отключить'} ${SOUNDS[t.sound]}`);mute.setAttribute('aria-pressed',String(t.muted));mute.textContent=t.muted?'×':'♫';
- mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();markCustom();});row.append(pick,mute);wrap.append(row);
+ mute.addEventListener('click',()=>{t.muted=!t.muted;renderTracks();wrap.querySelectorAll('.track-mute')[i]?.focus({preventScroll:true});markCustom();});row.append(pick,mute);wrap.append(row);
 })}
 function renderEditor(){const t=tracks[selectedTrack];$('editor').style.setProperty('--active-color',COLORS[selectedTrack]);$('editorHeading').textContent=`Дорожка ${selectedTrack+1} · ${SOUNDS[t.sound]}`;const select=$('soundSelect');if(!select.options.length){for(const [key,label] of Object.entries(SOUNDS)){const o=document.createElement('option');o.value=key;o.textContent=label;select.append(o)}}select.value=t.sound;$('plotHint').textContent=`Окружность ${selectedTrack+1} · ${SOUNDS[t.sound]} — измените a, b или n в редакторе`;
  for(const k of ['A','B','N'])$('edit'+k).value=String(t[k.toLowerCase()]);
@@ -425,6 +426,7 @@ function renderReadout(){const t=tracks[selectedTrack];$('hitCount').textContent
  $('eqDisplay').textContent=`z = ${complexDisplay(t)}`;
  const arg=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  $('phaseDisplay').textContent=arg===null?(t.layers.length?'z = 0: звучат только дополнительные корни':'z = 0: нет звучащих ударов'):`arg(z) = ${fmt(arg)}° · сдвиг = ${fmt(arg/t.n)}°`;
+ $('modulusDisplay').textContent=`|z| = ${fmt(Math.hypot(t.a,t.b))} · модуль не влияет на время ударов`;
 }
 
 function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('layerSummary').textContent=`Дополнительные корни · ${t.layers.length}`;$('addLayer').disabled=t.layers.length>=5;
@@ -434,7 +436,7 @@ function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Громкость набора';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Громкость дополнительных корней ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
  })}
 
-function chooseTrack(i){selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor()}
+function chooseTrack(i){const keepTrackFocus=document.activeElement?.classList.contains('track-pick');selectedTrack=Math.max(0,Math.min(3,i));renderTracks();renderEditor();if(keepTrackFocus)$('tracks').querySelectorAll('.track-pick')[selectedTrack]?.focus({preventScroll:true})}
 function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}}
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  tracks=p.tracks.map(cleanTrack);bpm=p.bpm;cycleBars=p.bars===2?2:1;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
@@ -687,7 +689,7 @@ function setupEvents(){
  document.addEventListener('pointerdown',e=>{const menu=$('fileMenu');if(menu.open&&!menu.contains(e.target))menu.open=false});
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }
-setupEvents();applyPreset(PRESETS[0]);resizeCanvas();requestAnimationFrame(draw);
+setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);resizeCanvas();requestAnimationFrame(draw);
 })();
 </script>
 </body></html>

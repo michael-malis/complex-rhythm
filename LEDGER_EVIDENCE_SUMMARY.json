@@ -1,10 +1,10 @@
 {
   "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633; earlier proof https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
   "tasks": {
-    "VERIFIED": 287,
+    "VERIFIED": 292,
     "BLOCKED": 4,
-    "IN_PROGRESS": 62,
-    "TODO": 299,
+    "IN_PROGRESS": 61,
+    "TODO": 295,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -15,6 +15,7 @@
     "R-TEX-001",
     "R-TEX-003",
     "R-GEO-001",
+    "R-GEO-003",
     "R-GEO-004",
     "R-GEO-005",
     "R-GEO-006",

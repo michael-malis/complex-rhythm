@@ -33,6 +33,7 @@ on:
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/expanded-ui-typography.mjs
+      - tests/responsive-content-access.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
@@ -91,6 +92,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-stress-http.log 2>&1 &
           node tests/audio-mix-stress.mjs
+      - name: Prevent clipped content, tiny controls and horizontal overflow on responsive layouts
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-responsive-access.log 2>&1 &
+          node tests/responsive-content-access.mjs
       - name: Audit all expanded panels, options, labels and mathematical notes
         if: ${{ !cancelled() }}
         run: |

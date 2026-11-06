@@ -14,7 +14,7 @@ function mathFromPolar(r,theta) {
  return {a:snap(r*Math.cos(theta)),b:snap(r*Math.sin(theta))};
 }
 function mathAngle(input) {
- const s=input.toLowerCase().replace(/\s+/g,'');
+ const s=String(input).toLowerCase().replace(/π/g,'pi').replace(/−/g,'-').replace(/\s+/g,'');
  if(!s||s.length>80)throw Error('Invalid angle expression');
  if(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s))return Number(s);
  const m=s.match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+)?\*?)pi(?:\/(\d+(?:\.\d+)?))?$/);

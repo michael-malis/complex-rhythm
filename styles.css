@@ -353,3 +353,31 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .preset-controls label{min-width:0}
 .preset-controls select{min-width:0;width:100%;text-overflow:ellipsis}
 @media(max-width:600px){.preset-controls{grid-template-columns:minmax(0,1fr)}}
+
+/* Sound Lab is an optional instrument inspector below the mathematical workspace.
+   Its waveform renders only on demand; no continuous animation or DAW timeline. */
+.sound-lab-section{margin:16px 0 8px;min-width:0}
+.sound-lab{border:1px solid var(--line);border-radius:6px;background:var(--panel);min-width:0}
+.sound-lab>summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:13px 15px;min-height:48px;list-style:none;color:var(--ink);font-weight:660;font-size:19px;cursor:pointer}
+.sound-lab>summary::-webkit-details-marker{display:none}
+.sound-lab>summary:before{content:"▸";color:var(--accent);margin-right:3px}
+.sound-lab[open]>summary:before{content:"▾"}
+.sound-lab>summary .quiet{font-size:16px;font-weight:400;color:var(--sub);margin-left:auto}
+.sound-lab-body{padding:6px 15px 18px;border-top:1px solid var(--fine)}
+.sound-lab-toolbar{display:flex;align-items:flex-end;flex-wrap:wrap;gap:11px;margin:10px 0}
+.sound-lab-toolbar label{display:grid;gap:5px;flex:1 1 250px;font-size:17px;color:var(--sub);min-width:0}
+.sound-lab-toolbar select{width:100%;min-height:44px;min-width:0}
+.sound-lab-toolbar .secondary-btn{flex:0 1 auto;min-height:44px}
+.sound-wave-figure{margin:12px 0 8px;min-width:0}
+#soundWaveCanvas{display:block;width:100%;height:190px;max-width:100%;border:1px solid var(--line);background:var(--page);border-radius:5px}
+#soundWaveStatus{font-size:16px;color:var(--sub);padding:9px 2px;min-height:36px;overflow-wrap:anywhere}
+.sound-lab .patch-controls{margin-top:12px;border-top:1px solid var(--fine)}
+.sound-lab .patch-controls[hidden]{display:none!important}
+.sound-lab-note{font-size:16px;color:var(--sub);line-height:1.5;margin:10px 0 0}
+@media(max-width:700px){
+ .sound-lab-body{padding:7px 10px 14px}
+ .sound-lab-toolbar{display:grid;grid-template-columns:minmax(0,1fr)}
+ .sound-lab-toolbar .secondary-btn{width:100%}
+ #soundWaveCanvas{height:150px}
+ .sound-lab>summary .quiet{margin-left:0}
+}

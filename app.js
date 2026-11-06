@@ -4,7 +4,7 @@ const TAU=2*Math.PI;
 let COLORS=['#ab5847','#567a63','#967438','#80618a'];
 let RGB=[[171,88,71],[86,122,99],[150,116,56],[128,97,138]];
 let theme='light';
-const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble',technoKick:'Techno kick',hardcoreKick:'Distorted hardcore kick',gabberKick:'Gabber kick',frenchcoreKick:'Frenchcore pitched kick',metallic:'Industrial metallic percussion',fmPerc:'FM percussion',noiseBurst:'Noise burst',hoover:'Hoover bass',raveStab:'Rave stab',acidClassic:'Classic 303 Acid',acidHard:'Hard Acid',acidScreaming:'Screaming Acid',acidDark:'Dark Acid',acidIndustrial:'Industrial Acid',acidPsychedelic:'Psychedelic Acid'};
+const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',bongoLow:'Acoustic bongo · low',bongoHigh:'Acoustic bongo · high',berlinrumble:'Berlin sub-rumble',technoKick:'Techno kick',hardcoreKick:'Distorted hardcore kick',gabberKick:'Gabber kick',frenchcoreKick:'Frenchcore pitched kick',metallic:'Industrial metallic percussion',fmPerc:'FM percussion',noiseBurst:'Noise burst',hoover:'Hoover bass',raveStab:'Rave stab',acidClassic:'Classic 303 Acid',acidHard:'Hard Acid',acidScreaming:'Screaming Acid',acidDark:'Dark Acid',acidIndustrial:'Industrial Acid',acidPsychedelic:'Psychedelic Acid'};
 // Every audible time point is still the argument of a complex root.
 const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
 // A phase on a 16th-note grid encoded by a degree-1 complex root.
@@ -71,6 +71,11 @@ for(const study of EXPERIMENTAL_STUDIES){
    character:study.character,mathNote:study.mathNote});
 }
 
+// These six groove examples remain real canonical mathematical presets.
+// Curated browsing adds a view, never a second preset-loading algorithm.
+const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','pressure']);
+const inBrowse=(preset,category)=>category==='grooves'
+ ? GROOVE_IDS.includes(preset.id):preset.category===category;
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker';
@@ -151,6 +156,40 @@ function renderTeX(target,latex,displayMode=false) {
 function complexLaTeX(t) {
  return `${fmtMath(t.a)}${t.b<0?' - ':' + '}${fmtMath(Math.abs(t.b))}i`;
 }
+// Compact rounded values are display-only, not edits to the canonical complex numbers.
+function compactComplexLaTeX(t){
+ const n=v=>{
+  if(Math.abs(v)<1e-12)return '0';
+  if(Math.abs(v)>=1e5||Math.abs(v)<.0001){
+   const [a,e]=v.toExponential(2).split('e');
+   return a+String.raw`\cdot10^{${Number(e)}}`;
+  }
+  return String(Number(v.toPrecision(4)));
+ };
+ return n(t.a)+(t.b<0?' - ':' + ')+n(Math.abs(t.b))+'i';
+}
+function renderLaneEquation(node,track){
+ const op=track.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
+ const terms=[String.raw`R_{${track.n}}\!\left(${compactComplexLaTeX(track)}\right)`,
+  ...track.layers.map(layer=>String.raw`R_{${layer.n}}\!\left(${compactComplexLaTeX(layer)}\right)`)];
+ if(track.euclidean)terms.push(String.raw`E(${track.euclidean.k},${track.euclidean.n})`);
+ node.replaceChildren();
+ node.setAttribute('aria-label','Root sets with numeric complex coordinates');
+ node.title='Displayed coordinates are rounded; edit fields and project JSON keep full precision.';
+ for(let j=0;j<terms.length;j++){
+  const term=document.createElement('span');
+  term.className='lane-math-term';
+  renderTeX(term,(j?String.raw`\;${op}\;`:'')+terms[j]);
+  node.append(term);
+ }
+ const width=node.getBoundingClientRect().width;
+ if(width>0)for(const term of node.children){
+  for(let px=18;px>=14;px--){
+   term.style.fontSize=px+'px';
+   if(term.scrollWidth<=width+1)break;
+  }
+ }
+}
 function initMath() {
  const standard=[
   ['Cartesian form',String.raw`z=a+bi`],
@@ -222,16 +261,16 @@ function renderPresets(){
  $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
  const selected=PRESETS.find(p=>p.id===activePresetId);
- const inBrowseCategory=selected?.category===browseCategory;
+ const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
  if(activePresetId&&!inBrowseCategory){
   const option=document.createElement('option');
-  option.value='__browse__';option.textContent='Choose an example in this category';
+  option.value='__browse__';option.textContent='Choose an example in this collection';
   option.disabled=true;select.append(option);
  }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of PRESETS.filter(p=>p.category===browseCategory)){
+ for(const p of PRESETS.filter(p=>inBrowse(p,browseCategory))){
   const option=document.createElement('option');option.value=p.id;
   option.textContent=p.name+(p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
@@ -457,6 +496,25 @@ function renderTracks() {
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
   head.append(pick,sound,mute);row.append(head);
+  // Always-visible instrument gain in each lane. The selected-lane advanced
+  // editor keeps a synchronized secondary mirror for backward compatibility.
+  const gainRow=document.createElement('label');gainRow.className='lane-volume';
+  gainRow.htmlFor='laneGain'+i;
+  const gainName=document.createElement('span');gainName.textContent='Instrument volume';
+  const gainReadout=document.createElement('output');gainReadout.id='laneGainValue'+i;
+  gainReadout.htmlFor='laneGain'+i;gainReadout.textContent=Math.round((t.gain??1)*100)+'%';
+  const gainSlider=document.createElement('input');gainSlider.type='range';
+  gainSlider.id='laneGain'+i;gainSlider.min='5';gainSlider.max='150';gainSlider.step='1';
+  gainSlider.value=String(Math.round((t.gain??1)*100));
+  gainSlider.setAttribute('aria-label','Instrument volume, lane '+(i+1));
+  gainSlider.addEventListener('input',()=>{
+   t.gain=Number(gainSlider.value)/100;
+   gainReadout.textContent=gainSlider.value+'%';
+   const mirror=$('laneGain'),mirrorOutput=$('selectedGainValue');
+   if(i===selectedTrack&&mirror){mirror.value=String(t.gain);if(mirrorOutput)mirrorOutput.textContent=t.gain.toFixed(2);}
+   markCustom();
+  });
+  gainRow.append(gainName,gainReadout,gainSlider);row.append(gainRow);
   buildLaneFields(row,t,i);
   const length=document.createElement('div');length.className='lane-length';
   const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.textContent='Cycle length · bars';
@@ -485,11 +543,7 @@ function renderTracks() {
 function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
- const setOp=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
- const equation=String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+
-  t.layers.map((layer,j)=>String.raw`\;${setOp}\;R_{${layer.n}}(u_{${j+1}})`).join('')+
-  (t.euclidean?String.raw`\;${setOp}\;E(${t.euclidean.k},${t.euclidean.n})`:'');
- if(eq)renderTeX(eq,equation);
+ if(eq)renderLaneEquation(eq,t);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
  if(i===selectedTrack)renderRootRule();
@@ -512,9 +566,15 @@ function renderSoundControls() {
  const h=document.createElement('h4');h.textContent='Lane volume';basic.append(h);
  const row=document.createElement('label');row.className='patch-control';
  const label=document.createElement('span');label.textContent='Lane gain';
- const output=document.createElement('output');output.textContent=(t.gain??1).toFixed(2);
+ const output=document.createElement('output');output.id='selectedGainValue';output.textContent=(t.gain??1).toFixed(2);
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
- input.addEventListener('input',()=>{t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);markCustom()});
+ input.addEventListener('input',()=>{
+  t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);
+  const slider=$('laneGain'+selectedTrack),label=$('laneGainValue'+selectedTrack);
+  if(slider)slider.value=String(Math.round(t.gain*100));
+  if(label)label.textContent=Math.round(t.gain*100)+'%';
+  markCustom();
+ });
  row.append(label,output,input);basic.append(row);
  const defaults=window.RhythmVoices?.definitions?.[t.sound];
  advanced.hidden=!defaults;
@@ -599,7 +659,7 @@ function renderComposition() {
  const c=composePhases(t),i=selectedTrack;
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
  const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
-  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
+  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}\!\left(${complexLaTeX(l)}\right)`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;
@@ -823,7 +883,7 @@ function applyPreset(p){
  cycleBars=p.bars===2?2:1;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
- activeCategory=p.category;browseCategory=p.category;
+ activeCategory=p.category;browseCategory=browseCategory==='grooves'&&GROOVE_IDS.includes(p.id)?'grooves':p.category;
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -845,6 +905,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       };
       function sampleKey(sound,index=0,velocity=1){
         if(sound==='berlinrumble')return index%2===0?'berlinrumble':'berlinrumble-alt';
+        if(sound==='bongoLow'||sound==='bongoHigh')return 'bongo';
         if(sound==='jazzkick')return velocity>.88?'jazzkick-full':'jazzkick';
         if(sound==='crossstick')return index%3===0?'crossstick-alt':'crossstick';
         if(sound==='jazzshaker')return index%2===0?'jazzshaker':'jazzshaker-alt';
@@ -880,11 +941,12 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         });
         return Promise.allSettled(jobs).then(()=>{if(playing)updateTransportText();return sampleBuffers.size});
       }
-      function triggerSample(key,at,gainValue,index=0){
+      function triggerSample(key,at,gainValue,index=0,voice=key){
         const buffer=sampleBuffers.get(key);if(!buffer)return false;
         const source=audio.createBufferSource();source.buffer=buffer;
         // Repetition variation is deliberately small; no timing jitter, roots stay exact.
-        source.playbackRate.value=1+([0,-.012,.009,-.007,.004][index%5]);
+        source.playbackRate.value=(voice==='bongoLow'?.79:voice==='bongoHigh'?1.27:1)*
+          (1+([0,-.012,.009,-.007,.004][index%5]));
         const gain=audio.createGain();gain.gain.value=Math.max(.001,gainValue);
         source.connect(gain);gain.connect(voiceBus||master);
         const cleanupNodes=[gain];
@@ -913,9 +975,9 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       function playSample(sound,at,velocity,index=0){
         const key=sampleKey(sound,index,velocity);
         const gainTable={kick:.51,snare:.45,clap:.36,hat:.18,openhat:.19,rim:.34,tom:.33,shaker:.21,
-           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,berlinrumble:.63};
+           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,bongoLow:.32,bongoHigh:.23,berlinrumble:.63};
         const style=activeCategory==='brazil'?.83:1;
-        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index);
+        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index,sound);
         // A restrained acoustic body layer gives fast breakbeats less plastic transients.
         if(played&&['dnb','jungle'].includes(activeCategory)){
           if(sound==='snare'&&sampleBuffers.has('jazzsnare'))triggerSample('jazzsnare',at,.095*velocity,index);

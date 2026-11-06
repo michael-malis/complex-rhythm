@@ -460,8 +460,8 @@ function renderTracks() {
    t.cycleBars=v;
    updateLaneStatus(i);
    if(!playing)pausedPhase=((pausedPhase/cycleSeconds())%1+1)%1;
-   else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.008;}
-   markCustom();renderWindowTimeline();
+   else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.006;}
+   markCustom(false);
   });
   lengthInput.addEventListener('change',()=>{if(lengthInput.getAttribute('aria-invalid')==='true'){lengthInput.value=String(t.cycleBars);lengthInput.removeAttribute('aria-invalid')}});
   length.append(lengthLabel,lengthInput);row.append(length);
@@ -769,11 +769,11 @@ function renderWindowTimeline() {
  $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
 }
 let pendingEditReschedule=false;
-function markCustom(){
+function markCustom(reschedule=true){
  if(activePresetId!==null&&!presetModified){presetModified=true;renderPresets()}
  // Invalidate any notes already planned under the old complex-number/patch
  // model. Batch rapid slider/drag inputs into one render-frame update.
- if(playing&&audio&&!pendingEditReschedule){
+ if(reschedule&&playing&&audio&&!pendingEditReschedule){
   pendingEditReschedule=true;
   requestAnimationFrame(()=>{
    pendingEditReschedule=false;
@@ -1304,8 +1304,8 @@ function setupEvents() {
  $('bpm').addEventListener('input',e=>{
   const phase=transportPhase(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds()):0;
   bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);
-  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
-  markCustom();
+  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
+  markCustom(false);
  });
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
  $('loadRootExample').addEventListener('click',()=>{

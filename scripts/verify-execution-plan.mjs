@@ -1,54 +1,54 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 
-const doc=fs.readFileSync('NEXT_EXECUTION_PLAN.md','utf8');
-const taskDoc=fs.readFileSync('TASKS.md','utf8');
-const taskRows=taskDoc.split('\n').filter(line=>/^\| T-[A-Z]+-\d+/.test(line))
- .map(line=>line.split(/(?<!\\)\|/).slice(1,-1).map(x=>x.trim()));
-assert.equal(taskRows.length,652,'Original 652 stable task IDs must remain present');
-const taskIds=new Set(taskRows.map(row=>row[0]));
-assert.equal(taskIds.size,652,'No duplicate task IDs may be introduced');
-const parents=taskRows.filter(row=>row[2]==='-');
+const plan=fs.readFileSync('NEXT_EXECUTION_PLAN.md','utf8');
+const raw=fs.readFileSync('TASKS.md','utf8');
+const rows=raw.split('\n').filter(line=>/^\| T-[A-Z]+-\d+/.test(line))
+ .map(line=>line.split(/(?<!\\)\|/).slice(1,-1).map(value=>value.trim()));
+assert.equal(rows.length,652,'Legacy task ledger must retain all 652 original rows');
+assert.equal(new Set(rows.map(row=>row[0])).size,652,'No duplicate historical IDs');
+const parents=rows.filter(row=>row[2]==='-');
 assert.equal(parents.length,98,'All 98 original requirement parents remain present');
-const knownReq=new Set(parents.map(row=>row[1]));
-assert.equal(knownReq.size,98,'Requirement IDs must remain unique');
-const openParents=new Set(parents.filter(row=>row[7]!=='VERIFIED').map(row=>row[1]));
-
-const tableRows=doc.split('\n').filter(line=>/^\| W\d\d \|/.test(line));
-assert.equal(tableRows.length,8,'Eight execution workstreams are required');
-const packageNames=new Set(),mapped=new Set();
-let baselineOpenTotal=0;
-const packageData=[];
-for(const line of tableRows){
+const known=new Set(parents.map(row=>row[1]));
+assert.equal(known.size,98,'Requirement IDs must be unique');
+const open=new Set(parents.filter(row=>row[7]!=='VERIFIED').map(row=>row[1]));
+const active=plan.split('\n').filter(line=>/^\| M\d\d \|/.test(line));
+assert.equal(active.length,14,'Exactly 14 operational tasks are planned');
+const ids=new Set(),coverage=new Map(),crs=new Set(),packages=[];
+for(const line of active){
  const fields=line.split('|').slice(1,-1).map(s=>s.trim());
- assert.equal(fields.length,6,'Malformed workstream table row');
- const [id,title,priority,reqList,openCount,depends]=fields;
- assert.match(id,/^W0[1-8]$/,'Workstream ID must be W01…W08');
- assert.ok(!packageNames.has(id),'Duplicate workstream '+id);
- packageNames.add(id);
- assert.ok(title&&priority&&depends,'Package requires name, priority and dependencies');
- const reqs=reqList.split(',').map(s=>s.trim());
- assert.ok(reqs.length,'Package has no requirements: '+id);
+ assert.equal(fields.length,6,'Bad macro-task table: '+line.slice(0,80));
+ const [id,title,requirements,priority,status,done]=fields;
+ assert.match(id,/^M(0[1-9]|1[0-4])$/,'Macro ID must belong to M01–M14');
+ assert.ok(!ids.has(id),'Duplicate macro '+id);ids.add(id);
+ assert.ok(title&&priority&&done,'Missing measurable macro description '+id);
+ assert.ok(['TODO','IN_PROGRESS','BLOCKED','VERIFIED'].includes(status),'Invalid macro status '+id);
+ const reqs=requirements.split(',').map(s=>s.trim());
  for(const req of reqs){
-  assert.match(req,/^R-[A-Z]+-\d+$/,'Invalid requirement '+req);
-  assert.ok(knownReq.has(req),'Unregistered requirement '+req);
-  assert.ok(!mapped.has(req),'Requirement assigned to multiple packages '+req);
-  mapped.add(req);
+  if(req.startsWith('CR-')){
+   assert.equal(req,'CR-UX-001','Unregistered new feature '+req);
+   assert.ok(!crs.has(req),'Feature assigned twice '+req);crs.add(req);
+  }else{
+   assert.ok(known.has(req),'Unknown historical requirement '+req);
+   assert.ok(open.has(req),'Completed requirement should not appear in active backlog '+req);
+   assert.ok(!coverage.has(req),'Duplicate requirement '+req+' in '+id);
+   coverage.set(req,id);
+  }
  }
- assert.match(openCount,/^\d+$/,'Missing baseline task count '+id);
- baselineOpenTotal+=Number(openCount);
- packageData.push({id,requirements:reqs.length,baselineOpenTasks:Number(openCount)});
+ const outstanding=rows.filter(row=>reqs.includes(row[1])&&row[7]!=='VERIFIED').length;
+ packages.push({id,status,requirements:reqs,openLegacyChecks:outstanding});
 }
-assert.equal(mapped.size,46,'The post-merge snapshot must have exactly 46 assigned requirement IDs');
-assert.equal(baselineOpenTotal,358,'Original snapshot contains 358 not-yet-verified tasks');
-const missing=[...openParents].filter(req=>!mapped.has(req));
-assert.deepEqual(missing,[],'New or still-open requirements omitted from execution plan');
-const initialKnownOpen=taskRows.filter(row=>mapped.has(row[1])&&row[7]!=='VERIFIED').length;
-assert.ok(initialKnownOpen<=baselineOpenTotal,
- 'All initially unfinished workstreams must only decrease in open tasks unless plan is revised');
+assert.equal(coverage.size,46,'Cover all 46 open historical requirements');
+assert.deepEqual([...open].filter(req=>!coverage.has(req)),[],
+ 'Some original outstanding requirements are unassigned');
+assert.deepEqual([...coverage.keys()].filter(req=>!open.has(req)),[],
+ 'A closed historical requirement was incorrectly re-opened');
+assert.deepEqual([...crs],['CR-UX-001'],'User requested preset-browser change must be tracked once');
+const totalOpen=packages.reduce((n,p)=>n+p.openLegacyChecks,0);
+assert.ok(totalOpen<=358,'The historical baseline has 358 open tasks');
 console.log(JSON.stringify({
- validity:'PASS',requirements:knownReq.size,stableTasks:taskRows.length,
- assignedParents:mapped.size,openParents:openParents.size,
- originalOpenTasks:baselineOpenTotal,currentOpenTasks:initialKnownOpen,
- openUnassigned:missing,workstreams:packageData
+ status:'PASS',macros:active.length,verifiedMacros:packages.filter(p=>p.status==='VERIFIED').length,
+ historicallyVerified:rows.filter(row=>row[7]==='VERIFIED').length,
+ sourceRequirements:known.size,sourceOpenParents:open.size,coverage:coverage.size,
+ openHistoricalChecks:totalOpen,packages
 },null,2));

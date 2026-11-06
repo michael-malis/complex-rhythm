@@ -25,6 +25,7 @@ try{
   assert.equal(current.timerActive,true,'scheduler intact during edit');
   samples.push(current);
  }
+ await page.locator('#orbitCanvas').scrollIntoViewIfNeeded();
  const preDrag=await page.evaluate(()=>{
   const t=window.RhythmResearch.current().tracks[0],r=document.querySelector('#orbitCanvas').getBoundingClientRect();
   return {a:t.a,b:t.b,n:t.n,modulus:Math.hypot(t.a,t.b),
@@ -40,6 +41,13 @@ try{
  await page.mouse.move(preDrag.box.left+preDrag.box.width/2+Math.sin(delta)*preDrag.radius,
   preDrag.box.top+preDrag.box.height/2-Math.cos(delta)*preDrag.radius,{steps:3});
  await page.mouse.up();
+ const latestAfterPointer=await page.evaluate(()=>({
+  transport:window.RhythmResearch.transport(),
+  current:window.RhythmResearch.current().tracks[0],
+  canvas:document.querySelector('#orbitCanvas').getBoundingClientRect().toJSON()
+ }));
+ assert.ok(Math.abs(latestAfterPointer.current.b-preDrag.b)>.01,
+  'pointer drag must change the selected complex argument: '+JSON.stringify(latestAfterPointer));
  await page.waitForFunction(previous=>window.RhythmResearch.transport().voiceBusGenerations>previous,
   preDrag.generation,{timeout:5000});
  const postDrag=await page.evaluate(()=>{

@@ -72,7 +72,7 @@ try{
  await page.waitForFunction(()=>Math.abs(document.querySelector('#orbitCanvas').getBoundingClientRect().width-900)<1);
  const sparse=await inspect();
  assert.equal(sparse.width,900,'sparse geometry may use the minimum zoom width');
- assert.ok(sparse.focused,'import does not close the user's zoom mode');
+ assert.ok(sparse.focused,'import keeps plot magnification active');
 
  // A new dense preset is evaluated for all lanes, not only selected.
  await importProject(fixture(true));

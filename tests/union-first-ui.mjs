@@ -78,7 +78,10 @@ try {
   assert.ok(await page.locator('#patchOsc').isHidden(),'oscillator is hidden until requested');
   await page.locator('#advancedSoundDetails').evaluate(el=>el.open=true);
   assert.ok(await page.locator('#patchOsc').isVisible(),'advanced controls are discoverable on request');
-  await page.locator('#patchcutoff').fill('5400');
+  await page.locator('#patchcutoff').evaluate(el=>{
+   el.value='5400';
+   el.dispatchEvent(new Event('input',{bubbles:true}));
+  });
   assert.equal(await page.evaluate(()=>window.RhythmResearch.current().tracks[0].patch.cutoff),5400,
    'advanced sound parameter still edits real voice settings');
 

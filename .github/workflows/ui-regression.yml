@@ -32,6 +32,8 @@ on:
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
+      - NEXT_EXECUTION_PLAN.md
+      - scripts/verify-execution-plan.mjs
       - .github/workflows/ui-regression.yml
   workflow_dispatch:
 
@@ -51,6 +53,9 @@ jobs:
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
+      - name: Validate consolidated operational plan and legacy requirement coverage
+        if: ${{ !cancelled() }}
+        run: node scripts/verify-execution-plan.mjs
       - name: Test pure mathematical utilities
         if: ${{ !cancelled() }}
         run: node tests/math-io.test.mjs

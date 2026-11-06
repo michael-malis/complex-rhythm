@@ -54,6 +54,23 @@ try{
   'live root drag changes the argument of all roots');
  assert.equal(postDrag.roots.length,postDrag.n,'drag retains all root phases');
  assert.equal(postDrag.playing,true,'root drag retains playing transport');
+ const dragReadout=await page.evaluate(()=>({
+  a:Number(document.getElementById('trackA0').value),
+  b:Number(document.getElementById('trackB0').value),
+  n:Number(document.getElementById('trackN0').value),
+  formula:document.getElementById('selectedRootFormula').querySelector('.katex')?.textContent,
+  phase:document.getElementById('rootPhaseFormula').querySelector('.katex')?.textContent,
+  polar:document.getElementById('laneAlt0').querySelector('.katex')?.textContent
+ }));
+ assert.ok(Math.abs(dragReadout.a-postDrag.a)<1e-9&&Math.abs(dragReadout.b-postDrag.b)<1e-9,
+  'live drag synchronizes both Cartesian input fields');
+ assert.equal(dragReadout.n,postDrag.n,'root degree field unchanged by drag');
+ assert.ok(dragReadout.formula?.includes('w')&&dragReadout.phase?.includes('phase')&&dragReadout.polar?.includes('θ'),
+  'live drag recomputes selected-root phase and alternate-polar KaTeX formulas');
+ const sorted=postDrag.roots.slice().sort((a,b)=>a-b);
+ assert.ok(sorted.every((p,i)=>Math.abs((sorted[(i+1)%sorted.length]+(i===sorted.length-1?1:0)-p)-1/sorted.length)<1e-9),
+  'dragged roots remain evenly spaced');
+
  const beforeBurst=await page.evaluate(()=>window.RhythmResearch.transport());
  await page.evaluate(()=>{
   const slider=document.querySelector('#argumentAngle');

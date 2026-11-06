@@ -25,6 +25,7 @@ try {
     canvas:[rect('#orbitCanvas').width,rect('#orbitCanvas').height],
     lanes:document.querySelectorAll('.lane').length,
     inputs:document.querySelectorAll('.lane input[type=number]').length,
+    visibleAngles:[...document.querySelectorAll('.angle-fields input[type=text]')].map(el=>({id:el.id,value:el.value})),
     fieldHeight:rect('#trackN0').height,
     sceneLeft:rect('.visual-stage').left,
     controlLeft:rect('.control-panel').left,
@@ -41,6 +42,8 @@ try {
   verify(data.scroll<=data.viewport+2,'horizontal overflow '+width+': '+JSON.stringify(data));
   verify(Math.abs(data.canvas[0]-data.canvas[1])<2&&data.canvas[0]>190,'square Canvas '+width);
   verify(data.lanes===4&&data.inputs===16,'four visible mathematical input rows and independent cycle fields '+width);
+  verify(data.visibleAngles.length===8&&data.visibleAngles.every(x=>x.value==='0'),
+   'default four lanes initialize both radians and degrees: '+width+' '+JSON.stringify(data.visibleAngles));
   verify(data.fieldHeight>=44,'small input target '+width);
   verify(data.fileHidden,'native JSON file picker visible '+width);
   if(width<1280)verify(data.sceneTop<data.controlTop,'visualization must appear before settings on tablets and phones '+width);

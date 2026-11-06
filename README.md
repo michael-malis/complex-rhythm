@@ -4,7 +4,7 @@
 
 The graph comes first on phones and tablets; on wide screens, all four editable lane cards are arranged 2×2 next to it. Each track has an independent 1–16-bar cycle; the least common multiple determines the full repeat period. The public preset browser contains 51 examples: 50 original/experimental mathematical rhythms plus one user-supplied Song Examples study. These remain mathematical root-event models with a separate Euclidean generator, real root-set union/intersection and distinct instrument voices.
 
-**Release status:** GitHub Pages publishes from the protected development target `main` via [Publish ROOTS RHYTHM](.github/workflows/pages.yml). The production UI changes through [PR #17](https://github.com/michael-malis/complex-rhythm/pull/17) are merged. **Published is not fully accepted.** The latest confirmed historical source ledger remains **380/652 VERIFIED** and **63/98 original requirements VERIFIED**; two manual-acceptance macro tasks (M12/M13) are still blocked. The [14 active macro tasks](NEXT_EXECUTION_PLAN.md) and [full original ledger](TASKS.md) remain distinct. Do not infer extra VERIFIED items from additional passing CI runs. See [current GitHub Actions runs](https://github.com/michael-malis/complex-rhythm/actions) for live status.
+**Release status:** GitHub Pages publishes from the protected development target `main` via [Publish ROOTS RHYTHM](.github/workflows/pages.yml). The UI, Acid and optional Sound Lab changes through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18) are merged into `main`. **Published is not fully accepted.** The latest confirmed historical source ledger remains **380/652 VERIFIED** and **63/98 original requirements VERIFIED**; two manual-acceptance macro tasks (M12/M13) are still blocked. The [14 active macro tasks](NEXT_EXECUTION_PLAN.md) and [full original ledger](TASKS.md) remain distinct. Do not infer extra VERIFIED items from additional passing CI runs. See [current GitHub Actions runs](https://github.com/michael-malis/complex-rhythm/actions) for live status.
 
 
 **Website:** https://michael-malis.github.io/complex-rhythm/
@@ -53,6 +53,10 @@ In the web page: open **Rhythm examples**, select **Category: Brazilian & Acoust
 ## Responsive English interface
 
 All UI labels, descriptions, tooltips, validation errors and transport messages are in English (`lang="en"`). Layout, typography, spacing, controls and Canvas size scale with the viewport. The **Rhythm examples** disclosure starts expanded on desktop and mobile and can be collapsed at any time; changing Category does not silently load another preset or restart audio. Tablet screens use a two-column workbench.
+
+## Optional Sound Lab (advanced audio)
+
+The bottom **Sound Lab · waveform and instrument shaping** disclosure remains **closed by default**, keeping complex-root visualization primary. Open it once, choose any of the four instrument lanes independently of the mathematically selected root ring, and inspect a static waveform. Synthesizers render from the same offline Web Audio engine as real sound and expose oscillator, filter, saturation, resonance, decay and related controls, with a per-lane Reset action. Locally recorded sample-backed voices show a read-only decoded waveform instead. Reese and Sub bass reuse their actual live synthesis graph for offline inspection. When the engine has no available source waveform, the UI says so instead of inventing one. The waveform is a normalized single hit before master output, not a beat timeline or full DAW.
 
 ## Preset navigation and instrument quality
 

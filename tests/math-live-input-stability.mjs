@@ -68,7 +68,7 @@ try{
    counter:Number(document.querySelector('#unionCount').textContent),
    playing:window.RhythmResearch.transport().playing};
  });
- assert.equal(layer.value,'120','additional point's degree input accepts full text');
+ assert.equal(layer.value,'120','additional point degree input accepts full text');
  assert.equal(layer.caret,2,'added angle cursor remains in place');
  assert.ok(layer.focused&&layer.playing,'focus and audio preserved during added point edit');
  assert.equal(layer.counter,layer.events,'union strip and mathematical event list remain synchronized');

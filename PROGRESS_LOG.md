@@ -120,3 +120,9 @@
 - New `tests/formula-geometry-complete.mjs` confirmed ten required KaTeX+MathML references, root formula centering, separate math lines and visible horizontal scrolling after adding all five allowed extra root families on each viewport/theme. Root/phase label and 28px dot geometry remain protected by prior CI.
 - Verified R-UI-006 (seven children), R-UI-007 (three remaining children, ten already verified) and R-QT-003 (two remaining children, four already verified). With previously verified R-GEO-002, macro **M03 VERIFIED**. Updated all three evidence tables atomically. Original criteria preserved; external visual screenshot #2 and human audio/mobile/screen-reader #3 still blocked.
 - New baseline: **325 VERIFIED / 54 IN_PROGRESS / 269 TODO / 4 BLOCKED / 0 FAILED; 58/98 parent requirements**; macro **3/14** verified.
+
+## 2026-11-06 — Independent coincidence and source-mapping regression
+
+- [Full UI/audio CI 42231878412](https://github.com/michael-malis/complex-rhythm/actions/runs/42231878412) PASS after correctly opening the Advanced Cartesian editor in the root-angle infographic test. Added `tests/cross-lane-coincidence.mjs`: 50 preset event maps and a deliberate four-lane simultaneous root-union fixture, preserving per-lane source identity and scheduler interval partitioning.
+- [Preset diversity CI 42232392096](https://github.com/michael-malis/complex-rhythm/actions/runs/42232392096) PASS for the separate genre matrix validator. New `GENRE_IMPLEMENTATION_MATRIX.md` connects 15 existing source-researched genres to real BPM, root degrees and voice selection, validated against `PRESET_INVENTORY.json`. No external research was repeated and no new product feature was added.
+- M09 moved from TODO to IN_PROGRESS. M08/M10 remain IN_PROGRESS pending the full original sound/genre acceptance; the source ledger stays **325 VERIFIED / 54 IN_PROGRESS / 269 TODO / 4 BLOCKED, 58/98 requirements**, without premature promotion.

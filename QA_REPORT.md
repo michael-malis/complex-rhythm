@@ -138,3 +138,8 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 ## Complete responsive adaptation and formula placement — 2026-11-06
 
 [Full UI/audio CI 42229288619](https://github.com/michael-malis/complex-rhythm/actions/runs/42229288619) **PASS**. Six mandatory window dimensions in two themes, all critical transport/editor controls reachable, no major panel or lane overlaps, no clipped text or global scaling, 28px marker sizing and magnification retained; ten KaTeX+MathML references remain separate and centered, and five-generated-root formula chains scroll instead of forcing page overflow. R-UI-006, R-UI-007 and R-QT-003 are VERIFIED (15 additional historical task rows). M03 VERIFIED, historic totals **325/652** and **58/98 parent requirements**. Manual physical-device acceptance remains in M13; this is browser emulation evidence, not a human physical-phone check.
+
+## Cross-lane rhythm and 15-genre mapping checkpoint — 2026-11-06
+
+- [UI/audio 42231878412](https://github.com/michael-malis/complex-rhythm/actions/runs/42231878412) PASS: independent attacks at exactly shared moments on four lanes; duplicate root families within one lane merge sources rather than multiplying attacks; all 50 preset event/time schedules preserve source metadata across window partitions.
+- [Genre source mapping 42232392096](https://github.com/michael-malis/complex-rhythm/actions/runs/42232392096) PASS: 15 existing research lines map to real preset IDs/BPM/four root degrees/voice names. This is **not** human listening or authentic genre reproduction. M09 remains IN_PROGRESS.

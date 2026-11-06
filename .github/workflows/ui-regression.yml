@@ -15,6 +15,7 @@ on:
       - tests/percussion-sample-structure.mjs
       - samples/**
       - tests/acid-parameter-response.mjs
+      - tests/acid-preset-diversity.mjs
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
@@ -289,6 +290,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-production-grooves.log 2>&1 &
           node tests/production-grooves-ui.mjs
+      - name: Compare four acid presets, root timings, synth timbres and on-screen categories
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-acid-presets.log 2>&1 &
+          node tests/acid-preset-diversity.mjs
       - name: Verify English Song Examples, imported study fidelity and playable JSON round-trip
         if: ${{ !cancelled() }}
         run: |

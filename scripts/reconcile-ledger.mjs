@@ -83,6 +83,14 @@ verified.set('R-NUM-004',{
  evidence:'CI:42133490570; tests/expression-safety.mjs 11 valid examples, 22 rejected strings, 200 deterministic complex inputs and 11 browser editor actions; input preserved on error',
  commit:'46d4e1a0f95d0832c437c06fbdd7053af9e16a3f'
 });
+verified.set('R-GEO-006',{
+ evidence:'CI:42133680561; tests/collision-lanes.mjs; Canvas pixel samples at phase 0 top, 1/4 right, 1/2 bottom, 3/4 left; consistent clockwise visual time and standard complex argument',
+ commit:'e3ab63d758d63e91e38d8349c2ae8fc2e0897e92'
+});
+verified.set('R-NUM-007',{
+ evidence:'CI:42133963106; tests/four-lane-polar.mjs; all 4 lanes independent Cartesian/Polar and radian/degree edits; MathML alternative forms; zero argument disabled and restored',
+ commit:'2e32063cccc3205c53863c0aec8225989883d015'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

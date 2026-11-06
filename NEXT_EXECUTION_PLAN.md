@@ -16,7 +16,7 @@
 |---|---|---|---|---|---|
 | M01 | Post-merge baseline + development discipline | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | P0 | IN_PROGRESS | Current main/deployment status is accurate, CI/PR guards work, evidence and fix workflow reproducible |
 | M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | VERIFIED | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
-| M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | TODO | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
+| M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | IN_PROGRESS | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
 | M04 | Readable UI copy, contrast and typography | R-UI-004, R-UI-005 | P1 | TODO | Every mandatory label and tooltip audited; measured contrast passes in both themes |
 | M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | TODO | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
 | M06 | Formula synchronization and math audit | R-TEX-007, R-TEX-008 | P1 | TODO | Angle/degree/import/theme changes update all formulas without focus loss, raw TeX or layout jumps; auditable catalog |
@@ -39,7 +39,7 @@ Each macro has a dedicated GitHub issue except the already completed M02. Existi
 |---|---|---|
 | M01 | [#5](https://github.com/michael-malis/complex-rhythm/issues/5) | IN_PROGRESS: post-merge documentation and read-only PR-based workflows |
 | M02 | [PR #4](https://github.com/michael-malis/complex-rhythm/pull/4) | VERIFIED: explicit example selection; CI 42213078501 |
-| M03 | [#6](https://github.com/michael-malis/complex-rhythm/issues/6) | TODO |
+| M03 | [#6](https://github.com/michael-malis/complex-rhythm/issues/6) | IN_PROGRESS: phase-label collisions fixed; arrow/dense/other layout checks remain |
 | M04 | [#7](https://github.com/michael-malis/complex-rhythm/issues/7) | TODO |
 | M05 | [#8](https://github.com/michael-malis/complex-rhythm/issues/8) | TODO |
 | M06 | [#9](https://github.com/michael-malis/complex-rhythm/issues/9) | TODO |
@@ -52,7 +52,7 @@ Each macro has a dedicated GitHub issue except the already completed M02. Existi
 | M13 | [#3](https://github.com/michael-malis/complex-rhythm/issues/3) | BLOCKED: human audio, physical device, screen reader |
 | M14 | [#15](https://github.com/michael-malis/complex-rhythm/issues/15) | TODO |
 
-**Current macro counter:** **1 VERIFIED / 3 IN_PROGRESS / 8 TODO / 2 BLOCKED = 14 total**. Original source counts do not change merely because this plan advances.
+**Current macro counter:** **1 VERIFIED / 4 IN_PROGRESS / 7 TODO / 2 BLOCKED = 14 total**. Original source counts do not change merely because this plan advances.
 
 ## Execution sequence
 
@@ -87,3 +87,5 @@ The old W01–W08 grouping and the old global 2/10 counter are superseded as **o
 The current app is already published from main. `FINAL_REPORT.md` must eventually describe that true deployment state, while retaining `NOT COMPLETE` until the full manual and automated acceptance gates pass.
 
 **M02 evidence:** [full UI/audio CI 42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501). All other active macros retain their previous statuses; historical requirements are not automatically certified.
+
+**M03 phase-label evidence:** [full CI 42219132673](https://github.com/michael-malis/complex-rhythm/actions/runs/42219132673) passed `tests/phase-label-adaptation.mjs`, checking actual KaTeX/Canvas collisions for **50 presets in 10 responsive size/theme states**. Remaining geometric overlap scenarios, dense-ring magnification and human inspection are not yet accepted.

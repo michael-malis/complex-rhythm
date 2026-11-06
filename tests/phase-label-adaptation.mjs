@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
-const screenSizes=[[1600,1000],[1440,900],[1024,768],[768,1024],[390,844]];
+const screenSizes=[[1600,1000],[1440,900],[1280,800],[1024,768],[768,1024],[390,844]];
 const report=[];
 fs.mkdirSync('artifacts/geometry',{recursive:true});
 try{

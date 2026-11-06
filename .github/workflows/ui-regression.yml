@@ -1,5 +1,7 @@
 name: Rhythm Studio UI regression
 on:
+  pull_request:
+    branches: [main]
   push:
     paths:
       - index.html

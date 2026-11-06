@@ -18,44 +18,43 @@ try{
     assert.ok((await slider.boundingBox()).height>=44,'instrument gain has usable touch target');
     assert.match(await slider.getAttribute('aria-label'),/Instrument volume/);
    }
+   assert.equal(await page.locator('.preset-controls select').count(),2,
+     'one Category and one Preset selector, no other preset-level menus');
+   assert.equal(await page.locator('#collectionSelect').count(),0);
+   assert.equal(await page.locator('#ratioSelect').count(),0);
    const identity=await page.evaluate(()=>window.RhythmResearch.transport().activePresetId);
-   // Collections are a separate high-level browsing axis; all fifty presets
-   // must belong to one musical family, while Featured is an intentional view.
+   const initial=await page.evaluate(()=>window.RhythmResearch.current());
    const allIds=new Set();
-   for(const collection of ['club','breaks','acoustic','mathematics']){
-    await page.locator('#collectionSelect').selectOption(collection);
-    assert.equal(await page.locator('#categorySelect').inputValue(),'all',
-      'switching collection defaults to all styles: '+collection);
-    const choices=await page.locator('#presetSelect option').evaluateAll(options=>
-      options.filter(o=>!o.disabled&&o.value&&!o.value.startsWith('__')).map(o=>o.value));
-    assert.ok(choices.length>=1,'every collection contains playable examples: '+collection);
-    for(const value of choices){
-     assert.ok(!allIds.has(value),'musical collections must not duplicate a preset: '+value);
-     allIds.add(value);
+   const categories=await page.locator('#categorySelect option').evaluateAll(items=>items.map(i=>i.value));
+   assert.equal(categories.length,12,'eleven direct source categories plus curated Featured Grooves');
+   for(const category of categories.filter(c=>c!=='grooves')){
+    await page.locator('#categorySelect').selectOption(category);
+    const ids=await page.locator('#presetSelect option').evaluateAll(items=>
+     items.filter(i=>!i.disabled&&!i.value.startsWith('__')).map(i=>i.value));
+    assert.ok(ids.length,'all categories contain real rhythm presets: '+category);
+    for(const id of ids){
+     assert.ok(!allIds.has(id),'source categories must not duplicate a preset: '+id);
+     allIds.add(id);
     }
     assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),identity,
-     'collection navigation never changes active music: '+collection);
+      'changing category must not load a preset: '+category);
+    assert.deepEqual(await page.evaluate(()=>window.RhythmResearch.current()),initial,
+      'changing category must not modify roots or audio: '+category);
    }
-   assert.equal(allIds.size,50,'four musical collections cover all fifty canonical presets');
-   await page.locator('#collectionSelect').selectOption('club');
+   assert.equal(allIds.size,51,'the full 51-preset catalog remains visible via a single Category selector');
    await page.locator('#categorySelect').selectOption('acid');
-   assert.equal(await page.locator('#collectionSelect').inputValue(),'club',
-    'specific style auto-synchronizes its musical family');
    assert.ok(await page.locator('#presetSelect option[value="acid-303"]').count(),
-    'acid style contains its established patterns');
-   await page.locator('#collectionSelect').selectOption('grooves');
-   assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
-    'featured collection displays six curated examples');
+     'Acid is a direct Category, not hidden in another dropdown');
    await page.locator('#categorySelect').selectOption('grooves');
    const options=await page.locator('#presetSelect option').evaluateAll(items=>
-     items.filter(e=>e.value!=='__browse__').map(e=>({value:e.value,text:e.textContent})));
-   assert.equal(options.length,6,'curated groove view has exactly six examples');
-   assert.ok(options.every(v=>/^0[1-6] · /.test(v.text)),'six grooves are clearly labeled by sound');
+    items.filter(i=>i.value!=='__browse__').map(i=>({value:i.value,text:i.textContent})));
+   assert.equal(options.length,6,'Featured Grooves has six curated choices');
+   assert.ok(options.every(v=>/^0[1-6] · /.test(v.text)));
    assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),identity,
-     'browsing collections is not loading another rhythm');
+    'filtering Featured Grooves never loads music');
    await page.locator('#presetSelect').selectOption('berlin-bass-wall');
    assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
-     'selected curated preset remains visible in its collection');
+    'an explicit Featured preset keeps the current category');
    const loaded=await page.evaluate(()=>window.RhythmResearch.current());
    assert.equal(loaded.tracks[0].n,4,'Bass Wall must retain every-quarter kick');
    assert.equal(loaded.tracks[1].sound,'berlinrumble','Bass Wall requires a separate rumble voice');

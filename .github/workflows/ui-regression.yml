@@ -24,6 +24,7 @@ on:
       - tests/preset-category-navigation.mjs
       - tests/unified-rhythm-import.mjs
       - tests/single-reschedule-per-edit.mjs
+      - tests/all-presets-same-semantics.mjs
       - tests/angle-first.mjs
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
@@ -174,6 +175,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-live-edit.log 2>&1 &
           node tests/live-edit-reschedule.mjs
+      - name: Compare explicit selection and JSON event semantics for every catalog preset
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-all-presets-import.log 2>&1 &
+          node tests/all-presets-same-semantics.mjs
       - name: Check imported preset sample families and live transport transitions
         if: ${{ !cancelled() }}
         run: |

@@ -90,12 +90,13 @@ try{
      const synthesized=Boolean(window.RhythmVoices?.definitions?.[selected]);
      const heading=basic.querySelector('h4')?.textContent||'';
      const advanced=document.querySelector('#advancedSoundDetails');
-     const hiddenForSamples=advanced.hidden&&!synthesized;
+     const hiddenForSamples=wrap.hidden&&!synthesized;
      const tooltips=[...document.querySelectorAll('[title]')].filter(el=>
       getComputedStyle(el).display!=='none'&&!el.getAttribute('title')?.trim()
      );
      return {heading,sliders:sliders.length,named,synthesized,oscillator:!!oscillator,hiddenForSamples,emptyTooltips:tooltips.length};
     });
+    assert.ok(await page.locator('#soundWaveCanvas').isVisible(),'optional sound lab shows a waveform canvas');
     assert.ok(dynamic.heading.includes('Lane volume'),'basic instrument volume heading present');
     assert.ok(dynamic.sliders>=1&&dynamic.named,'all visible sound dynamics controls are named at usable font sizes for '+voice);
     if(dynamic.synthesized){

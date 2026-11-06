@@ -576,7 +576,7 @@ function renderTracks() {
   pick.append(num,dot,name);pick.addEventListener('click',()=>chooseTrack(i,true));
   const sound=document.createElement('select');sound.className='lane-sound';sound.id='laneSound'+i;sound.setAttribute('aria-label','Instrument for lane '+(i+1));
   for(const [key,label] of Object.entries(SOUNDS)){const opt=document.createElement('option');opt.value=key;opt.textContent=label;sound.append(opt)}
-  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderEditor();markCustom()});
+  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderEditor();if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
@@ -643,10 +643,12 @@ function chooseTrack(i,fromTrackList=false) {
  if(magnified)refreshPlotZoom();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
-function renderSoundControls() {
- const wrap=$('patchControls'),basic=$('laneGainControls'),advanced=$('advancedSoundDetails');
- if(!wrap||!basic||!advanced)return;
- wrap.replaceChildren();basic.replaceChildren();
+// Waveform editing is deliberately optional: a single bottom details panel.
+// The active waveform lane is NOT coupled to the mathematical selection.
+let soundLabLane=0,soundLabTrackRef=null,soundLabSound='',soundLabTimer=null,soundLabToken=0;
+const soundLabSampleCache=new Map();
+function renderSoundControls(){
+ const basic=$('laneGainControls');if(!basic)return;basic.replaceChildren();
  const t=tracks[selectedTrack];if(!t)return;
  const h=document.createElement('h4');h.textContent='Lane volume';basic.append(h);
  const row=document.createElement('label');row.className='patch-control';
@@ -655,45 +657,184 @@ function renderSoundControls() {
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
  input.addEventListener('input',()=>{
   t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);
-  const slider=$('laneGain'+selectedTrack),label=$('laneGainValue'+selectedTrack);
+  const slider=$('laneGain'+selectedTrack),value=$('laneGainValue'+selectedTrack);
   if(slider)slider.value=String(Math.round(t.gain*100));
-  if(label)label.textContent=Math.round(t.gain*100)+'%';
+  if(value)value.textContent=Math.round(t.gain*100)+'%';
   markCustom();
  });
  row.append(label,output,input);basic.append(row);
+}
+function refreshSoundLab(force=false){
+ const panel=$('advancedSoundDetails');if(!panel?.open)return;
+ const t=tracks[soundLabLane];if(!t)return;
+ const picker=$('soundLabLane'),wrap=$('patchControls'),reset=$('soundLabReset');
+ for(let i=0;i<4;i++){
+  const option=picker.options[i];
+  option.textContent='Lane '+(i+1)+' · '+SOUNDS[tracks[i].sound];
+ }
+ picker.value=String(soundLabLane);
  const defaults=window.RhythmVoices?.definitions?.[t.sound];
- advanced.hidden=!defaults;
- if(!defaults)return;
- const sub=document.createElement('h4');sub.textContent='Sound synthesis · '+SOUNDS[t.sound];wrap.append(sub);
- const p=document.createElement('p');p.className='small-explain';p.textContent='These controls modify the actual Web Audio voice for this instrument.';wrap.append(p);
- const grid=document.createElement('div');grid.className='patch-grid';
- const settings=[
-  ['cutoff','Filter cutoff (Hz)',70,10000,10],
-  ['q','Resonance',.2,25,.1],
-  ['decay','Decay (s)',.06,.8,.01],
-  ['accent','Accent',0,1,.01],
-  ['slide','Slide (s)',0,.5,.01],
-  ['drive','Saturation',.2,5,.1],
-  ['modulation','Pitch / FM modulation',0,5,.05],
-  ['depth','Filter envelope',0,9000,50]
- ];
- const oscLabel=document.createElement('label');oscLabel.className='patch-osc';oscLabel.textContent='Oscillator';
- const osc=document.createElement('select');osc.id='patchOsc';osc.setAttribute('aria-label','Synthesizer oscillator type');
- for(const type of ['sine','triangle','sawtooth','square']){
-  const op=document.createElement('option');op.value=type;op.textContent=type;osc.append(op);
+ const changed=force||soundLabTrackRef!==t||soundLabSound!==t.sound;
+ if(!changed)return;
+ soundLabTrackRef=t;soundLabSound=t.sound;
+ wrap.replaceChildren();wrap.hidden=!defaults;reset.hidden=!defaults;
+ if(defaults){
+  reset.disabled=!t.patch;
+  const sub=document.createElement('h4');sub.textContent='Shape '+SOUNDS[t.sound];wrap.append(sub);
+  const p=document.createElement('p');p.className='small-explain';
+  p.textContent='These oscillator, filter and envelope controls affect this lane only. The graph above is re-rendered from the actual synthesis engine.';wrap.append(p);
+  const grid=document.createElement('div');grid.className='patch-grid';
+  const settings=[
+   ['cutoff','Filter cutoff (Hz)',70,10000,10],
+   ['q','Resonance',.2,25,.1],['decay','Decay (s)',.06,.8,.01],
+   ['accent','Accent',0,1,.01],['slide','Slide (s)',0,.5,.01],
+   ['drive','Saturation',.2,5,.1],['modulation','Pitch / FM modulation',0,5,.05],
+   ['depth','Filter envelope',0,9000,50]
+  ];
+  const oscLabel=document.createElement('label');oscLabel.className='patch-osc';oscLabel.textContent='Oscillator waveform';
+  const osc=document.createElement('select');osc.id='patchOsc';osc.setAttribute('aria-label','Synthesizer oscillator type');
+  for(const type of ['sine','triangle','sawtooth','square']){
+   const op=document.createElement('option');op.value=type;op.textContent=type;osc.append(op);
+  }
+  osc.value=t.patch?.osc||defaults.osc;
+  osc.addEventListener('change',()=>{
+   t.patch={...(t.patch||{}),osc:osc.value};
+   reset.disabled=false;markCustom();scheduleSoundWavePreview();
+  });
+  oscLabel.append(osc);grid.append(oscLabel);
+  for(const [key,title,min,max,step] of settings){
+   const label=document.createElement('label');label.className='patch-control';
+   const name=document.createElement('span');name.textContent=title;
+   const out=document.createElement('output');const initial=t.patch?.[key]??defaults[key]??0;out.textContent=String(initial);
+   const slider=document.createElement('input');slider.type='range';slider.id='patch'+key;slider.min=min;slider.max=max;slider.step=step;slider.value=initial;
+   slider.setAttribute('aria-label',title);
+   slider.addEventListener('input',()=>{
+    const value=Number(slider.value);
+    t.patch={...(t.patch||{}),[key]:value};out.textContent=String(value);
+    reset.disabled=false;markCustom();scheduleSoundWavePreview();
+   });
+   label.append(name,out,slider);grid.append(label);
+  }
+  wrap.append(grid);
  }
- osc.value=t.patch?.osc||defaults.osc;osc.addEventListener('change',()=>{t.patch={...(t.patch||{}),osc:osc.value};markCustom()});
- oscLabel.append(osc);grid.append(oscLabel);
- for(const [key,title,min,max,step] of settings){
-  const label=document.createElement('label');label.className='patch-control';
-  const name=document.createElement('span');name.textContent=title;
-  const out=document.createElement('output');const initial=t.patch?.[key]??defaults[key]??0;out.textContent=String(initial);
-  const slider=document.createElement('input');slider.type='range';slider.id='patch'+key;slider.min=min;slider.max=max;slider.step=step;slider.value=initial;
-  slider.setAttribute('aria-label',title);
-  slider.addEventListener('input',()=>{const n=Number(slider.value);t.patch={...(t.patch||{}),[key]:n};out.textContent=String(n);markCustom()});
-  label.append(name,out,slider);grid.append(label);
+ scheduleSoundWavePreview();
+}
+// Shared legacy low-end renderer: exactly the same source graph drives live
+// playback and the offline Sound Lab. No approximated/fabricated bass trace.
+function playNativeLowEnd(ctx,out,sound,at){
+ if(sound!=='bass'&&sound!=='reese')return false;
+ const envelope=(gain,peak,release,attack=.002)=>{
+  gain.gain.setValueAtTime(.0001,at);
+  gain.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),at+attack);
+  gain.gain.exponentialRampToValueAtTime(.0001,at+Math.max(release,attack+.01));
+ };
+ if(sound==='bass'){
+  for(const [type,peak,length] of [['triangle',.55,.36],['sine',.21,.38]]){
+   const osc=ctx.createOscillator();osc.type=type;
+   osc.frequency.setValueAtTime(80,at);
+   osc.frequency.exponentialRampToValueAtTime(54,at+length);
+   const gain=ctx.createGain();envelope(gain,peak,length);
+   osc.connect(gain);gain.connect(out);osc.start(at);osc.stop(at+length+.025);
+  }
+ }else{
+  const filter=ctx.createBiquadFilter();filter.type='lowpass';
+  filter.frequency.setValueAtTime(1100,at);
+  filter.frequency.exponentialRampToValueAtTime(280,at+.3);filter.Q.value=1.1;
+  const amp=ctx.createGain();envelope(amp,.24,.36,.008);
+  filter.connect(amp);amp.connect(out);
+  for(const detune of [-9,9]){
+   const osc=ctx.createOscillator();osc.type='sawtooth';
+   osc.frequency.setValueAtTime(53,at);osc.detune.value=detune;
+   osc.connect(filter);osc.start(at);osc.stop(at+.39);
+  }
  }
- wrap.append(grid);
+ return true;
+}
+async function waveLabData(track){
+ const rate=24000,seconds=.65;
+ const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+ if(!Offline)throw Error('Offline audio rendering is not supported by this browser');
+ const ctx=new Offline(1,Math.round(rate*seconds),rate);
+ const definition=window.RhythmVoices?.definitions?.[track.sound];
+ if(definition){
+  const bus=ctx.createGain();bus.connect(ctx.destination);
+  if(!window.RhythmVoices.play(ctx,bus,track.sound,.012,.82,2,track.patch))
+   throw Error('Selected synth could not be rendered');
+  const rendered=await ctx.startRendering();
+  return {samples:rendered.getChannelData(0),kind:'Synthesized',seconds};
+ }
+ if(track.sound==='bass'||track.sound==='reese'){
+  const bus=ctx.createGain();bus.gain.value=.82;bus.connect(ctx.destination);
+  playNativeLowEnd(ctx,bus,track.sound,.012);
+  const rendered=await ctx.startRendering();
+  return {samples:rendered.getChannelData(0),kind:'Synthesized fallback',seconds};
+ }
+ const key=sampleKey(track.sound,0,.82),url=SAMPLE_FILES[key];
+ if(!url)throw Error('No recorded source waveform for this instrument. Use Preview to hear its fallback.');
+ if(!soundLabSampleCache.has(key)){
+  const fetchSample=fetch(url).then(response=>{
+    if(!response.ok)throw Error('Sample unavailable ('+response.status+')');
+    return response.arrayBuffer();
+   }).then(bytes=>ctx.decodeAudioData(bytes));
+  soundLabSampleCache.set(key,fetchSample);
+  fetchSample.catch(()=>soundLabSampleCache.delete(key));
+ }
+ const buffer=await soundLabSampleCache.get(key);
+ const length=Math.round(rate*seconds),result=new Float32Array(length);
+ const speed=track.sound==='bongoLow'?.79:track.sound==='bongoHigh'?1.27:1;
+ for(let i=0;i<length;i++){
+  const j=Math.round(i*buffer.sampleRate/rate*speed);
+  if(j>=buffer.length)break;
+  for(let channel=0;channel<buffer.numberOfChannels;channel++)
+   result[i]+=buffer.getChannelData(channel)[j]/buffer.numberOfChannels;
+ }
+ return {samples:result,kind:'Recorded sample',seconds};
+}
+function paintSoundWave(data){
+ const canvas=$('soundWaveCanvas'),bounds=canvas.getBoundingClientRect();
+ const width=Math.max(200,bounds.width||960),height=Math.max(120,bounds.height||200);
+ const ratio=Math.min(2,window.devicePixelRatio||1);
+ canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
+ const c=canvas.getContext('2d');c.setTransform(ratio,0,0,ratio,0,0);
+ c.clearRect(0,0,width,height);
+ const ink=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#567a63';
+ c.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--line').trim()||'#888';
+ c.lineWidth=1;c.beginPath();c.moveTo(0,height/2);c.lineTo(width,height/2);c.stroke();
+ const samples=data.samples,maxBins=Math.min(Math.round(width),samples.length);
+ let peak=0;for(let i=0;i<samples.length;i++)peak=Math.max(peak,Math.abs(samples[i]));
+ const scale=Math.max(.00001,peak)*1.12;
+ c.strokeStyle=ink;c.lineWidth=1.4;c.beginPath();
+ for(let bin=0;bin<maxBins;bin++){
+  const from=Math.floor(bin*samples.length/maxBins),to=Math.max(from+1,Math.floor((bin+1)*samples.length/maxBins));
+  let lo=0,hi=0;for(let j=from;j<to;j++){lo=Math.min(lo,samples[j]);hi=Math.max(hi,samples[j]);}
+  const x=(bin+.5)*width/maxBins;
+  c.moveTo(x,height/2-hi/scale*(height*.45));
+  c.lineTo(x,height/2-lo/scale*(height*.45));
+ }
+ c.stroke();
+ const label=Number.isFinite(peak)?peak.toFixed(3):'0';
+ $('soundWaveStatus').textContent=data.kind+' · '+data.seconds.toFixed(2)+' s · peak '+label+' · normalized waveform before master output.';
+}
+function scheduleSoundWavePreview(){
+ if(soundLabTimer!==null)clearTimeout(soundLabTimer);
+ const token=++soundLabToken,panel=$('advancedSoundDetails');
+ if(!panel?.open)return;
+ const track=tracks[soundLabLane];
+ if(!track)return;
+ const snapshot={sound:track.sound,patch:track.patch?{...track.patch}:null};
+ $('soundWaveStatus').textContent='Rendering '+SOUNDS[track.sound]+' waveform…';
+ soundLabTimer=setTimeout(async()=>{
+  soundLabTimer=null;
+  try{
+   const result=await waveLabData(snapshot);
+   if(token===soundLabToken&&panel.open)paintSoundWave(result);
+  }catch(error){
+   if(token===soundLabToken&&panel.open){
+    const canvas=$('soundWaveCanvas');canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+    $('soundWaveStatus').textContent='Waveform unavailable: '+error.message;
+   }
+  }
+ },90);
 }
 function renderSpecialRhythms() {
  const wrap=$('specialRhythms');if(!wrap)return;wrap.replaceChildren();
@@ -732,7 +873,7 @@ function renderSpecialRhythms() {
  cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  fillFields();
 }
-function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
+function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();refreshSoundLab()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
@@ -1145,6 +1286,9 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
          // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
          perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
+         if(playNativeLowEnd(audio,perHitBus,sound,t)){
+          retainHitBus(perHitBus,t);perHitBus=null;return;
+         }
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',
          jazzsnare:'snare',claves:'rim',bongo:'tom',bongoLow:'tom',bongoHigh:'tom'};
         switch(soundFallback[sound]||sound) {
@@ -1167,8 +1311,6 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
             oscillator(800,570,'square',.072,t,.034); noise(t,.025,.13,2600,'highpass'); break;
           case 'tom':
             oscillator(215,94,'sine',.39,t,.27); break;
-          case 'bass':
-            oscillator(80,54,'triangle',.55,t,.36); oscillator(80,54,'sine',.21,t,.38); break;
           case 'shaker':
             noise(t,.11,.084,3400,'highpass'); break;
           case 'berlinrumble': {
@@ -1179,12 +1321,6 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
               const osc=audio.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq*1.045,t);osc.frequency.exponentialRampToValueAtTime(freq,t+.09);
               const g=audio.createGain();g.gain.value=level;osc.connect(g);g.connect(filter);osc.start(t);osc.stop(t+.43);
             }
-            break;
-          }
-          case 'reese': {
-            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(1100,t);filter.frequency.exponentialRampToValueAtTime(280,t+.3);filter.Q.value=1.1;
-            const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
-            for(const detune of [-9,9]){const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime(53,t);osc.detune.value=detune;osc.connect(filter);osc.start(t);osc.stop(t+.39)}
             break;
           }
           case 'acid': {
@@ -1299,7 +1435,8 @@ async function togglePlay(){
  }
 }
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
-async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
+async function previewTrack(index){if(!initAudio())return;try{await audio.resume();const t=tracks[index];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
+async function previewSound(){return previewTrack(selectedTrack)}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
  requestAnimationFrame(positionPhaseLabels);updateMagnifyControl()}
@@ -1605,6 +1742,18 @@ function setupEvents() {
  $('playBtn').addEventListener('click',togglePlay);
  $('resetBtn').addEventListener('click',reset);
  $('previewBtn').addEventListener('click',previewSound);
+ $('advancedSoundDetails').addEventListener('toggle',event=>{
+  if(event.target.open)refreshSoundLab(true);
+  else {soundLabToken++;if(soundLabTimer!==null){clearTimeout(soundLabTimer);soundLabTimer=null}}
+ });
+ $('soundLabLane').addEventListener('change',event=>{
+  soundLabLane=Number(event.target.value);refreshSoundLab(true);
+ });
+ $('soundLabPreview').addEventListener('click',()=>previewTrack(soundLabLane));
+ $('soundLabReset').addEventListener('click',()=>{
+  const track=tracks[soundLabLane];if(!track)return;
+  track.patch=null;refreshSoundLab(true);markCustom();
+ });
  $('argumentAngle').addEventListener('input',e=>{
   const t=tracks[selectedTrack];if(!applyRotation(t,Number(e.target.value)*Math.PI/180))return;
   syncVisibleInputs(selectedTrack);
@@ -1706,7 +1855,7 @@ function setTheme(next,save=false) {
  $('themeBtn').textContent=theme==='dark'?'Light mode':'Dark mode';
  $('themeBtn').setAttribute('aria-pressed',String(theme==='dark'));
  if(save)try{localStorage.setItem('roots-rhythm-theme',theme)}catch(_){}
- if(tracks.length){renderTracks();renderEditor()}
+ if(tracks.length){renderTracks();renderEditor();scheduleSoundWavePreview()}
 }
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({

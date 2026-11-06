@@ -77,7 +77,9 @@ try {
    'technical synth controls are collapsed by default');
   assert.ok(await page.locator('#patchOsc').isHidden(),'oscillator is hidden until requested');
   await page.locator('#advancedSoundDetails').evaluate(el=>el.open=true);
-  assert.ok(await page.locator('#patchOsc').isVisible(),'advanced controls are discoverable on request');
+  await page.locator('#patchOsc').waitFor({state:'visible'});
+  assert.ok(await page.locator('#soundWaveCanvas').isVisible(),
+   'a bottom Sound Lab waveform is available after one expansion');
   await page.locator('#patchcutoff').evaluate(el=>{
    el.value='5400';
    el.dispatchEvent(new Event('input',{bubbles:true}));
@@ -92,8 +94,10 @@ try {
   });
   assert.ok(sample,'a sample-backed instrument should be available');
   await page.locator('#laneSound0').selectOption(sample);
-  assert.ok(await page.locator('#advancedSoundDetails').isHidden(),
-   'sample-backed voices must not expose irrelevant oscillator parameters');
+  assert.ok(await page.locator('#advancedSoundDetails').isVisible(),
+   'Sound Lab stays accessible for recorded samples');
+  assert.ok(await page.locator('#patchOsc').isHidden(),
+   'sample-backed voices hide synthesized waveform controls');
   assert.ok(await page.locator('#laneGain').isVisible(),'sampled voices retain lane volume');
 
   const dense=structuredClone(fixture);dense.name='Dense fourth ring';

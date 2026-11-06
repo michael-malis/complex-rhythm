@@ -101,3 +101,9 @@ Reconciled task-ledger counts: **233 VERIFIED; 66 IN_PROGRESS; 349 TODO; 4 BLOCK
 - Canvas arc observation during actual Web Audio playback confirms a pulse of at least 1.4× the base 28px marker across multiple rendered frames, with transient fill/halo feedback and a return to the base geometry after the pulse.
 - `prefers-reduced-motion: reduce` suppresses expansion while retaining stationary brightness feedback; pause clears any transient beat feedback. Initial transport preroll is gated on the actual `beatEpoch`.
 - **R-GEO-003 now has executable acceptance evidence**. This does not close `R-GEO-002` or `R-GEO-007`; marker/label overlap audits, physical mobile evaluation, human musical listening, screen-reader acceptance, and the missing second original annotated screenshot remain open.
+
+## Geometry matrix acceptance — 2026-11-06
+
+All eight atomic R-GEO-007 checks now have independent reproducible automated evidence: ring radii, marker diameter, cardinal positions, label bounds, coincident events, drag, magnification, and responsive window changes. The complete [CI 42209284567](https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567) succeeded. The exact task audit was committed by [CI 42209716913](https://github.com/michael-malis/complex-rhythm/actions/runs/42209716913).
+
+**Not included in this pass:** the stricter no-overlap condition R-GEO-002, human mobile/assistive review, listening assessment, and the missing second annotated screenshot. These retain their respective open/blocked statuses.

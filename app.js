@@ -1238,7 +1238,20 @@ function draw() {
   ctx.strokeStyle=chosen?COLORS[i]:(dark?'#63675e':'#c4c5bc');ctx.lineWidth=chosen?2:1.2;ctx.stroke();
  });
  const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(selectedPhase*16)/16:selectedPhase);
- ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(angle)*radii[selectedTrack],Math.sin(angle)*radii[selectedTrack]);
+ // Prevent the playback pointer from obscuring visible mathematical roots.
+ // The outer edge is still phase-accurate; only sections under markers are skipped.
+ const markerDiscs=tracks.flatMap((track,i)=>composePhases(track).merged.map(mark=>{
+  const a=-Math.PI/2+TAU*mark.phase,r=radii[i];
+  return {x:Math.cos(a)*r,y:Math.sin(a)*r,radius:22};
+ }));
+ const handSegments=RhythmMath.radialVisibleSegments(
+  radii[selectedTrack],angle,markerDiscs,4
+ );
+ ctx.beginPath();
+ for(const segment of handSegments){
+  ctx.moveTo(Math.cos(angle)*segment.from,Math.sin(angle)*segment.from);
+  ctx.lineTo(Math.cos(angle)*segment.to,Math.sin(angle)*segment.to);
+ }
  ctx.strokeStyle=playing?(dark?'#c4c9ba':'#676d62'):(dark?'#5a5e54':'#cfcec5');ctx.lineWidth=1.3;ctx.stroke();
  if(rootDrag&&rootDrag.moved){
   const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;

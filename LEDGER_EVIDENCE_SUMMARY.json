@@ -1,10 +1,10 @@
 {
-  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633; earlier proof https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
+  "generatedFrom": "CI 42152395065 (full UI) and 42151010633 (formula and audio); verified polyrhythm evidence documented in TASKS.md",
   "tasks": {
-    "VERIFIED": 233,
+    "VERIFIED": 268,
     "BLOCKED": 4,
-    "IN_PROGRESS": 66,
-    "TODO": 349,
+    "IN_PROGRESS": 65,
+    "TODO": 315,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -25,6 +25,7 @@
     "R-NUM-007",
     "R-NUM-008",
     "R-MDL-001",
+    "R-MDL-002",
     "R-MDL-003",
     "R-MDL-004",
     "R-MDL-005",

@@ -53,9 +53,10 @@ update('README.md',text=>{
  if(found<0)throw Error('README technical acceptance line not found');
  lines[found]='Technical acceptance has been reconciled against GitHub Actions: **'+verified+
   ' of 652 tasks VERIFIED, '+blocked+' BLOCKED**, and **'+verifiedRequirements+
-  ' of 98 parent requirements** verified. See [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), '+
-  '[QA_REPORT.md](QA_REPORT.md) and [draft PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). '+
-  'This is not a fully accepted or deployed release.';
+  ' of 98 parent requirements** verified. The application is published following merged '+
+  '[PR #1](https://github.com/michael-malis/complex-rhythm/pull/1), but final acceptance is not complete. '+
+  'Track active work in [NEXT_EXECUTION_PLAN.md](NEXT_EXECUTION_PLAN.md); historical evidence stays in '+
+  '[LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json) and [QA_REPORT.md](QA_REPORT.md).';
  return lines.join('\n');
 });
 update('QA_REPORT.md',text=>{

@@ -47,3 +47,14 @@
 - Reworked independent-lane, advanced-coordinate and rendered-MathML regression cases to match the angle-first interface; ensured every GitHub Actions test step runs even when another test fails, while retaining the overall failing job if any step fails.
 - **Full UI + audio + mathematical regression passed:** [Actions 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633) at commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`. A fourfold oversampled, windowed-sinc reconstructed peak estimate supplements sample peaks but does not certify a true-peak standard.
 - Evidence reconciliation for `R-QT-001`, `R-QT-002`, `R-QT-004`, and `R-QA-001` marked 18 task rows VERIFIED. New ledger: 233 VERIFIED, 66 IN_PROGRESS, 349 TODO, 4 BLOCKED; 46/98 parent requirements. This is **not** final user-acceptance signoff. Main, human audition, annotated screenshot #2, physical-device and assistive-technology checks remain unverified.
+
+## 2026-11-06 — Canvas geometry acceptance and proof reconciliation
+
+- Continued the existing `upgrade/spec-2026-11-math-audio` branch and draft PR #1 without touching `main`.
+- Added `tests/geometry-acceptance.mjs` to the existing UI regression pipeline, covering six mandated responsive sizes in both themes, four distinct concentric rings, 16 actual cardinal Canvas marker pixels per state, recorded root-pixel cross-sections and live KaTeX phase labels.
+- Tested dense 64th roots in the fourth lane with a measured ≥34 CSS px magnified chord separation, scrollable plot and user-operated return-to-fit. Screenshots and JSON measurements are published as CI artifacts.
+- The first CI attempt [42162731304](https://github.com/michael-malis/complex-rhythm/actions/runs/42162731304) failed because the new test invented an upper limit of 32px for markers, although `R-GEO-001` specifies only a lower limit. Removed the unjustified maximum; left the original failed run visible.
+- **Full regression passed** in [CI 42162929618](https://github.com/michael-malis/complex-rhythm/actions/runs/42162929618), including the new Canvas test and the pre-existing mathematical, responsive, audio, contrast and transport checks.
+- Registered `R-GEO-001` with measured evidence in `scripts/reconcile-ledger.mjs`. Ledger reconciliation [CI 42163111185](https://github.com/michael-malis/complex-rhythm/actions/runs/42163111185) passed and committed the synchronized registry: **287 VERIFIED, 62 IN_PROGRESS, 299 TODO, 4 BLOCKED, 0 FAILED**, **50/98 verified requirements**.
+- `R-GEO-002`, `R-GEO-003` and `R-GEO-007` remain **IN_PROGRESS**: their full requirements, including label/geometry collision and event-synchronous animation acceptance, are not declared proved by the new cardinal-dot measurements alone.
+- Human musical listening, real mobile and assistive technology acceptance, and the second annotated source screenshot remain open; no release/merge/production claim.

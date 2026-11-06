@@ -57,17 +57,6 @@ This is a **mandatory refactoring/consistency audit inside M08 and M10**, not a 
 
 **Important distinction:** unify the *rules* and the *interaction semantics*, **not** the sound or rhythmic character of all presets. A 3:4 polyrhythm, acid pattern and breakcore study must keep their distinct phase arrangements, accent structures and voices.
 
-## Product ideas awaiting user selection (not mandatory tasks)
-
-These are possible additions consistent with **mathematical visualization first, audio second**. They are **not** counted in the fourteen tasks, and no new acceptance criterion is introduced until selected.
-
-- **P-IDEA-01 — Compare rhythms A/B.** Side-by-side root geometry with a common phase axis and an audible switch to reveal mathematical differences.
-- **P-IDEA-02 — Favorites / quick snapshots.** Save a chosen root configuration and restore/compare it, preserving the existing JSON schema.
-- **P-IDEA-03 — Guided math explorer.** Short contextual visual explanations of why changing argument rotates the rhythm, why changing degree alters event count, and how unions differ from polyrhythms.
-- **P-IDEA-04 — Isolate one lane.** Temporary solo/compare control to hear and see the mathematical contribution of each root set.
-
-No DAW-like piano roll or new musical complexity is assumed as an implicit requirement.
-
 ## Documentation and status rules
 
 The old W01–W08 grouping and the old global 2/10 counter are superseded as **operational views** by M01–M14. Historic acceptance IDs and evidence remain fully intact. Report counts separately: (1) macro outcomes completed out of 14, (2) original 98 requirements verified, (3) blockers. A macro is not complete if its `Definition of done` or source requirements remain outstanding.

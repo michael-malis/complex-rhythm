@@ -45,6 +45,34 @@ try {
    bus.connect(hp);hp.connect(limit);limit.connect(ctx.destination);
    return bus;
   }
+  // Four-times oversampled inter-sample peak ESTIMATE with a windowed-sinc
+  // reconstruction. Unlike a raw sample peak, this can detect between-sample
+  // overshoots. This is a technical proxy, not a certified BS.1770 meter.
+  function oversampledPeak(samples){
+   const taps=Array.from({length:3},(_,k)=>{
+    const frac=(k+1)/4;
+    const kernel=Array.from({length:16},(_,j)=>{
+     const x=frac-(j-7);
+     const sinc=Math.abs(x)<1e-12?1:Math.sin(Math.PI*x)/(Math.PI*x);
+     return sinc*(.5+.5*Math.cos(Math.PI*x/8));
+    });
+    const sum=kernel.reduce((a,b)=>a+b,0);
+    return kernel.map(x=>x/sum);
+   });
+   let peak=0;
+   for(let i=0;i<samples.length;i++){
+    peak=Math.max(peak,Math.abs(samples[i]));
+    for(const kernel of taps){
+     let value=0;
+     for(let j=0;j<16;j++){
+      const k=i+j-7;
+      if(k>=0&&k<samples.length)value+=samples[k]*kernel[j];
+     }
+     peak=Math.max(peak,Math.abs(value));
+    }
+   }
+   return peak;
+  }
   async function renderStress(sr,degree){
    const duration=1.62,ctx=new OfflineAudioContext(1,Math.ceil(sr*duration),sr),bus=outputChain(ctx);
    const sounds=['gabberKick','acidScreaming','noiseBurst','metallic'];
@@ -60,7 +88,9 @@ try {
    const buffer=await ctx.startRendering(),values=buffer.getChannelData(0);
    let peak=0,total=0,finite=true;
    for(const x of values){if(!Number.isFinite(x)){finite=false;continue}peak=Math.max(peak,Math.abs(x));total+=x*x}
-   return {rate:sr,voices:voiceCount,seconds:duration,peak,rms:Math.sqrt(total/values.length),finite};
+   return {rate:sr,voices:voiceCount,seconds:duration,peak,
+    oversampledPeak:oversampledPeak(values),
+    rms:Math.sqrt(total/values.length),finite};
   }
   const denseLow=await renderStress(22050,64);
   const denseHigh=await renderStress(96000,32);
@@ -105,6 +135,8 @@ const ceiling=Math.pow(10,-1/20);
 for(const r of [result.denseLow,result.denseHigh]){
  assert.ok(r.finite,'no NaN/Infinity in rendered dense mix');
  assert.ok(r.peak>0.0001&&r.peak<=ceiling,'post-limiter full mix sample peak under -1 dBFS; peak '+r.peak);
+ assert.ok(r.oversampledPeak>=r.peak*.99&&r.oversampledPeak<=ceiling,
+  'estimated 4x inter-sample peak under -1 dBFS; estimated '+r.oversampledPeak);
  assert.ok(r.rms>.00001,'non-silent dense mix');
 }
 assert.ok(result.onset.first>=result.onset.scheduledAt,'attack not early');

@@ -29,6 +29,7 @@ on:
       - tests/single-reschedule-per-edit.mjs
       - tests/all-presets-same-semantics.mjs
       - tests/angle-first.mjs
+      - tests/math-live-input-stability.mjs
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
       - tests/formula-acceptance.mjs
@@ -262,6 +263,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-preset-modified.log 2>&1 &
           node tests/preset-modified.mjs
+      - name: Preserve mathematical input caret and audio phase agreement during live four-lane edits
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-math-caret.log 2>&1 &
+          node tests/math-live-input-stability.mjs
       - name: Verify synchronized radian/degree angle input, added angles and generated roots
         if: ${{ !cancelled() }}
         run: |

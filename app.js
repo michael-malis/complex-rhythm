@@ -116,17 +116,14 @@ const GROOVE_LABELS=Object.freeze({
 // One visible Category picker and one Preset picker. Source categories remain
 // unchanged for sample routing and old JSON; only the browser groups them.
 const PRESET_CATEGORIES=Object.freeze({
- grooves:['grooves'],
- club:['bunker','hardhouse','acid','hardcore','other'],
- breaks:['dnb','jungle'],
- acoustic:['brazil'],
- mathematics:['poly','experimental'],
- songs:['songs']
+ grooves:'Featured Grooves',bunker:'Bunker Techno',hardhouse:'Hard House',
+ acid:'Acid / 303',hardcore:'Hardcore / Gabber',dnb:'Drum & Bass',
+ jungle:'Jungle',brazil:'Brazilian & Acoustic',other:'House & Dub',
+ poly:'Polyrhythms',experimental:'Mathematical Experiments',songs:'Song Examples'
 });
-const categoryForPreset=preset=>Object.keys(PRESET_CATEGORIES).find(category=>
- category!=='grooves'&&PRESET_CATEGORIES[category].includes(preset.category))||'club';
+const categoryForPreset=preset=>preset.category;
 const inBrowse=(preset,category)=>category==='grooves'
- ? GROOVE_IDS.includes(preset.id):PRESET_CATEGORIES[category]?.includes(preset.category)??false;
+ ? GROOVE_IDS.includes(preset.id):preset.category===category;
 const MATH_PRESET_RATIOS=Object.freeze({
  minimal:'5:7', 'schranz-machinery':'7:9', 'eleven-against-seven':'7:11',
  'acid-singularity':'11:13', 'industrial-fracture':'5:7:11',
@@ -134,12 +131,12 @@ const MATH_PRESET_RATIOS=Object.freeze({
  'terror-geometry':'4:7:9:13'
 });
 const presetLabel=(preset,category)=>category==='grooves'?GROOVE_LABELS[preset.id]:
- category==='mathematics'&&MATH_PRESET_RATIOS[preset.id]
+ (category==='poly'||category==='experimental')&&MATH_PRESET_RATIOS[preset.id]
  ? MATH_PRESET_RATIOS[preset.id]+' · '+preset.name
  : preset.displayName||preset.name;
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='mathematics';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='poly';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -1572,7 +1569,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  // Unnamed imported material has no genre identity: do not inherit a stale
  // previous preset's sample mappings or claim that it is a previous preset.
  activeCategory=sourcePreset?.category||'other';
- browseCategory=sourcePreset?categoryForPreset(sourcePreset):'club';
+ browseCategory=sourcePreset?categoryForPreset(sourcePreset):'other';
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();

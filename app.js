@@ -1257,7 +1257,7 @@ function draw() {
   return {x:Math.cos(a)*r,y:Math.sin(a)*r,radius:22};
  }));
  const handSegments=RhythmMath.radialVisibleSegments(
-  radii[selectedTrack],angle,markerDiscs,4
+  radii[selectedTrack],angle,markerDiscs,6
  );
  ctx.beginPath();
  for(const segment of handSegments){

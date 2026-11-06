@@ -84,7 +84,8 @@ try {
  await page.setViewportSize({width:1440,height:900});
  page.on('pageerror',e=>errors.push('interactions: '+e.message));
  await page.goto(base,{waitUntil:'domcontentloaded'});
- verify((await page.locator('#presetSelect').inputValue())==='afro','default 3:4 study');
+ verify(await page.locator('#presetDetails').evaluate(el=>el.open),'rhythm examples open on initial load');
+  verify((await page.locator('#presetSelect').inputValue())==='afro','default 3:4 study');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 roots initially three');
  verify((await page.locator('#laneCount1').textContent()).includes('4 hits'),'lane1 roots initially four');
  await page.locator('.advanced-coordinates').evaluateAll(items=>items.forEach(el=>{el.open=true}));
@@ -207,7 +208,7 @@ try {
  let total=0;
  for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value))) {
   await page.locator('#categorySelect').selectOption(category);
-  const ids=await page.locator('#presetSelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(x=>x!=='__custom__'));
+  const ids=await page.locator('#presetSelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(x=>!x.startsWith('__')));
   for(const id of ids) {
    await page.locator('#presetSelect').selectOption(id);
    verify(await page.locator('.lane').count()===4,'preset loads all lanes '+id);

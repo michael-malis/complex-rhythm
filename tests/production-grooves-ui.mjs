@@ -33,14 +33,14 @@ try{
    assert.equal(loaded.tracks[0].n,4,'Bass Wall must retain every-quarter kick');
    assert.equal(loaded.tracks[1].sound,'berlinrumble','Bass Wall requires a separate rumble voice');
    const otherGain=loaded.tracks[1].gain;
-   await page.locator('#laneGain0').fill('73');
+   await page.locator('#laneGain0').evaluate(el=>{el.value='73';el.dispatchEvent(new Event('input',{bubbles:true}))});
    const after=await page.evaluate(()=>window.RhythmResearch.current());
    assert.ok(Math.abs(after.tracks[0].gain-.73)<1e-8,'primary slider changes actual voice gain');
    assert.equal(after.tracks[1].gain,otherGain,'volume of another lane is unchanged');
    await page.locator('#compositionPanel').evaluate(el=>{el.open=true});
    assert.equal(Number(await page.locator('#laneGain').inputValue()),.73,
      'secondary selected-lane gain mirrors primary slider');
-   await page.locator('#laneGain').fill('.64');
+   await page.locator('#laneGain').evaluate(el=>{el.value='.64';el.dispatchEvent(new Event('input',{bubbles:true}))});
    assert.equal(Number(await page.locator('#laneGain0').inputValue()),64,
      'secondary and primary gain controls stay synchronized');
    await page.locator('#laneSound0').selectOption('bongoLow');

@@ -328,8 +328,11 @@ function buildLaneFields(row,t,i) {
    }else theta=parseEditorRadians(raw);
   }catch(_){input.setAttribute('aria-invalid','true');return}
   input.setAttribute('aria-invalid','false');
-  const z=RhythmMath.fromPolar(1,theta%(2*Math.PI));
-  t.a=z.a;t.b=z.b;
+  // Changing an argument preserves its original nonzero modulus.
+   // A zero complex value has undefined argument; an explicit angle creates a unit value.
+   const modulus=Math.hypot(t.a,t.b)||1;
+   const z=RhythmMath.fromPolar(modulus,theta%(2*Math.PI));
+   t.a=z.a;t.b=z.b;
   if(isDegrees)rad.value=formatEditorRadians(theta);
   else deg.value=inputNumber(theta*180/Math.PI);
   syncVisibleInputs(i);
@@ -622,8 +625,10 @@ function renderLayers(){
     }else angle=parseEditorRadians(raw);
    }catch(_){input.setAttribute('aria-invalid','true');return}
    input.setAttribute('aria-invalid','false');
-   const p=RhythmMath.fromPolar(1,angle%(2*Math.PI));
-   layer.a=p.a;layer.b=p.b;
+   // Preserve a stored layer's magnitude when its angle alone is edited.
+    const modulus=Math.hypot(layer.a,layer.b)||1;
+    const p=RhythmMath.fromPolar(modulus,angle%(2*Math.PI));
+    layer.a=p.a;layer.b=p.b;
    if(isDegrees)rad.value=formatEditorRadians(angle);
    else deg.value=inputNumber(angle*180/Math.PI);
    updateLaneStatus(selectedTrack);renderReadout();markCustom();

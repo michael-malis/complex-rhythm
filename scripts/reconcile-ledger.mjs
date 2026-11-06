@@ -105,6 +105,16 @@ for(const [req,what] of [
  evidence:'CI:42151010633; tests/formula-acceptance.mjs; tests/ui-smoke.mjs; '+what,
  commit:'cd3cd36e7cc0fe52585bcde157c6f7982316da30'
 });
+// Two acceptance gates verified by completed browser and audio workflows.
+// These are engineering proofs; no subjective listening approval is inferred.
+verified.set('R-MDL-002',{
+ evidence:'CI:42152395065; tests/required-polyrhythms.mjs; 8 selectable poly-ratios and independent second-lane argument with other lanes invariant',
+ commit:'4f692c8da50ef8e465f6ba7cc3c72dcc43f6711c'
+});
+verified.set('R-QA-003',{
+ evidence:'CI:42161224683; tests/new-preset-live-qa.mjs; 15 running-study loads, active phase edits, Web Audio cleanup; tests/audio-mix-stress.mjs validates 50 schedules and bounded peak',
+ commit:'095cd389cd1400b6f574b07a8f57d0274657e36a'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

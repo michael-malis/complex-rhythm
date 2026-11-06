@@ -68,6 +68,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Reject malformed JavaScript and tests before installing Chromium
+        run: |
+          node --check app.js
+          node --check math-io.js
+          node --check synthesis.js
+          for source in tests/*.mjs scripts/*.mjs; do node --check "$source"; done
       - name: Install browser and testing library
         run: |
           npm install --no-save playwright@1.56.1

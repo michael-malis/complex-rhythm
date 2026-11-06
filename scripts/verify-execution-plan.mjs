@@ -12,7 +12,10 @@ assert.equal(parents.length,98,'All 98 original requirement parents remain prese
 const known=new Set(parents.map(row=>row[1]));
 assert.equal(known.size,98,'Requirement IDs must be unique');
 const open=new Set(parents.filter(row=>row[7]!=='VERIFIED').map(row=>row[1]));
-const active=plan.split('\n').filter(line=>/^\| M\d\d \|/.test(line));
+// The later issue-directory table intentionally repeats IDs as navigational links;
+// only the canonical macro-task table defines operational tasks.
+const active=plan.split('## GitHub work allocation')[0]
+ .split('\n').filter(line=>/^\| M\d\d \|/.test(line));
 assert.equal(active.length,14,'Exactly 14 operational tasks are planned');
 const ids=new Set(),coverage=new Map(),crs=new Set(),packages=[];
 for(const line of active){

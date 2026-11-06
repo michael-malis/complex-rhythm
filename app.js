@@ -321,6 +321,15 @@ function syncPrimaryAngles(i,fields=null){
  }
  if(degree&&document.activeElement!==degree)degree.value=String(track.n);
 }
+function fitRootMath(id,max=18,min=16){
+ const el=$(id);if(!el)return;
+ const katex=el.querySelector('.katex-html');
+ if(!katex)return;
+ for(let px=max;px>=min;px--){
+  el.style.fontSize=px+'px';
+  if(katex.scrollWidth<=el.clientWidth+1)break;
+ }
+}
 function renderRootRule(){
  const track=tracks[selectedTrack];if(!track)return;
  const model=window.RootAngleInfo.model(track.a,track.b,track.n);
@@ -331,6 +340,9 @@ function renderRootRule(){
   ',\\quad k=0,\\ldots,'+(track.n-1));
  renderTeX('rootRuleSpacing','\\Delta='+window.RootAngleInfo.piTeX(model.spacing)+
   '\\,('+Number(model.spacingDeg.toFixed(3))+'^\\circ)');
+ fitRootMath('rootRuleEquation',23,16);
+ fitRootMath('rootRuleValues',18,16);
+ fitRootMath('rootRuleSpacing',18,16);
  $('rootRuleCaption').textContent=model.zero?
   'The zero complex value has undefined argument and no rhythm events.':
   'Changing the argument by δ rotates each root by δ/n; spacing remains 2π/n. The circle represents time, not |z|.';

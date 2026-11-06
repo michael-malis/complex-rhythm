@@ -73,12 +73,12 @@
   <div class="root-rule-key"><span><b>θ</b> sets rotation</span><span><b>n</b> sets event count</span><span><b>k</b> enumerates roots</span></div>
   <p id="rootRuleCaption" class="root-rule-caption"></p>
  </aside>
- <details id="compositionPanel" class="composition-panel"><summary><span>Compose root sets</span><span class="quiet" id="compositionMetrics">Select a lane</span></summary>
+ <details id="compositionPanel" class="composition-panel"><summary><span>Additional angles &amp; symmetric roots</span><span class="quiet" id="compositionMetrics">Select a lane</span></summary>
   <div class="composition-body">
    <div class="composition-info"><h3 id="compositionHeading" tabindex="-1">Lane 1</h3><div class="composition-equation math-notation" id="compositionEquation"></div></div>
    <div class="selected-root-math"><div class="small-explain">Selected root and its mathematical origin</div><div class="math-notation" id="selectedRootFormula"></div><div class="math-notation" id="rootPhaseFormula"></div></div>
    <div class="composition-lesson">
-    <div><strong>Why add another root set?</strong><p>A single set has equally spaced events. Combining two regular sets can produce an irregular pattern, without introducing arbitrary steps. Shared positions sound once on this lane.</p></div>
+    <div><strong>Add individual angles or symmetric roots</strong><p>Each angle specifies one event directly. Generate a symmetric family only when you want equally spaced events; matching phases sound once within a lane.</p></div>
     <button id="loadRootExample" class="secondary-btn" type="button">Try 4 + 3 roots</button>
    </div>
    <div id="exampleProof" class="example-proof math-notation" aria-live="polite" hidden></div>
@@ -89,9 +89,9 @@
    </div>
    <p id="overlapSummary" class="composition-note">No shared phases.</p>
    <div class="composition-tools"><label for="argumentAngle">Rotate base <span id="argMathLabel" class="math-notation"></span></label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0"><output id="argumentText" for="argumentAngle">0°</output></div>
-   <p class="small-explain">Rotation preserves the root count and |z|. A degree-1 set adds a single accent.</p>
+   <p class="small-explain">Changing the argument rotates the regular roots. Added angles are individual accents; their radius is irrelevant.</p>
    <div id="extraLayers" class="extra-layers"></div><div id="specialRhythms" class="special-rhythms"></div><div id="patchControls" class="patch-controls"></div>
-   <div class="composition-actions"><button id="addLayer" type="button" class="secondary-btn">+ Add root set</button><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
+   <div class="composition-actions"><button id="addLayer" type="button" class="secondary-btn">+ Add angle</button><button id="addRootFamily" type="button" class="secondary-btn">+ Generate roots</button><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
   </div>
  </details>
  <details class="math-details"><summary>Mathematical notes</summary>

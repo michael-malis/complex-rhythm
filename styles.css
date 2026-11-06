@@ -264,3 +264,16 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-rule-key b{font-weight:700;color:var(--ink)}
 .root-rule-caption{font-size:16px;color:var(--sub);line-height:1.5;margin:7px 0 0}
 @media(max-width:520px){.angle-fields{gap:8px 7px}.angle-fields label{font-size:16px}.root-rule{padding:11px}.root-rule-equation{font-size:19px}}
+
+/* Angle-only additions, and optional generated n-root families. */
+.angular-layer{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;gap:8px;align-items:end}
+.angular-layer .layer-angle-title{grid-column:1/-1;font-size:18px;font-weight:650;color:var(--ink)}
+.angular-layer>label:not(.layer-velocity){min-width:0;display:grid;gap:4px;font-size:16px;color:var(--sub)}
+.angular-layer>label:not(.layer-velocity) input{width:100%;min-width:0}
+.angular-layer .family-degree{grid-column:1/3;display:flex!important;flex-direction:row;justify-content:space-between;align-items:center}
+.angular-layer .family-degree input{max-width:95px}
+.angular-layer .single-angle-note{grid-column:1/3;color:var(--sub);font-size:16px}
+.angular-layer .layer-remove{grid-column:3;grid-row:2}
+.angular-layer .layer-velocity{grid-column:1/-1}
+.composition-actions{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:520px){.angular-layer{gap:7px 5px}.angular-layer>label:not(.layer-velocity){font-size:16px}}

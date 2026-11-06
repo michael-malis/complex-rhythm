@@ -545,7 +545,7 @@ function renderComposition() {
  const c=composePhases(t),i=selectedTrack;
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
  const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
-  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
+  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
@@ -571,12 +571,73 @@ function renderComposition() {
  };
  plot($('baseStrip'),c.base,'base');plot($('addedStrip'),c.added,'added');plot($('unionStrip'),c.merged,'union');
 }
-function renderLayers(){const t=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();$('addLayer').disabled=t.layers.length>=5;
- t.layers.forEach((layer,i)=>{const group=document.createElement('div');group.className='layer-row';const heading=document.createElement('div');heading.className='layer-title';heading.textContent='Additional set '+(i+1)+' · w'+(i+1);group.append(heading);
-  for(const key of ['a','b','n']){const item=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input');label.textContent=key==='n'?'Root degree n':key;label.htmlFor=`layer${i}${key}`;input.id=label.htmlFor;input.type='number';input.step=key==='n'?'1':'any';input.value=key==='n'?layer[key]:inputNumber(layer[key]);input.setAttribute('aria-label',`Extra root set ${i+1}: ${key}`);input.addEventListener('change',()=>{const raw=Number(input.value);if(!Number.isFinite(raw)||(key==='n'&&(!Number.isInteger(raw)||raw<1||raw>64))||(key!=='n'&&Math.abs(raw)>10000)){input.value=String(layer[key]);showToast('Invalid number or root degree');return}layer[key]=raw;renderTracks();renderReadout();markCustom()});item.append(label,input);group.append(item)}
-  const remove=document.createElement('button');remove.type='button';remove.className='layer-remove';remove.textContent='×';remove.title='Remove this root set';remove.setAttribute('aria-label',`Remove extra root set ${i+1}`);remove.addEventListener('click',()=>{t.layers.splice(i,1);renderLayers();renderTracks();renderReadout();markCustom()});group.append(remove);
-  const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Set volume';const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));volume.setAttribute('aria-label',`Volume of extra root set ${i+1}`);volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});velocity.append(volume);group.append(velocity);wrap.append(group)
- })}
+
+function renderLayers(){
+ const track=tracks[selectedTrack],wrap=$('extraLayers');wrap.replaceChildren();
+ $('addLayer').disabled=track.layers.length>=5;
+ $('addRootFamily').disabled=track.layers.length>=5;
+ track.layers.forEach((layer,i)=>{
+  const group=document.createElement('div');group.className='layer-row angular-layer';
+  group.dataset.layer=String(i);
+  const title=document.createElement('div');title.className='layer-angle-title';
+  title.textContent=layer.n===1?'Additional angle '+(i+1)+' · single event':'Generated roots '+(i+1)+' · '+layer.n+' events';
+  group.append(title);
+  const theta=Math.atan2(layer.b,layer.a);
+  const makeField=(id,text,value)=>{
+   const label=document.createElement('label');label.textContent=text;label.htmlFor=id;
+   const input=document.createElement('input');input.id=id;input.type='text';input.value=value;
+   input.maxLength=80;input.inputMode='decimal';input.setAttribute('aria-label',text+' for addition '+(i+1));
+   label.append(input);group.append(label);return input;
+  };
+  const rad=makeField('layer'+i+'AngleRad','Angle · radians',formatEditorRadians(theta));
+  const deg=makeField('layer'+i+'AngleDeg','Angle · degrees',inputNumber(theta*180/Math.PI));
+  const apply=(input,isDegrees)=>{
+   const raw=input.value.trim();let angle;
+   try{
+    if(isDegrees){
+     if(raw===''||!Number.isFinite(Number(raw))||Math.abs(Number(raw))>1e8)throw Error('Invalid angle');
+     angle=Number(raw)*Math.PI/180;
+    }else angle=parseEditorRadians(raw);
+   }catch(_){input.setAttribute('aria-invalid','true');return}
+   input.setAttribute('aria-invalid','false');
+   const p=RhythmMath.fromPolar(1,angle%(2*Math.PI));
+   layer.a=p.a;layer.b=p.b;
+   if(isDegrees)rad.value=formatEditorRadians(angle);
+   else deg.value=inputNumber(angle*180/Math.PI);
+   updateLaneStatus(selectedTrack);renderReadout();markCustom();
+  };
+  rad.addEventListener('input',()=>apply(rad,false));
+  deg.addEventListener('input',()=>apply(deg,true));
+  if(layer.n>1){
+   const family=document.createElement('label');family.className='family-degree';family.textContent='Symmetric roots · n';
+   const degree=document.createElement('input');degree.id='layer'+i+'n';degree.type='number';degree.min='2';degree.max='64';
+   degree.step='1';degree.value=String(layer.n);degree.setAttribute('aria-label','Root family degree '+(i+1));
+   degree.addEventListener('input',()=>{
+    const n=Number(degree.value),valid=Number.isInteger(n)&&n>=2&&n<=64;
+    degree.setAttribute('aria-invalid',String(!valid));
+    if(!valid)return;
+    layer.n=n;title.textContent='Generated roots '+(i+1)+' · '+n+' events';
+    updateLaneStatus(selectedTrack);renderReadout();markCustom();
+   });
+   degree.addEventListener('change',()=>{if(degree.getAttribute('aria-invalid')==='true'){
+    degree.value=String(layer.n);degree.setAttribute('aria-invalid','false');
+   }});
+   family.append(degree);group.append(family);
+  }else{
+   const explanatory=document.createElement('span');explanatory.className='single-angle-note';
+   explanatory.textContent='One event at φ (no root family).';group.append(explanatory);
+  }
+  const del=document.createElement('button');del.type='button';del.className='layer-remove';
+  del.textContent='×';del.setAttribute('aria-label','Remove angle or root family '+(i+1));
+  del.addEventListener('click',()=>{track.layers.splice(i,1);renderLayers();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
+  group.append(del);
+  const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Accent volume';
+  const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));
+  volume.setAttribute('aria-label','Volume for additional event group '+(i+1));
+  volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});
+  velocity.append(volume);group.append(velocity);wrap.append(group);
+ });
+}
 
 function renderWindowTimeline() {
  const summary=$('commonCycle');if(!summary||!tracks.length)return;
@@ -1159,6 +1220,12 @@ function setupEvents() {
   showToast('4 evenly spaced phases + 3 evenly spaced phases = 6 unique phases');
  });
  $('addLayer').addEventListener('click',()=>{
+  const t=tracks[selectedTrack];if(t.layers.length>=5)return;
+  const angle=Math.PI/4;const p=RhythmMath.fromPolar(1,angle);
+  t.layers.push({a:p.a,b:p.b,n:1,velocity:.65});
+  renderLayers();updateLaneStatus(selectedTrack);renderReadout();markCustom();
+ });
+ $('addRootFamily').addEventListener('click',()=>{
   const t=tracks[selectedTrack];if(t.layers.length>=5)return;
   t.layers.push({a:1,b:0,n:3,velocity:.65});
   renderLayers();updateLaneStatus(selectedTrack);renderReadout();markCustom();

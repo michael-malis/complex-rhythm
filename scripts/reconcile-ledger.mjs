@@ -122,6 +122,13 @@ verified.set('R-GEO-001',{
  evidence:'CI:42162929618; tests/geometry-acceptance.mjs 12 viewport/theme cases with 16 actual cardinal pixels each, measured base marker >=28px, four rings and 64th-root scrollable magnification',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+// The real transport/Canvas regression proves >1.4x scale across multiple
+// frames, audible-event timing, stationary reduced-motion brightness and no
+// residual pulse after transport stops. Full UI/audio pipeline passed.
+verified.set('R-GEO-003',{
+ evidence:'CI:42209284567; tests/beat-visual-acceptance.mjs actual Canvas arc geometry with Web Audio transport; >=1.4x pulse across frames, reduced-motion stationary highlight and no paused-state effect',
+ commit:'8c3356947218cb7dc7b19daf4c38ee363d970cc0'
+});
 // Twelve browser-driven canonical coordinate states, zero argument and
 // degree/radian view switches passed in the complete regression.
 verified.set('R-NUM-003',{

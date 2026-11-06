@@ -217,6 +217,49 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){ $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`; $('categorySelect').value=activeCategory;const select=$('presetSelect');select.replaceChildren();if(!activePresetId){const x=document.createElement('option');x.value='__custom__';x.textContent='Custom rhythm';select.append(x)}for(const p of PRESETS.filter(p=>p.category===activeCategory)){const o=document.createElement('option');o.value=p.id;o.textContent=p.name;select.append(o)}select.value=activePresetId||'__custom__';const p=PRESETS.find(x=>x.id===activePresetId);$('presetInfo').textContent=p?.character&&p?.mathNote?`${p.character} Mathematical structure: ${p.mathNote}`:''; const relation=POLYRHYTHM_RELATIONS.find(r=>r.preset===activePresetId);$('ratioSelect').value=relation?.ratio||''}
+
+function parseEditorRadians(raw){
+ const value=RhythmMath.parseAngle(String(raw).replace(/π/g,'pi').replace(/−/g,'-'));
+ if(!Number.isFinite(value)||Math.abs(value)>1e6)throw Error('Angle must be finite and within 1,000,000 radians');
+ return value;
+}
+function formatEditorRadians(theta){
+ const ratio=theta/Math.PI;
+ for(const d of [1,2,3,4,6,8,12]){
+  const n=Math.round(ratio*d);
+  if(n===0&&Math.abs(ratio)>1e-11)continue;
+  if(Math.abs(n/d-ratio)<1e-9){
+   if(n===0)return '0';
+   const gcd=(a,b)=>b?gcd(b,a%b):a,divisor=gcd(Math.abs(n),d),p=n/divisor,q=d/divisor;
+   return (p===1?'':p===-1?'-':String(p))+'π'+(q===1?'':'/'+q);
+  }
+ }
+ return inputNumber(theta);
+}
+function syncPrimaryAngles(i){
+ const track=tracks[i],p=RhythmMath.polarOf(track.a,track.b);
+ const radians=$('trackAngleRad'+i),degrees=$('trackAngleDeg'+i),degree=$('trackN'+i);
+ if(radians&&document.activeElement!==radians){
+  radians.value=p.theta===null?'':formatEditorRadians(p.theta);
+  radians.placeholder=p.theta===null?'undefined for z=0':'e.g. 2π/3';
+  radians.setAttribute('aria-invalid','false');
+ }
+ if(degrees&&document.activeElement!==degrees){
+  degrees.value=p.theta===null?'':inputNumber(p.theta*180/Math.PI);
+  degrees.placeholder=p.theta===null?'undefined for z=0':'e.g. 120';
+  degrees.setAttribute('aria-invalid','false');
+ }
+ if(degree&&document.activeElement!==degree)degree.value=String(track.n);
+}
+function renderRootRule(){
+ const track=tracks[selectedTrack];if(!track)return;
+ renderTeX('rootRuleEquation','\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}',true);
+ renderTeX('rootRuleValues','\\theta=\\arg(z),\\quad n='+track.n+',\\quad k=0,\\ldots,'+(track.n-1));
+ const caption=$('rootRuleCaption');
+ if(caption)caption.textContent='The argument rotates the pattern; the root degree creates '+track.n+
+  ' equally spaced event'+(track.n===1?'':'s')+'. Circle size identifies an instrument lane, not |z|.';
+}
+
 function syncVisibleInputs(i) {
  const t=tracks[i],mode=laneModes[i],unit=laneUnits[i],polar=RhythmMath.polarOf(t.a,t.b);
  const values=mode==='cart'?{a:t.a,b:t.b,n:t.n}:{r:polar.r,theta:polar.theta===null?null:polar.theta*(unit==='deg'?180/Math.PI:1),n:t.n};
@@ -225,15 +268,69 @@ function syncVisibleInputs(i) {
   if(document.activeElement!==el)el.value=v===null?'':inputNumber(v);
   if(k==='theta'){el.disabled=v===null;el.placeholder=v===null?'undefined':''}
  }
+ syncPrimaryAngles(i);
 }
+
 function updateLaneAlt(i) {
  const el=$('laneAlt'+i);if(!el)return;
  const t=tracks[i],polar=RhythmMath.polarOf(t.a,t.b);
- if(laneModes[i]==='cart'){
-  renderTeX(el,polar.theta===null?String.raw`r=0,\;\arg(0)\text{ is undefined}`:String.raw`r\approx${fmtMath(polar.r)},\;\theta\approx${fmtMath(polar.theta)},\quad z=re^{i\theta}`);
- }else renderTeX(el,String.raw`z=${complexLaTeX(t)},\quad z=re^{i\theta}`);
+ renderTeX(el,polar.theta===null?
+  'z=0,\\quad \\arg(0)\\text{ is undefined}':
+  'z='+complexLaTeX(t)+',\\quad |z|\\approx'+fmtMath(polar.r));
 }
 function buildLaneFields(row,t,i) {
+
+ const angular=document.createElement('div');angular.className='angle-fields';
+ const title=document.createElement('div');title.className='angle-title';title.textContent='Complex argument θ';angular.append(title);
+ const addInput=(id,name)=>{
+  const label=document.createElement('label');label.textContent=name;label.htmlFor=id;
+  const el=document.createElement('input');el.id=id;el.type='text';el.inputMode='decimal';
+  el.autocomplete='off';el.spellcheck=false;el.setAttribute('aria-label','Lane '+(i+1)+' '+name);
+  el.setAttribute('aria-invalid','false');label.append(el);angular.append(label);return el;
+ };
+ const rad=addInput('trackAngleRad'+i,'Radians · π allowed');
+ const deg=addInput('trackAngleDeg'+i,'Degrees · °');
+ rad.maxLength=80;deg.maxLength=32;
+ const nLabel=document.createElement('label');nLabel.className='root-degree';nLabel.textContent='Root degree n';
+ const nInput=document.createElement('input');nInput.id='trackN'+i;nInput.type='number';nInput.min='1';nInput.max='64';
+ nInput.step='1';nInput.inputMode='numeric';nInput.value=String(t.n);
+ nInput.setAttribute('aria-label','Lane '+(i+1)+' root degree n');
+ nLabel.append(nInput);angular.append(nLabel);row.append(angular);
+ const editAngle=(input,isDegrees)=>{
+  const raw=input.value.trim(),numeric=Number(raw);
+  let theta;
+  try{
+   if(isDegrees){
+    if(raw===''||!Number.isFinite(numeric)||Math.abs(numeric)>1e8)throw Error('Enter a finite degree value');
+    theta=numeric*Math.PI/180;
+   }else theta=parseEditorRadians(raw);
+  }catch(_){input.setAttribute('aria-invalid','true');return}
+  input.setAttribute('aria-invalid','false');
+  const z=RhythmMath.fromPolar(1,theta%(2*Math.PI));
+  t.a=z.a;t.b=z.b;
+  if(isDegrees)rad.value=formatEditorRadians(theta);
+  else deg.value=inputNumber(theta*180/Math.PI);
+  syncVisibleInputs(i);
+  updateLaneStatus(i);
+  if(selectedTrack===i)renderReadout();
+  markCustom();
+ };
+ rad.addEventListener('input',()=>editAngle(rad,false));
+ deg.addEventListener('input',()=>editAngle(deg,true));
+ nInput.addEventListener('input',()=>{
+  const n=Number(nInput.value),valid=nInput.value.trim()!==''&&Number.isInteger(n)&&n>=1&&n<=64;
+  nInput.setAttribute('aria-invalid',String(!valid));if(!valid)return;
+  t.n=n;updateLaneStatus(i);if(selectedTrack===i)renderReadout();
+  if(magnified&&selectedTrack===i)refreshPlotZoom();
+  markCustom();
+ });
+ nInput.addEventListener('change',()=>{if(nInput.getAttribute('aria-invalid')==='true'){
+  nInput.value=String(t.n);nInput.setAttribute('aria-invalid','false');
+ }});
+ syncPrimaryAngles(i);
+ const advanced=document.createElement('details');advanced.className='advanced-coordinates';
+ const advancedSummary=document.createElement('summary');advancedSummary.textContent='Advanced · Cartesian / legacy polar';
+ advanced.append(advancedSummary);row.append(advanced);
  const modeBar=document.createElement('div');modeBar.className='lane-modes';modeBar.setAttribute('role','group');modeBar.setAttribute('aria-label','Coordinate form for lane '+(i+1));
  const cart=document.createElement('button'),polar=document.createElement('button'),unit=document.createElement('button');
  for(const [btn,label,mode] of [[cart,'Cartesian','cart'],[polar,'Polar','polar']]){
@@ -241,8 +338,8 @@ function buildLaneFields(row,t,i) {
   btn.addEventListener('click',()=>{laneModes[i]=mode;refresh();cart.setAttribute('aria-pressed',String(mode==='cart'));polar.setAttribute('aria-pressed',String(mode==='polar'))});
  }
  unit.type='button';unit.className='unit-button';unit.addEventListener('click',()=>{laneUnits[i]=laneUnits[i]==='rad'?'deg':'rad';refresh()});
- modeBar.append(cart,polar,unit);row.append(modeBar);
- const fields=document.createElement('div');fields.className='lane-fields';row.append(fields);
+ modeBar.append(cart,polar,unit);advanced.append(modeBar);
+ const fields=document.createElement('div');fields.className='lane-fields';advanced.append(fields);
  const alt=document.createElement('div');alt.id='laneAlt'+i;alt.className='lane-alternate-math math-notation';row.append(alt);
  const exp=document.createElement('details');exp.className='expression-entry';
  const summary=document.createElement('summary');summary.textContent='Enter a complex expression';exp.append(summary);
@@ -258,11 +355,11 @@ function buildLaneFields(row,t,i) {
   }catch(e){error.textContent=e.message}
  };
  apply.addEventListener('click',enter);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();enter()}});
- wrap.append(input,apply);exp.append(wrap,error);row.append(exp);
+ wrap.append(input,apply);exp.append(wrap,error);advanced.append(exp);
  function refresh() {
   const mode=laneModes[i],value=RhythmMath.polarOf(t.a,t.b);
   fields.replaceChildren();unit.hidden=mode!=='polar';unit.textContent=laneUnits[i]==='rad'?'radians':'degrees';
-  for(const key of (mode==='cart'?['a','b','n']:['r','theta','n'])){
+  for(const key of (mode==='cart'?['a','b']:['r','theta'])){
    const label=document.createElement('label');
    label.textContent=key==='a'?'a · real':key==='b'?'b · imag':key==='n'?'n · degree':key==='r'?'r · modulus':laneUnits[i]==='rad'?'θ · radians':'θ · degrees';
    const el=document.createElement('input');el.type='number';el.step=key==='n'?'1':'any';el.inputMode=key==='n'?'numeric':'decimal';
@@ -285,7 +382,7 @@ function buildLaneFields(row,t,i) {
      t.a=z.a;t.b=z.b;
      if(key==='r'&&p.theta===null&&v>0){const angle=$('trackTheta'+i);if(angle){angle.disabled=false;angle.placeholder='';angle.value='0'}}
     }
-    updateLaneStatus(i);if(selectedTrack===i)renderReadout();
+    syncPrimaryAngles(i);updateLaneStatus(i);if(selectedTrack===i)renderReadout();
     if(key==='n'&&magnified&&selectedTrack===i)refreshPlotZoom();
     markCustom();
    });
@@ -348,6 +445,7 @@ function updateLaneStatus(i) {
  if(eq)renderTeX(eq,equation);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
+ if(i===selectedTrack)renderRootRule();
 }
 function chooseTrack(i,fromTrackList=false) {
  selectedTrack=Math.max(0,Math.min(3,i));
@@ -435,7 +533,7 @@ function renderSpecialRhythms() {
  cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  fillFields();
 }
-function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
+function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();renderRootRule()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;

@@ -32,6 +32,7 @@ on:
       - tests/accessibility-contrast.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
+      - tests/geometry-collision-audit.mjs
       - tests/beat-visual-acceptance.mjs
       - vendor/katex/**
       - styles.css
@@ -88,6 +89,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
           node tests/accessibility-contrast.mjs
+      - name: Measure still-open marker and formula-label collisions (diagnostic only)
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-collision-audit-http.log 2>&1 &
+          node tests/geometry-collision-audit.mjs
       - name: Verify actual Canvas root diameters, geometry, viewport and dense zoom
         if: ${{ !cancelled() }}
         run: |

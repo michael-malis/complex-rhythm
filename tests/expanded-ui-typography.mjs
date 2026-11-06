@@ -72,6 +72,49 @@ try{
   assert.ok(audit.sound.every(s=>s.count>=15&&!s.hasBlank&&s.unique),'all instrument options are named and unique');
   assert.ok(audit.phaseNotes>=5&&audit.composedFormula,'rendered math notes and root composition available');
   assert.deepEqual(audit.emptyHints,[],'empty visible tooltip entries');
+  // Instrument-specific synthesis settings are dynamic, so a static page
+  // snapshot cannot establish that all fifteen instrument menus are legible.
+  if(width===390&&theme==='light'){
+   let checkedVoices=0;
+   const voices=await page.locator('#laneSound0 option').evaluateAll(items=>items.map(o=>o.value));
+   for(const voice of voices){
+    await page.locator('#laneSound0').selectOption(voice);
+    const dynamic=await page.evaluate(()=>{
+     const wrap=document.querySelector('#patchControls');
+     const sliders=[...wrap.querySelectorAll('input')];
+     const named=sliders.every(el=>!!el.getAttribute('aria-label')&&
+      parseFloat(getComputedStyle(el).fontSize)>=16);
+     const oscillator=wrap.querySelector('#patchOsc');
+     const heading=wrap.querySelector('h4')?.textContent||'';
+     const tooltips=[...document.querySelectorAll('[title]')].filter(el=>
+      getComputedStyle(el).display!=='none'&&!el.getAttribute('title')?.trim()
+     );
+     return {heading,sliders:sliders.length,named,oscillator:!!oscillator,emptyTooltips:tooltips.length};
+    });
+    assert.ok(dynamic.heading.includes('Instrument dynamics'),'sound-specific editor heading present');
+    assert.ok(dynamic.sliders>=9&&dynamic.named,'all dynamics sliders named at usable font sizes for '+voice);
+    assert.ok(dynamic.oscillator,'synthesis oscillator dropdown exists for '+voice);
+    assert.equal(dynamic.emptyTooltips,0,'no anonymous sound tooltips for '+voice);
+    checkedVoices++;
+   }
+   assert.ok(checkedVoices>=15,'sweep all fifteen existing synthesizer voices');
+   // Additional-angle and generated-root controls are initially hidden,
+   // but they are part of the mandatory complete-settings audit.
+   await page.locator('#addRootFamily').click();
+   await page.locator('#addLayer').click();
+   const addition=await page.evaluate(()=>{
+    const inputs=[...document.querySelectorAll('#extraLayers input')];
+    const btns=[...document.querySelectorAll('#extraLayers button')];
+    return {inputs:inputs.length,buttons:btns.length,allNamed:[...inputs,...btns].every(el=>
+     !!el.getAttribute('aria-label')||
+     (!!el.closest('label')&&el.closest('label').textContent.trim().length>0)
+    )};
+   });
+   assert.ok(addition.inputs>=5&&addition.buttons>=2&&addition.allNamed,
+    'generated root families and additional-angle settings must be labeled');
+   report.at(-1).dynamicVoices=checkedVoices;
+   report.at(-1).additionalRootControls=addition;
+  }
   assert.deepEqual(errors,[],'browser JS errors');
   await page.close();
  }
@@ -79,5 +122,5 @@ try{
   status:'PASS',scope:'Full mandatory expanded UI, all four sound dropdowns and tooltips across both themes and six viewport sizes',
   report
  },null,2));
- console.log('PASS: all extended UI sections, labels, instrument options and mathematical notes across '+report.length+' responsive/theme cases');
+ console.log('PASS: all expanded UI sections across '+report.length+' responsive/theme cases, with all dynamic voice and root-family settings inspected');
 }finally{await browser.close()}

@@ -17,7 +17,7 @@ const fixture={
 fs.mkdirSync('artifacts/root-angle-infographic',{recursive:true});
 const report=[];
 const read=page=>page.evaluate(()=>{
- const list=[...document.querySelectorAll('#rootRuleAngleList li')];
+ const list=[...document.querySelectorAll('#rootRuleAngleList li[data-index]')];
  return {
   button:document.querySelector('#rootRuleInfoToggle').getAttribute('aria-expanded'),
   hidden:document.querySelector('#rootRuleInfoPanel').hidden,

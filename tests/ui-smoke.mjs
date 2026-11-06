@@ -177,13 +177,29 @@ try {
  await page.locator('#categorySelect').selectOption('poly');
  await page.locator('#presetSelect').selectOption('afro');
  await page.locator('#orbitCanvas').scrollIntoViewIfNeeded();
+ // Drag an actual base root, independent of the preset's starting phase.
+ const beforeDrag=await page.evaluate(()=>{
+  const t=window.RhythmResearch.current().tracks[0];
+  return {a:t.a,b:t.b,n:t.n,phase:window.RhythmMath.rootPhases(t.a,t.b,t.n)[0]};
+ });
  const box=await page.locator('#orbitCanvas').boundingBox();
  const cx=box.x+box.width/2,cy=box.y+box.height/2,r=Math.min(box.width,box.height)*.427;
- await page.mouse.move(cx,cy-r);await page.mouse.down();
- await page.mouse.move(cx+r*Math.sin(Math.PI/9),cy-r*Math.cos(Math.PI/9),{steps:12});await page.mouse.up();
- const da=Number(await page.locator('#trackA0').inputValue());
- const db=Number(await page.locator('#trackB0').inputValue());
- verify(Math.abs(Math.atan2(db,da)*180/Math.PI-60)<4,'mouse drag rotates root set directly');
+ const start=-Math.PI/2+2*Math.PI*beforeDrag.phase,finish=start+Math.PI/9;
+ await page.mouse.move(cx+r*Math.cos(start),cy+r*Math.sin(start));await page.mouse.down();
+ await page.mouse.move(cx+r*Math.cos(finish),cy+r*Math.sin(finish),{steps:12});await page.mouse.up();
+ const afterDrag=await page.evaluate(()=>{
+  const t=window.RhythmResearch.current().tracks[0];
+  return {a:t.a,b:t.b,n:t.n};
+ });
+ const expected=Math.atan2(beforeDrag.b,beforeDrag.a)+beforeDrag.n*Math.PI/9;
+ const actual=Math.atan2(afterDrag.b,afterDrag.a);
+ const err=Math.atan2(Math.sin(actual-expected),Math.cos(actual-expected));
+ verify(Math.abs(err)<4*Math.PI/180,
+  'mouse drag rotates root set directly: '+JSON.stringify({beforeDrag,afterDrag,errorDeg:err*180/Math.PI}));
+ verify(afterDrag.n===beforeDrag.n,'mouse drag preserves root degree');
+ const da=Number(await page.locator('#trackA0').inputValue()),db=Number(await page.locator('#trackB0').inputValue());
+ verify(Math.abs(da-afterDrag.a)<1e-8&&Math.abs(db-afterDrag.b)<1e-8,
+  'mouse drag synchronizes Cartesian readouts');
 
  let total=0;
  for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value))) {

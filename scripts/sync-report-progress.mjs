@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const summary=JSON.parse(fs.readFileSync('LEDGER_EVIDENCE_SUMMARY.json','utf8'));
 const s=summary.tasks,verified=s.VERIFIED,blocked=s.BLOCKED,progress=s.IN_PROGRESS,todo=s.TODO,failed=s.FAILED;
 const verifiedRequirements=summary.verifiedRequirementIds.length;
-if(verified+blocked+progress+todo+failed!==651||verifiedRequirements>98)
+if(verified+blocked+progress+todo+failed!==652||verifiedRequirements>98)
  throw Error('Cannot publish inconsistent status totals');
 const code=String.fromCharCode(96);
 function update(path,action){
@@ -20,8 +20,8 @@ update('FINAL_REPORT.md',text=>{
   '| Measure | Exact recorded value |',
   '|---|---:|',
   '| Requirements in supplied specification | 98 |',
-  '| Registered tasks in TASKS.md | 651 |',
-  '| Atomic subtasks | 553 |',
+  '| Registered tasks in TASKS.md | 652 |',
+  '| Atomic subtasks | 554 |',
   '| Tasks formally marked VERIFIED | **'+verified+'** |',
   '| Tasks formally marked IN_PROGRESS | '+progress+' |',
   '| Tasks formally marked TODO | '+todo+' |',
@@ -52,7 +52,7 @@ update('README.md',text=>{
  const found=lines.findIndex(line=>line.startsWith('Technical acceptance has been reconciled against GitHub Actions:'));
  if(found<0)throw Error('README technical acceptance line not found');
  lines[found]='Technical acceptance has been reconciled against GitHub Actions: **'+verified+
-  ' of 651 tasks VERIFIED, '+blocked+' BLOCKED**, and **'+verifiedRequirements+
+  ' of 652 tasks VERIFIED, '+blocked+' BLOCKED**, and **'+verifiedRequirements+
   ' of 98 parent requirements** verified. See [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), '+
   '[QA_REPORT.md](QA_REPORT.md) and [draft PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). '+
   'This is not a fully accepted or deployed release.';

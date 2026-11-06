@@ -1277,17 +1277,30 @@ function setupEvents() {
   rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),moved:false};
   canvas.setPointerCapture(e.pointerId);
  });
- canvas.addEventListener('pointermove',e=>{
+ function updateRootDrag(e){
   if(!rootDrag||rootDrag.id!==e.pointerId)return;
   const p=canvasPoint(e),delta=wrapAngle(Math.atan2(p.y,p.x)-rootDrag.startPointer);
   if(!rootDrag.moved&&Math.abs(delta)<.004)return;
-  rootDrag.moved=true;const t=tracks[rootDrag.track];
-  applyRotation(t,rootDrag.startArg+t.n*delta);
+  rootDrag.moved=true;
+  const t=tracks[rootDrag.track];
+  if(!applyRotation(t,rootDrag.startArg+t.n*delta))return;
   syncVisibleInputs(rootDrag.track);
-  updateLaneStatus(rootDrag.track);renderReadout();markCustom();canvas.classList.add('is-dragging');
+  updateLaneStatus(rootDrag.track);renderReadout();markCustom();
+  canvas.classList.add('is-dragging');
+ }
+ canvas.addEventListener('pointermove',updateRootDrag);
+ // Coalescing may suppress the final pointermove: commit the release coordinate.
+ canvas.addEventListener('pointerup',e=>{
+  if(!rootDrag||rootDrag.id!==e.pointerId)return;
+  updateRootDrag(e);
+  rootDrag=null;canvas.classList.remove('is-dragging');
  });
- function finishDrag(e){if(!rootDrag||rootDrag.id!==e.pointerId)return;rootDrag=null;canvas.classList.remove('is-dragging')}
- canvas.addEventListener('pointerup',finishDrag);canvas.addEventListener('pointercancel',finishDrag);canvas.addEventListener('lostpointercapture',finishDrag);
+ function cancelRootDrag(e){
+  if(!rootDrag||rootDrag.id!==e.pointerId)return;
+  rootDrag=null;canvas.classList.remove('is-dragging');
+ }
+ canvas.addEventListener('pointercancel',cancelRootDrag);
+ canvas.addEventListener('lostpointercapture',cancelRootDrag);
  canvas.addEventListener('keydown',e=>{
   if(e.shiftKey&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
    e.preventDefault();const t=tracks[selectedTrack];

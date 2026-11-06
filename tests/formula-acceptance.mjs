@@ -54,9 +54,19 @@ try{
     value.labels.phaseThreequarters.rect.left<value.plot.x+value.plot.width/2,
     'time phases follow top/right/bottom/left geometry');
   assert.deepEqual(errors,[],'no JavaScript errors');
+  // Preserve DOM-derived, per-formula evidence and an actual screenshot for
+  // each required viewport/theme state. These are not human visual sign-offs.
+  const screenshot='artifacts/formula-acceptance/'+width+'-'+theme+'.png';
   reports.push({width,height,theme,formulaCount:value.formulas.length,
-    fractionSizes:Object.fromEntries(Object.entries(value.labels).map(([k,l])=>[k,l.font])),
-    clippingErrors:0});
+    referenceFormulas:value.formulas.map((f,index)=>({
+      index:index+1,latex:f.content,hasMathML:f.math,rendered:f.rendered,clipped:f.clipping
+    })),
+    graphFractions:Object.fromEntries(Object.entries(value.labels).map(([k,l])=>[k,{
+      latex:l.raw,font:l.font,mathml:l.mathml,stacked:l.verticalFraction
+    }])),
+    selectedRootLatex:value.selected,selectedRootHasStackedFraction:value.fractionalEquations,
+    screenshot:screenshot.replace('artifacts/',''),clippingErrors:0});
+  await page.screenshot({path:screenshot,fullPage:true});
   await page.close();
  }
  const page=await browser.newPage({viewport:{width:1280,height:800}});

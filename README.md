@@ -4,7 +4,7 @@
 
 The graph comes first on phones and tablets; on wide screens, all four editable lane cards are arranged 2×2 next to it. Each track has an independent 1–16-bar cycle; the least common multiple determines the full repeat period. The library contains 50 distinct event timelines, six acid timbres within fifteen new voices, a separate Euclidean generator and actual root-set union/intersection.
 
-**Current status (post-merge):** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was merged into `main`, and GitHub Pages deployment succeeded. The app is published, **but full acceptance remains incomplete**. Engineering evidence: **294/652 historical checks VERIFIED**, **52/98 original requirements VERIFIED**, **4 BLOCKED**. For day-to-day work, use the [14 consolidated active tasks](NEXT_EXECUTION_PLAN.md); `TASKS.md` is retained as the detailed legacy evidence ledger.
+**Current status (post-merge):** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was merged into `main`, and GitHub Pages deployment succeeded. The app is published, **but full acceptance remains incomplete**. Engineering evidence: **297/652 historical checks VERIFIED**, **52/98 original requirements VERIFIED**, **4 BLOCKED**. For day-to-day work, use the [14 consolidated active tasks](NEXT_EXECUTION_PLAN.md); `TASKS.md` is retained as the detailed legacy evidence ledger.
 
 
 **Website:** https://michael-malis.github.io/complex-rhythm/

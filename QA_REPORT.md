@@ -122,3 +122,7 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 **Diagnostic baseline before the label correction:** the initial 50-preset Canvas/DOM audit produced 120 root/phase-label intersections in 12 viewport/theme cases, zero resting between-ring intersections, and 388 same-ring intersections on dense default views. The latter are not silently deemed acceptable: the existing magnified/pannable root inspection must be tested and human visual acceptance remains required.
 
 **Current statuses:** source ledger remains 294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED; 52/98 requirement parents verified. Operational tasks: M02 VERIFIED, M01/M03/M08/M10 IN_PROGRESS, M12/M13 BLOCKED and seven other macros TODO. The merge/deployment of prior PR #1 does not qualify the still-open changes in Draft PR #4 as published.
+
+## Geometric atom evidence — CI 42222450657
+
+**PASS** rendered phase labels avoid marker geometry and ring arcs across all 50 presets on six mandatory viewport sizes and both themes. The playback hand is drawn as segments avoiding root markers and their transient halo; `tests/playback-hand-clearance.mjs` checks 12,916 root/phase configurations. The 128-event inner-ring magnification test and a viewport-preserving pan edit passed. **R-GEO-002 remains IN_PROGRESS** until T-GEO-002-01 and other relevant full requirements have reproducible evidence. Ledger: **297 VERIFIED / 60 IN_PROGRESS / 291 TODO / 4 BLOCKED**, parent 52/98.

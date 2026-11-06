@@ -1,10 +1,10 @@
 {
-  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567; baseline proof https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
+  "generatedFrom": "Additional geometric subtask evidence: full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42222450657; previously accepted source requirements remain unchanged",
   "tasks": {
-    "VERIFIED": 294,
-    "BLOCKED": 4,
+    "VERIFIED": 297,
     "IN_PROGRESS": 60,
-    "TODO": 294,
+    "TODO": 291,
+    "BLOCKED": 4,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -67,5 +67,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "An engineering proof does not replace the missing human audio and original screenshot acceptance."
+  "note": "Three R-GEO-002 atomic checks verified, parent still IN_PROGRESS. Human listening, physical device/screen reader and second annotated screenshot remain BLOCKED."
 }

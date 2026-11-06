@@ -5,7 +5,7 @@
 ## Project counters: operational versus historical
 
 - **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions; 1 VERIFIED and 13 still open.** Each macro is a coherent, independently testable engineering/product result.
-- **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
+- **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; initial post-merge snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
 - **Fourteen macro tasks** are the only new operational units for planning, progress updates, and development PRs. On CI acceptance, report `Mxx` completed, linked source requirement IDs and supporting evidence. No multiplying tasks into another set of hundreds.
 - Product additions approved after this baseline go into `CHANGE_REGISTER.md` with a single macro and measurable acceptance. They do not silently change the 98 original criteria.
 - Tasks can run in parallel where safe, but **M14 is the last sign-off**. External blockers are tracked explicitly rather than disguised as developer tasks.
@@ -89,3 +89,5 @@ The current app is already published from main. `FINAL_REPORT.md` must eventuall
 **M02 evidence:** [full UI/audio CI 42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501). All other active macros retain their previous statuses; historical requirements are not automatically certified.
 
 **M03 phase-label evidence:** [full CI 42219132673](https://github.com/michael-malis/complex-rhythm/actions/runs/42219132673) passed `tests/phase-label-adaptation.mjs`, checking actual KaTeX/Canvas collisions for **50 presets in 10 responsive size/theme states**. Remaining geometric overlap scenarios, dense-ring magnification and human inspection are not yet accepted.
+
+**Latest engineering evidence (42222450657):** 297/652 historical task checks VERIFIED, 60 IN_PROGRESS, 291 TODO, 4 BLOCKED, 0 FAILED. Original requirements remain 52/98 VERIFIED. M03 remains IN_PROGRESS; T-GEO-002-02/-03/-04 are verified, but T-GEO-002-01 is not. Operational macro counter remains 1 VERIFIED / 4 IN_PROGRESS / 7 TODO / 2 BLOCKED.

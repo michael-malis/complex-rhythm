@@ -11,9 +11,9 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **294** |
+| Tasks formally marked VERIFIED | **297** |
 | Tasks formally marked IN_PROGRESS | 60 |
-| Tasks formally marked TODO | 294 |
+| Tasks formally marked TODO | 291 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
 | Parent requirements VERIFIED | **52 of 98** |

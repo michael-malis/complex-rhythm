@@ -48,8 +48,11 @@ try{
  const phasesBefore=await page.evaluate(()=>window.RhythmResearch.current().tracks.map(
   t=>window.RhythmResearch.events(t).map(e=>e.phase)
  ));
- await page.locator('#trackA1').fill('0.8');
- await page.locator('#trackB1').fill('0.6');
+ // The primary angle is always visible; legacy Cartesian inputs are in a
+ // collapsed advanced section and cannot be filled until that section is opened.
+ await page.locator('#trackAngleDeg1').fill('30');
+ assert.ok(Math.abs(Number(await page.locator('#trackAngleRad1').inputValue())-Math.PI/6)<1e-8,
+  'primary radians and degrees stay synchronized for the second lane');
  const phasesAfter=await page.evaluate(()=>window.RhythmResearch.current().tracks.map(
   t=>window.RhythmResearch.events(t).map(e=>e.phase)
  ));

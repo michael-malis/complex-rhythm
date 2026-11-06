@@ -115,6 +115,13 @@ verified.set('R-QA-003',{
  evidence:'CI:42161224683; tests/new-preset-live-qa.mjs; 15 running-study loads, active phase edits, Web Audio cleanup; tests/audio-mix-stress.mjs validates 50 schedules and bounded peak',
  commit:'095cd389cd1400b6f574b07a8f57d0274657e36a'
 });
+// Actual Canvas fill pixels, four-ring radii and full 12-case responsive matrix
+// passed, including 64th-degree dense-root magnification. Minimum diameter
+// required by R-GEO-001 is enforced without fabricating a maximum size.
+verified.set('R-GEO-001',{
+ evidence:'CI:42162929618; tests/geometry-acceptance.mjs 12 viewport/theme cases with 16 actual cardinal pixels each, measured base marker >=28px, four rings and 64th-root scrollable magnification',
+ commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
+});
 // Twelve browser-driven canonical coordinate states, zero argument and
 // degree/radian view switches passed in the complete regression.
 verified.set('R-NUM-003',{

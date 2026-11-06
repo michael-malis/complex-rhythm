@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Additional geometric subtask evidence: full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42222450657; previously accepted source requirements remain unchanged",
+  "generatedFrom": "Full UI/audio geometry acceptance https://github.com/michael-malis/complex-rhythm/actions/runs/42224570142; all R-GEO-002 criteria documented",
   "tasks": {
-    "VERIFIED": 297,
-    "IN_PROGRESS": 60,
-    "TODO": 291,
+    "VERIFIED": 299,
+    "IN_PROGRESS": 59,
+    "TODO": 290,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -15,6 +15,7 @@
     "R-TEX-001",
     "R-TEX-003",
     "R-GEO-001",
+    "R-GEO-002",
     "R-GEO-003",
     "R-GEO-004",
     "R-GEO-005",
@@ -67,5 +68,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "Three R-GEO-002 atomic checks verified, parent still IN_PROGRESS. Human listening, physical device/screen reader and second annotated screenshot remain BLOCKED."
+  "note": "R-GEO-002 all five historical checks verified; separate UX/typography and human acceptance gates remain unfinished."
 }

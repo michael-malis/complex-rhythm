@@ -100,3 +100,10 @@
 - **PASS:** `tests/playback-hand-clearance.mjs`: 12,916 independent playback hand/phase/viewport cases with clearance for active root halos, plus the actual segmented Canvas draw integration.
 - Verified T-GEO-002-02 (root/label), T-GEO-002-03 (root/playback pointer) and T-GEO-002-04 (KaTeX fraction/ring) with the CI and commit linked directly in TASKS.md. T-GEO-002-01 remains TODO because simultaneous **animated** neighboring markers could still need clearance. Parent R-GEO-002 and macro M03 remain IN_PROGRESS.
 - Full source ledger now **297 VERIFIED / 60 IN_PROGRESS / 291 TODO / 4 BLOCKED / 0 FAILED**, with **52/98 parent requirements VERIFIED**. No previously verified task status was reset.
+
+## 2026-11-06 — R-GEO-002 parent accepted after animated mobile clearance
+
+- **Full PASS:** [UI/audio CI 42224570142](https://github.com/michael-malis/complex-rhythm/actions/runs/42224570142): mobile simultaneous attacks, 50-preset geometry, root/fraction label separation (600 states), playback hand clearance (12,916 cases), 128-phase nonselected lane zoom with preserved pan, 28px baseline markers, old audio and MathML tests.
+- Fixed simultaneous beat pulses on tight concentric rings: a minimum 1.4x root expansion is retained, but the compact outline and halo are adapted to measured radial spacing to avoid obscuring adjacent active dots. Normal-size plots retain the full accent and glow.
+- R-GEO-002 and T-GEO-002-01 are now VERIFIED; the previously verified T-GEO-002-02/-03/-04 keep their own evidence. This does not complete the unrelated R-UI-007 or R-QT-003 and does not represent human music or device acceptance.
+- Historical totals **299 VERIFIED / 59 IN_PROGRESS / 290 TODO / 4 BLOCKED / 0 FAILED**, **53/98 requirements**. Operational macros: 1/14 accepted, M03 still in progress.

@@ -126,3 +126,7 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 ## Geometric atom evidence — CI 42222450657
 
 **PASS** rendered phase labels avoid marker geometry and ring arcs across all 50 presets on six mandatory viewport sizes and both themes. The playback hand is drawn as segments avoiding root markers and their transient halo; `tests/playback-hand-clearance.mjs` checks 12,916 root/phase configurations. The 128-event inner-ring magnification test and a viewport-preserving pan edit passed. **R-GEO-002 remains IN_PROGRESS** until T-GEO-002-01 and other relevant full requirements have reproducible evidence. Ledger: **297 VERIFIED / 60 IN_PROGRESS / 291 TODO / 4 BLOCKED**, parent 52/98.
+
+## Full circular geometry acceptance — 2026-11-06
+
+**PASS [CI 42224570142](https://github.com/michael-malis/complex-rhythm/actions/runs/42224570142)**: for R-GEO-002, playback pointer never crosses root markers, phase-fraction KaTeX labels avoid plotted roots and four ring arcs, neighboring rings remain separated under worst-case 1.4x simultaneous beat pulses, and high-density n=64 plus 64 offset events remain zoomable/pannable while preserving the viewed region after parameter edits. Source ledger updated with a full parent proof. R-GEO-002 is VERIFIED; responsive screen controls R-UI-007 and typography layout R-QT-003 remain independently open. Ledger: **299/652 VERIFIED, 53/98 requirements**.

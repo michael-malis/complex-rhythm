@@ -130,6 +130,13 @@ verified.set('R-GEO-007',{
  evidence:'CI:42209284567; tests/geometry-acceptance.mjs actual 28px+ Canvas diameters, 4 radii and 16 painted cardinal markers across 12 viewport/theme states; tests/formula-acceptance.mjs label placements; tests/collision-lanes.mjs simultaneous events; tests/ui-smoke.mjs dragging/resize; tests/spec-ui.mjs magnification; comparative screenshots',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+// Responsive Canvas marker/ring/fraction/pointer geometry and event-aware
+// pan/zoom are accepted only after the complete run including the mobile
+// simultaneous-attack test passes.
+verified.set('R-GEO-002',{
+ evidence:"CI:42224570142; tests/geometry-acceptance.mjs, phase-label-adaptation.mjs (600 states), playback-hand-clearance.mjs (12,916 cases), animated-adjacent-ring-clearance.mjs (50 presets + live mobile audio), multi-lane-magnification.mjs; all R-GEO-002 conditions PASS",
+ commit:'bddc6a4497d4f0c9b2ac234a2cecef6a000631ee'
+});
 // The real transport/Canvas regression proves >1.4x scale across multiple
 // frames, audible-event timing, stationary reduced-motion brightness and no
 // residual pulse after transport stops. Full UI/audio pipeline passed.

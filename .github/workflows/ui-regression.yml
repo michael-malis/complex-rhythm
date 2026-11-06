@@ -23,6 +23,7 @@ on:
       - tests/preset-modified.mjs
       - tests/preset-category-navigation.mjs
       - tests/unified-rhythm-import.mjs
+      - tests/single-reschedule-per-edit.mjs
       - tests/angle-first.mjs
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
@@ -157,6 +158,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-canonical.log 2>&1 &
           node tests/canonical-argument.mjs
+      - name: Enforce exactly one voice-bus invalidation for each live parameter edit
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-single-reschedule.log 2>&1 &
+          node tests/single-reschedule-per-edit.mjs
       - name: Verify live n and phase edits invalidate stale sound notes and coalesce rapid changes
         if: ${{ !cancelled() }}
         run: |

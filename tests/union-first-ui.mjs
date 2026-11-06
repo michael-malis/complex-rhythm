@@ -12,7 +12,7 @@ try {
   await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
   const composition=page.locator('#compositionPanel');
   await composition.evaluate(el=>el.open=true);
-  assert.match(await composition.locator('summary').textContent(),/Combine root points/);
+  assert.match(await composition.locator(':scope > summary').textContent(),/Combine root points/);
   assert.equal(await page.locator('#advancedMathDetails').evaluate(el=>el.open),false,
    'intersection and Euclidean options are secondary, not required for union');
   assert.ok(await page.locator('#addLayer').isVisible(),'primary add-point action is immediately available');

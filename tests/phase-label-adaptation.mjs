@@ -42,11 +42,28 @@ try{
      const r=label.rect,px=Math.max(r.left,Math.min(dot.x,r.right)),py=Math.max(r.top,Math.min(dot.y,r.bottom));
      if((dot.x-px)**2+(dot.y-py)**2<17**2)overlaps.push({lane:dot.lane,phase:dot.phase,label:label.id});
     }
-    return {overlaps,validLabels:labels.every(x=>x.visible),
+    const ringOverlaps=[];
+    const cx=canvas.left+canvas.width/2,cy=canvas.top+canvas.height/2;
+    for(const label of labels){
+     const r=label.rect;
+     const nx=Math.max(r.left,Math.min(cx,r.right));
+     const ny=Math.max(r.top,Math.min(cy,r.bottom));
+     const nearest=Math.hypot(cx-nx,cy-ny);
+     const farthest=Math.max(
+      Math.hypot(cx-r.left,cy-r.top),Math.hypot(cx-r.right,cy-r.top),
+      Math.hypot(cx-r.left,cy-r.bottom),Math.hypot(cx-r.right,cy-r.bottom)
+     );
+     for(let i=0;i<radii.length;i++){
+      if(nearest<=radii[i]+3&&farthest>=radii[i]-3)
+       ringOverlaps.push({label:label.id,ring:i,nearest,farthest,radius:radii[i]});
+     }
+    }
+    return {overlaps,ringOverlaps,validLabels:labels.every(x=>x.visible),
      labels:labels.map(x=>({id:x.id,left:x.rect.left,top:x.rect.top}))};
    });
-   if(!measured.validLabels||measured.overlaps.length)failures.push({
+   if(!measured.validLabels||measured.overlaps.length||measured.ringOverlaps.length)failures.push({
     id:preset.id,missingLabels:!measured.validLabels,overlaps:measured.overlaps.slice(0,8),
+    ringOverlaps:measured.ringOverlaps.slice(0,8),
     placement:measured.labels
    });
   }
@@ -64,5 +81,5 @@ try{
   assert.equal(item.failedPresets,0,'phase-label/root collisions in '+item.viewport+' '+item.theme+': '+JSON.stringify(item.examples.slice(0,3)));
   assert.deepEqual(item.runtimeErrors,[],'runtime failures');
  }
- console.log('PASS dynamically positioned phase labels avoid every root in 50 presets across '+report.length+' viewport/theme states');
+ console.log('PASS: all 50 presets, phase labels avoid roots AND all four ring arcs in '+report.length+' viewport/theme states');
 }finally{await browser.close()}

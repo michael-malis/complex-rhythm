@@ -1168,7 +1168,7 @@ function draw() {
    const proximity=((phase-mark.phase)%1+1)%1*duration;
    // Hold the 1.4x+ beat accent for several animation frames. A one-frame
    // mathematical peak can be missed by 60 Hz displays between audio attacks.
-   const beatActive=playing&&!t.muted&&proximity<.18;
+   const beatActive=playing&&audio&&audio.currentTime>=beatEpoch&&!t.muted&&proximity<.18;
    const pulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
    const radius=size+pulse;
    if(pulse>0){

@@ -719,34 +719,77 @@ function refreshSoundLab(force=false){
  }
  scheduleSoundWavePreview();
 }
-// Shared legacy low-end renderer: exactly the same source graph drives live
-// playback and the offline Sound Lab. No approximated/fabricated bass trace.
-function playNativeLowEnd(ctx,out,sound,at){
- if(sound!=='bass'&&sound!=='reese')return false;
+// Shared fallback engine for the six synthesized voices with no recording or
+// RhythmVoices definition. Live playback and the inspector use identical Web
+// Audio oscillator/filter/envelope graphs; noise is one random realization.
+function playNativeLegacy(ctx,out,sound,at,index=0,noiseBufferForLive=null){
+ if(!['bass','reese','acid','surdo','agogo','tamborim'].includes(sound))return false;
  const envelope=(gain,peak,release,attack=.002)=>{
   gain.gain.setValueAtTime(.0001,at);
   gain.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),at+attack);
   gain.gain.exponentialRampToValueAtTime(.0001,at+Math.max(release,attack+.01));
  };
- if(sound==='bass'){
-  for(const [type,peak,length] of [['triangle',.55,.36],['sine',.21,.38]]){
-   const osc=ctx.createOscillator();osc.type=type;
-   osc.frequency.setValueAtTime(80,at);
-   osc.frequency.exponentialRampToValueAtTime(54,at+length);
-   const gain=ctx.createGain();envelope(gain,peak,length);
-   osc.connect(gain);gain.connect(out);osc.start(at);osc.stop(at+length+.025);
+ const oscillator=(start,end,type,peak,length)=>{
+  const osc=ctx.createOscillator();osc.type=type;
+  osc.frequency.setValueAtTime(start,at);
+  if(end!==start)osc.frequency.exponentialRampToValueAtTime(Math.max(1,end),at+length);
+  const amp=ctx.createGain();envelope(amp,peak,length);
+  osc.connect(amp);amp.connect(out);osc.start(at);osc.stop(at+length+.025);
+ };
+ const noise=(length,peak,cutoff,type='highpass')=>{
+  const source=ctx.createBufferSource();
+  if(noiseBufferForLive)source.buffer=noiseBufferForLive;
+  else {
+   const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate),ctx.sampleRate),data=buffer.getChannelData(0);
+   let seed=0x5f3759df+index;
+   for(let i=0;i<data.length;i++){
+    seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;
+    data[i]=((seed>>>0)/2147483648)-1;
+   }
+   source.buffer=buffer;
   }
- }else{
-  const filter=ctx.createBiquadFilter();filter.type='lowpass';
-  filter.frequency.setValueAtTime(1100,at);
-  filter.frequency.exponentialRampToValueAtTime(280,at+.3);filter.Q.value=1.1;
-  const amp=ctx.createGain();envelope(amp,.24,.36,.008);
-  filter.connect(amp);amp.connect(out);
-  for(const detune of [-9,9]){
+  const filter=ctx.createBiquadFilter();filter.type=type;filter.frequency.value=cutoff;
+  const gain=ctx.createGain();envelope(gain,peak,length);
+  source.connect(filter);filter.connect(gain);gain.connect(out);
+  source.start(at,noiseBufferForLive?Math.random()*.45:0);
+  source.stop(at+length+.03);
+ };
+ switch(sound){
+  case 'bass':{
+   oscillator(80,54,'triangle',.55,.36);
+   oscillator(80,54,'sine',.21,.38);
+   break;
+  }
+  case 'reese':{
+   const filter=ctx.createBiquadFilter();filter.type='lowpass';
+   filter.frequency.setValueAtTime(1100,at);
+   filter.frequency.exponentialRampToValueAtTime(280,at+.3);filter.Q.value=1.1;
+   const amp=ctx.createGain();envelope(amp,.24,.36,.008);
+   filter.connect(amp);amp.connect(out);
+   for(const detune of [-9,9]){
+    const osc=ctx.createOscillator();osc.type='sawtooth';
+    osc.frequency.setValueAtTime(53,at);osc.detune.value=detune;
+    osc.connect(filter);osc.start(at);osc.stop(at+.39);
+   }
+   break;
+  }
+  case 'acid':{
+   const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.Q.value=11;
+   filter.frequency.setValueAtTime(2800,at);
+   filter.frequency.exponentialRampToValueAtTime(210,at+.20);
+   const amp=ctx.createGain();envelope(amp,.15,.26,.003);
+   filter.connect(amp);amp.connect(out);
    const osc=ctx.createOscillator();osc.type='sawtooth';
-   osc.frequency.setValueAtTime(53,at);osc.detune.value=detune;
-   osc.connect(filter);osc.start(at);osc.stop(at+.39);
+   osc.frequency.setValueAtTime([82.41,98.00,110,123.47,146.83,164.81][index%6],at);
+   osc.connect(filter);osc.start(at);osc.stop(at+.28);
+   break;
   }
+  case 'surdo':
+   oscillator(114,58,'sine',.69,.38);noise(.018,.07,600,'lowpass');break;
+  case 'agogo':
+   oscillator(770,700,'sine',.20,.17);oscillator(1155,1010,'sine',.13,.12);break;
+  case 'tamborim':
+   oscillator(315,240,'triangle',.12,.065);noise(.06,.24,2200,'highpass');break;
  }
  return true;
 }
@@ -763,9 +806,9 @@ async function waveLabData(track){
   const rendered=await ctx.startRendering();
   return {samples:rendered.getChannelData(0),kind:'Synthesized',seconds};
  }
- if(track.sound==='bass'||track.sound==='reese'){
+ if(['bass','reese','acid','surdo','agogo','tamborim'].includes(track.sound)){
   const bus=ctx.createGain();bus.gain.value=.82;bus.connect(ctx.destination);
-  playNativeLowEnd(ctx,bus,track.sound,.012);
+  playNativeLegacy(ctx,bus,track.sound,.012,2);
   const rendered=await ctx.startRendering();
   return {samples:rendered.getChannelData(0),kind:'Synthesized fallback',seconds};
  }
@@ -1286,7 +1329,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
          // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
          perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
-         if(playNativeLowEnd(audio,perHitBus,sound,t)){
+         if(playNativeLegacy(audio,perHitBus,sound,t,index,noiseBuffer)){
           retainHitBus(perHitBus,t);perHitBus=null;return;
          }
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',
@@ -1323,18 +1366,6 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
             }
             break;
           }
-          case 'acid': {
-            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.Q.value=11;
-            filter.frequency.setValueAtTime(2800,t);filter.frequency.exponentialRampToValueAtTime(210,t+.20);
-            const amp=audio.createGain();envelope(amp,t,.15,.26,.003);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
-            const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime([82.41,98.00,110,123.47,146.83,164.81][index%6],t);osc.connect(filter);osc.start(t);osc.stop(t+.28);break;
-          }
-          case 'surdo':
-            oscillator(114,58,'sine',.69,t,.38);noise(t,.018,.07,600,'lowpass');break;
-          case 'agogo':
-            oscillator(770,700,'sine',.20,t,.17);oscillator(1155,1010,'sine',.13,t,.12);break;
-          case 'tamborim':
-            oscillator(315,240,'triangle',.12,t,.065);noise(t,.06,.24,2200,'highpass');break;
         }
         retainHitBus(perHitBus,t);
         perHitBus=null;

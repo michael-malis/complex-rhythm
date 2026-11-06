@@ -73,14 +73,14 @@ for(const study of EXPERIMENTAL_STUDIES){
 
 // These six groove examples remain real canonical mathematical presets.
 // Curated browsing adds a view, never a second preset-loading algorithm.
-const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','pressure']);
+const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
 const GROOVE_LABELS=Object.freeze({
  'berlin-bass-wall':'01 · Bass Wall · relentless kick / deep rumble',
  'concrete':'02 · Drive · clap and rolling bass',
  'shaft':'03 · Machinery · snare, hats and toms',
  'dust':'04 · Half-light · sparse bass and open hats',
  'iron':'05 · Peak · relentless acid pressure',
- 'pressure':'06 · Dub · stripped-back low-end'
+ 'bossa-classic':'06 · Acoustic · bongo and cross-stick'
 });
 const inBrowse=(preset,category)=>category==='grooves'
  ? GROOVE_IDS.includes(preset.id):preset.category===category;

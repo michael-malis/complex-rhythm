@@ -68,13 +68,21 @@ try{
   n:Number(document.getElementById('trackN0').value),
   formula:document.getElementById('selectedRootFormula').querySelector('.katex')?.textContent,
   phase:document.getElementById('rootPhaseFormula').querySelector('.katex')?.textContent,
-  polar:document.getElementById('laneAlt0').querySelector('.katex')?.textContent
+  polar:document.getElementById('laneAlt0').querySelector('.katex')?.textContent,
+  angleRad:window.RhythmMath.parseAngle(document.getElementById('trackAngleRad0').value),
+  angleDeg:Number(document.getElementById('trackAngleDeg0').value),
+  altMathML:!!document.getElementById('laneAlt0').querySelector('math')
  }));
  assert.ok(Math.abs(dragReadout.a-postDrag.a)<1e-9&&Math.abs(dragReadout.b-postDrag.b)<1e-9,
   'live drag synchronizes both Cartesian input fields');
  assert.equal(dragReadout.n,postDrag.n,'root degree field unchanged by drag');
- assert.ok(dragReadout.formula?.includes('w')&&dragReadout.phase?.includes('phase')&&dragReadout.polar?.includes('θ'),
-  'live drag recomputes selected-root phase and alternate-polar KaTeX formulas');
+ assert.ok(dragReadout.formula?.includes('w')&&dragReadout.phase?.includes('phase')&&
+  dragReadout.polar?.includes('z')&&dragReadout.altMathML,
+  'live drag recomputes selected root/phase and complex-coordinate KaTeX/MathML');
+ const expectedAngle=Math.atan2(postDrag.b,postDrag.a);
+ assert.ok(Math.abs(dragReadout.angleRad-expectedAngle)<1e-8&&
+  Math.abs(dragReadout.angleDeg-expectedAngle*180/Math.PI)<1e-7,
+  'live drag synchronizes both primary angle units');
  const sorted=postDrag.roots.slice().sort((a,b)=>a-b);
  assert.ok(sorted.every((p,i)=>Math.abs((sorted[(i+1)%sorted.length]+(i===sorted.length-1?1:0)-p)-1/sorted.length)<1e-9),
   'dragged roots remain evenly spaced');

@@ -111,7 +111,6 @@
    <div id="extraLayers" class="extra-layers" aria-label="Added points and root sets"></div>
    <details id="advancedMathDetails" class="advanced-math-settings"><summary>Other mathematical operations · intersection and Euclidean rhythm</summary><div id="specialRhythms" class="special-rhythms"></div></details>
    <div class="sound-basics"><div id="laneGainControls" class="lane-gain-controls"></div><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
-   <details id="advancedSoundDetails" class="advanced-sound-settings"><summary>Advanced sound settings <span class="quiet">Oscillator · filter · envelope</span></summary><div id="patchControls" class="patch-controls"></div></details>
   </div>
  </details>
  <details class="math-details"><summary>Mathematical notes</summary>
@@ -121,6 +120,29 @@
   <p>A polyrhythm combines different periodicities across instruments. Composed root sets combine rhythms within one instrument. Both differ from an arbitrary step sequencer.</p></details>
 </section>
 </main>
+<section class="sound-lab-section" aria-label="Optional sound waveform inspector">
+ <details id="advancedSoundDetails" class="advanced-sound-settings sound-lab">
+  <summary>Sound lab · waveform and instrument shaping <span class="quiet">Optional · closed by default</span></summary>
+  <div class="sound-lab-body">
+   <div class="sound-lab-toolbar">
+    <label for="soundLabLane">Instrument to inspect
+     <select id="soundLabLane" aria-label="Choose instrument for waveform inspector">
+      <option value="0">Lane 1</option><option value="1">Lane 2</option>
+      <option value="2">Lane 3</option><option value="3">Lane 4</option>
+     </select>
+    </label>
+    <button type="button" id="soundLabPreview" class="secondary-btn">▶ Preview this instrument</button>
+    <button type="button" id="soundLabReset" class="secondary-btn" hidden>Reset sound parameters</button>
+   </div>
+   <figure class="sound-wave-figure">
+    <canvas id="soundWaveCanvas" width="960" height="200" role="img" aria-label="Waveform of the chosen instrument" aria-describedby="soundWaveStatus"></canvas>
+    <figcaption id="soundWaveStatus" role="status" aria-live="polite">Open Sound lab to inspect an instrument.</figcaption>
+   </figure>
+   <div id="patchControls" class="patch-controls" hidden></div>
+   <p class="sound-lab-note">Synthesizer controls affect only the chosen instrument lane. Recorded samples show their waveform without oscillator editing. Rhythm geometry and root phases are unchanged.</p>
+  </div>
+ </details>
+</section>
 <input id="jsonFile" type="file" accept=".json,application/json" aria-label="Import rhythm JSON">
 <footer>ROOTS / RHYTHM <span>Mathematics first · sound as interpretation</span></footer>
 </div><div id="toast" class="toast" role="status" aria-live="polite"></div>

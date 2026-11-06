@@ -16,6 +16,7 @@ on:
       - tests/collision-lanes.mjs
       - tests/expression-safety.mjs
       - tests/four-lane-polar.mjs
+      - tests/canonical-argument.mjs
       - tests/live-edit-reschedule.mjs
       - tests/preset-modified.mjs
       - tests/angle-first.mjs
@@ -130,6 +131,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-four-lanes.log 2>&1 &
           node tests/four-lane-polar.mjs
+      - name: Verify canonical Cartesian complex state, principal argument and undefined zero angle
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-canonical.log 2>&1 &
+          node tests/canonical-argument.mjs
       - name: Verify live n and phase edits invalidate stale sound notes and coalesce rapid changes
         if: ${{ !cancelled() }}
         run: |

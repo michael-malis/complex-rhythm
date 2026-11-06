@@ -1274,12 +1274,14 @@ function setupEvents() {
   const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-dist)})).sort((a,b)=>a.gap-b.gap)[0];
   if(near.gap>Math.max(22,p.side*.06))return;
   chooseTrack(near.i);const t=tracks[near.i];const k=selectRootIndexAtPoint(p,t,near.r);if(k<0)return;selectedRootIndex=k;updateSelectedRootMath();
-  rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),moved:false};
+  rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
+    centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false};
   canvas.setPointerCapture(e.pointerId);
  });
  function updateRootDrag(e){
   if(!rootDrag||rootDrag.id!==e.pointerId)return;
-  const p=canvasPoint(e),delta=wrapAngle(Math.atan2(p.y,p.x)-rootDrag.startPointer);
+  // Preserve the pointerdown center: dynamic math labels can change layout/scroll anchoring.
+  const delta=wrapAngle(Math.atan2(e.clientY-rootDrag.centerY,e.clientX-rootDrag.centerX)-rootDrag.startPointer);
   if(!rootDrag.moved&&Math.abs(delta)<.004)return;
   rootDrag.moved=true;
   const t=tracks[rootDrag.track];

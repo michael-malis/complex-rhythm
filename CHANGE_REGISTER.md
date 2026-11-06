@@ -97,7 +97,7 @@ The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidenc
 
 ## CR-UX-005 · Union-first mathematical composition and progressive audio disclosure
 
-**Priority:** P1 · **Status:** IN_PROGRESS (code committed; current-head CI pending). **No new product features.**
+**Priority:** P1 · **Status:** VERIFIED ([full UI/audio CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS). **No new product features.**
 
 - The user explicitly requested **union of points**, not nested set expressions. Make `R_n(z) ∪ ...` a visible, primary mathematical exploration workflow with explicit “Add point” and “Add root set” controls, multiple added sets, distinct resulting phases and collapsed shared phases. Keep intersection and Euclidean operations available in advanced mathematical settings; preserve saved/imported semantics and the original five-layer limit.
 - Hide the generic “Magnify plot” button from uncomplicated fit views. Offer a clearly named contextual magnification control only when actual combined root phases have less than the 34px inspection separation, and keep exit available while magnified. Preserve dense-root magnification and pan tests.

@@ -1,7 +1,7 @@
 # QA report — specification upgrade
 
 **Date:** 2026-11-05  
-**Release status:** NOT COMPLETE — changes are isolated in `upgrade/spec-2026-11-math-audio`; `main` and published GitHub Pages are intentionally unchanged pending the required acceptance gates.
+**Release status (post-merge 2026-11-06):** NOT COMPLETE. PR #1 was merged into `main` and GitHub Pages published successfully. This deployment is not the complete requirements/human acceptance signoff; follow-up fixes remain in Draft PR #4.
 
 ## 1. Evidence and completed automated runs
 
@@ -71,7 +71,7 @@ These remain **technical acceptance records**. Hearing quality and exact genre a
 
 ## Follow-up engineering verification — 2026-11-06
 
-The working-branch changes remain in draft PR #1; they are not claimed to be deployed or independently accepted.
+Historical note: this text was written while PR #1 was Draft. PR #1 has since been merged and deployed; independent human/visual acceptance remains incomplete.
 
 | Case | Actual evidence | Measured result |
 |---|---|---|
@@ -93,7 +93,7 @@ The working-branch changes remain in draft PR #1; they are not claimed to be dep
 
 **Verified technical CI:** [42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`, passed every job step after fixes to live root dragging, pre-mounted radian/degree input fields, symbolic π test parsing, and revised Cartesian/angle-first regression selectors. All failed intermediate CI attempts are retained for historical traceability. The dense offline audio test includes an estimated oversampled between-sample peak in addition to ordinary sample-peak measurement. It is not a certified true-peak or human listening test.
 
-Reconciled task-ledger counts: **233 VERIFIED; 66 IN_PROGRESS; 349 TODO; 4 BLOCKED; 46/98 parent requirements VERIFIED**. Mathematical typography and responsive matrix evidence is registered separately. Missing second annotated image, human audition of voices/presets, and physical-device/screen-reader review continue to block final acceptance.
+Historical snapshot from CI 42151010633 (not the current ledger): **233 VERIFIED; 66 IN_PROGRESS; 349 TODO; 4 BLOCKED; 46/98 parent requirements VERIFIED**. Mathematical typography and responsive matrix evidence is registered separately. Missing second annotated image, human audition of voices/presets, and physical-device/screen-reader review continue to block final acceptance.
 
 ## Beat animation regression — 2026-11-06
 

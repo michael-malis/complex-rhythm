@@ -785,6 +785,7 @@ function markCustom(reschedule=true){
   });
  }
  renderWindowTimeline();
+ if(magnified&&!rootDrag)refreshPlotZoom();
 }
 // Both explicit example selection and JSON import use the same atomic
 // audio transition after replacing tracks, tempo and loaded category.
@@ -807,6 +808,7 @@ function applyPreset(p){
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ if(magnified)refreshPlotZoom();
 }
 function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
       // Independently licensed samples, CC0. The brazil/jazz bank is acoustic, not a synth simulation.
@@ -1136,13 +1138,23 @@ function refreshPlotZoom(){
  btn.setAttribute('aria-pressed',String(magnified));
  btn.textContent=magnified?'Fit entire cycle':'Magnify plot';
  if(magnified){
-  const lane=selectedTrack,n=Math.max(1,tracks[lane]?.n||1);
-  // Solve the actual four-ring geometry, rather than using stale fixed ratios.
-  // Chord separation between adjacent nth roots must be >=34 CSS pixels.
+  // A zoom must make ALL four lanes inspectable, even if the selected lane
+  // has only one root. Added root families can have closer adjacent phases
+  // than the underlying nth roots, so use the actual merged event phases.
+  const minimumGaps=tracks.map(t=>{
+   const phases=events(t).map(ev=>ev.phase);
+   if(phases.length<2)return Infinity;
+   let nearest=1+phases[0]-phases[phases.length-1];
+   for(let j=1;j<phases.length;j++)nearest=Math.min(nearest,phases[j]-phases[j-1]);
+   return nearest;
+  });
+  const sufficient=size=>minimumGaps.every((gap,lane)=>
+   !Number.isFinite(gap)||2*getRadii(size)[lane]*Math.sin(Math.PI*gap)>=34
+  );
   let lo=900,hi=5000;
   while(lo<hi){
    const mid=Math.floor((lo+hi)/2);
-   if(n===1||2*getRadii(mid)[lane]*Math.sin(Math.PI/n)>=34)hi=mid;
+   if(sufficient(mid))hi=mid;
    else lo=mid+1;
   }
   const size=lo;
@@ -1343,6 +1355,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ if(magnified)refreshPlotZoom();
  showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});

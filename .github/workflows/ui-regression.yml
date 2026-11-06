@@ -27,6 +27,7 @@ on:
       - tests/accessibility-contrast.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
+      - tests/beat-visual-acceptance.mjs
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
@@ -82,6 +83,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-geometry-http.log 2>&1 &
           node tests/geometry-acceptance.mjs
+      - name: Verify synchronized Canvas beat pulse and reduced-motion feedback
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-beat-pulse-http.log 2>&1 &
+          node tests/beat-visual-acceptance.mjs
       - name: Measure mobile 44 by 44 pixel interaction targets
         if: ${{ !cancelled() }}
         run: |

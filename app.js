@@ -1158,8 +1158,20 @@ function refreshPlotZoom(){
    else lo=mid+1;
   }
   const size=lo;
+  const previous=canvas.getBoundingClientRect();
+  // Keep the user's current pan center when an edit changes the zoom level.
+  // Entering magnification from Fit starts at the center by the same rule.
+  const focusX=previous.width>0?(plot.scrollLeft+plot.clientWidth/2)/previous.width:.5;
+  const focusY=previous.height>0?(plot.scrollTop+plot.clientHeight/2)/previous.height:.5;
   canvas.style.width=size+'px';canvas.style.height=size+'px';
-  requestAnimationFrame(()=>{plot.scrollLeft=Math.max(0,(size-plot.clientWidth)/2);plot.scrollTop=Math.max(0,(size-plot.clientHeight)/2);resizeCanvas()});
+  requestAnimationFrame(()=>{
+   const scrollX=Math.max(0,Math.min(plot.scrollWidth-plot.clientWidth,
+    size*focusX-plot.clientWidth/2));
+   const scrollY=Math.max(0,Math.min(plot.scrollHeight-plot.clientHeight,
+    size*focusY-plot.clientHeight/2));
+   plot.scrollLeft=scrollX;plot.scrollTop=scrollY;
+   resizeCanvas();
+  });
  }else{
   canvas.style.width='';canvas.style.height='';
   requestAnimationFrame(resizeCanvas);

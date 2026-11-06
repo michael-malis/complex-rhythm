@@ -20,6 +20,7 @@ try{
    name:'aligned.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))
   });
   await page.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Imported rhythm: Four aligned roots collision audit'));
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   const found=await page.evaluate(()=>{
    const rect=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}};
    const canvas=rect(document.getElementById('orbitCanvas'));
@@ -38,9 +39,9 @@ try{
     const x=Math.max(box.left,Math.min(dot.x,box.right)),y=Math.max(box.top,Math.min(dot.y,box.bottom));
     return Math.hypot(dot.x-x,dot.y-y)<dot.radius+1;
    };
-   const analyze=(id,dots)=>{
+   const analyze=(id,dots,compareLiveLabels=false)=>{
     const labelConflicts=[];
-    for(const dot of dots)for(const label of labels){
+    if(compareLiveLabels)for(const dot of dots)for(const label of labels){
      if(collideDotRect(dot,label.rect))
       labelConflicts.push({lane:dot.lane,phase:dot.phase,label:label.id});
     }
@@ -56,7 +57,10 @@ try{
      ringCollisions:ringConflicts.length,selfCollisions:selfConflicts.length,
      labelExamples:labelConflicts.slice(0,6),ringExamples:ringConflicts.slice(0,6)};
    };
-   const fixture=analyze('aligned-four',sample(fixtureTracks));
+   const fixture=analyze('aligned-four',sample(fixtureTracks),true);
+   // Catalog presets are NOT currently loaded: their root positions can be
+   // compared across rings, but must not be compared with the fixture's DOM
+   // labels. Live label placement is separately tested in 600 real selections.
    const catalog=research.presets().map(p=>analyze(p.id,sample(p.tracks)));
    return {canvas,radii,labelCount:labels.length,fixture,catalog,
     allKatex:labels.every(x=>x.rendered)};
@@ -70,7 +74,6 @@ try{
   cases:results.length,
   alignedDotLabelOverlaps:results.reduce((a,x)=>a+x.fixture.labelCollisions,0),
   alignedAdjacentRingOverlaps:results.reduce((a,x)=>a+x.fixture.ringCollisions,0),
-  catalogDotLabelOverlaps:results.reduce((a,x)=>a+x.catalog.reduce((n,p)=>n+p.labelCollisions,0),0),
   catalogAdjacentRingOverlaps:results.reduce((a,x)=>a+x.catalog.reduce((n,p)=>n+p.ringCollisions,0),0),
   catalogSameRingOverlaps:results.reduce((a,x)=>a+x.catalog.reduce((n,p)=>n+p.selfCollisions,0),0),
   allLabelsKatex:results.every(x=>x.allKatex),
@@ -79,10 +82,11 @@ try{
  fs.writeFileSync('artifacts/geometry-collision-audit/measurements.json',JSON.stringify(summary,null,2));
  console.log('GEOMETRY COLLISION AUDIT (unresolved acceptance):',JSON.stringify({
   cases:summary.cases,alignedDotLabelOverlaps:summary.alignedDotLabelOverlaps,
-  catalogDotLabelOverlaps:summary.catalogDotLabelOverlaps,
   catalogAdjacentRingOverlaps:summary.catalogAdjacentRingOverlaps,
   catalogSameRingOverlaps:summary.catalogSameRingOverlaps,allLabelsKatex:summary.allLabelsKatex
  }));
- if(summary.catalogDotLabelOverlaps||summary.catalogAdjacentRingOverlaps)
-  console.warn('OPEN DEFECT R-GEO-002: marker collisions were measured. Do not mark this requirement VERIFIED.');
+ if(summary.catalogAdjacentRingOverlaps)
+  console.warn('OPEN DEFECT R-GEO-002: resting markers on adjacent rings overlap.');
+ if(summary.catalogSameRingOverlaps)
+  console.warn('DENSE ROOTS: same-ring overlaps exist at fit-to-window scale. Verify magnified separation before acceptance.');
 }finally{await browser.close()}

@@ -6,6 +6,10 @@ on:
       - app.js
       - math-io.js
       - tests/preset-diversity.mjs
+      - GENRE_IMPLEMENTATION_MATRIX.md
+      - RHYTHM_RESEARCH.md
+      - PRESET_INVENTORY.json
+      - scripts/verify-genre-mapping.mjs
       - .github/workflows/preset-diversity.yml
   push:
     branches: [main]
@@ -13,6 +17,10 @@ on:
       - app.js
       - math-io.js
       - tests/preset-diversity.mjs
+      - GENRE_IMPLEMENTATION_MATRIX.md
+      - RHYTHM_RESEARCH.md
+      - PRESET_INVENTORY.json
+      - scripts/verify-genre-mapping.mjs
       - .github/workflows/preset-diversity.yml
   workflow_dispatch:
 permissions:
@@ -26,6 +34,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate 15 genre-to-preset source mappings
+        run: node scripts/verify-genre-mapping.mjs
       - name: Install Chromium
         run: |
           npm install --no-save playwright@1.56.1

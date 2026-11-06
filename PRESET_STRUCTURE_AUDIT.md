@@ -8,7 +8,9 @@
 - **21** examples have no reduced-velocity accents; many are intentionally pure polyrhythm demonstrations, so this is a review flag, not a defect.
 - **21** use base root sets without added sets, a valid mathematical configuration.
 - **4** have no simultaneous cross-lane moment in the bounded four-bar schedule.
-- **10** unique pairs meet the existing ≥0.85 phase-similarity measure and should be listened to for distinguishability. Mathematical similarity does not imply identical timbre.
+- **5** unique pairs meet the existing ≥0.85 phase-similarity measure and should be listened to for distinguishability. Mathematical similarity does not imply identical timbre.
+
+The counts and similarity rows below were rechecked against the generated 50-preset inventory after the four Acid presets were redesigned. The five remaining high-similarity pairs are timing-only candidates for a future listening review, not duplicates of waveform or style.
 
 ## Quantitative per-preset evidence
 
@@ -18,7 +20,7 @@
 | `concrete` | bunker | 138 | 4:2:4:3 | 4 | 1 | 1 | 2.00 | `dust:0.86` |
 | `shaft` | bunker | 143 | 4:2:8:3 | 4 | 1 | 1 | 4.00 | none |
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | `concrete:0.86` |
-| `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `303-pressure:0.86`, `peak-pressure:0.86` |
+| `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `peak-pressure:0.86` |
 | `pressure` | bunker | 140 | 4:2:4:2 | 4 | 1 | 1 | 2.00 | none |
 | `house` | other | 125 | 4:2:4:8 | 8 | 0 | 0 | 4.00 | none |
 | `dub` | other | 78 | 3:1:4:2 | 2 | 1 | 1 | 4.00 | none |
@@ -42,13 +44,13 @@
 | `batucada` | brazil | 118 | 3:6:8:3 | 6 | 4 | 4 | 2.67 | none |
 | `maracatu` | brazil | 104 | 3:3:4:3 | 3 | 3 | 3 | 1.33 | none |
 | `warehouse-hammer` | hardhouse | 146 | 4:2:4:5 | 6 | 1 | 1 | 2.50 | none |
-| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95`, `iron:0.90`, `303-pressure:0.86` |
-| `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | `liquid-corrosion:0.87` |
+| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95`, `iron:0.90` |
+| `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | none |
 | `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `steel-rave:0.95`, `iron:0.86` |
 | `acid-303` | acid | 128 | 4:2:4:6 | 6 | 2 | 2 | 3.00 | none |
-| `resonance-rush` | acid | 134 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `iron:0.86`, `steel-rave:0.86` |
-| `liquid-corrosion` | acid | 124 | 4:2:4:4 | 4 | 2 | 2 | 2.00 | `stomp-circuit:0.87` |
-| `303-pressure` | acid | 140 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `iron:0.86`, `steel-rave:0.86` |
+| `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | none |
+| `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | none |
+| `303-pressure` | acid | 140 | 5:2:9:9 | 5 | 4 | 4 | 4.50 | none |
 | `industrial-fracture` | experimental | 155 | 5:7:11:9 | 1 | 0 | 0 | 2.20 | none |
 | `acid-reactor` | experimental | 148 | 3:5:7:11 | 1 | 0 | 0 | 3.67 | none |
 | `rotterdam-collision` | hardcore | 180 | 4:7:11:3 | 2 | 0 | 0 | 3.67 | none |

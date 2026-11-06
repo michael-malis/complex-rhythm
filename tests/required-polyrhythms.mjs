@@ -17,17 +17,23 @@ try{
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
  await page.locator('#presetDetails').evaluate(el=>{el.open=true});
  for(const [ratio,id,degrees] of expected){
-  await page.locator('#ratioSelect').selectOption(ratio);
+  const category=await page.evaluate(id=>window.RhythmResearch.presets().find(p=>p.id===id)?.category,id);
+  assert.ok(category,'required math study exists for '+ratio);
+  await page.locator('#categorySelect').selectOption(category);
+  await page.locator('#presetSelect').selectOption(id);
   const state=await page.evaluate(()=>({
    id:window.RhythmResearch.transport().activePresetId,
    degrees:window.RhythmResearch.current().tracks.map(x=>x.n),
    events:window.RhythmResearch.current().tracks.map(x=>window.RhythmResearch.events(x)),
-   selected:document.getElementById('ratioSelect').value,
+   selected:document.getElementById('presetSelect').value,
    category:document.getElementById('categorySelect').value,
    summary:document.getElementById('presetInfo').textContent
   }));
-  assert.equal(state.id,id,'actual backing preset ID for '+ratio);
-  assert.equal(state.selected,ratio,'ratio selector persists '+ratio);
+  assert.equal(state.id,id,'backing preset ID for '+ratio);
+  assert.equal(state.selected,id,'single Preset selector retains '+ratio);
+  assert.equal(state.category,category,'single Category selector retains source group');
+  assert.ok((await page.locator('#presetSelect option:checked').textContent()).includes(ratio),
+   'ratio must be discoverable in its preset name without a third selector: '+ratio);
   let offset=-1;
   for(const n of degrees){
    const index=state.degrees.findIndex((d,i)=>i>offset&&d===n);

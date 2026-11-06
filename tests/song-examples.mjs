@@ -23,9 +23,8 @@ try{
   await page.locator('#playBtn').click();
   await page.waitForFunction(()=>window.RhythmResearch.transport().playing,null,{timeout:10000});
   const transportBefore=await page.evaluate(()=>window.RhythmResearch.transport());
-  await page.locator('#collectionSelect').selectOption('songs');
-  assert.equal(await page.locator('#categorySelect').inputValue(),'all',
-   'Song Examples collection defaults to all songs');
+  await page.locator('#categorySelect').selectOption('songs');
+  assert.equal(await page.locator('.preset-controls select').count(),2,'only two preset selectors');
   assert.deepEqual(await page.evaluate(()=>window.RhythmResearch.current()),canonicalBefore,
    'changing song category never modifies the current four-lane rhythm');
   const transportBrowse=await page.evaluate(()=>window.RhythmResearch.transport());
@@ -41,7 +40,7 @@ try{
    'song study is a selectable, unique example');
 
   await page.locator('#presetSelect').selectOption('prodigy-boom-boom-tap-study');
-  assert.equal(await page.locator('#collectionSelect').inputValue(),'songs');
+  assert.equal(await page.locator('#categorySelect').inputValue(),'songs');
   const info=await page.locator('#presetInfo').textContent();
   assert.match(info,/not an official or verified transcription/i);
   assert.ok(!info.includes('official release'),'song attribution must not imply official status');
@@ -90,7 +89,7 @@ try{
   await page.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Imported rhythm:'));
   assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),
    'prodigy-boom-boom-tap-study','original source name recognized when imported');
-  assert.equal(await page.locator('#collectionSelect').inputValue(),'songs',
+  assert.equal(await page.locator('#categorySelect').inputValue(),'songs',
    'imported song maintains Song Examples collection');
   const imported=await page.evaluate(()=>window.RhythmResearch.current());
   assert.deepEqual(imported.tracks,current.tracks,'imported and explicitly selected song match precisely');

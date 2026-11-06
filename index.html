@@ -22,53 +22,23 @@
  <div class="top-actions"><button type="button" id="themeBtn" class="utility-btn" aria-pressed="false">Dark mode</button>
  <details class="file-actions" id="fileMenu"><summary>Project files</summary><div class="file-menu"><button id="loadBtn" type="button">Import JSON</button><button id="saveBtn" type="button">Export JSON</button></div></details></div>
 </header>
-<details class="preset-strip" id="presetDetails" open><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">35 examples</span></summary>
+<details class="preset-strip" id="presetDetails" open><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">51 examples</span></summary>
  <div class="preset-controls">
- <label>Collection<select id="collectionSelect" aria-label="Rhythm collection">
-  <option value="grooves">Featured grooves · 6 starting points</option>
-  <option value="club">Techno &amp; club · kick-driven</option>
-  <option value="breaks">Breakbeats · drum patterns</option>
-  <option value="acoustic">Acoustic &amp; world · percussion</option>
-  <option value="mathematics">Polyrhythms &amp; complex roots</option>
+ <label>Category<select id="categorySelect" aria-label="Rhythm category">
+  <option value="grooves">Featured Grooves</option>
+  <option value="bunker">Bunker Techno</option>
+  <option value="hardhouse">Hard House</option>
+  <option value="acid">Acid / 303</option>
+  <option value="hardcore">Hardcore / Gabber</option>
+  <option value="dnb">Drum &amp; Bass</option>
+  <option value="jungle">Jungle</option>
+  <option value="brazil">Brazilian &amp; Acoustic</option>
+  <option value="other">House &amp; Dub</option>
+  <option value="poly">Polyrhythms</option>
+  <option value="experimental">Mathematical Experiments</option>
   <option value="songs">Song Examples</option>
  </select></label>
- <label>Style filter<select id="categorySelect" aria-label="Rhythm category">
-  <option value="all">All styles in collection</option>
-  <option value="grooves">Six featured grooves</option>
-  <optgroup label="Techno &amp; club">
-   <option value="bunker">Bunker techno</option>
-   <option value="hardhouse">Hard house</option>
-   <option value="acid">Acid / 303</option>
-   <option value="hardcore">Hardcore / gabber</option>
-   <option value="other">House &amp; dub</option>
-  </optgroup>
-  <optgroup label="Breakbeats">
-   <option value="dnb">Drum &amp; Bass</option>
-   <option value="jungle">Jungle</option>
-  </optgroup>
-  <optgroup label="Acoustic &amp; world">
-   <option value="brazil">Brazilian percussion</option>
-  </optgroup>
-  <optgroup label="Mathematics">
-   <option value="poly">Polyrhythms</option>
-   <option value="experimental">Complex-root experiments</option>
-  </optgroup>
-  <optgroup label="Song Examples">
-   <option value="songs">Song Examples</option>
-  </optgroup>
- </select></label>
- <label>Example<select id="presetSelect" aria-label="Choose a rhythm example"></select></label>
- <label>Explore mathematical ratio<select id="ratioSelect" aria-label="Choose a mathematical polyrhythm relationship">
- <option value="">Choose a root-degree relationship</option>
- <option value="5:7">5:7</option>
- <option value="7:9">7:9</option>
- <option value="7:11">7:11</option>
- <option value="11:13">11:13</option>
- <option value="5:7:11">5:7:11</option>
- <option value="3:5:7:11">3:5:7:11</option>
- <option value="7:11:13:17">7:11:13:17</option>
- <option value="4:7:9:13">4:7:9:13</option>
- </select></label></div><div id="presetInfo" class="preset-info" aria-live="polite"></div></details>
+ <label>Preset<select id="presetSelect" aria-label="Choose a rhythm preset"></select></label></div><div id="presetInfo" class="preset-info" aria-live="polite"></div></details>
 <main class="workspace">
 <section class="visual-stage" aria-labelledby="orbitHeading">
  <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">One cycle, four rhythms</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>

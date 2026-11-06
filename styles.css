@@ -348,14 +348,8 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-rule-equation .katex-display{overflow:visible}
 
 
-/* Rhythm browsing uses a clear collection → style → example hierarchy.
-   Mathematical ratio remains a separate research shortcut. */
-.preset-controls{grid-template-columns:repeat(4,minmax(0,1fr));align-items:end}
+/* Exactly two selectors on one row at desktop; stack only on narrow screens. */
+.preset-controls{grid-template-columns:minmax(0,1fr) minmax(0,2fr);align-items:end}
 .preset-controls label{min-width:0}
 .preset-controls select{min-width:0;width:100%;text-overflow:ellipsis}
-@media(max-width:1150px){
- .preset-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:600px){
- .preset-controls{grid-template-columns:minmax(0,1fr)}
-}
+@media(max-width:600px){.preset-controls{grid-template-columns:minmax(0,1fr)}}

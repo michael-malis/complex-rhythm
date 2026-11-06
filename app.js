@@ -71,6 +71,37 @@ for(const study of EXPERIMENTAL_STUDIES){
    character:study.character,mathNote:study.mathNote});
 }
 
+// Separately curated song studies are user-provided interpretations, not audio
+// recordings or claimed exact transcriptions. The original 50 catalog entries
+// remain unchanged for the historical diversity/source audit.
+const SONG_EXAMPLES=Object.freeze([
+ {id:'prodigy-boom-boom-tap-study',category:'songs',
+  name:'Prodigy Boom Boom Tap (study)',
+  displayName:'Prodigy · Boom Boom Tap (Rhythm Study)',
+  bpm:160,bars:1,
+  character:'User-supplied, one-bar electronic breakbeat study: kick accents, ghost snare, steady eighth-note hats and Reese bass.',
+  mathNote:'All events are exact complex-root phases. This educational reconstruction is not an official or verified transcription of any recording.',
+  tracks:[
+   {...P(1,0,1,'kick',[
+    {a:-0.382683432365,b:0.923879532511,n:1,velocity:0.45},
+    {a:-0.707106781187,b:-0.707106781187,n:1,velocity:0.9},
+    {a:0.707106781187,b:-0.707106781187,n:1,velocity:0.42}
+   ]),cycleBars:1,operation:'union',gain:0.85},
+   {...P(-1,0,2,'snare',[
+    {a:-0.923879532511,b:0.382683432365,n:1,velocity:0.28},
+    {a:0.923879532511,b:-0.382683432365,n:1,velocity:0.32}
+   ]),cycleBars:1,operation:'union',gain:0.62},
+   {...P(1,0,8,'hat'),cycleBars:1,operation:'union',gain:0.22},
+   {...P(1,0,1,'reese',[
+    {a:0.382683432365,b:0.923879532511,n:1,velocity:0.52},
+    {a:-0.707106781187,b:-0.707106781187,n:1,velocity:0.78},
+    {a:0.382683432365,b:-0.923879532511,n:1,velocity:0.55}
+   ]),cycleBars:1,operation:'union',gain:0.3}
+  ]
+ }
+]);
+const BROWSE_PRESETS=Object.freeze([...PRESETS,...SONG_EXAMPLES]);
+
 // These six genre-diverse grooves remain real canonical mathematical presets.
 // Curated browsing adds a view, never a second preset-loading algorithm.
 const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
@@ -87,7 +118,8 @@ const PRESET_COLLECTIONS=Object.freeze({
  club:['bunker','hardhouse','acid','hardcore','other'],
  breaks:['dnb','jungle'],
  acoustic:['brazil'],
- mathematics:['poly','experimental']
+ mathematics:['poly','experimental'],
+ songs:['songs']
 });
 const collectionForCategory=category=>
  Object.keys(PRESET_COLLECTIONS).find(group=>PRESET_COLLECTIONS[group].includes(category))||'mathematics';
@@ -276,11 +308,11 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
- $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${Object.keys(PRESET_COLLECTIONS).length} collections`;
+ $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${Object.keys(PRESET_COLLECTIONS).length} collections`;
  $('collectionSelect').value=browseCollection;
  $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
- const selected=PRESETS.find(p=>p.id===activePresetId);
+ const selected=BROWSE_PRESETS.find(p=>p.id===activePresetId);
  const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
  if(activePresetId&&!inBrowseCategory){
   const option=document.createElement('option');
@@ -290,9 +322,9 @@ function renderPresets(){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of PRESETS.filter(p=>inBrowse(p,browseCategory))){
+ for(const p of BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory))){
   const option=document.createElement('option');option.value=p.id;
-  option.textContent=(browseCategory==='grooves'?GROOVE_LABELS[p.id]:p.name)+
+  option.textContent=(browseCategory==='grooves'?GROOVE_LABELS[p.id]:(p.displayName||p.name))+
     (p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
@@ -1502,7 +1534,7 @@ function draw() {
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
  requestAnimationFrame(draw);
 }
-function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?BROWSE_PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function validateImportedFields(project){
  const validate=(value,allowed,description)=>{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error(description+' must be an object');
@@ -1533,7 +1565,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
- const sourcePreset=PRESETS.find(p=>p.name===importedName);
+ const sourcePreset=BROWSE_PRESETS.find(p=>p.name===importedName);
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
@@ -1541,6 +1573,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  // previous preset's sample mappings or claim that it is a previous preset.
  activeCategory=sourcePreset?.category||'other';
  browseCategory=activeCategory;
+ browseCollection=collectionForCategory(activeCategory);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -1565,7 +1598,7 @@ function setupEvents() {
   else if(browseCategory!=='all')browseCollection=collectionForCategory(browseCategory);
   renderPresets();
  });
- $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
+ $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{
   const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);
   if(!relation)return;

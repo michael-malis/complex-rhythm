@@ -12,6 +12,8 @@ on:
       - tests/math-io.test.mjs
       - tests/spec-ui.mjs
       - tests/audio-offline.mjs
+      - tests/percussion-sample-structure.mjs
+      - samples/**
       - tests/acid-parameter-response.mjs
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
@@ -104,6 +106,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-acid-parameter-http.log 2>&1 &
           node tests/acid-parameter-response.mjs
+      - name: Measure decoded snare, closed/open hat and clap sample separation
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-percussion-samples.log 2>&1 &
+          node tests/percussion-sample-structure.mjs
       - name: Render and analyze every new Web Audio voice
         if: ${{ !cancelled() }}
         run: |

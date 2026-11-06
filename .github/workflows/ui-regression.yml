@@ -35,6 +35,7 @@ on:
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
+      - tests/phase-label-adaptation.mjs
       - tests/beat-visual-acceptance.mjs
       - vendor/katex/**
       - styles.css
@@ -91,6 +92,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
           node tests/accessibility-contrast.mjs
+      - name: Require phase labels not to cover roots across every preset and responsive theme
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-phase-label-layout.log 2>&1 &
+          node tests/phase-label-adaptation.mjs
       - name: Measure still-open marker and formula-label collisions (diagnostic only)
         if: ${{ !cancelled() }}
         run: |

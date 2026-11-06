@@ -115,6 +115,12 @@ verified.set('R-QA-003',{
  evidence:'CI:42161224683; tests/new-preset-live-qa.mjs; 15 running-study loads, active phase edits, Web Audio cleanup; tests/audio-mix-stress.mjs validates 50 schedules and bounded peak',
  commit:'095cd389cd1400b6f574b07a8f57d0274657e36a'
 });
+// Twelve browser-driven canonical coordinate states, zero argument and
+// degree/radian view switches passed in the complete regression.
+verified.set('R-NUM-003',{
+ evidence:'CI:42161727338; tests/canonical-argument.mjs; 12 a+bi states, principal argument in (-pi,pi], undefined arg(0), and 24 unit/view changes without canonical mutation',
+ commit:'a299872995ea581b3e66e4f0d2a50f826c911bef'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

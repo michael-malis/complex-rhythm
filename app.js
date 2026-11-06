@@ -84,9 +84,9 @@ const GROOVE_LABELS=Object.freeze({
 });
 const PRESET_COLLECTIONS=Object.freeze({
  grooves:['grooves'],
- club:['bunker','hardhouse','acid','hardcore'],
+ club:['bunker','hardhouse','acid','hardcore','other'],
  breaks:['dnb','jungle'],
- acoustic:['brazil','other'],
+ acoustic:['brazil'],
  mathematics:['poly','experimental']
 });
 const collectionForCategory=category=>

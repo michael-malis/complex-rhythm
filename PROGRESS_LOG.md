@@ -58,3 +58,10 @@
 - Registered `R-GEO-001` with measured evidence in `scripts/reconcile-ledger.mjs`. Ledger reconciliation [CI 42163111185](https://github.com/michael-malis/complex-rhythm/actions/runs/42163111185) passed and committed the synchronized registry: **287 VERIFIED, 62 IN_PROGRESS, 299 TODO, 4 BLOCKED, 0 FAILED**, **50/98 verified requirements**.
 - `R-GEO-002`, `R-GEO-003` and `R-GEO-007` remain **IN_PROGRESS**: their full requirements, including label/geometry collision and event-synchronous animation acceptance, are not declared proved by the new cardinal-dot measurements alone.
 - Human musical listening, real mobile and assistive technology acceptance, and the second annotated source screenshot remain open; no release/merge/production claim.
+
+## 2026-11-06 — Beat animation correction (acceptance pending)
+
+- In the existing draft PR and working branch, corrected the real-time Canvas root pulse in `app.js`: the base marker radius is 14px (28px diameter), and the initial audio-clock pulse now adds 8px for a sustained ≥1.4x scale across multiple display frames before easing back. The previous pulse only added 6px for a momentary peak, which did not reliably meet the explicit 1.4x requirement.
+- Preserved the `prefers-reduced-motion` behavior without marker enlargement and added a stationary brighter center for actual live sound events, so beat feedback is not eliminated for reduced-motion users.
+- Added `tests/beat-visual-acceptance.mjs` with a real Web Audio transport, instrumented Canvas arc geometry, normal/reduced-motion assertions, paused-state checks and a JSON CI artifact; connected the test to `.github/workflows/ui-regression.yml`.
+- This is a **code change, not a verified requirement** until the full UI regression including the newly added browser test succeeds. `R-GEO-003` and its atomic tasks remain IN_PROGRESS/TODO; no ledger status is advanced merely because the implementation was committed.

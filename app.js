@@ -703,7 +703,6 @@ function refreshSoundLab(force=false){
   });
   oscLabel.append(osc);grid.append(oscLabel);
   for(const [key,title,min,max,step] of settings){
-   if(defaults[key]===undefined)continue;
    const label=document.createElement('label');label.className='patch-control';
    const name=document.createElement('span');name.textContent=title;
    const out=document.createElement('output');const initial=t.patch?.[key]??defaults[key]??0;out.textContent=String(initial);

@@ -61,7 +61,7 @@ Angle-first editing, dual-unit synchronization, direct single-angle additions, s
 
 ## CR-UX-001 · Persistent rhythm example browser
 
-**Priority:** P1 · **Status:** IN_PROGRESS (implementation committed, CI verification pending)
+**Priority:** P1 · **Status:** VERIFIED (full automated UI/audio regression passed)
 
 The Rhythm examples section is expanded on initial page load on desktop and mobile. The user can still collapse it intentionally.
 
@@ -71,8 +71,10 @@ Browsing a new category **must filter the example dropdown only**; it must not a
 
 ## CR-PLAN-002 · Consolidated operational task list
 
-**Priority:** P0 · **Status:** IN_PROGRESS
+**Priority:** P0 · **Status:** VERIFIED (14-item plan and exact historical coverage tested)
 
 The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidence ledger. Daily execution and project updates use **14 outcome-focused macro tasks** in `NEXT_EXECUTION_PLAN.md`, each with dependencies, measurable exit tests and exact original `R-*` mappings. This reduces the **active work list** without discarding verified or blocked evidence or silently waiving any of the 98 original acceptance requirements.
 
 **Acceptance:** every originally unverified requirement is mapped to exactly one macro task; no duplicates/missing IDs; statuses of historic tasks unchanged by planning; unapproved feature candidates excluded from mandatory counters.
+
+**CI proof:** [42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501) passed the full UI/audio regression, including category navigation on 1440px and 390px, preset identity, all 50 presets and the consolidated 14-task coverage validator.

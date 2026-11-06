@@ -61,6 +61,12 @@ try{
  await page.waitForFunction(()=>document.querySelector('#presetSelect').value==='__custom__');
  assert.equal(await page.locator('#presetSelect option:checked').textContent(),custom.name,
   'user-created imported project retains its own name');
+ await page.locator('#fileMenu summary').click();
+ const customDownload=page.waitForEvent('download');
+ await page.locator('#saveBtn').click();
+ const customReexport=JSON.parse(fs.readFileSync(await(await customDownload).path(),'utf8'));
+ assert.equal(customReexport.name,custom.name,
+  'an imported custom project must retain its distinct title on a second JSON export');
  assert.deepEqual(errors,[],'no runtime exceptions');
  fs.mkdirSync('artifacts',{recursive:true});
  fs.writeFileSync('artifacts/preset-modified.json',JSON.stringify({

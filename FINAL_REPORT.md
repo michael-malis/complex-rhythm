@@ -1,9 +1,7 @@
 # Final acceptance report — not yet accepted
 
-**Date:** 5 November 2026.  
-**Assessment:** **NOT COMPLETE. DO NOT MERGE OR CLAIM PRODUCTION READY.**  
-**Working branch:** [upgrade/spec-2026-11-math-audio](https://github.com/michael-malis/complex-rhythm/tree/upgrade/spec-2026-11-math-audio).  
-**Draft integration:** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1).  
+**Post-merge status (6 November 2026):** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was merged into [main](https://github.com/michael-malis/complex-rhythm/tree/main) at `454b7c4466851e82946034ce4a47019c716ee218`; its UI regression and GitHub Pages deployment passed. **The app is published, but full requirements and human acceptance are NOT COMPLETE.** Do not claim production-readiness signoff merely because a PR was merged.  
+**Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
 ## 1–6. Requirement accounting
@@ -122,7 +120,7 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
 | VII — final verification | NOT PASSED | 294 VERIFIED, 294 TODO, 60 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
-**Release condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. Until then, remain on draft PR rather than silently publishing incomplete work.
+**Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 
 ## Engineering acceptance addendum — 2026-11-06
 

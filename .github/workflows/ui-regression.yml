@@ -54,6 +54,8 @@ on:
       - tests/ui-smoke.mjs
       - tests/union-first-ui.mjs
       - tests/production-grooves-ui.mjs
+      - tests/song-examples.mjs
+      - presets/song-examples/**
       - NEXT_EXECUTION_PLAN.md
       - scripts/verify-execution-plan.mjs
       - .github/workflows/ui-regression.yml
@@ -287,6 +289,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-production-grooves.log 2>&1 &
           node tests/production-grooves-ui.mjs
+      - name: Verify English Song Examples, imported study fidelity and playable JSON round-trip
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-song-examples.log 2>&1 &
+          node tests/song-examples.mjs
       - name: Verify synchronized radian/degree angle input, added angles and generated roots
         if: ${{ !cancelled() }}
         run: |

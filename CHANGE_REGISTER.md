@@ -3,7 +3,7 @@
 This register records user-approved product changes independently from the legacy 651-row mechanical task ledger. It is not a declaration of acceptance or a replacement for the source specification.
 
 ## CR-ANG-001 · Angle-first root editor
-**Priority:** P0 · **Status:** IN_PROGRESS
+**Priority:** P0 · **Status:** VERIFIED (automated engineering acceptance)
 
 - The main parameter is the complex number argument θ, not its radius or Cartesian coordinates.
 - Show **radians and degrees simultaneously** for each of four tracks; editing either changes the same canonical angle, never converting through a rounded display string.
@@ -14,7 +14,7 @@ This register records user-approved product changes independently from the legac
 **Acceptance:** all lanes independent; round trip in both units; invalid input does not mutate complex state; n=1…64; zero-import edge case explicitly handled.
 
 ## CR-ANG-002 · Directly specified extra angles
-**Priority:** P0 · **Status:** IN_PROGRESS
+**Priority:** P0 · **Status:** VERIFIED (automated engineering acceptance)
 
 - “Add angle” creates one event on the selected track with a directly specified argument φ in radians and degrees.
 - “Generate roots” remains an optional way to add a symmetric set of n evenly spaced phases from a complex argument; no selecting/deleting individual points on Canvas.
@@ -24,7 +24,7 @@ This register records user-approved product changes independently from the legac
 **Acceptance:** add/edit/remove; safe π/n conversion; full symmetric family for n>1; mathematically exact source event provenance; imported older multi-root layers remain editable.
 
 ## CR-ANG-003 · Root-angle infographic
-**Priority:** P1 · **Status:** IN_PROGRESS
+**Priority:** P1 · **Status:** VERIFIED (automated engineering acceptance)
 
 Display a compact, readable, always-available KaTeX explanation near the selected track:
 
@@ -45,7 +45,7 @@ Display a compact, readable, always-available KaTeX explanation near the selecte
 - Only change statuses to VERIFIED after passing tests. Human sonic assessment, physical-device review and the missing annotated screenshot remain separate blockers.
 
 ## CR-PRESET-005 · Preserve example identity after user edits
-**Priority:** P1 · **Status:** IN_PROGRESS
+**Priority:** P1 · **Status:** VERIFIED (automated engineering acceptance)
 
 - Editing a prepared rhythm (BPM, instrument, root angle/degree, root additions, sound patch or volume) **must not replace its title with “Custom rhythm.”**
 - Keep the original preset ID, title, category, and description; append **“· Modified”** to the selected option.
@@ -54,3 +54,7 @@ Display a compact, readable, always-available KaTeX explanation near the selecte
 - JSON export must retain the original title, so future import can recover the source identity without extending the existing schema.
 
 **Acceptance:** edit BPM and root; confirm original name remains selected; verify new selection resets status; verify JSON roundtrip maintains source name; avoid false “Custom rhythm” label. No user-facing popup necessary.
+
+### Acceptance evidence for verified engineering changes
+
+Angle-first editing, dual-unit synchronization, direct single-angle additions, symmetric generated families, phase-source provenance, JSON roundtrip and preservation of named modified presets passed in [full regression 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), including `tests/angle-first.mjs` and `tests/preset-modified.mjs`. Human sound evaluation, physical-device/screen-reader signoff and the second annotated source screenshot remain explicit separate release blockers under CR-ANG-004. The term VERIFIED above covers executable engineering criteria, not final production approval.

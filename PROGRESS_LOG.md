@@ -66,3 +66,10 @@
 - Added `tests/beat-visual-acceptance.mjs` with a real Web Audio transport, instrumented Canvas arc geometry, normal/reduced-motion assertions, paused-state checks and a JSON CI artifact; connected the test to `.github/workflows/ui-regression.yml`.
 - Follow-up synchronization correction: no pulse may render while the Web Audio clock is still before `beatEpoch`, avoiding a pre-attack visual flash during the transport start preroll.
 - **PASS:** full UI/audio regression [CI 42209284567](https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567), including the new normal/reduced-motion Canvas+Web Audio test. Its first pulses are at least 1.4× the 28px root marker, and feedback stops after playback is paused. `R-GEO-003` was registered as verified in `scripts/reconcile-ledger.mjs`; the automated three-way ledger sync follows separately.
+
+## 2026-11-06 — Full geometry verification matrix
+
+- Full [UI/audio CI 42209284567](https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567) passed, including Canvas geometry, actual label/MathML bounds, collision lane identities, drag, resize, scrollable zoom and comparative images.
+- The previously TODO T-GEO-007-02 has a reproducible >=28px painted Canvas-diameter measurement across six responsive sizes in both themes; all seven other R-GEO-007 children already had independent passed evidence.
+- The verified R-GEO-007 parent and its eight children were reconciled by [ledger CI 42209716913](https://github.com/michael-malis/complex-rhythm/actions/runs/42209716913) without changing any requirement's acceptance wording. Ledger: **294 VERIFIED, 60 IN_PROGRESS, 294 TODO, 4 BLOCKED, 0 FAILED; 52/98 requirements VERIFIED**.
+- This validates the R-GEO-007 test matrix, not the separate geometry-collision elimination requirement R-GEO-002, and not human visual approval.

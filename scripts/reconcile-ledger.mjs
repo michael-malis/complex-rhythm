@@ -91,6 +91,10 @@ verified.set('R-NUM-007',{
  evidence:'CI:42133963106; tests/four-lane-polar.mjs; all 4 lanes independent Cartesian/Polar and radian/degree edits; MathML alternative forms; zero argument disabled and restored',
  commit:'2e32063cccc3205c53863c0aec8225989883d015'
 });
+verified.set('R-GEO-005',{
+ evidence:'CI:42134902723; tests/live-edit-reschedule.mjs real Canvas pointer drag while playing, modulus and degree invariant, root phases evenly spaced, Cartesian/polar/KaTeX synchronized, old Web Audio buses flushed',
+ commit:'100fbb465d99a73aa95ea895b0caed4c504c8c9a'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

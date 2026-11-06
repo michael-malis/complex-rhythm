@@ -36,6 +36,7 @@ on:
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
       - tests/phase-label-adaptation.mjs
+      - tests/playback-hand-clearance.mjs
       - tests/beat-visual-acceptance.mjs
       - vendor/katex/**
       - styles.css
@@ -92,6 +93,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
           node tests/accessibility-contrast.mjs
+      - name: Enforce playback hand gaps around mathematical root markers in every preset
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-hand-clearance.log 2>&1 &
+          node tests/playback-hand-clearance.mjs
       - name: Require phase labels not to cover roots across every preset and responsive theme
         if: ${{ !cancelled() }}
         run: |

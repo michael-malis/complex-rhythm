@@ -53,6 +53,28 @@ try{
  assert.ok(pixels.every(p=>p.delta<=35),
   'both coincident right-quarter root dots render in their own lane colors: '+JSON.stringify(pixels));
 
+ const cardinal=await page.evaluate(()=>{
+  const canvas=document.querySelector('#orbitCanvas'),box=canvas.getBoundingClientRect(),
+   ctx=canvas.getContext('2d'),side=Math.min(box.width,box.height),
+   r=window.RhythmResearch.radiiForSize(side)[0],scale=canvas.width/box.width,
+   css=document.querySelector('.lane[data-lane="0"]').style.getPropertyValue('--lane-color').trim(),
+   expected=[1,3,5].map(i=>parseInt(css.slice(i,i+2),16));
+  return [
+   {phase:0,dx:0,dy:-1,position:'top'},
+   {phase:.25,dx:1,dy:0,position:'right'},
+   {phase:.5,dx:0,dy:1,position:'bottom'},
+   {phase:.75,dx:-1,dy:0,position:'left'}
+  ].map(p=>{
+   const x=Math.round((box.width/2+p.dx*r)*scale),y=Math.round((box.height/2+p.dy*r)*scale),
+    rgb=[...ctx.getImageData(x,y,1,1).data].slice(0,3);
+   return {phase:p.phase,position:p.position,rgb,expected,
+    difference:Math.max(...rgb.map((v,i)=>Math.abs(v-expected[i])))};
+  });
+ });
+ assert.ok(cardinal.every(p=>p.difference<=35),
+  'phase 0 top, 1/4 right, 1/2 bottom and 3/4 left actual root pixels: '+JSON.stringify(cardinal));
+
+
  assert.ok(state.planned.every(e=>['technoKick','metallic'].includes(e.instrument)),
   'unmuted audio sources remain distinct instruments');
  assert.ok(state.summary.includes('32 audible hits')&&state.summary.includes('16 distinct times')&&
@@ -92,6 +114,7 @@ try{
  fs.writeFileSync('artifacts/collision-lanes.json',JSON.stringify({
   before:{analysis:state.analysis,radii:state.radii,visibleTimelineMarkers:state.strips,summary:state.summary},
   canvasPixelEvidence:pixels,
+  cardinalGeometryEvidence:cardinal,
   after,source:'real Playwright DOM, imported four-track fixture, same RhythmMath events as sound engine',
   pass:true
  },null,2));

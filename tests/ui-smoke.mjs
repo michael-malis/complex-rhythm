@@ -207,7 +207,7 @@ try {
   'mouse drag synchronizes Cartesian readouts');
 
  let total=0;
- for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(value=>value!=='grooves'))) {
+ for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(value=>value!=='grooves'&&value!=='all'))) {
   await page.locator('#categorySelect').selectOption(category);
   const ids=await page.locator('#presetSelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(x=>!x.startsWith('__')));
   for(const id of ids) {

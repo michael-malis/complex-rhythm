@@ -1228,14 +1228,28 @@ function positionPhaseLabels(){
    else if(item.id==='phaseHalf'){left=cx-shift-w/2;top=box.bottom-4-h}
    else if(item.id==='phaseQuarter'){left=box.right-4-w;top=cy+shift-h/2}
    else {left=box.left+4;top=cy-shift-h/2}
-   let collisions=0;
+   let markerConflicts=0;
    for(const dot of dots){
     const nearestX=Math.max(left,Math.min(dot.x,left+w));
     const nearestY=Math.max(top,Math.min(dot.y,top+h));
-    if((dot.x-nearestX)**2+(dot.y-nearestY)**2<17**2)collisions++;
+    if((dot.x-nearestX)**2+(dot.y-nearestY)**2<17**2)markerConflicts++;
    }
-   if(collisions<fewest){best=shift;fewest=collisions}
-   if(!collisions)break;
+   // A label may cover an empty section of a circular ring even when no
+   // nearby marker is present. Penalize direct arc/rectangle intersections,
+   // including the antialiased ring stroke, not only label-marker crossings.
+   const minX=Math.max(left,Math.min(cx,left+w));
+   const minY=Math.max(top,Math.min(cy,top+h));
+   const closest=Math.hypot(cx-minX,cy-minY);
+   const farthest=Math.max(
+    Math.hypot(cx-left,cy-top),
+    Math.hypot(cx-(left+w),cy-top),
+    Math.hypot(cx-left,cy-(top+h)),
+    Math.hypot(cx-(left+w),cy-(top+h))
+   );
+   const ringConflicts=radii.filter(r=>closest<=r+3&&farthest>=r-3).length;
+   const score=markerConflicts*100+ringConflicts*20;
+   if(score<fewest){best=shift;fewest=score}
+   if(!score)break;
   }
   const value='calc(50% '+(item.dir>0?'+ ':'- ')+best+'px)';
   if(item.axis==='x'&&el.style.left!==value)el.style.left=value;

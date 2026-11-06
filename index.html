@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <script defer src="vendor/katex/katex.min.js"></script>
 <script defer src="math-io.js"></script>
+<script defer src="root-angle-infographic.js"></script>
 <script defer src="synthesis.js"></script>
 <script defer src="app.js"></script>
 </head>
@@ -67,11 +68,25 @@
  <div class="panel-heading"><div><div class="eyebrow">PARAMETERS / FOUR LANES</div><h2 id="tracksHeading" tabindex="-1">Root angles · four lanes</h2></div><span class="quiet math-notation" id="cartesianHeading"></span></div>
  <div id="tracks" class="track-list" role="group" aria-label="Four independently editable complex-root rhythms"></div>
  <aside class="root-rule" aria-label="Root angle generation formula">
-  <div class="root-rule-header"><span class="root-rule-kicker">THE MATHEMATICS / ROOT PLACEMENT</span><span class="root-rule-tag">Selected lane</span></div>
+  <div class="root-rule-header"><span class="root-rule-kicker">THE MATHEMATICS / ROOT PLACEMENT</span><span class="root-rule-tag">Selected lane</span><button id="rootRuleInfoToggle" type="button" class="root-rule-info-toggle" aria-label="Show root geometry explanation" aria-controls="rootRuleInfoPanel" aria-expanded="false" title="How complex-root angles map to rhythm time">i</button></div>
   <div id="rootRuleEquation" class="root-rule-equation math-notation"></div>
   <div id="rootRuleValues" class="root-rule-values math-notation"></div>
+  <div id="rootRuleSpacing" class="root-rule-spacing math-notation"></div>
   <div class="root-rule-key"><span><b>θ</b> sets rotation</span><span><b>n</b> sets event count</span><span><b>k</b> enumerates roots</span></div>
   <p id="rootRuleCaption" class="root-rule-caption"></p>
+  <section id="rootRuleInfoPanel" class="root-rule-info-panel" aria-label="Root angle geometric explanation" hidden>
+   <div class="root-rule-info-grid">
+    <svg id="rootRuleDiagram" class="root-rule-svg"></svg>
+    <div class="root-rule-info-math">
+     <div id="rootRuleInput" class="math-notation"></div>
+     <div id="rootRuleDelta" class="math-notation"></div>
+     <div id="rootRuleFormula" class="math-notation"></div>
+     <p class="root-rule-mapping">Complex arguments increase counterclockwise from +Re. Rhythm phases display those same angles from 12 o'clock clockwise. A change of δ in the input rotates each root by δ/n; the spacing remains 2π/n.</p>
+    </div>
+   </div>
+   <p class="root-rule-angle-heading">All generated root arguments (radians and degrees)</p>
+   <ol id="rootRuleAngleList" class="root-rule-angle-list" tabindex="0" aria-label="All generated root arguments"></ol>
+  </section>
  </aside>
  <details id="compositionPanel" class="composition-panel"><summary><span>Additional angles &amp; symmetric roots</span><span class="quiet" id="compositionMetrics">Select a lane</span></summary>
   <div class="composition-body">

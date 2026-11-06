@@ -284,11 +284,22 @@ function syncPrimaryAngles(i,fields=null){
 }
 function renderRootRule(){
  const track=tracks[selectedTrack];if(!track)return;
+ const model=window.RootAngleInfo.model(track.a,track.b,track.n);
  renderTeX('rootRuleEquation','\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}',true);
- renderTeX('rootRuleValues','\\theta=\\arg(z),\\quad n='+track.n+',\\quad k=0,\\ldots,'+(track.n-1));
- const caption=$('rootRuleCaption');
- if(caption)caption.textContent='The argument rotates the pattern; the root degree creates '+track.n+
-  ' equally spaced event'+(track.n===1?'':'s')+'. Circle size identifies an instrument lane, not |z|.';
+ if(model.zero)renderTeX('rootRuleValues','z=0,\\quad \\arg(0)\\text{ is undefined}');
+ else renderTeX('rootRuleValues','\\theta='+window.RootAngleInfo.piTeX(model.theta)+
+  '\\,('+Number(model.thetaDeg.toFixed(3))+'^\\circ),\\quad n='+track.n+
+  ',\\quad k=0,\\ldots,'+(track.n-1));
+ renderTeX('rootRuleSpacing','\\Delta='+window.RootAngleInfo.piTeX(model.spacing)+
+  '\\,('+Number(model.spacingDeg.toFixed(3))+'^\\circ)');
+ $('rootRuleCaption').textContent=model.zero?
+  'The zero complex value has undefined argument and no rhythm events.':
+  'Changing the argument by δ rotates each root by δ/n; spacing remains 2π/n. The circle represents time, not |z|.';
+ window.RootAngleInfo.render(model,{
+  panel:$('rootRuleInfoPanel'),diagram:$('rootRuleDiagram'),input:$('rootRuleInput'),
+  delta:$('rootRuleDelta'),formula:$('rootRuleFormula'),list:$('rootRuleAngleList'),
+  lane:selectedTrack
+ },renderTeX);
 }
 
 function syncVisibleInputs(i) {
@@ -569,12 +580,12 @@ function renderSpecialRhythms() {
  cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  fillFields();
 }
-function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();renderRootRule()}
+function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  const slider=$('argumentAngle');slider.disabled=a===null;slider.value=a===null?'0':String(Math.round(a));
- $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();
+ $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();renderRootRule();
 }
 function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
@@ -1399,6 +1410,13 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  if(magnified)refreshPlotZoom();
  showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
+ $('rootRuleInfoToggle').addEventListener('click',()=>{
+  const panel=$('rootRuleInfoPanel'),button=$('rootRuleInfoToggle');
+  const open=panel.hidden;panel.hidden=!open;
+  button.setAttribute('aria-expanded',String(open));
+  button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
+  if(open)renderRootRule();
+ });
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{

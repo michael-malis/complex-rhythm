@@ -12,6 +12,7 @@ on:
       - tests/math-io.test.mjs
       - tests/spec-ui.mjs
       - tests/audio-offline.mjs
+      - tests/acid-parameter-response.mjs
       - tests/audio-mix-stress.mjs
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
@@ -85,6 +86,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-spec-http.log 2>&1 &
           node tests/spec-ui.mjs
+      - name: Measure distinct acid programs and live synthesis parameter effects offline
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-acid-parameter-http.log 2>&1 &
+          node tests/acid-parameter-response.mjs
       - name: Render and analyze every new Web Audio voice
         if: ${{ !cancelled() }}
         run: |

@@ -16,7 +16,7 @@ try{
   let checks=0,segmentsChecked=0,markersChecked=0;
   const failures=[],allLengths=[];
   const test=(label,length,angle,markers)=>{
-   const segments=math.radialVisibleSegments(length,angle,markers,4);
+   const segments=math.radialVisibleSegments(length,angle,markers,6);
    const ux=Math.cos(angle),uy=Math.sin(angle);
    let prev=0;
    for(const seg of segments){
@@ -30,7 +30,7 @@ try{
      markersChecked++;
      const t=Math.max(seg.from,Math.min(seg.to,m.x*ux+m.y*uy));
      const closestX=t*ux,closestY=t*uy;
-     if(Math.hypot(m.x-closestX,m.y-closestY)<m.radius+4-tol)
+     if(Math.hypot(m.x-closestX,m.y-closestY)<m.radius+6-tol)
       failures.push({label,type:'line crosses marker disk',seg,mark:m,angle});
     }
    }

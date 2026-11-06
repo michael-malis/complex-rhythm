@@ -53,7 +53,7 @@ try{
  assert.equal(await page.locator('#layer1n').inputValue(),'3','generated root family defaults to degree three');
  assert.equal(await page.locator('#unionCount').textContent(),'7','R4 union R3 and 45-degree accent: seven phases');
  await page.locator('#layer0AngleDeg').fill('120');
- assert.ok(close(Number(await page.locator('#layer0AngleRad').inputValue()),2*Math.PI/3),
+ assert.ok(close(await page.evaluate(()=>window.RhythmMath.parseAngle(document.getElementById('layer0AngleRad').value)),2*Math.PI/3),
   'additional angle decimal degrees -> corresponding radian');
  assert.equal(await page.locator('#unionCount').textContent(),'6','two identical event phases merge within one lane');
  const metadata=await page.evaluate(()=>{
@@ -88,7 +88,7 @@ try{
  await page.locator('#layer0AngleDeg').fill('45');
  const layer=await page.evaluate(()=>window.RhythmResearch.current().tracks[0].layers[0]);
  assert.ok(close(Math.hypot(layer.a,layer.b),2),'editing a legacy additional angle preserves its modulus');
- assert.ok(close(Number(await page.locator('#layer0AngleRad').inputValue()),Math.PI/4),
+ assert.ok(close(await page.evaluate(()=>window.RhythmMath.parseAngle(document.getElementById('layer0AngleRad').value)),Math.PI/4),
   'edited additional degrees synchronize radians');
  assert.deepEqual(errors,[],'no runtime script errors');
  fs.mkdirSync('artifacts',{recursive:true});

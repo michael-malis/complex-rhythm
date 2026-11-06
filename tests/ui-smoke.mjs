@@ -84,6 +84,7 @@ try {
  verify((await page.locator('#presetSelect').inputValue())==='afro','default 3:4 study');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 roots initially three');
  verify((await page.locator('#laneCount1').textContent()).includes('4 hits'),'lane1 roots initially four');
+ await page.locator('.advanced-coordinates').evaluateAll(items=>items.forEach(el=>{el.open=true}));
  await page.locator('#trackN1').fill('5');
  verify((await page.locator('#laneCount1').textContent()).includes('5 hits'),'lane1 independent edits');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 unaffected by lane1 edit');
@@ -102,16 +103,15 @@ try {
  await page.locator('#laneBars1').fill('1');
  await page.locator('#trackN0').fill('4');
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
- await page.locator('#addLayer').click();
+ await page.locator('#addRootFamily').click();
  verify((await page.locator('#baseCount').textContent())==='4','base set count four');
  verify((await page.locator('#addedCount').textContent())==='3','added set count three');
  verify((await page.locator('#unionCount').textContent())==='6','union of fourth and third roots has six events');
  verify((await page.locator('#unionStrip .overlap').count())===1,'exact coincidence at phase zero');
  await page.locator('#setOperation').selectOption('intersection');
  verify((await page.locator('#unionCount').textContent())==='1','R4(1) intersect R3(1) is one phase');
- await page.locator('#addLayer').click();
- await page.locator('#layer1a').fill('-1');
- await page.locator('#layer1a').dispatchEvent('change');
+ await page.locator('#addRootFamily').click();
+ await page.locator('#layer1AngleDeg').fill('180');
  await page.locator('#layer1n').fill('2');
  await page.locator('#layer1n').dispatchEvent('change');
  verify((await page.locator('#unionCount').textContent())==='0',
@@ -120,7 +120,8 @@ try {
  await page.locator('#extraLayers .layer-remove').last().click();
  verify((await page.locator('#unionCount').textContent())==='6','restored 4∪3 after removing extra set');
 
- verify((await page.locator('#extraLayers input[type=number]').count())===3,'additional source editable');
+ verify((await page.locator('#extraLayers input[type=text]').count())===2&&
+   (await page.locator('#extraLayers input[type=number]').count())===1,'additional family has radians, degrees and degree fields');
  const firstStats=await page.evaluate(()=>{
  const t=window.RhythmResearch.current();
  const phase=window.RhythmMath.planEvents(t.tracks.map((track,i)=>({
@@ -162,6 +163,7 @@ try {
  await page.screenshot({path:'artifacts/workbench-dark-theme.png',fullPage:true});
  await page.locator('#themeBtn').click();
  verify((await page.locator('html').getAttribute('data-theme'))==='light','light theme restored');
+ await page.locator('.advanced-coordinates').evaluateAll(items=>items.forEach(el=>{el.open=true}));
  await page.locator('#trackA0').fill('1');await page.locator('#trackB0').fill('0');
 
  // Keyboard turns the first lane's four roots by 5°, hence arg(z) by 20°.

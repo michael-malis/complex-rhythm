@@ -10,6 +10,7 @@ try{
  const results=[];
  for(let i=0;i<4;i++){
   const row=page.locator('.lane[data-lane="'+i+'"]');
+  await row.locator('.advanced-coordinates').evaluate(el=>{el.open=true});
   await row.locator('.mode-button').nth(1).click();
   assert.equal(await row.locator('.mode-button').nth(1).getAttribute('aria-pressed'),'true',
    'Polar mode active on lane '+(i+1));

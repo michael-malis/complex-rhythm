@@ -44,6 +44,7 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  const entry=page.locator('.lane[data-lane="0"] details.expression-entry');
  await entry.evaluate(el=>{el.open=true});
  const input=page.locator('#trackExpression0');

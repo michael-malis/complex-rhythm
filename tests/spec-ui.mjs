@@ -29,6 +29,7 @@ try{
   ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===30,'primary heading exactly 30px');
   ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===26,'section heading 26px');
   ok(data.renderer==='0.16.22'&&data.parts>=10&&data.root,'KaTeX rendered with local package');
+  ok(await page.locator('#rootRuleEquation .katex').count()===1,'root angle infographic has valid KaTeX '+width+'/'+theme);
   const minScale={'.composition-info h3':22,'.lane-select':20,'.lane-fields label':18,'.lane-fields input':18,
    '.lane-sound':18,'.lane-count':20,'.lane-length label':18,'.figure-legend':17,'.stage-hint':17,
    '.small-explain':17,'.circle-labels':20,'.stage-meta':18,'.panel-heading h2':26,'.stage-heading h1':30};
@@ -46,6 +47,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
  const finalErrors=[];page.on('pageerror',e=>finalErrors.push(e.message));
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();
  ok(await page.locator('#trackR0').count()===1&&await page.locator('#trackTheta0').count()===1,'polar edit fields');
  await page.locator('#trackTheta0').fill('1.57079632679');

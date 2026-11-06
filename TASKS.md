@@ -2,7 +2,7 @@
 
 > **NOT COMPLETE**. This file is the single authoritative task-status ledger. A task may become VERIFIED only after linked evidence, a commit and acceptance checks exist. Subtasks retain original source directives; see MASTER_IMPLEMENTATION_SPEC.md for full details. The attached source references two annotated screenshots, which were not supplied with the current attachment. That comparison must remain unverified.
 
-98 unique requirement IDs. 651 unique task IDs (98 parent requirements + 553 atomic bullet tasks). Original specification stored unchanged in `MASTER_IMPLEMENTATION_SPEC.md`.
+98 unique requirement IDs. 652 unique task IDs (98 parent requirements + 554 atomic bullet tasks). Original specification stored unchanged in `MASTER_IMPLEMENTATION_SPEC.md`.
 
 | ID | Requirement | Parent | Action | Dependencies | Deliverable | Acceptance | Status | Evidence | Defects | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -266,6 +266,7 @@
 | T-TEX-005-06 | R-TEX-005 | T-TEX-005 | Результатов объединений. | - | index.html / app.js / math-rendering | Reproduce and verify source action in R-TEX-005: Результатов объединений. | TODO | - | - | - |
 | T-TEX-005-07 | R-TEX-005 | T-TEX-005 | Совпадающих фаз. | - | index.html / app.js / math-rendering | Reproduce and verify source action in R-TEX-005: Совпадающих фаз. | TODO | - | - | - |
 | T-TEX-005-08 | R-TEX-005 | T-TEX-005 | Математических подсказок. | - | index.html / app.js / math-rendering | Reproduce and verify source action in R-TEX-005: Математических подсказок. | TODO | - | - | - |
+| T-TEX-005-09 | R-TEX-005 | T-TEX-005 | Root-angle formula infographic: compact always-visible editor summary (variant C) and expanded geometric explanation (variant B) opened via an info control; details below. | T-TEX-005-03, T-TEX-005-05, T-TEX-007 | index.html / app.js / styles.css / tests | KaTeX formula, synchronized geometry and radian/degree labels, accessible disclosure, correct root angles, responsive layouts and regression tests as specified below. | TODO | - | - | - |
 | T-TEX-006 | R-TEX-006 | - | Интеграция с SVG | - | index.html / app.js / math-rendering | All explicit conditions in R-TEX-006 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending | - | - |
 | T-TEX-006-01 | R-TEX-006 | T-TEX-006 | Корректное позиционирование. | - | index.html / app.js / math-rendering | Reproduce and verify source action in R-TEX-006: Корректное позиционирование. | TODO | - | - | - |
 | T-TEX-006-02 | R-TEX-006 | T-TEX-006 | Согласованное масштабирование. | - | index.html / app.js / math-rendering | Reproduce and verify source action in R-TEX-006: Согласованное масштабирование. | TODO | - | - | - |
@@ -657,3 +658,27 @@
 | T-FIN-003-07 | R-FIN-003 | T-FIN-003 | Требований без привязки. | - | FINAL_REPORT.md | Reproduce and verify source action in R-FIN-003: Требований без привязки. | TODO | - | - | - |
 | T-FIN-003-08 | R-FIN-003 | T-FIN-003 | Неучтённых дефектов. | - | FINAL_REPORT.md | Reproduce and verify source action in R-FIN-003: Неучтённых дефектов. | TODO | - | - | - |
 | T-FIN-004 | R-FIN-004 | - | Последняя проверка работоспособности | - | FINAL_REPORT.md | All explicit conditions in R-FIN-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending | - | - |
+
+
+## User-approved design addendum (2026-11-06)
+
+### T-TEX-005-09 — Root angle rule: compact formula + explanatory infographic
+
+**Status:** TODO. This user-requested UI enhancement extends R-TEX-005; it has not been implemented or tested.
+
+**Placement and visual hierarchy**
+- Keep a compact, always-visible **Root geometry** summary inside the active track's existing parameter editor (variant C). Display the properly typeset formula `\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}`, current argument `\\theta` in radians and degrees, root degree `n`, and angular spacing `\\Delta=2\\pi/n`.
+- Place a keyboard-accessible **info** control adjacent to the formula. Opening it reveals a compact geometric infographic (variant B) with the unit circle, all generated root markers, their angles in radians and degrees, input argument, `n`, spacing and the same formula. Do not add another large permanently visible panel.
+- Use the existing mathematical typography and restrained visual design. Keep the main circular visualization dominant; do not duplicate an independent rhythm/audio engine.
+
+**Mathematical and interaction behavior**
+- Derive all labels and markers from the same live track state. For `z=e^{i\\theta}`, `|z|=1`, and integer `n>=1`, show `\\theta_k=(\\theta+2\\pi k)/n\\pmod{2\\pi}`, `k=0,...,n-1`. Treat radians as the primary mathematical unit and show degrees alongside them.
+- Update the compact summary and expanded infographic when the user changes `\\theta`, `n`, or loads a preset. Explicitly explain that changing the input argument by `\\delta` rotates the root pattern by `\\delta/n`; distinguish this from the spacing `2\\pi/n`.
+- Preserve the app's established screen-time orientation (phase zero at the top, clockwise progression) and explicitly map standard complex arguments to that convention rather than silently treating them as identical.
+- The infographic is explanatory, not a point-picking editor. Do not add manual root dragging or point selection as a requirement of this task.
+
+**Acceptance and evidence**
+1. For `\\theta=2\\pi/3` and `n=4`, show `120°` as the input and roots `30°, 120°, 210°, 300°`, with spacing `\\pi/2 = 90°`.
+2. Verify updates for all four tracks, `n=1`, negative angles, full-turn-equivalent angles and changes while playback is active; no stale formula, labels, geometry or sound events.
+3. Confirm KaTeX renders correctly, the info control works by mouse and keyboard, and both themes and required responsive widths show no clipping, overlap or unreadable math.
+4. Record screenshots and automated tests, then mark this task VERIFIED only after the evidence and commit are recorded.

@@ -1,116 +1,59 @@
-# Rhythm Studio — план оставшихся работ после merge PR #1
+# Rhythm Studio — active backlog (consolidated)
 
-**Контрольная точка:** 2026-11-06. **База:** `main@454b7c4466851e82946034ce4a47019c716ee218`. **План:** документ планирования, не сертификат приёмки.
+**Baseline:** `main@454b7c4466851e82946034ce4a47019c716ee218`, after merged [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). Technical and Pages workflows passed on that SHA. **Published ≠ finally accepted.**
 
-**Факт интеграции:** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) уже merged в `main`. На том же commit завершились успешно [UI-regression 42210338610](https://github.com/michael-malis/complex-rhythm/actions/runs/42210338610) и [GitHub Pages deployment 42210338626](https://github.com/michael-malis/complex-rhythm/actions/runs/42210338626). Это подтверждает прохождение CI и публикацию, но **не** 100% соответствие спецификации и не человеческую приёмку.
+## Project counters: operational versus historical
 
-## 1. Неприкосновенная база и новая единица планирования
+- **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions.** Each macro is a coherent, independently testable engineering/product result.
+- **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
+- **Fourteen macro tasks** are the only new operational units for planning, progress updates, and development PRs. On CI acceptance, report `Mxx` completed, linked source requirement IDs and supporting evidence. No multiplying tasks into another set of hundreds.
+- Product additions approved after this baseline go into `CHANGE_REGISTER.md` with a single macro and measurable acceptance. They do not silently change the 98 original criteria.
+- Tasks can run in parallel where safe, but **M14 is the last sign-off**. External blockers are tracked explicitly rather than disguised as developer tasks.
 
-- Источники требований и статусов: [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md), [CHANGE_REGISTER.md](CHANGE_REGISTER.md), [TASKS.md](TASKS.md), [TRACEABILITY.md](TRACEABILITY.md), [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md). **Ни один исходный ID, статус, acceptance-критерий или ранее подтверждённая задача не отменяется перепланированием.**
-- Срез из `TASKS.md`: **652** задач = **294 VERIFIED + 60 IN_PROGRESS + 294 TODO + 4 BLOCKED + 0 FAILED**. Подтверждено **52/98** родительских требований. **46** родительских требований и **358** связанных с ними задач имеют незавершённый статус.
-- Восьмёрка `W01…W08` ниже — **пакеты исполнения оставшейся работы**, не новые обязательные требования и не замена 652 строк `TASKS.md`. Начальный счётчик пакетов **0/8 принятых**, потому что ни один пакет целиком не закрыт; старый индикатор `2/10` был историческим индикатором глобальных этапов и не переопределяет документированную приёмку.
-- Показатель `VERIFIED` растёт только после изменения реального проекта (где нужно), воспроизводимого теста, проверки доказательств, фиксации commit SHA и синхронизации трёх реестров. Промежуточные отчёты и планирование **не** переводят `TODO` в `VERIFIED`.
-- После merge `main` фактически публикуется. Следующие изменения — отдельными узкоскоупными PR с проверками и ревью; **не вносить рискованные недопроверенные изменения прямо в `main`**. Текущий PR с этим документом — только планирование.
+## Fourteen outcome-focused tasks
 
-## 2. Полное распределение 46 незакрытых требований
+| Task | Outcome | Source requirements | Priority | Status | Definition of done |
+|---|---|---|---|---|---|
+| M01 | Post-merge baseline + development discipline | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | P0 | TODO | Current main/deployment status is accurate, CI/PR guards work, evidence and fix workflow reproducible |
+| M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | IN_PROGRESS | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
+| M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | TODO | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
+| M04 | Readable UI copy, contrast and typography | R-UI-004, R-UI-005 | P1 | TODO | Every mandatory label and tooltip audited; measured contrast passes in both themes |
+| M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | TODO | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
+| M06 | Formula synchronization and math audit | R-TEX-007, R-TEX-008 | P1 | TODO | Angle/degree/import/theme changes update all formulas without focus loss, raw TeX or layout jumps; auditable catalog |
+| M07 | Distinct instrument synthesis | R-SND-001, R-SND-003, R-SND-004 | P0 | TODO | All required voices and acid/industrial controls produce measurable, correctly routed distinct envelopes and spectra |
+| M08 | Audio safety and scheduling stability | R-SND-005, R-SND-006 | P0 | TODO | Limiter, dense mix, no click-pops, no scheduler duplication, clock accuracy and offline operation pass tests |
+| M09 | Genre evidence and implementation mapping | R-RES-001, R-RES-002, R-RES-003 | P1 | TODO | Each mandatory genre/source maps to concrete mathematical events, preset IDs and synth decisions |
+| M10 | Musical structure across the 50 presets | R-PST-006 | P1 | TODO | Contrast, accents, lane roles, density and structured variations checked with per-preset evidence |
+| M11 | Independent measurement and full regression | R-QA-002, R-QA-004, R-QA-005 | P0 | TODO | Complete real computed/style/Canvas/touch/overlap/clip tests and full CI at final code SHA with artifacts |
+| M12 | Original annotated visual acceptance | R-AUD-002, R-UI-003 | BLOCKER | BLOCKED | Both original annotated screenshots available and every requested UI correction compared and documented |
+| M13 | Human sound, mobile and accessibility acceptance | R-SND-007, R-PST-004 | BLOCKER | BLOCKED | Human listens to 50 presets and all new voices; phone and screen reader checks recorded; defects re-tested |
+| M14 | Final seven-gate acceptance and traceability | R-GOV-001, R-GOV-002, R-GOV-003, R-GOV-004, R-GOV-005, R-FIN-001, R-FIN-002, R-FIN-003, R-FIN-004 | LAST | TODO | 98/98 requirements & 652/652 historical checks verified, no blockers, all seven gates PASS |
 
-Строки этой таблицы — однозначная машиночитаемая привязка каждого незакрытого `R-*` к единственному пакету. **Open tasks** включает родительские и атомарные задачи со статусом, отличным от `VERIFIED`; уже `VERIFIED` дети остаются в исходном реестре.
+**Coverage invariant:** every one of the 46 originally unverified parent `R-*` IDs occurs in exactly one macro. `CR-UX-001` is the newly requested UX behavior and does not replace an original requirement. The historic 294 verified tasks remain verified. Verify through `node scripts/verify-execution-plan.mjs`.
 
-| Пакет | Работа | Приоритет | Requirement IDs | Open tasks | Зависимости |
-|---|---|---|---|---:|---|
-| W01 | Состояние после merge и дисциплина исполнения | P0 | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | 88 | Нет |
-| W02 | Геометрия и адаптивный UI | P0 | R-GEO-002, R-UI-004, R-UI-005, R-UI-006, R-UI-007, R-QT-003 | 31 | W01 (CI) |
-| W03 | Полная приёмка математических формул | P1 | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006, R-TEX-007, R-TEX-008 | 53 | W01; совместно с W02 |
-| W04 | Звуковой движок и измерения | P0 | R-SND-001, R-SND-003, R-SND-004, R-SND-005, R-SND-006 | 33 | W01 |
-| W05 | Музыкальная структура, исследования и пресеты | P1 | R-RES-001, R-RES-002, R-RES-003, R-PST-006 | 39 | W04 для звуковых исправлений |
-| W06 | Независимая техническая и UX-проверка | P0 | R-QA-002, R-QA-004, R-QA-005 | 18 | W02–W05 (финальный PASS) |
-| W07 | Внешние блокировки и ручная приёмка | P0 / BLOCKED | R-AUD-002, R-UI-003, R-SND-007, R-PST-004 | 28 | Сбор доказательств сразу; завершение после W02–W05 |
-| W08 | Финальная ревизия и семь gates | P0 / LAST | R-GOV-001, R-GOV-002, R-GOV-003, R-GOV-004, R-GOV-005, R-FIN-001, R-FIN-002, R-FIN-003, R-FIN-004 | 68 | W01–W07 |
-| **Итого** | **8 пакетов / 46 требований** | | | **358** | |
+## Execution sequence
 
-**Порядок:** W01 запускается первым. W02 и W04 имеют приоритет по фактическим рискам интерфейса и звука; W03 идёт параллельно с W02, W05 — с W04. Подготовка W07 начинается немедленно, но снять блокировки без внешних материалов нельзя. W06 окончательно закрывается после профильных исправлений W02–W05; W08 только последним.
+**Now:** M02, then M01 and M03 (start M12/M13 evidence requests in parallel). **Next:** M04–M06 UI/math, M07–M08 sound, M09–M10 research/presets. **Then:** M11 independent regression. **Last:** M14 after M12/M13 evidence is supplied and all required checks truly pass.
 
-## 3. Конкретная программа исполнения и критерии выхода
+**PR discipline:** develop in narrow branches from current `main`; do not merge unfinished features into the published Pages release. Every engineering PR needs its own tests, regression result and requirement mapping. Historical task statuses change **only** after evidence-backed verification, never because a macro was created or a file exists.
 
-### W01 — состояние интеграции, воспроизводимый baseline и управление задачами
+## Current concrete UX change: M02
 
-1. Исправить устаревшие формулировки в `README.md`, `FINAL_REPORT.md` и генераторе `scripts/sync-report-progress.mjs`: PR #1 уже merged, Pages опубликован, но приёмка **NOT COMPLETE**; запрет на заявление о 100% сохраняется.
-2. Зафиксировать post-merge baseline `main`: commit, успешные CI и deployment, текущий видимый UI, инвентарь JS/CSS/audio/JSON/KaTeX, состояние issue #2 и #3. Исследование `RHYTHM_RESEARCH.md` не повторять заново.
-3. Доработать CI-правила для последующих PR: проверять изменения не только в старой `upgrade/*` ветке, обеспечить актуальность `TASKS.md / TRACEABILITY.md / ACCEPTANCE_CRITERIA.md / LEDGER_EVIDENCE_SUMMARY.json`; исторические failed runs не скрывать.
-4. Провести предметную сверку подзадач `R-PROC-*` и `R-AUD-*`, собрать недостающие доказательства и зарегистрировать обнаруженные дефекты без массовой переписи статусов.
+`Rhythm examples` starts expanded on desktop and mobile, remains user-collapsible. Switching the Category dropdown filters visible examples **without replacing the loaded rhythm**. It does not reset the original/modified identity, BPM, root sets, audio sound category or Web Audio scheduler. If the currently loaded rhythm belongs to another category, the Example select shows an explicit choose-example placeholder and text states which rhythm remains loaded. **Only** choosing an Example or mathematical ratio loads a new rhythm. Imported JSON and explicit preset changes synchronize the browser category with the selected source. Regression: `tests/preset-category-navigation.mjs`, `tests/preset-modified.mjs`, `tests/ui-smoke.mjs` and full UI/audio CI.
 
-**Выход:** актуальная доказательная база на merged `main`, непротиворечивые формулировки о публикации, обязательный CI для каждого последующего PR, 0 новых нарушений traceability. **Пока в исходном реестре есть незакрытые подзадачи W01, пакет не принят.**
+## Product ideas awaiting user selection (not mandatory tasks)
 
-### W02 — исправления геометрии и адаптивного интерфейса
+These are possible additions consistent with **mathematical visualization first, audio second**. They are **not** counted in the fourteen tasks, and no new acceptance criterion is introduced until selected.
 
-1. `T-GEO-002-01…04`: проверить и устранить пересечения **между кольцами, маркерами, фазовыми формулами/подписями и стрелкой воспроизведения**. Не уменьшать базовые точки ниже 28px ради экономии места.
-2. `T-UI-007-07/08/11`: измерить доступность критичных controls, отсутствие обрезаний и пересечений на **1600×1000, 1440×900, 1280×800, 1024×768, 768 и 390px**, в обеих темах и с раскрытыми панелями. Отдельно тестировать `n=1,4,8,17,32,64` и magnify/pan.
-3. Завершить аудит надписей, параметров, подсказок, контраста, размерных переходов и центрирования формул `R-QT-003`. Исправлять конкретные подтверждённые дефекты; не перестраивать готовые компоненты без причины.
+- **P-IDEA-01 — Compare rhythms A/B.** Side-by-side root geometry with a common phase axis and an audible switch to reveal mathematical differences.
+- **P-IDEA-02 — Favorites / quick snapshots.** Save a chosen root configuration and restore/compare it, preserving the existing JSON schema.
+- **P-IDEA-03 — Guided math explorer.** Short contextual visual explanations of why changing argument rotates the rhythm, why changing degree alters event count, and how unions differ from polyrhythms.
+- **P-IDEA-04 — Isolate one lane.** Temporary solo/compare control to hear and see the mathematical contribution of each root set.
 
-**Выход:** Playwright bounding-box/pixel matrix + сравнимые скриншоты, 0 критичных пересечений/скрытых элементов в обязательной матрице, прежние math/audio tests PASS. Если плотность физически не помещается, доступен действительно работоспособный режим увеличения без нарушения минимального размера маркера.
+No DAW-like piano roll or new musical complexity is assumed as an implicit requirement.
 
-### W03 — полный математический набор и жизненный цикл формул
+## Documentation and status rules
 
-1. Инвентаризировать все обязательные формулы из `R-TEX-002/004/005` и существующего `MATH_TYPOGRAPHY_AUDIT.md`; проверить отсутствие текстовых суррогатов. Не создавать формулу заново, если актуальный KaTeX/MathML уже корректен.
-2. Проверить координатное позиционирование формул поверх **фактического Canvas** (исторический пункт `R-TEX-006` называется SVG, но действующий рендер использует Canvas + DOM overlay; зафиксировать и проверить именно реализованную архитектуру, не подменяя критерии).
-3. Провести тесты обновления при изменении градусов/радиан, `n`, аргумента, дополнительных фаз, темы, масштаба и импорта. Проверить фокус ввода, курсор, отсутствие raw TeX, повторных layout jumps и сбоев.
+The old W01–W08 grouping and the old global 2/10 counter are superseded as **operational views** by M01–M14. Historic acceptance IDs and evidence remain fully intact. Report counts separately: (1) macro outcomes completed out of 14, (2) original 98 requirements verified, (3) blockers. A macro is not complete if its `Definition of done` or source requirements remain outstanding.
 
-**Выход:** таблица «исходная формула → текущее значение → DOM/MathML → тест → скриншот», PASS всего требуемого списка на мобильных и desktop разрешениях.
-
-### W04 — звуки и безопасная аудиоархитектура
-
-1. Проверить действующие 15 synth voices (включая 6 acid), а также обязательные `snare/closed hat/open hat/reese` из `T-SND-001` по спектральным, огибающим и транзиентным метрикам. Уже имеющиеся synth-патчи не дублировать.
-2. Для acid подтвердить функционирование oscillator, resonant filter, cutoff, envelope, decay, accent, slide, modulation, saturation и drive; для ударных — pitch envelope, distortion, transient identity, sub-bass handling.
-3. Проверить суммарный уровень, плотные 4-lane совпадения, лимитер, параметрические переключения, отсутствие цифрового переполнения и резких click-pop дефектов. Сохранить audio-clock scheduler и offline playback.
-
-**Выход:** воспроизводимые WAV/JSON-метрики, Web Audio tests, mix stress, межсэмпловый пик с честно указанной методикой; **субъективное прослушивание не подменять численным тестом** (см. W07).
-
-### W05 — исследовательские выводы, все жанры и музыкальные пресеты
-
-1. Сопоставить **15 обязательных жанров**, пять утверждённых источников и уже существующий `RHYTHM_RESEARCH.md` с пресетами/возможностями движка. Проводить только адресную дополнительную проверку недостающих связей, а не переделывать завершённое исследование.
-2. `T-PST-006-01…06`: проверить контраст редких/плотных атак, акценты, роли дорожек, осмысленные пересечения, динамику/устойчивость; сначала автоматические признаки и инвентарь каждого из 50 пресетов.
-3. Не нарушать 35 сохранённых пресетов, 15 новых, уникальность четырёхдорожечных структур и обязательные полиритмические отношения.
-
-**Выход:** таблица «жанр → источник → математическая структура → синтез → preset ID → доказательство», новый diversity report без фиктивного признания музыкального качества; ручной вердикт остаётся W07.
-
-### W06 — независимые измерения и защита от регрессий
-
-1. Довести `R-QA-002` до полного измеримого набора: computed font sizes, цвета и WCAG-контраст, bounding boxes, **фактически используемые Canvas-маркеры** (при необходимости отдельно SVG), размеры touch targets, пересечения, clipping.
-2. Проверить каждый ранее VERIFIED requirement на новых ветках после исправлений; полные math, Web Audio, preset, responsive, KaTeX, JSON и transport test suites запускать **на итоговом commit**, а не ссылаться только на старый успешный CI.
-3. Исправлять появившиеся регрессии и фиксировать FAIL/defect до повторного PASS. Результаты с артефактами и SHA записывать в `QA_REPORT.md` и в реестры.
-
-**Выход:** все автоматизируемые gates PASS на одном финальном commit с сохранёнными артефактами; нерешённое честно отражено как open/blocked.
-
-### W07 — заблокированные внешней приёмкой требования
-
-- [Issue #2](https://github.com/michael-malis/complex-rhythm/issues/2): нужен **второй исходный размеченный скриншот** для подтверждения `R-AUD-002` и `R-UI-003`. Первый найден и частично разобран; не считать сравнение полным без второго изображения или официального изменения требований пользователем.
-- [Issue #3](https://github.com/michael-malis/complex-rhythm/issues/3): нужно **реальное человеческое прослушивание всех 50 пресетов, 6 acid-вариантов и остальных синтезированных голосов** через наушники и внешние динамики; нужна проверка физического телефона, touch/zoom/audio и проход screen reader.
-- На каждый обнаруженный дефект создать реальную исправляющую задачу, исправить и провести повторную ручную проверку; сохранить дату, устройство, наблюдение и доказательство. Подтверждённые аудиометрики из W04 не закрывают ручное прослушивание.
-
-**Выход:** подписанная/задокументированная ручная приёмка и закрытие каждой блокировки **по доказательствам**, без автоматической подмены `BLOCKED` на `VERIFIED`.
-
-### W08 — финальная ревизия, governance и семь gates
-
-1. Повторно сверить все 98 requirements, 652 tasks, 554 subtasks, traceability и `CHANGE_REGISTER.md` против кода, тестов, артефактов и истории PR.
-2. Исполнить обязательные правила `R-GOV-001…005`; подписать I–VII gates по требованиям оригинальной спецификации. Документировать остающиеся нерешённые дефекты и не допускать статуса COMPLETE при наличии хотя бы одного незавершённого обязательства.
-3. Обновить `FINAL_REPORT.md` только фактическими проверяемыми результатами, состоянием опубликованного сайта и точным SHA.
-
-**Выход (не смягчать):** **98/98 VERIFIED requirements; 652/652 VERIFIED tasks; 0 TODO, 0 IN_PROGRESS, 0 BLOCKED, 0 FAILED; семь gates PASS; 0 критичных дефектов и необъяснённых регрессий.**
-
-## 4. Первый рабочий backlog без повторения выполненного
-
-| Очередь | Минимальный следующий deliverable | Почему первым | Сигнал PASS |
-|---|---|---|---|
-| 1 | Исправить «PR ещё Draft / публикации не было» в reports и генераторах; актуализировать CI-триггеры | Неправильный release state мешает любому последующему приёмочному отчёту | Проверки PR и верные ссылки на merged main |
-| 2 | Прямой Playwright regression для `T-GEO-002-01…04` с воспроизводимыми геометрическими пересечениями | Это незакрытая функциональная проблема в главной математической визуализации | Нулевые нежелательные пересечения по явно заданным сценариям |
-| 3 | Закрыть три TODO подпункта `R-UI-007` по реальным измерениям | Часть resize-тестов есть, но отсутствие clipping/overlap не доказано для всех controls | JSON bbox/overflow report и исправленные UI |
-| 4 | `R-QT-003` 2 TODO: no overlaps + formula centering | Зависит от геометрии и влияет на математическую точность UI | Измеренные и отображённые формулы |
-| 5 | Перейти к W04 звуковым метрикам и W05 семантике 50 presets | Техническое аудио проверяемо независимо от внешней ручной оценки | Сравнимые offline traces и матрица качества рисунков |
-
-## 5. Учёт, который должен отображаться при каждом продолжении
-
-`Snapshot at main@454b7c4:` 652 задач: **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**; **52/98 requirements VERIFIED**. Из восьми новых пакетов **0/8 приняты**, остальные **8/8 открыты**. Не выдавать этот исходный срез за новые результаты.
-
-При каждом завершённом PR: перечитать `TASKS.md` из текущего HEAD, вычислить новые количества, указать закрытые **конкретные IDs**, доказательство CI + commit, остаток каждого пакета и число внешних blockers. Запрещается считать весь ранее накопленный `VERIFIED` прогрессом новой сессии.
-
-**Не изменено:** оригинальная математическая концепция (roots of complex numbers прежде музыкального инструмента), 4 дорожки, 16:10 как стартовый вид при свободном resize, обе темы, JSON, KaTeX, 50 presets, 15 voices, семь acceptance gates.
+The current app is already published from main. `FINAL_REPORT.md` must eventually describe that true deployment state, while retaining `NOT COMPLETE` until the full manual and automated acceptance gates pass.

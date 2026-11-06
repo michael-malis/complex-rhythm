@@ -318,7 +318,7 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .advanced-math-settings>summary,.advanced-sound-settings>summary{
  cursor:pointer;min-height:44px;padding:10px 4px;font-size:17px;color:var(--sub)
 }
-.advanced-sound-settings>summary .quiet{font-size:15px;font-weight:400;margin-inline-start:8px}
+.advanced-sound-settings>summary .quiet{font-size:16px;font-weight:400;margin-inline-start:8px}
 .advanced-math-settings[open],.advanced-sound-settings[open]{padding-bottom:12px}
 .sound-basics{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;padding-top:8px}
 .sound-basics .lane-gain-controls{flex:1 1 210px;min-width:0}

@@ -129,3 +129,14 @@ The user requested clearer preset organization as an **additional part of this p
 The optional style filter preserves all original technical category values, their source-specific sample routing and backward-compatible tests. Switching a collection or style only changes visible options and never changes the current project, BPM, four root sets, transport, sample settings or JSON identity. Selecting an example still performs the explicit load. Styles auto-synchronize to the relevant high-level collection. The added real-browser coverage in `tests/production-grooves-ui.mjs` verifies a union of **exactly 50 unique IDs across the four source families** on light/dark desktop/mobile, six curated featured examples and filter-only transport behavior.
 
 **Acceptance state:** changed code and automated tests are submitted in PR #16; do not promote counters without a fresh PASS on the final SHA.
+
+
+### 2026-11-07 — User-supplied Song Examples collection (same production PR #16)
+
+A new fully English collection and style, **Song Examples**, contains the user-provided `Prodigy Boom Boom Tap (study)` JSON as a genuinely selectable, playable rhythmic study. The UI display title is `Prodigy · Boom Boom Tap (Rhythm Study)`, while the canonical source `name` stays byte-for-byte the original user value for legacy import/export recognition. The unmodified underlying JSON is retained at `presets/song-examples/prodigy-boom-boom-tap-study.roots-rhythm.json`.
+
+The study uses 160 BPM, a one-bar cycle and four lanes: kick (4 unique hits), snare (4), hi-hat (8), and Reese bass (4). Its 8 added single-root components, exact complex coefficients, velocities, per-lane gains, and operations are preserved; existing local samples/synths supply the sound. There are **no external audio recordings** or imported copyrighted sound assets. The study is an educational reconstruction and is not represented as an official or exact transcription.
+
+**Catalog integrity:** the initial 50 genre and mathematical examples remain the original research-inventory dataset, with their historical evidence, IDs and source categories unchanged; Song Examples adds a separately curated 51st user-visible item. Its sixth top-level collection is filtered without loading or restarting music. `tests/ui-smoke.mjs` covers all 51 user-selectable examples; `tests/song-examples.mjs` verifies exact input coordinates and layers, 160 BPM, 4/4/8/4 event counts, live transport, English title, source JSON export/import round trip, and both themes at 1440px and 390px. The existing 50-preset quantitative diversity baseline remains separate.
+
+**Release:** same PR #16; full same-head regression and registry checks must PASS before any merge to main. No additional historical requirement or manual listening sign-off is asserted.

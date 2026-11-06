@@ -60,10 +60,27 @@ try{
  baseOnly.tracks[3].layers=[];
  await importProject(baseOnly);
  await page.waitForFunction(()=>document.querySelector('#orbitCanvas').getBoundingClientRect().width>=2400);
+ await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ // Pan away from the center, then verify a live edit preserves that focus.
+ const normalizedFocus=()=>page.evaluate(()=>{
+  const p=document.querySelector('#plotArea'),c=document.querySelector('#orbitCanvas').getBoundingClientRect();
+  return {x:(p.scrollLeft+p.clientWidth/2)/c.width,
+   y:(p.scrollTop+p.clientHeight/2)/c.height};
+ });
+ await page.evaluate(()=>{
+  const p=document.querySelector('#plotArea');
+  p.scrollLeft=(p.scrollWidth-p.clientWidth)*.32;
+  p.scrollTop=(p.scrollHeight-p.clientHeight)*.72;
+ });
+ const panBefore=await normalizedFocus();
  const beforeEdit=await inspect();
  await page.locator('#trackN3').fill('32');
  await page.waitForTimeout(90);
  let b=await inspect();
+ const panAfter=await normalizedFocus();
+ assert.ok(Math.abs(panAfter.x-panBefore.x)<.04&&Math.abs(panAfter.y-panBefore.y)<.04,
+  'changing zoom while editing another lane must preserve the visible root region: '+
+  JSON.stringify({panBefore,panAfter}));
  assert.ok(b.width<beforeEdit.width,'reducing density on nonselected lane shrinks magnification: '+JSON.stringify([beforeEdit.width,b.width]));
  assert.ok(b.metrics[3].chord>=34-1e-8,'remaining root family remains inspectable');
 
@@ -83,7 +100,7 @@ try{
  await page.waitForFunction(()=>document.querySelector('#zoomBtn').getAttribute('aria-pressed')==='false');
  assert.deepEqual(errors,[],'no runtime JS exceptions');
  fs.writeFileSync('artifacts/multi-lane-magnification.json',JSON.stringify({
-  status:'PASS',initial:a,baseOnlyBeforeEdit:beforeEdit,afterNonselectedEdit:b,sparse,restored
+  status:'PASS',initial:a,baseOnlyBeforeEdit:beforeEdit,panBefore,panAfter,afterNonselectedEdit:b,sparse,restored
  },null,2));
  console.log('PASS: 128 phases on a nonselected inner lane remain separable after zoom, live edit and import');
  await page.close();

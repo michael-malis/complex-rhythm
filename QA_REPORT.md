@@ -94,3 +94,10 @@ The working-branch changes remain in draft PR #1; they are not claimed to be dep
 **Verified technical CI:** [42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`, passed every job step after fixes to live root dragging, pre-mounted radian/degree input fields, symbolic π test parsing, and revised Cartesian/angle-first regression selectors. All failed intermediate CI attempts are retained for historical traceability. The dense offline audio test includes an estimated oversampled between-sample peak in addition to ordinary sample-peak measurement. It is not a certified true-peak or human listening test.
 
 Reconciled task-ledger counts: **233 VERIFIED; 66 IN_PROGRESS; 349 TODO; 4 BLOCKED; 46/98 parent requirements VERIFIED**. Mathematical typography and responsive matrix evidence is registered separately. Missing second annotated image, human audition of voices/presets, and physical-device/screen-reader review continue to block final acceptance.
+
+## Beat animation regression — 2026-11-06
+
+- **PASS:** [full CI 42209284567](https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567), with new `tests/beat-visual-acceptance.mjs` included in the existing end-to-end pipeline.
+- Canvas arc observation during actual Web Audio playback confirms a pulse of at least 1.4× the base 28px marker across multiple rendered frames, with transient fill/halo feedback and a return to the base geometry after the pulse.
+- `prefers-reduced-motion: reduce` suppresses expansion while retaining stationary brightness feedback; pause clears any transient beat feedback. Initial transport preroll is gated on the actual `beatEpoch`.
+- **R-GEO-003 now has executable acceptance evidence**. This does not close `R-GEO-002` or `R-GEO-007`; marker/label overlap audits, physical mobile evaluation, human musical listening, screen-reader acceptance, and the missing second original annotated screenshot remain open.

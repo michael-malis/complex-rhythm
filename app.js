@@ -71,7 +71,7 @@ for(const study of EXPERIMENTAL_STUDIES){
    character:study.character,mathNote:study.mathNote});
 }
 
-// These six groove examples remain real canonical mathematical presets.
+// These six genre-diverse grooves remain real canonical mathematical presets.
 // Curated browsing adds a view, never a second preset-loading algorithm.
 const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
 const GROOVE_LABELS=Object.freeze({

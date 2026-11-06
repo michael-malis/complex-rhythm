@@ -14,22 +14,45 @@
 
 | Task | Outcome | Source requirements | Priority | Status | Definition of done |
 |---|---|---|---|---|---|
-| M01 | Post-merge baseline + development discipline | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | P0 | TODO | Current main/deployment status is accurate, CI/PR guards work, evidence and fix workflow reproducible |
+| M01 | Post-merge baseline + development discipline | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | P0 | IN_PROGRESS | Current main/deployment status is accurate, CI/PR guards work, evidence and fix workflow reproducible |
 | M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | VERIFIED | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
 | M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | TODO | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
 | M04 | Readable UI copy, contrast and typography | R-UI-004, R-UI-005 | P1 | TODO | Every mandatory label and tooltip audited; measured contrast passes in both themes |
 | M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | TODO | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
 | M06 | Formula synchronization and math audit | R-TEX-007, R-TEX-008 | P1 | TODO | Angle/degree/import/theme changes update all formulas without focus loss, raw TeX or layout jumps; auditable catalog |
 | M07 | Distinct instrument synthesis | R-SND-001, R-SND-003, R-SND-004 | P0 | TODO | All required voices and acid/industrial controls produce measurable, correctly routed distinct envelopes and spectra |
-| M08 | Unified beat triggering, transport and audio safety | R-SND-005, R-SND-006 | P0 | TODO | One consistent per-event playback path, preserved phase/velocity/provenance, reliable Play/Pause/Resume/preset switching, synchronized visual hits, stable clock and safe audio output pass tests |
+| M08 | Unified beat triggering, transport and audio safety | R-SND-005, R-SND-006 | P0 | IN_PROGRESS | One consistent per-event playback path, preserved phase/velocity/provenance, reliable Play/Pause/Resume/preset switching, synchronized visual hits, stable clock and safe audio output pass tests |
 | M09 | Genre evidence and implementation mapping | R-RES-001, R-RES-002, R-RES-003 | P1 | TODO | Each mandatory genre/source maps to concrete mathematical events, preset IDs and synth decisions |
-| M10 | Consistent rhythm semantics and structure across all 50 presets | R-PST-006 | P1 | TODO | A uniform root-to-phase-to-hit interpretation across 50 presets, distinct intra-lane/cross-lane overlaps, meaningful accents, lane roles, density and per-preset evidence |
+| M10 | Consistent rhythm semantics and structure across all 50 presets | R-PST-006 | P1 | IN_PROGRESS | A uniform root-to-phase-to-hit interpretation across 50 presets, distinct intra-lane/cross-lane overlaps, meaningful accents, lane roles, density and per-preset evidence |
 | M11 | Independent measurement and full regression | R-QA-002, R-QA-004, R-QA-005 | P0 | TODO | Complete real computed/style/Canvas/touch/overlap/clip tests and full CI at final code SHA with artifacts |
 | M12 | Original annotated visual acceptance | R-AUD-002, R-UI-003 | BLOCKER | BLOCKED | Both original annotated screenshots available and every requested UI correction compared and documented |
 | M13 | Human sound, mobile and accessibility acceptance | R-SND-007, R-PST-004 | BLOCKER | BLOCKED | Human listens to 50 presets and all new voices; phone and screen reader checks recorded; defects re-tested |
 | M14 | Final seven-gate acceptance and traceability | R-GOV-001, R-GOV-002, R-GOV-003, R-GOV-004, R-GOV-005, R-FIN-001, R-FIN-002, R-FIN-003, R-FIN-004 | LAST | TODO | 98/98 requirements & 652/652 historical checks verified, no blockers, all seven gates PASS |
 
 **Coverage invariant:** every one of the 46 originally unverified parent `R-*` IDs occurs in exactly one macro. `CR-UX-001` is the newly requested UX behavior and does not replace an original requirement. The historic 294 verified tasks remain verified. Verify through `node scripts/verify-execution-plan.mjs`.
+
+## GitHub work allocation and live evidence
+
+Each macro has a dedicated GitHub issue except the already completed M02. Existing Issues #2 and #3 are the human/external acceptance blockers and must not be replaced by duplicated tickets. Issues are unassigned until a real developer or available coding agent is explicitly identified; creating an Issue does not automatically execute code.
+
+| Task | GitHub issue | Status at last plan review |
+|---|---|---|
+| M01 | [#5](https://github.com/michael-malis/complex-rhythm/issues/5) | IN_PROGRESS: post-merge documentation and read-only PR-based workflows |
+| M02 | [PR #4](https://github.com/michael-malis/complex-rhythm/pull/4) | VERIFIED: explicit example selection; CI 42213078501 |
+| M03 | [#6](https://github.com/michael-malis/complex-rhythm/issues/6) | TODO |
+| M04 | [#7](https://github.com/michael-malis/complex-rhythm/issues/7) | TODO |
+| M05 | [#8](https://github.com/michael-malis/complex-rhythm/issues/8) | TODO |
+| M06 | [#9](https://github.com/michael-malis/complex-rhythm/issues/9) | TODO |
+| M07 | [#10](https://github.com/michael-malis/complex-rhythm/issues/10) | TODO |
+| M08 | [#11](https://github.com/michael-malis/complex-rhythm/issues/11) | IN_PROGRESS: shared event planner, preset/import rescheduling, one transition per edit |
+| M09 | [#12](https://github.com/michael-malis/complex-rhythm/issues/12) | TODO |
+| M10 | [#13](https://github.com/michael-malis/complex-rhythm/issues/13) | IN_PROGRESS: shared canonical event projection between timeline and audio |
+| M11 | [#14](https://github.com/michael-malis/complex-rhythm/issues/14) | TODO |
+| M12 | [#2](https://github.com/michael-malis/complex-rhythm/issues/2) | BLOCKED: second annotated screenshot |
+| M13 | [#3](https://github.com/michael-malis/complex-rhythm/issues/3) | BLOCKED: human audio, physical device, screen reader |
+| M14 | [#15](https://github.com/michael-malis/complex-rhythm/issues/15) | TODO |
+
+**Current macro counter:** **1 VERIFIED / 3 IN_PROGRESS / 8 TODO / 2 BLOCKED = 14 total**. Original source counts do not change merely because this plan advances.
 
 ## Execution sequence
 

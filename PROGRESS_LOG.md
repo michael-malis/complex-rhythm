@@ -25,3 +25,16 @@
 - `main` and the public GitHub Pages deployment have **not** been changed by this upgrade. This is deliberate because mandatory acceptance is incomplete.
 
 **Status:** NOT COMPLETE; outstanding blockers are explicit, no delivery in background is promised.
+
+
+## 2026-11-06 — Mathematical direct manipulation and live audio integrity
+
+- **R-GEO-005 / live dragging:** converted interactive parameter changes into synchronized cancellation and rebuilding of Web Audio's look-ahead event plan, batched via animation frames; current implementation commit `f469402677a144047e69ceb8d17a2d63c9a974d6`. Physical Canvas dragging while audio is running now preserves complex modulus and degree, keeps all root phases uniform, synchronizes Cartesian/polar/KaTeX readouts, and rebuilds active audio timing. A new integration test covers nine degree changes, 41 phase slider changes, a live pointer drag, nonduplicated schedulers and audio-bus cleanup; **passed [CI 42134902723](https://github.com/michael-malis/complex-rhythm/actions/runs/42134902723)**.
+- **R-GEO-006:** actual pixel-level Canvas inspection confirmed zero phase at top, 1/4 right, 1/2 bottom, 3/4 left, with two simultaneous instrument rings independently colored. **Passed [CI 42133680561](https://github.com/michael-malis/complex-rhythm/actions/runs/42133680561)**.
+- **R-NUM-007:** all four lanes edited independently in Cartesian and Polar coordinates; radian/degree conversion, no state leakage, undefined zero argument, re-enablement after recovering nonzero modulus. **Passed [CI 42133963106](https://github.com/michael-malis/complex-rhythm/actions/runs/42133963106)**.
+- **R-NUM-004:** safely parsed 11 permitted examples, rejected 22 hostile or incomplete strings, 200 numerical cases and preserved invalid user text in 11 browser interactions. **Passed [CI 42133490570](https://github.com/michael-malis/complex-rhythm/actions/runs/42133490570)**.
+- **R-MDL-001 / R-GEO-004 / R-MDL-006:** 400 independent random set-composition/provenance checks, exact source metadata in audio planner, root intersections/unions, 32 distinct-lane sound events at 16 shared moments, and precise counters after root-set union. **Passed [CI 42132119969](https://github.com/michael-malis/complex-rhythm/actions/runs/42132119969)** and [CI 42132894856](https://github.com/michael-malis/complex-rhythm/actions/runs/42132894856).
+- **R-PST-002:** an explicit musical-structure guard now fails if fewer than 12 of 15 new studies have a nonstandard four-beat first lane. Actual result 12 of 15; **passed [CI 42131998402](https://github.com/michael-malis/complex-rhythm/actions/runs/42131998402)**.
+- **Transport defects:** cancellation uses synchronous intent + incrementing request token to avoid duplicate schedulers after double/triple click; 10 pause/resume cycles confirmed, 24 live preset transitions retain audio and clear idle Web Audio buses. **Passed [CI 42132119969](https://github.com/michael-malis/complex-rhythm/actions/runs/42132119969)**.
+- **Registered progress:** latest evidence reconciliation has **215 VERIFIED tasks / 651, 42 VERIFIED parent requirements / 98, 70 IN_PROGRESS, 362 TODO, 4 BLOCKED**. Remaining human listening, physical mobile/screen-reader and second annotated screenshot have not been certified. Main/published Pages remain unchanged.
+

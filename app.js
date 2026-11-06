@@ -113,7 +113,9 @@ const GROOVE_LABELS=Object.freeze({
  'iron':'05 · Peak · relentless acid pressure',
  'bossa-classic':'06 · Acoustic · bongo and cross-stick'
 });
-const PRESET_COLLECTIONS=Object.freeze({
+// One visible Category picker and one Preset picker. Source categories remain
+// unchanged for sample routing and old JSON; only the browser groups them.
+const PRESET_CATEGORIES=Object.freeze({
  grooves:['grooves'],
  club:['bunker','hardhouse','acid','hardcore','other'],
  breaks:['dnb','jungle'],
@@ -121,15 +123,23 @@ const PRESET_COLLECTIONS=Object.freeze({
  mathematics:['poly','experimental'],
  songs:['songs']
 });
-const collectionForCategory=category=>
- Object.keys(PRESET_COLLECTIONS).find(group=>PRESET_COLLECTIONS[group].includes(category))||'mathematics';
+const categoryForPreset=preset=>Object.keys(PRESET_CATEGORIES).find(category=>
+ category!=='grooves'&&PRESET_CATEGORIES[category].includes(preset.category))||'club';
 const inBrowse=(preset,category)=>category==='grooves'
- ? GROOVE_IDS.includes(preset.id):category==='all'
- ? (browseCollection==='grooves'?GROOVE_IDS.includes(preset.id):PRESET_COLLECTIONS[browseCollection]?.includes(preset.category))
- : preset.category===category;
+ ? GROOVE_IDS.includes(preset.id):PRESET_CATEGORIES[category]?.includes(preset.category)??false;
+const MATH_PRESET_RATIOS=Object.freeze({
+ minimal:'5:7', 'schranz-machinery':'7:9', 'eleven-against-seven':'7:11',
+ 'acid-singularity':'11:13', 'industrial-fracture':'5:7:11',
+ 'acid-reactor':'3:5:7:11', 'complex-roots-overload':'7:11:13:17',
+ 'terror-geometry':'4:7:9:13'
+});
+const presetLabel=(preset,category)=>category==='grooves'?GROOVE_LABELS[preset.id]:
+ category==='mathematics'&&MATH_PRESET_RATIOS[preset.id]
+ ? MATH_PRESET_RATIOS[preset.id]+' · '+preset.name
+ : preset.displayName||preset.name;
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker',browseCollection='club';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='mathematics';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -306,17 +316,15 @@ function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
 function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;const snap=x=>Math.abs(x)<radius*1e-12?0:Number(x.toPrecision(10));t.a=snap(radius*Math.cos(ang));t.b=snap(radius*Math.sin(ang));return true}
 // An explicit reproducible index for the eight mandatory mathematical relations.
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
-const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
- $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${Object.keys(PRESET_COLLECTIONS).length} collections`;
- $('collectionSelect').value=browseCollection;
+ $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${Object.keys(PRESET_CATEGORIES).length} categories`;
  $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
  const selected=BROWSE_PRESETS.find(p=>p.id===activePresetId);
  const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
  if(activePresetId&&!inBrowseCategory){
   const option=document.createElement('option');
-  option.value='__browse__';option.textContent='Choose an example in this collection';
+  option.value='__browse__';option.textContent='Choose a preset in this category';
   option.disabled=true;select.append(option);
  }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';
@@ -324,7 +332,7 @@ function renderPresets(){
  }
  for(const p of BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory))){
   const option=document.createElement('option');option.value=p.id;
-  option.textContent=(browseCategory==='grooves'?GROOVE_LABELS[p.id]:(p.displayName||p.name))+
+  option.textContent=presetLabel(p,browseCategory)+
     (p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
@@ -336,8 +344,6 @@ function renderPresets(){
  $('presetInfo').textContent=selected&&!inBrowseCategory?
   `Currently loaded: ${selected.name}${presetModified?' · Modified':''}. Switching categories does not change the rhythm. Select an example to load it. `+description:
   description;
- const relation=POLYRHYTHM_RELATIONS.find(r=>r.preset===activePresetId);
- $('ratioSelect').value=relation?.ratio||'';
 }
 
 function parseEditorRadians(raw){
@@ -949,13 +955,7 @@ function applyPreset(p){
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
  activeCategory=p.category;
- if(browseCategory==='all'&&PRESET_COLLECTIONS[browseCollection]?.includes(p.category)){
-  // Preserve the broad collection view when an example is explicitly loaded.
- }else if(browseCategory==='grooves'&&GROOVE_IDS.includes(p.id)){
-  browseCollection='grooves';
- }else{
-  browseCategory=p.category;browseCollection=collectionForCategory(p.category);
- }
+ if(!inBrowse(p,browseCategory))browseCategory=categoryForPreset(p);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -1572,8 +1572,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  // Unnamed imported material has no genre identity: do not inherit a stale
  // previous preset's sample mappings or claim that it is a previous preset.
  activeCategory=sourcePreset?.category||'other';
- browseCategory=activeCategory;
- browseCollection=collectionForCategory(activeCategory);
+ browseCategory=sourcePreset?categoryForPreset(sourcePreset):'club';
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -1587,31 +1586,8 @@ function setupEvents() {
   button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
   if(open)renderRootRule();
  });
- $('collectionSelect').addEventListener('change',e=>{
-  browseCollection=e.target.value;
-  browseCategory=browseCollection==='grooves'?'grooves':'all';
-  renderPresets();
- });
- $('categorySelect').addEventListener('change',e=>{
-  browseCategory=e.target.value;
-  if(browseCategory==='grooves')browseCollection='grooves';
-  else if(browseCategory!=='all')browseCollection=collectionForCategory(browseCategory);
-  renderPresets();
- });
+ $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
- $('ratioSelect').addEventListener('change',e=>{
-  const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);
-  if(!relation)return;
-  const preset=PRESETS.find(p=>p.id===relation.preset);
-  if(!preset)throw Error('Missing mandatory polyrhythm '+relation.ratio);
-  const degrees=preset.tracks.map(t=>t.n);
-  if(!relation.degrees.every((degree,k)=>degrees.some((d,i)=>i>=k&&d===degree&&
-   (k===0||i>degrees.indexOf(relation.degrees[k-1])))))
-   throw Error('Polyrhythm degree map is stale: '+relation.ratio);
-  applyPreset(preset);
-  $('ratioSelect').value=relation.ratio;
-  showToast('Explore '+relation.ratio+' · all root sets remain individually uniform');
- });
  $('playBtn').addEventListener('click',togglePlay);
  $('resetBtn').addEventListener('click',reset);
  $('previewBtn').addEventListener('click',previewSound);

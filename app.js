@@ -1166,7 +1166,10 @@ function draw() {
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
    const proximity=((phase-mark.phase)%1+1)%1*duration;
-   const pulse=playing&&!t.muted&&proximity<.16&&!reducedMotion?6*Math.pow(1-proximity/.16,2):0;
+   // Hold the 1.4x+ beat accent for several animation frames. A one-frame
+   // mathematical peak can be missed by 60 Hz displays between audio attacks.
+   const beatActive=playing&&!t.muted&&proximity<.18;
+   const pulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
    const radius=size+pulse;
    if(pulse>0){
     ctx.save();ctx.beginPath();ctx.arc(x,y,radius+4.5,0,TAU);
@@ -1177,6 +1180,13 @@ function draw() {
    ctx.fill();ctx.lineWidth=mark.base&&mark.added?2.6:1.6;ctx.strokeStyle=COLORS[i];ctx.stroke();
    if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fill()}
    if(pulse>0){ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(2,radius*.32),0,TAU);ctx.fillStyle=dark?'rgba(255,255,255,.62)':'rgba(255,248,217,.65)';ctx.fill();ctx.restore()}
+   // Reduced-motion users still see the audio-clock beat as a stationary
+   // brightness change, without expanding or moving the 28px root.
+   if(beatActive&&reducedMotion){
+    ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(4,radius*.52),0,TAU);
+    ctx.fillStyle=dark?'rgba(255,255,255,.70)':'rgba(255,248,217,.76)';
+    ctx.fill();ctx.restore();
+   }
    if(t.muted){ctx.beginPath();ctx.arc(x,y,radius+1.3,0,TAU);ctx.strokeStyle=dark?'#555951':'#b5b5ab';ctx.lineWidth=2;ctx.stroke()}
   }
  });

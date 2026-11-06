@@ -246,7 +246,7 @@ changeRow("TRACEABILITY.md","trace");
 changeRow("ACCEPTANCE_CRITERIA.md","acceptance");
 const requirements=[...byReq];
 const summary={
- generatedFrom:"Full UI/audio CI "+CI+"42151010633; earlier proof "+CI+testRun,
+ generatedFrom:"Full UI/audio CI "+CI+"42209284567; baseline proof "+CI+testRun,
  tasks:statusCount,
  verifiedRequirementIds:requirements.filter(([id,v])=>v.status==="VERIFIED").map(([id])=>id),
  blockedRequirementIds:requirements.filter(([id,v])=>v.status==="BLOCKED").map(([id])=>id),

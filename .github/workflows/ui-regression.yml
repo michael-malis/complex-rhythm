@@ -26,6 +26,7 @@ on:
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/touch-targets.mjs
+      - tests/geometry-acceptance.mjs
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
@@ -76,6 +77,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
           node tests/accessibility-contrast.mjs
+      - name: Verify actual Canvas root diameters, geometry, viewport and dense zoom
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-geometry-http.log 2>&1 &
+          node tests/geometry-acceptance.mjs
       - name: Measure mobile 44 by 44 pixel interaction targets
         if: ${{ !cancelled() }}
         run: |

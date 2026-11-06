@@ -4,7 +4,7 @@
 
 ## Project counters: operational versus historical
 
-- **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions.** Each macro is a coherent, independently testable engineering/product result.
+- **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions; 1 VERIFIED and 13 still open.** Each macro is a coherent, independently testable engineering/product result.
 - **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
 - **Fourteen macro tasks** are the only new operational units for planning, progress updates, and development PRs. On CI acceptance, report `Mxx` completed, linked source requirement IDs and supporting evidence. No multiplying tasks into another set of hundreds.
 - Product additions approved after this baseline go into `CHANGE_REGISTER.md` with a single macro and measurable acceptance. They do not silently change the 98 original criteria.
@@ -15,7 +15,7 @@
 | Task | Outcome | Source requirements | Priority | Status | Definition of done |
 |---|---|---|---|---|---|
 | M01 | Post-merge baseline + development discipline | R-AUD-001, R-AUD-003, R-PROC-001, R-PROC-002, R-PROC-004, R-PROC-005, R-PROC-006, R-PROC-007, R-PROC-008 | P0 | TODO | Current main/deployment status is accurate, CI/PR guards work, evidence and fix workflow reproducible |
-| M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | IN_PROGRESS | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
+| M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | VERIFIED | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
 | M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | TODO | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
 | M04 | Readable UI copy, contrast and typography | R-UI-004, R-UI-005 | P1 | TODO | Every mandatory label and tooltip audited; measured contrast passes in both themes |
 | M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | TODO | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
@@ -57,3 +57,5 @@ No DAW-like piano roll or new musical complexity is assumed as an implicit requi
 The old W01–W08 grouping and the old global 2/10 counter are superseded as **operational views** by M01–M14. Historic acceptance IDs and evidence remain fully intact. Report counts separately: (1) macro outcomes completed out of 14, (2) original 98 requirements verified, (3) blockers. A macro is not complete if its `Definition of done` or source requirements remain outstanding.
 
 The current app is already published from main. `FINAL_REPORT.md` must eventually describe that true deployment state, while retaining `NOT COMPLETE` until the full manual and automated acceptance gates pass.
+
+**M02 evidence:** [full UI/audio CI 42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501). All other active macros retain their previous statuses; historical requirements are not automatically certified.

@@ -686,6 +686,14 @@ function renderLayers(){
  });
 }
 
+// Canonical four-lane event plan used by both the UI timeline and Web Audio.
+// Do not maintain separate phase/event interpretations for presentation and sound.
+function currentSchedulerLanes(){
+ return tracks.map(t=>({
+  cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,
+  gain:t.gain??1,patch:t.patch,events:events(t)
+ }));
+}
 function renderWindowTimeline() {
  const summary=$('commonCycle');if(!summary||!tracks.length)return;
  const common=RhythmMath.commonCycle(tracks);
@@ -695,7 +703,7 @@ function renderWindowTimeline() {
  slider.value=String(windowStartBar);
  $('windowStartText').textContent=String(windowStartBar+1);
  const start=windowStartBar,span=4,secPerBar=barSeconds();
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
+ const lanes=currentSchedulerLanes();
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
  const analysis=RhythmMath.analyzeSchedule(scheduled);
  const eventSummary=$('eventSummary');
@@ -1050,7 +1058,7 @@ function scheduleAhead(){
  if(to<=from)return;
  const relFrom=Math.max(0,from-beatEpoch),relTo=Math.max(0,to-beatEpoch);
  if(relTo<=relFrom)return;
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
+ const lanes=currentSchedulerLanes();
  const future=RhythmMath.planEvents(lanes,barSeconds(),relFrom,relTo);
  for(const hitEvent of future){
   const at=beatEpoch+hitEvent.time;

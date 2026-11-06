@@ -47,76 +47,95 @@ jobs:
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Test pure mathematical utilities
+        if: ${{ !cancelled() }}
         run: node tests/math-io.test.mjs
       - name: Test math, layout, presets, transport and JSON
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-http.log 2>&1 &
           node tests/ui-smoke.mjs
       - name: Test minimum font sizes, LaTeX, polar input and zoom
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-spec-http.log 2>&1 &
           node tests/spec-ui.mjs
       - name: Render and analyze every new Web Audio voice
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-audio-http.log 2>&1 &
           node tests/audio-offline.mjs
       - name: Stress-test 50 rhythm schedules and limiter output
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-stress-http.log 2>&1 &
           node tests/audio-mix-stress.mjs
       - name: Inspect actual light and dark WCAG contrast at seven viewports
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-contrast-http.log 2>&1 &
           node tests/accessibility-contrast.mjs
       - name: Measure mobile 44 by 44 pixel interaction targets
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-touch-http.log 2>&1 &
           node tests/touch-targets.mjs
       - name: Switch 24 presets during active Web Audio playback and verify bus cleanup
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-switch-http.log 2>&1 &
           node tests/transport-switching.mjs
       - name: Verify rapid Play cancellation and balanced Web Audio schedulers
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-transport-race.log 2>&1 &
           node tests/transport-race.mjs
       - name: Import all 35 legacy JSON projects and verify precise root phases
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-legacy-http.log 2>&1 &
           node tests/legacy-json-compat.mjs
       - name: Verify all eight required selectable polyrhythm relations
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-ratio.log 2>&1 &
           node tests/required-polyrhythms.mjs
       - name: Check all mathematical formulas, time geometry and live updates
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
           node tests/formula-acceptance.mjs
       - name: Verify root-set event provenance across 400 deterministic random configurations
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-properties.log 2>&1 &
           node tests/event-properties.mjs
       - name: Verify separate sound lanes, shared phases, geometry and four mathematical counters
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-collision.log 2>&1 &
           node tests/collision-lanes.mjs
       - name: Verify restricted complex-number grammar, malicious-input rejection and canonical state
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-expression.log 2>&1 &
           node tests/expression-safety.mjs
       - name: Edit all four Cartesian/Polar lanes and verify degree/radian round-trip and zero recovery
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-four-lanes.log 2>&1 &
           node tests/four-lane-polar.mjs
       - name: Verify live n and phase edits invalidate stale sound notes and coalesce rapid changes
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-live-edit.log 2>&1 &
           node tests/live-edit-reschedule.mjs
       - name: Verify modified preset identity, reset and JSON source title
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-preset-modified.log 2>&1 &
           node tests/preset-modified.mjs
       - name: Verify synchronized radian/degree angle input, added angles and generated roots
+        if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-angle-first.log 2>&1 &
           node tests/angle-first.mjs

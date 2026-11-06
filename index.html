@@ -24,24 +24,34 @@
 </header>
 <details class="preset-strip" id="presetDetails" open><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">35 examples</span></summary>
  <div class="preset-controls">
- <label>Browse rhythms<select id="categorySelect" aria-label="Rhythm category">
- <option value="grooves">Groove laboratory · six variations</option>
- <optgroup label="Techno and club grooves">
-  <option value="bunker">Bunker techno · heavy bass</option>
-  <option value="hardhouse">Hard house · driving</option>
-  <option value="acid">Acid / 303 · resonant</option>
-  <option value="hardcore">Hardcore / gabber · fast</option>
- </optgroup>
- <optgroup label="Breakbeats">
-  <option value="dnb">Drum &amp; Bass</option>
-  <option value="jungle">Jungle / chopped breaks</option>
- </optgroup>
- <optgroup label="Acoustic and mathematical rhythms">
-  <option value="brazil">Brazilian / acoustic percussion</option>
-  <option value="poly">Polyrhythms · root relationships</option>
-  <option value="experimental">Mathematical experiments</option>
-  <option value="other">House, dub and other studies</option>
- </optgroup>
+ <label>Collection<select id="collectionSelect" aria-label="Rhythm collection">
+  <option value="grooves">Featured grooves · 6 starting points</option>
+  <option value="club">Techno &amp; club · kick-driven</option>
+  <option value="breaks">Breakbeats · drum patterns</option>
+  <option value="acoustic">Acoustic &amp; world · percussion</option>
+  <option value="mathematics">Polyrhythms &amp; complex roots</option>
+ </select></label>
+ <label>Style filter<select id="categorySelect" aria-label="Rhythm category">
+  <option value="all">All styles in collection</option>
+  <option value="grooves">Six featured grooves</option>
+  <optgroup label="Techno &amp; club">
+   <option value="bunker">Bunker techno</option>
+   <option value="hardhouse">Hard house</option>
+   <option value="acid">Acid / 303</option>
+   <option value="hardcore">Hardcore / gabber</option>
+  </optgroup>
+  <optgroup label="Breakbeats">
+   <option value="dnb">Drum &amp; Bass</option>
+   <option value="jungle">Jungle</option>
+  </optgroup>
+  <optgroup label="Acoustic &amp; world">
+   <option value="brazil">Brazilian percussion</option>
+   <option value="other">House, dub &amp; related studies</option>
+  </optgroup>
+  <optgroup label="Mathematics">
+   <option value="poly">Polyrhythms</option>
+   <option value="experimental">Complex-root experiments</option>
+  </optgroup>
  </select></label>
  <label>Example<select id="presetSelect" aria-label="Choose a rhythm example"></select></label>
  <label>Explore mathematical ratio<select id="ratioSelect" aria-label="Choose a mathematical polyrhythm relationship">

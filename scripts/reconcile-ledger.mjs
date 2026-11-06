@@ -122,6 +122,14 @@ verified.set('R-GEO-001',{
  evidence:'CI:42162929618; tests/geometry-acceptance.mjs 12 viewport/theme cases with 16 actual cardinal pixels each, measured base marker >=28px, four rings and 64th-root scrollable magnification',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+// All eight geometry-acceptance actions now have observed passing evidence:
+// real pixel radii/diameters and cardinal phases, rendered MathML labels,
+// separate coincident events, actual drag, magnification and responsive cases.
+// Twelve comparison screenshots plus measured geometry JSON are CI artifacts.
+verified.set('R-GEO-007',{
+ evidence:'CI:42209284567; tests/geometry-acceptance.mjs actual 28px+ Canvas diameters, 4 radii and 16 painted cardinal markers across 12 viewport/theme states; tests/formula-acceptance.mjs label placements; tests/collision-lanes.mjs simultaneous events; tests/ui-smoke.mjs dragging/resize; tests/spec-ui.mjs magnification; comparative screenshots',
+ commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
+});
 // The real transport/Canvas regression proves >1.4x scale across multiple
 // frames, audible-event timing, stationary reduced-motion brightness and no
 // residual pulse after transport stops. Full UI/audio pipeline passed.

@@ -78,3 +78,19 @@ The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidenc
 **Acceptance:** every originally unverified requirement is mapped to exactly one macro task; no duplicates/missing IDs; statuses of historic tasks unchanged by planning; unapproved feature candidates excluded from mandatory counters.
 
 **CI proof:** [42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501) passed the full UI/audio regression, including category navigation on 1440px and 390px, preset identity, all 50 presets and the consolidated 14-task coverage validator.
+
+## CR-RHYTHM-003 · Unified beat triggering and rhythm interaction semantics
+
+**Priority:** P0 · **Status:** TODO (planning completed; implementation and dedicated acceptance pending)
+
+**Scope:** tighten and unify existing rules only. This change neither adds a product feature nor introduces a new independent macro task; execute under **M08** (Web Audio / transport / event triggering) and **M10** (mathematical consistency and musical structure across the 50 presets).
+
+- Every audible strike starts from the same canonical phase event produced by the complex-root/added-angle/Euclidean model. Sound and Canvas/time-window visualization use the same event data. Preserve lane-specific cycle lengths, source provenance and per-event accent/velocity.
+- Intra-lane coincident roots merge where set-union semantics require it; coincident strikes from different lanes remain distinct. Do not homogenize the instruments, patterns, genre identities or rhythm formulas.
+- Define a consistent behavior for Play, Pause, Resume, Reset, explicit preset selection, ratio selection, JSON import and live changes of root arguments, degrees, BPM, additional layers, cycle length and audio patch. Browser category filtering never triggers a new rhythm.
+- Use the already implemented Web Audio clock, scheduler, and safe voice cancellation. Prevent duplicate timers, stale notes, lost attacks and unwanted phase jumps after live edits or preset switching.
+- Ensure visual hit pulses follow real audio scheduling, without changing the mathematical root positions. Keep accessible reduced-motion feedback.
+
+**Acceptance:** compare canonical events, actual audio event schedules and rendered event counts in all four lanes across all 50 presets; verify simultaneous hits and overlap semantics, four-lane high-density tests, Play/Pause/Resume/Reset, live edits, preset changes, JSON and required polynomial ratios including `7:11:13:17` and `4:7:9:13`. Retain prior passing evidence, repair actual defects and run complete regression at the implementation SHA. Musical/auditory human acceptance remains separately blocked under M13.
+
+**Specification:** see `NEXT_EXECUTION_PLAN.md` section “Unified rhythm-triggering model”. **No new features and no increase from 14 macro tasks.**

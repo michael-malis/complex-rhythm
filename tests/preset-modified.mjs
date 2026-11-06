@@ -31,12 +31,20 @@ try{
  assert.equal(saved.bpm,edited.bpm,'JSON export retains edited tempo');
  assert.equal(saved.tracks[0].n,5,'JSON export retains edited roots');
  await page.locator('#categorySelect').selectOption('brazil');
- assert.ok(!(await page.locator('#presetSelect option:checked').textContent()).includes('Modified'),
-  'new category selects clean example');
+ assert.equal(await page.locator('#presetSelect').inputValue(),'__browse__',
+  'browsing another category shows an explicit choose-example placeholder');
+ assert.ok((await page.locator('#presetInfo').textContent()).includes('Currently loaded: '+source),
+  'currently loaded example remains visible');
+ assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),'afro',
+  'category browsing does not silently replace or reset the current preset');
+ assert.deepEqual(await page.evaluate(()=>window.RhythmResearch.current()),edited,
+  'category browsing never changes BPM or mathematical root sets');
  await page.locator('#categorySelect').selectOption('poly');
+ assert.equal(await page.locator('#presetSelect option:checked').textContent(),source+' · Modified',
+  'returning to the original category preserves modified preset status');
  await page.locator('#presetSelect').selectOption('afro');
  assert.equal(await page.locator('#presetSelect option:checked').textContent(),source,
-  'explicit reselection resets Modified');
+  'explicit preset selection clears Modified');
  await page.locator('#jsonFile').setInputFiles({
   name:'modified.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))
  });

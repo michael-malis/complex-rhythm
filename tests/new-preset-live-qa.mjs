@@ -96,6 +96,10 @@ try{
  assert.ok(stable.voiceBusGenerations>=previousGeneration,'voice bus generation monotonic');
  await page.locator('#playBtn').click();
  await page.waitForFunction(()=>!window.RhythmResearch.transport().playing);
+ // The voice bus deliberately has a 100ms click-free release tail.
+ // Wait for its scheduled disconnect, rather than treating the fade as a leak.
+ await page.waitForFunction(()=>window.RhythmResearch.transport().pendingVoiceBusDisposals===0,
+  null,{timeout:2500});
  const stopped=await page.evaluate(()=>window.RhythmResearch.transport());
  assert.equal(stopped.timerActive,false,'final pause clears scheduler');
  assert.equal(stopped.pendingVoiceBusDisposals,0,'final pause disposes old voice buses');

@@ -130,6 +130,18 @@ verified.set('R-GEO-007',{
  evidence:'CI:42209284567; tests/geometry-acceptance.mjs actual 28px+ Canvas diameters, 4 radii and 16 painted cardinal markers across 12 viewport/theme states; tests/formula-acceptance.mjs label placements; tests/collision-lanes.mjs simultaneous events; tests/ui-smoke.mjs dragging/resize; tests/spec-ui.mjs magnification; comparative screenshots',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+verified.set('R-UI-006',{
+ evidence:"CI:42229288619; tests/responsive-content-access.mjs: 6 mandatory viewports × both themes; four-lane grid reflow, no text clipping or page-wide x overflow, critical controls remain reachable, 16px minimum, vertical scrolling, existing magnified plot; no global scale",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
+verified.set('R-UI-007',{
+ evidence:"CI:42229288619; tests/responsive-content-access.mjs, formula-acceptance.mjs, touch-targets.mjs, geometry-acceptance.mjs: 6 mandatory viewports × both themes; all critical controls, readouts and four rings accessible, no panel/lane overlap or clipping, proper font scales and zoom",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
+verified.set('R-QT-003',{
+ evidence:"CI:42229288619; tests/formula-geometry-complete.mjs: 10 mathematical KaTeX+MathML references and five additional root families across 6 viewport sizes × both themes; no formula/label overlap, clipping or off-center root displays, long formulas scroll; tests/accessibility-contrast.mjs thresholds pass",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
 verified.set('R-UI-004',{
  evidence:"CI:42227657811; tests/expanded-ui-typography.mjs: all mandatory expanded panels, 37 selectable voice labels, 15 synth-specific control groups, generated root families, tooltips and 12 responsive theme/viewport states; all PASS",
  commit:'1f9e9eb8444ca345c7285343344bfad7d4da5419'

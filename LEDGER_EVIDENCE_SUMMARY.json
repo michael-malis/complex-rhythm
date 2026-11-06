@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42227657811; previous mathematical/audio and geometry acceptance preserved",
+  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42229288619 (geometry, complete responsive and all-five-family formula layout), preceding evidence retained",
   "tasks": {
-    "VERIFIED": 310,
-    "IN_PROGRESS": 57,
-    "TODO": 281,
+    "VERIFIED": 325,
+    "IN_PROGRESS": 54,
+    "TODO": 269,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -62,7 +62,10 @@
     "R-QA-001",
     "R-QA-003",
     "R-UI-004",
-    "R-UI-005"
+    "R-UI-005",
+    "R-UI-006",
+    "R-UI-007",
+    "R-QT-003"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -70,5 +73,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-UI-004/R-UI-005 fully tested (expanded UI, dynamic synthesis, exact contrast) and verified; human audio/device/screenshot blockers remain."
+  "note": "M03 responsive, text-flow and formula geometry passed. Human listening, physical device and second annotated screenshot remain blocked."
 }

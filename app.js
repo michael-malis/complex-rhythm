@@ -74,6 +74,14 @@ for(const study of EXPERIMENTAL_STUDIES){
 // These six groove examples remain real canonical mathematical presets.
 // Curated browsing adds a view, never a second preset-loading algorithm.
 const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','pressure']);
+const GROOVE_LABELS=Object.freeze({
+ 'berlin-bass-wall':'01 · Bass Wall · relentless kick / deep rumble',
+ 'concrete':'02 · Drive · clap and rolling bass',
+ 'shaft':'03 · Machinery · snare, hats and toms',
+ 'dust':'04 · Half-light · sparse bass and open hats',
+ 'iron':'05 · Peak · relentless acid pressure',
+ 'pressure':'06 · Dub · stripped-back low-end'
+});
 const inBrowse=(preset,category)=>category==='grooves'
  ? GROOVE_IDS.includes(preset.id):preset.category===category;
 const $=id=>document.getElementById(id);
@@ -272,7 +280,8 @@ function renderPresets(){
  }
  for(const p of PRESETS.filter(p=>inBrowse(p,browseCategory))){
   const option=document.createElement('option');option.value=p.id;
-  option.textContent=p.name+(p.id===activePresetId&&presetModified?' · Modified':'');
+  option.textContent=(browseCategory==='grooves'?GROOVE_LABELS[p.id]:p.name)+
+    (p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
  select.value=inBrowseCategory?activePresetId:activePresetId?'__browse__':'__custom__';
@@ -987,9 +996,13 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       function playSample(sound,at,velocity,index=0){
         const key=sampleKey(sound,index,velocity);
         const gainTable={kick:.51,snare:.45,clap:.36,hat:.18,openhat:.19,rim:.34,tom:.33,shaker:.21,
-           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,bongoLow:.32,bongoHigh:.23,berlinrumble:.63};
+           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,
+         bongo:.25,bongoLow:.32,bongoHigh:.23,berlinrumble:.70};
         const style=activeCategory==='brazil'?.83:1;
-        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index,sound);
+        // Bass Wall emphasizes the existing kick/rumble onsets without
+        // introducing extra attacks or moving any mathematical root phase.
+        const wallBoost=activePresetId==='berlin-bass-wall'&&sound==='kick'?1.12:1;
+        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style*wallBoost,index,sound);
         // A restrained acoustic body layer gives fast breakbeats less plastic transients.
         if(played&&['dnb','jungle'].includes(activeCategory)){
           if(sound==='snare'&&sampleBuffers.has('jazzsnare'))triggerSample('jazzsnare',at,.095*velocity,index);
@@ -1067,7 +1080,8 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
          // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
          perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
-        const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
+        const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',
+         jazzsnare:'snare',claves:'rim',bongo:'tom',bongoLow:'tom',bongoHigh:'tom'};
         switch(soundFallback[sound]||sound) {
           case 'kick':
             oscillator(150,44,'sine',1.0,t,.29);

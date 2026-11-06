@@ -15,6 +15,7 @@ on:
       - tests/event-properties.mjs
       - tests/collision-lanes.mjs
       - tests/expression-safety.mjs
+      - tests/four-lane-polar.mjs
       - tests/required-polyrhythms.mjs
       - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
@@ -100,6 +101,10 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-expression.log 2>&1 &
           node tests/expression-safety.mjs
+      - name: Edit all four Cartesian/Polar lanes and verify degree/radian round-trip and zero recovery
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-four-lanes.log 2>&1 &
+          node tests/four-lane-polar.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

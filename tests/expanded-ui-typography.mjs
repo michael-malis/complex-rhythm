@@ -75,7 +75,7 @@ try{
   // Instrument-specific synthesis settings are dynamic, so a static page
   // snapshot cannot establish that all fifteen instrument menus are legible.
   if(width===390&&theme==='light'){
-   let checkedVoices=0;
+   let checkedVoices=0,checkedSynths=0;
    const voices=await page.locator('#laneSound0 option').evaluateAll(items=>items.map(o=>o.value));
    for(const voice of voices){
     await page.locator('#laneSound0').selectOption(voice);
@@ -85,19 +85,28 @@ try{
      const named=sliders.every(el=>!!el.getAttribute('aria-label')&&
       parseFloat(getComputedStyle(el).fontSize)>=16);
      const oscillator=wrap.querySelector('#patchOsc');
+     const selected=document.querySelector('#laneSound0').value;
+     const synthesized=Boolean(window.RhythmVoices?.definitions?.[selected]);
      const heading=wrap.querySelector('h4')?.textContent||'';
      const tooltips=[...document.querySelectorAll('[title]')].filter(el=>
       getComputedStyle(el).display!=='none'&&!el.getAttribute('title')?.trim()
      );
-     return {heading,sliders:sliders.length,named,oscillator:!!oscillator,emptyTooltips:tooltips.length};
+     return {heading,sliders:sliders.length,named,synthesized,oscillator:!!oscillator,emptyTooltips:tooltips.length};
     });
     assert.ok(dynamic.heading.includes('Instrument dynamics'),'sound-specific editor heading present');
-    assert.ok(dynamic.sliders>=9&&dynamic.named,'all dynamics sliders named at usable font sizes for '+voice);
-    assert.ok(dynamic.oscillator,'synthesis oscillator dropdown exists for '+voice);
+    assert.ok(dynamic.sliders>=1&&dynamic.named,'all visible sound dynamics controls are named at usable font sizes for '+voice);
+    if(dynamic.synthesized){
+     assert.ok(dynamic.sliders>=9,'all eight synthesis parameter sliders present for '+voice);
+     assert.ok(dynamic.oscillator,'synthesis oscillator dropdown exists for '+voice);
+     checkedSynths++;
+    }else{
+     assert.equal(dynamic.sliders,1,'sampled voice exposes lane gain but must not pretend to have synth settings for '+voice);
+    }
     assert.equal(dynamic.emptyTooltips,0,'no anonymous sound tooltips for '+voice);
     checkedVoices++;
    }
-   assert.ok(checkedVoices>=15,'sweep all fifteen existing synthesizer voices');
+   assert.ok(checkedVoices>=35,'inspect the entire instrument menu');
+   assert.equal(checkedSynths,15,'all 15 actual synthesized voices get full dynamics; sample voices do not');
    // Additional-angle and generated-root controls are initially hidden,
    // but they are part of the mandatory complete-settings audit.
    await page.locator('#addRootFamily').click();
@@ -113,6 +122,7 @@ try{
    assert.ok(addition.inputs>=5&&addition.buttons>=2&&addition.allNamed,
     'generated root families and additional-angle settings must be labeled');
    report.at(-1).dynamicVoices=checkedVoices;
+   report.at(-1).synthesizedVoices=checkedSynths;
    report.at(-1).additionalRootControls=addition;
   }
   assert.deepEqual(errors,[],'browser JS errors');

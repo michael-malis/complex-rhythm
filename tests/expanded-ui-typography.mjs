@@ -13,7 +13,7 @@ try{
   await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await page.evaluate(()=>{
-   for(const section of document.querySelectorAll('#presetDetails,#compositionPanel,.math-details,#windowPanel,#fileMenu')){
+   for(const section of document.querySelectorAll('#presetDetails,#compositionPanel,.math-details,#windowPanel,#fileMenu,#advancedMathDetails,#advancedSoundDetails')){
     section.open=true;
    }
   });
@@ -81,19 +81,22 @@ try{
     await page.locator('#laneSound0').selectOption(voice);
     const dynamic=await page.evaluate(()=>{
      const wrap=document.querySelector('#patchControls');
-     const sliders=[...wrap.querySelectorAll('input')];
+     const basic=document.querySelector('#laneGainControls');
+     const sliders=[...basic.querySelectorAll('input'),...wrap.querySelectorAll('input')];
      const named=sliders.every(el=>!!el.getAttribute('aria-label')&&
       parseFloat(getComputedStyle(el).fontSize)>=16);
      const oscillator=wrap.querySelector('#patchOsc');
      const selected=document.querySelector('#laneSound0').value;
      const synthesized=Boolean(window.RhythmVoices?.definitions?.[selected]);
-     const heading=wrap.querySelector('h4')?.textContent||'';
+     const heading=basic.querySelector('h4')?.textContent||'';
+     const advanced=document.querySelector('#advancedSoundDetails');
+     const hiddenForSamples=advanced.hidden&&!synthesized;
      const tooltips=[...document.querySelectorAll('[title]')].filter(el=>
       getComputedStyle(el).display!=='none'&&!el.getAttribute('title')?.trim()
      );
-     return {heading,sliders:sliders.length,named,synthesized,oscillator:!!oscillator,emptyTooltips:tooltips.length};
+     return {heading,sliders:sliders.length,named,synthesized,oscillator:!!oscillator,hiddenForSamples,emptyTooltips:tooltips.length};
     });
-    assert.ok(dynamic.heading.includes('Instrument dynamics'),'sound-specific editor heading present');
+    assert.ok(dynamic.heading.includes('Lane volume'),'basic instrument volume heading present');
     assert.ok(dynamic.sliders>=1&&dynamic.named,'all visible sound dynamics controls are named at usable font sizes for '+voice);
     if(dynamic.synthesized){
      assert.ok(dynamic.sliders>=9,'all eight synthesis parameter sliders present for '+voice);
@@ -101,6 +104,7 @@ try{
      checkedSynths++;
     }else{
      assert.equal(dynamic.sliders,1,'sampled voice exposes lane gain but must not pretend to have synth settings for '+voice);
+     assert.ok(dynamic.hiddenForSamples,'sampled voice hides irrelevant advanced synthesis settings');
     }
     assert.equal(dynamic.emptyTooltips,0,'no anonymous sound tooltips for '+voice);
     checkedVoices++;

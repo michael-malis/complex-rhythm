@@ -505,16 +505,20 @@ function chooseTrack(i,fromTrackList=false) {
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
 function renderSoundControls() {
- const wrap=$('patchControls');if(!wrap)return;wrap.replaceChildren();
+ const wrap=$('patchControls'),basic=$('laneGainControls'),advanced=$('advancedSoundDetails');
+ if(!wrap||!basic||!advanced)return;
+ wrap.replaceChildren();basic.replaceChildren();
  const t=tracks[selectedTrack];if(!t)return;
- const h=document.createElement('h4');h.textContent='Instrument dynamics';wrap.append(h);
+ const h=document.createElement('h4');h.textContent='Lane volume';basic.append(h);
  const row=document.createElement('label');row.className='patch-control';
  const label=document.createElement('span');label.textContent='Lane gain';
  const output=document.createElement('output');output.textContent=(t.gain??1).toFixed(2);
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
  input.addEventListener('input',()=>{t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);markCustom()});
- row.append(label,output,input);wrap.append(row);
- const defaults=window.RhythmVoices?.definitions?.[t.sound];if(!defaults)return;
+ row.append(label,output,input);basic.append(row);
+ const defaults=window.RhythmVoices?.definitions?.[t.sound];
+ advanced.hidden=!defaults;
+ if(!defaults)return;
  const sub=document.createElement('h4');sub.textContent='Sound synthesis · '+SOUNDS[t.sound];wrap.append(sub);
  const p=document.createElement('p');p.className='small-explain';p.textContent='These controls modify the actual Web Audio voice for this instrument.';wrap.append(p);
  const grid=document.createElement('div');grid.className='patch-grid';
@@ -554,6 +558,9 @@ function renderSpecialRhythms() {
  const choice=document.createElement('select');choice.id='setOperation';choice.setAttribute('aria-label','Root set operation');
  for(const [value,text] of [['union','Union ∪'],['intersection','Intersection ∩']]){const opt=document.createElement('option');opt.value=value;opt.textContent=text;choice.append(opt)}
  choice.value=t.operation||'union';
+ // Intersection is available for advanced mathematics but does not obscure
+ // the default union-of-points model.
+ if(t.operation==='intersection'||t.euclidean)$('advancedMathDetails').open=true;
  choice.addEventListener('change',()=>{t.operation=choice.value;updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  opRow.append(choice);wrap.append(opRow);
  const euRow=document.createElement('label');euRow.className='math-check';
@@ -595,9 +602,9 @@ function renderComposition() {
   renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
- $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
+ $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
- $('overlapSummary').textContent=c.overlaps===0?'No coincident phases.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} — each sounds once.`;
+ $('overlapSummary').textContent=c.overlaps===0?'Each phase appears once in the result.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} · merged into one point and one hit.`;
  const example=$('exampleProof'),exampleMatch=t.operation==='union'&&t.n===4&&t.a===1&&t.b===0&&
  t.layers.length===1&&t.layers[0].n===3&&t.layers[0].a===1&&t.layers[0].b===0&&!t.euclidean;
  if(example){
@@ -707,6 +714,7 @@ function currentSchedulerLanes(){
 }
 function renderWindowTimeline() {
  requestAnimationFrame(positionPhaseLabels);
+ updateMagnifyControl();
  const summary=$('commonCycle');if(!summary||!tracks.length)return;
  const common=RhythmMath.commonCycle(tracks);
  summary.textContent=`Common period: ${common} ${common===1?'bar':'bars'}`;
@@ -1141,13 +1149,35 @@ function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEp
 async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
- requestAnimationFrame(positionPhaseLabels)}
+ requestAnimationFrame(positionPhaseLabels);updateMagnifyControl()}
+// Only offer enlargement when the real combined root phases are closer
+// than the required 34 CSS-pixel inspection spacing at the current fit size.
+// A displayed zoom remains reversible even if a later edit thins the pattern.
+function updateMagnifyControl(){
+ const controls=$('figureTools'),btn=$('zoomBtn'),plot=$('plotArea');
+ if(!controls||!btn||!plot||!tracks.length)return;
+ const width=canvas.getBoundingClientRect().width;
+ if(!width)return;
+ const radii=getRadii(width);
+ const dense=tracks.some((track,lane)=>{
+  const phases=events(track).map(e=>e.phase);
+  if(phases.length<2)return false;
+  let gap=1+phases[0]-phases[phases.length-1];
+  for(let i=1;i<phases.length;i++)gap=Math.min(gap,phases[i]-phases[i-1]);
+  return 2*radii[lane]*Math.sin(Math.PI*gap)<34;
+ });
+ controls.hidden=!(magnified||dense);
+ btn.setAttribute('aria-label',magnified?'Fit all four rhythm rings':'Magnify closely spaced root points');
+ const hint=$('zoomHint');
+ if(hint)hint.textContent=magnified?'Scroll the enlarged diagram to inspect dense roots.':'Roots overlap at this size. Magnify to separate the points.';
+}
 function refreshPlotZoom(){
  const plot=$('plotArea'),btn=$('zoomBtn');
  if(!plot||!btn)return;
  plot.classList.toggle('focused',magnified);
  btn.setAttribute('aria-pressed',String(magnified));
- btn.textContent=magnified?'Fit entire cycle':'Magnify plot';
+ btn.textContent=magnified?'Fit entire cycle':'Magnify dense roots';
+ updateMagnifyControl();
  if(magnified){
   // A zoom must make ALL four lanes inspectable, even if the selected lane
   // has only one root. Added root families can have closer adjacent phases

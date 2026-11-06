@@ -94,6 +94,7 @@ html{font-size:18px}
 .label-half{bottom:0;left:50%;transform:translateX(-50%)}
 .label-threequarters{left:0;top:50%;transform:translateY(-50%)}
 .figure-tools{display:flex;gap:15px;align-items:center;justify-content:center;flex-wrap:wrap;padding:9px 11px}
+.figure-tools[hidden],.advanced-sound-settings[hidden]{display:none!important}
 .figure-tools-hint{font-size:16px;color:var(--sub)}
 .selected-root-math{border-top:1px solid var(--fine);border-bottom:1px solid var(--fine);margin-top:13px;padding:9px 0;overflow-wrap:anywhere}
 .selected-root-math>.math-notation{padding:4px 0}
@@ -305,3 +306,22 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-info-degree{color:var(--sub);white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:800px){.root-rule-info-grid{grid-template-columns:minmax(0,1fr)}.root-rule-svg{margin:auto}}
 @media(max-width:519px){.root-rule-angle-list{grid-template-columns:minmax(0,1fr)}.root-rule-header .root-rule-kicker{flex:1 1 160px}}
+
+/* Progressive disclosure: combine mathematical root points first.
+   Advanced set operations and signal synthesis remain available but never
+   compete with the visual union controls on the default surface. */
+.composition-actions{margin:8px 0 14px;justify-content:flex-start}
+.composition-actions .secondary-btn{font-weight:650}
+.advanced-math-settings,.advanced-sound-settings{
+ border-block-start:1px solid var(--fine);margin-top:14px;padding-top:11px
+}
+.advanced-math-settings>summary,.advanced-sound-settings>summary{
+ cursor:pointer;min-height:44px;padding:10px 4px;font-size:17px;color:var(--sub)
+}
+.advanced-sound-settings>summary .quiet{font-size:15px;font-weight:400;margin-inline-start:8px}
+.advanced-math-settings[open],.advanced-sound-settings[open]{padding-bottom:12px}
+.sound-basics{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;padding-top:8px}
+.sound-basics .lane-gain-controls{flex:1 1 210px;min-width:0}
+.sound-basics .lane-gain-controls h4{font-size:17px;font-weight:650;margin:0 0 7px}
+.sound-basics #previewBtn{flex:0 1 auto}
+@media(max-width:519px){.sound-basics{align-items:stretch}.sound-basics #previewBtn{width:100%}.advanced-sound-settings>summary .quiet{display:block;margin:3px 0 0}}

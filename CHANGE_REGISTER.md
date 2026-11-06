@@ -94,3 +94,12 @@ The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidenc
 **Acceptance:** compare canonical events, actual audio event schedules and rendered event counts in all four lanes across all 50 presets; verify simultaneous hits and overlap semantics, four-lane high-density tests, Play/Pause/Resume/Reset, live edits, preset changes, JSON and required polynomial ratios including `7:11:13:17` and `4:7:9:13`. Retain prior passing evidence, repair actual defects and run complete regression at the implementation SHA. Musical/auditory human acceptance remains separately blocked under M13.
 
 **Specification:** see `NEXT_EXECUTION_PLAN.md` section “Unified rhythm-triggering model”. **No new features and no increase from 14 macro tasks.**
+
+## CR-UX-005 · Union-first mathematical composition and progressive audio disclosure
+
+**Priority:** P1 · **Status:** IN_PROGRESS (code committed; current-head CI pending). **No new product features.**
+
+- The user explicitly requested **union of points**, not nested set expressions. Make `R_n(z) ∪ ...` a visible, primary mathematical exploration workflow with explicit “Add point” and “Add root set” controls, multiple added sets, distinct resulting phases and collapsed shared phases. Keep intersection and Euclidean operations available in advanced mathematical settings; preserve saved/imported semantics and the original five-layer limit.
+- Hide the generic “Magnify plot” button from uncomplicated fit views. Offer a clearly named contextual magnification control only when actual combined root phases have less than the 34px inspection separation, and keep exit available while magnified. Preserve dense-root magnification and pan tests.
+- Keep lane volume and preview visible, but collapse oscillator/filter/synthesis sliders under “Advanced sound settings” and hide the whole synth panel for sample-backed voices. Preserve sound parameters, transport and JSON. No audio engine removal or wave-view feature.
+- Acceptance: on real desktop/mobile layouts, union-of-point controls are immediately discoverable, overlapping roots trigger only one lane event, multiple added sets work, importing existing intersection settings remains possible, sparse plots have no distracting zoom button, dense plots can still magnify, and sound settings are accessible on demand. Full UI/audio CI must pass with additional focused tests before status promotion.

@@ -112,6 +112,7 @@ try {
  verify((await page.locator('#addedCount').textContent())==='3','added set count three');
  verify((await page.locator('#unionCount').textContent())==='6','union of fourth and third roots has six events');
  verify((await page.locator('#unionStrip .overlap').count())===1,'exact coincidence at phase zero');
+ await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
  await page.locator('#setOperation').selectOption('intersection');
  verify((await page.locator('#unionCount').textContent())==='1','R4(1) intersect R3(1) is one phase');
  await page.locator('#addRootFamily').click();

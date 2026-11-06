@@ -134,3 +134,10 @@
 - **PASS:** [genre source CI 42233466514](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514) validates 15 genre rows and 5 links to real implemented presets/voices and existing tests; [full UI/audio 42233466373](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373) PASS.
 - Verified R-RES-001/002/003 and their 29 historical children (32 new verified task rows). M09 VERIFIED, **not** an assertion of exact genre authenticity or human listening.
 - Historical ledger now **357 VERIFIED / 51 IN_PROGRESS / 240 TODO / 4 BLOCKED / 0 FAILED**, **61/98 parent requirements**. Operational **4/14 VERIFIED**, remaining 3 IN_PROGRESS / 5 TODO / 2 BLOCKED.
+
+## 2026-11-06 — User-directed progressive disclosure (pending validation)
+
+- Revised the existing composition panel for **union of mathematical points**, not arbitrary nested operation trees. Exposed the existing one-point and generated-root-set actions at the top, kept base/added/union event strips, and moved intersection/Euclidean controls into advanced mathematical settings.
+- Removed always-visible “Magnify plot” toolbar in favor of conditional dense-root enlargement based on real minimum phase chord spacing. Preserved the existing underlying magnified and pannable Canvas mode.
+- Moved oscillator/filter/envelope settings into a collapsed advanced synth section; kept lane volume and instrument preview visible. Sample-backed voices hide irrelevant synth controls.
+- Existing 14 macro tasks and historical VERIFIED entries were not reset. New UX acceptance requires full regression at the final implementation SHA.

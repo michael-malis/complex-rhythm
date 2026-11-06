@@ -107,3 +107,18 @@ Historical snapshot from CI 42151010633 (not the current ledger): **233 VERIFIED
 All eight atomic R-GEO-007 checks now have independent reproducible automated evidence: ring radii, marker diameter, cardinal positions, label bounds, coincident events, drag, magnification, and responsive window changes. The complete [CI 42209284567](https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567) succeeded. The exact task audit was committed by [CI 42209716913](https://github.com/michael-malis/complex-rhythm/actions/runs/42209716913).
 
 **Not included in this pass:** the stricter no-overlap condition R-GEO-002, human mobile/assistive review, listening assessment, and the missing second annotated screenshot. These retain their respective open/blocked statuses.
+
+## Post-merge execution evidence — 2026-11-06
+
+**Scope:** current Draft PR #4 (not yet merged); this is an incremental engineering test record, not the complete seven-gate/human acceptance.
+
+| Evidence | Actual result | Remaining boundary |
+|---|---|---|
+| [UI/audio CI 42218090614](https://github.com/michael-malis/complex-rhythm/actions/runs/42218090614) | PASS: unified JSON/preset sound-family import and 50-preset event/source/phase parity with existing mathematical and audio tests | M08/M10 source requirements still require full acceptance |
+| [Single voice-bus CI 42216970184](https://github.com/michael-malis/complex-rhythm/actions/runs/42216970184) | PASS: one voice-bus replacement for each isolated BPM, lane-cycle and root-angle edit with transport timer intact | No independent human sound judgment |
+| [Label geometry CI 42219132673](https://github.com/michael-malis/complex-rhythm/actions/runs/42219132673) | PASS: real dynamic KaTeX label bounding boxes avoid all root markers for 50 presets in 5 viewport sizes and both themes (500 actual preset-layout cases) | Other M03 geometric clashes and dense within-ring roots remain open |
+| [Ledger CI 42217527814](https://github.com/michael-malis/complex-rhythm/actions/runs/42217527814) | PASS: read-only checks of all 652 legacy task IDs, 98 requirements, all 46 open macro mappings and summary totals | Does not promote TODO/BLOCKED to VERIFIED |
+
+**Diagnostic baseline before the label correction:** the initial 50-preset Canvas/DOM audit produced 120 root/phase-label intersections in 12 viewport/theme cases, zero resting between-ring intersections, and 388 same-ring intersections on dense default views. The latter are not silently deemed acceptable: the existing magnified/pannable root inspection must be tested and human visual acceptance remains required.
+
+**Current statuses:** source ledger remains 294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED; 52/98 requirement parents verified. Operational tasks: M02 VERIFIED, M01/M03/M08/M10 IN_PROGRESS, M12/M13 BLOCKED and seven other macros TODO. The merge/deployment of prior PR #1 does not qualify the still-open changes in Draft PR #4 as published.

@@ -1406,6 +1406,8 @@ window.RhythmResearch=Object.freeze({
   audioTime:audio?.currentTime??0,beatEpoch
  }),
 
+ // Diagnostic snapshot only: tracks and sample-family selection cannot be mutated here.
+ samplePlan:()=>({category:activeCategory,keys:[...prioritySampleKeys()]}),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,

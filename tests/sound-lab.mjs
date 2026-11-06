@@ -72,6 +72,17 @@ try{
   assert.equal(afterTransport.schedulerIntervalsCreated,beforeTransport.schedulerIntervalsCreated,
    'one-shot preview does not create a recurring transport scheduler');
 
+  // Both bass voices without recorded assets use the exact same shared
+  // Web Audio source graph for live hits and the offline waveform inspector.
+  await page.locator('#laneSound1').selectOption('reese');
+  await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized fallback'));
+  const reeseWave=await page.locator('#soundWaveCanvas').evaluate(c=>c.toDataURL());
+  await page.locator('#laneSound1').selectOption('bass');
+  await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized fallback'));
+  const subWave=await page.locator('#soundWaveCanvas').evaluate(c=>c.toDataURL());
+  assert.notEqual(reeseWave,subWave,'Reese and sub-bass waveforms must come from distinct actual fallback engines');
+  assert.ok(reeseWave.length>800&&subWave.length>800,'both low-end instruments have real nonempty waveforms');
+
   await page.locator('#soundLabLane').selectOption('0');
   await page.locator('#patchOsc').waitFor({state:'visible'});
   await page.locator('#soundLabReset').click();

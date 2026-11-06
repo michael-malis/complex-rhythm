@@ -19,6 +19,7 @@ on:
       - tests/canonical-argument.mjs
       - tests/live-edit-reschedule.mjs
       - tests/preset-modified.mjs
+      - tests/preset-category-navigation.mjs
       - tests/angle-first.mjs
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
@@ -153,6 +154,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-live-edit.log 2>&1 &
           node tests/live-edit-reschedule.mjs
+      - name: Preserve audio while browsing categories and explicitly selecting examples
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-preset-navigation.log 2>&1 &
+          node tests/preset-category-navigation.mjs
       - name: Verify modified preset identity, reset and JSON source title
         if: ${{ !cancelled() }}
         run: |

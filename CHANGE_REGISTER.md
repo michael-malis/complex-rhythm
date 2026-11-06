@@ -120,3 +120,12 @@ The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidenc
 **Acceptance:** new real-browser \`tests/production-grooves-ui.mjs\` passes at 1440×900 and 390×844 in both themes, no formula scrollbars/page-overflow/raw TeX, numeric coordinates and responsive wrapping present, four visible 44px-touch volume inputs independently update the underlying state and synchronize inspector gain, acoustic bongo samples resolve and remain instrument-selectable, curated browse shows six distinct preset IDs and never auto-loads. Existing 50-preset source/diversity, full audio math/UI/JSON/transport and light/dark accessibility CI must PASS at the same final code SHA. Human taste/listening and physical mobile/screen-reader assessment remain explicitly blocked under M13. **Do not mark VERIFIED until full CI and evidence review.**
 
 **Implementation PR:** https://github.com/michael-malis/complex-rhythm/pull/16
+
+
+### 2026-11-06 — Collection and genre navigation refinement (same production PR #16)
+
+The user requested clearer preset organization as an **additional part of this production cycle**, not a separate experimental project. The browser now has a two-level hierarchy: **Collection → Style filter → Example**. Four disjoint musical families cover the existing 50 presets without moving their IDs or changing their canonical source category: **Techno & club** (including house/dub), **Breakbeats**, **Acoustic & world**, and **Polyrhythms & complex roots**. A fifth, explicitly curated **Featured grooves** view reuses six of the same presets and is intentionally non-disjoint.
+
+The optional style filter preserves all original technical category values, their source-specific sample routing and backward-compatible tests. Switching a collection or style only changes visible options and never changes the current project, BPM, four root sets, transport, sample settings or JSON identity. Selecting an example still performs the explicit load. Styles auto-synchronize to the relevant high-level collection. The added real-browser coverage in `tests/production-grooves-ui.mjs` verifies a union of **exactly 50 unique IDs across the four source families** on light/dark desktop/mobile, six curated featured examples and filter-only transport behavior.
+
+**Acceptance state:** changed code and automated tests are submitted in PR #16; do not promote counters without a fresh PASS on the final SHA.

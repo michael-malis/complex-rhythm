@@ -777,11 +777,28 @@ function markCustom(){
  }
  renderWindowTimeline();
 }
-function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
- cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;activeCategory=p.category;browseCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
- if(audio){loadSamples(prioritySampleKeys())}
- if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
- renderPresets();renderTracks();renderEditor();renderWindowTimeline()}
+// Both explicit example selection and JSON import use the same atomic
+// audio transition after replacing tracks, tempo and loaded category.
+// Browse-only category changes never call this function.
+function activateLoadedRhythm(phase,cycle){
+ if(audio)loadSamples(prioritySampleKeys());
+ if(playing&&audio){
+  cancelVoices();
+  beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();
+  scheduledUntil=audio.currentTime+.006;
+ }
+}
+function applyPreset(p){
+ const phase=transportPhase(),oldCycle=cycleSeconds();
+ const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ cycleBars=p.bars===2?2:1;
+ tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
+ bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
+ activeCategory=p.category;browseCategory=p.category;
+ $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ activateLoadedRhythm(phase,cycle);
+ renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+}
 function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
       // Independently licensed samples, CC0. The brazil/jazz bank is acoustic, not a synth simulation.
       const SAMPLE_FILES={
@@ -1234,14 +1251,24 @@ function validateImportedFields(project){
 async function loadJson(file){try{if(file.size>100000)throw Error('File is too large');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Expected roots-rhythm/1 with four tracks');
  validateImportedFields(d);
  if(d.tracks.some(t=>!t||typeof t!=='object'||(t.cycleBars!==undefined&&(!Number.isInteger(t.cycleBars)||t.cycleBars<1||t.cycleBars>16))||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>64||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>64||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Check a, b, n and sound for every track');
- const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;cycleBars=d.bars===2?2:1;tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=safeInt(d.bpm,50,260,138);if(audio)loadSamples(prioritySampleKeys());$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
+ const phase=transportPhase(),oldCycle=cycleSeconds();
+ const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ cycleBars=d.bars===2?2:1;
+ tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
+ bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
  const sourcePreset=PRESETS.find(p=>p.name===importedName);
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
- if(sourcePreset){activeCategory=sourcePreset.category;browseCategory=sourcePreset.category}
- renderPresets();renderTracks();renderEditor();renderWindowTimeline();showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
+ // Unnamed imported material has no genre identity: do not inherit a stale
+ // previous preset's sample mappings or claim that it is a previous preset.
+ activeCategory=sourcePreset?.category||'other';
+ browseCategory=activeCategory;
+ $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ activateLoadedRhythm(phase,cycle);
+ renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});

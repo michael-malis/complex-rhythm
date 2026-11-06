@@ -46,7 +46,7 @@ try {
    }
   }
   await page.locator('#categorySelect').selectOption('acid');
-  const acid=await page.locator('#presetSelect option:not([disabled])').first().inputValue();
+  const acid=await page.locator('#presetSelect option:not([disabled])').first().getAttribute('value');
   assert.ok(acid&&!acid.startsWith('__'),'selected example belongs to the browsed category');
   await page.locator('#presetSelect').selectOption(acid);
   const chosen=await page.evaluate(()=>({

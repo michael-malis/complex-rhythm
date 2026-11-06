@@ -695,6 +695,7 @@ function currentSchedulerLanes(){
  }));
 }
 function renderWindowTimeline() {
+ requestAnimationFrame(positionPhaseLabels);
  const summary=$('commonCycle');if(!summary||!tracks.length)return;
  const common=RhythmMath.commonCycle(tracks);
  summary.textContent=`Common period: ${common} ${common===1?'bar':'bars'}`;
@@ -1126,7 +1127,8 @@ async function togglePlay(){
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
 async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
- canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0)}
+ canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+ requestAnimationFrame(positionPhaseLabels)}
 function refreshPlotZoom(){
  const plot=$('plotArea'),btn=$('zoomBtn');
  if(!plot||!btn)return;
@@ -1164,6 +1166,58 @@ function selectRootIndexAtPoint(p,t,r) {
 }
 function rgba(i,alpha){const c=RGB[i];return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`}
 function getRadii(side){const outer=side*.427,spacing=Math.min(outer/3-7,Math.max(40,side*.095));return [outer,outer-spacing,outer-2*spacing,outer-3*spacing]}
+// Responsive mathematical labels are positioned tangentially to the cycle
+// axis, keeping the phase direction while avoiding rendered root markers.
+// Dynamic placement is required because different presets occupy different
+// phases; no root coordinates or time values are modified by this layout.
+function positionPhaseLabels(){
+ const area=$('plotArea');
+ if(!area||area.classList.contains('focused')||!tracks.length)return;
+ const box=canvas.getBoundingClientRect();
+ if(box.width<200||box.height<200)return;
+ const side=Math.min(box.width,box.height),radii=getRadii(side);
+ const cx=box.left+box.width/2,cy=box.top+box.height/2;
+ const dots=[];
+ tracks.forEach((track,lane)=>{
+  for(const ev of composePhases(track).merged){
+   const a=-Math.PI/2+TAU*ev.phase,r=radii[lane];
+   dots.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});
+  }
+ });
+ const options=[
+  {id:'phaseZero',axis:'x',dir:1},
+  {id:'phaseQuarter',axis:'y',dir:1},
+  {id:'phaseHalf',axis:'x',dir:-1},
+  {id:'phaseThreequarters',axis:'y',dir:-1}
+ ];
+ for(const item of options){
+  const el=$(item.id);if(!el)continue;
+  const label=el.getBoundingClientRect(),w=label.width,h=label.height;
+  if(!w||!h)continue;
+  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4);
+  const shifts=[55,68,82,96,110,125,140].filter(x=>x<=maxShift);
+  if(!shifts.length)shifts.push(maxShift);
+  let best=shifts[0],fewest=Infinity;
+  for(const shift of shifts){
+   let left,top;
+   if(item.id==='phaseZero'){left=cx+shift-w/2;top=box.top+4}
+   else if(item.id==='phaseHalf'){left=cx-shift-w/2;top=box.bottom-4-h}
+   else if(item.id==='phaseQuarter'){left=box.right-4-w;top=cy+shift-h/2}
+   else {left=box.left+4;top=cy-shift-h/2}
+   let collisions=0;
+   for(const dot of dots){
+    const nearestX=Math.max(left,Math.min(dot.x,left+w));
+    const nearestY=Math.max(top,Math.min(dot.y,top+h));
+    if((dot.x-nearestX)**2+(dot.y-nearestY)**2<17**2)collisions++;
+   }
+   if(collisions<fewest){best=shift;fewest=collisions}
+   if(!collisions)break;
+  }
+  const value='calc(50% '+(item.dir>0?'+ ':'- ')+best+'px)';
+  if(item.axis==='x'&&el.style.left!==value)el.style.left=value;
+  if(item.axis==='y'&&el.style.top!==value)el.style.top=value;
+ }
+}
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
  ctx.clearRect(0,0,w,h);

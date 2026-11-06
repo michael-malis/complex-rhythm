@@ -49,6 +49,7 @@ on:
       - vendor/katex/**
       - styles.css
       - tests/ui-smoke.mjs
+      - tests/union-first-ui.mjs
       - NEXT_EXECUTION_PLAN.md
       - scripts/verify-execution-plan.mjs
       - .github/workflows/ui-regression.yml
@@ -76,6 +77,11 @@ jobs:
       - name: Test pure mathematical utilities
         if: ${{ !cancelled() }}
         run: node tests/math-io.test.mjs
+      - name: Check union-first root composition, conditional magnification and advanced sound disclosure
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-union-first-http.log 2>&1 &
+          node tests/union-first-ui.mjs
       - name: Test math, layout, presets, transport and JSON
         if: ${{ !cancelled() }}
         run: |

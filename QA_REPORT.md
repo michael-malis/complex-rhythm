@@ -88,3 +88,9 @@ The working-branch changes remain in draft PR #1; they are not claimed to be dep
 - **FIX-009**: mathematical provenance was not independently tested against its own input root sets. Exposed a read-only event source snapshot and exercised 400 random configurations; no provenance mismatches in the tested domain.
 
 **Remaining limitations:** computational matching is not human musical listening. Real-phone audio, screen-reader signoff, second annotated source image and independent visual inspection remain open. Previously verified requirements must return to FAILED if a future test proves their behavior incorrect.
+
+## Full regression addendum — 2026-11-06
+
+**Verified technical CI:** [42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`, passed every job step after fixes to live root dragging, pre-mounted radian/degree input fields, symbolic π test parsing, and revised Cartesian/angle-first regression selectors. All failed intermediate CI attempts are retained for historical traceability. The dense offline audio test includes an estimated oversampled between-sample peak in addition to ordinary sample-peak measurement. It is not a certified true-peak or human listening test.
+
+Reconciled task-ledger counts: **233 VERIFIED; 66 IN_PROGRESS; 349 TODO; 4 BLOCKED; 46/98 parent requirements VERIFIED**. Mathematical typography and responsive matrix evidence is registered separately. Missing second annotated image, human audition of voices/presets, and physical-device/screen-reader review continue to block final acceptance.

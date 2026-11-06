@@ -35,6 +35,7 @@ on:
       - tests/expanded-ui-typography.mjs
       - tests/responsive-content-access.mjs
       - tests/formula-geometry-complete.mjs
+      - tests/root-angle-infographic.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
@@ -93,6 +94,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-stress-http.log 2>&1 &
           node tests/audio-mix-stress.mjs
+      - name: Test live root-angle unit-circle infographic and accessible geometry disclosure
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-infographic.log 2>&1 &
+          node tests/root-angle-infographic.mjs
       - name: Verify full formula centering, zero overlap and scrollable five-family roots
         if: ${{ !cancelled() }}
         run: |

@@ -54,6 +54,7 @@ on:
       - styles.css
       - tests/ui-smoke.mjs
       - tests/union-first-ui.mjs
+      - tests/sound-lab.mjs
       - tests/production-grooves-ui.mjs
       - tests/song-examples.mjs
       - presets/song-examples/**
@@ -95,6 +96,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-union-first-http.log 2>&1 &
           node tests/union-first-ui.mjs
+      - name: Inspect bottom Sound Lab, selected instrument waves and actual patch rendering
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-sound-lab.log 2>&1 &
+          node tests/sound-lab.mjs
       - name: Test math, layout, presets, transport and JSON
         if: ${{ !cancelled() }}
         run: |

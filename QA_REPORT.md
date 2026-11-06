@@ -143,3 +143,7 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 
 - [UI/audio 42231878412](https://github.com/michael-malis/complex-rhythm/actions/runs/42231878412) PASS: independent attacks at exactly shared moments on four lanes; duplicate root families within one lane merge sources rather than multiplying attacks; all 50 preset event/time schedules preserve source metadata across window partitions.
 - [Genre source mapping 42232392096](https://github.com/michael-malis/complex-rhythm/actions/runs/42232392096) PASS: 15 existing research lines map to real preset IDs/BPM/four root degrees/voice names. This is **not** human listening or authentic genre reproduction. M09 remains IN_PROGRESS.
+
+## Complete genre research/mapping acceptance — 2026-11-06
+
+**Source research criteria PASS:** [CI 42233466514](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514) validated 15/15 mandatory genre implementation rows, exact catalog BPM/root degrees/sound names, and 5/5 original source-article technique→code→preset→test mappings. Five primary links were independently fetched on 2026-11-05 and recorded in RHYTHM_RESEARCH.md; additional sources and limitations included. [Full regression 42233466373](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373) PASS. R-RES-001/-002/-003 and 29 children accepted, M09 VERIFIED. No human listening, sound authenticity, physical-phone or screen-reader signoff. Historical 357/652 VERIFIED, parent 61/98.

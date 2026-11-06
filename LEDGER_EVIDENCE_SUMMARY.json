@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42229288619 (geometry, complete responsive and all-five-family formula layout), preceding evidence retained",
+  "generatedFrom": "Original genre technical study plus implemented 15/15 genre and 5/5 primary source traceability verified at CI https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514 ; full UI/audio regression https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373",
   "tasks": {
-    "VERIFIED": 325,
-    "IN_PROGRESS": 54,
-    "TODO": 269,
+    "VERIFIED": 357,
+    "IN_PROGRESS": 51,
+    "TODO": 240,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -65,7 +65,10 @@
     "R-UI-005",
     "R-UI-006",
     "R-UI-007",
-    "R-QT-003"
+    "R-QT-003",
+    "R-RES-001",
+    "R-RES-002",
+    "R-RES-003"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -73,5 +76,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "M03 responsive, text-flow and formula geometry passed. Human listening, physical device and second annotated screenshot remain blocked."
+  "note": "R-RES-001/002/003 technically accepted for research/source mapping only; does not establish authentic genre reproduction or human audio acceptance."
 }

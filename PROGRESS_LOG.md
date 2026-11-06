@@ -126,3 +126,11 @@
 - [Full UI/audio CI 42231878412](https://github.com/michael-malis/complex-rhythm/actions/runs/42231878412) PASS after correctly opening the Advanced Cartesian editor in the root-angle infographic test. Added `tests/cross-lane-coincidence.mjs`: 50 preset event maps and a deliberate four-lane simultaneous root-union fixture, preserving per-lane source identity and scheduler interval partitioning.
 - [Preset diversity CI 42232392096](https://github.com/michael-malis/complex-rhythm/actions/runs/42232392096) PASS for the separate genre matrix validator. New `GENRE_IMPLEMENTATION_MATRIX.md` connects 15 existing source-researched genres to real BPM, root degrees and voice selection, validated against `PRESET_INVENTORY.json`. No external research was repeated and no new product feature was added.
 - M09 moved from TODO to IN_PROGRESS. M08/M10 remain IN_PROGRESS pending the full original sound/genre acceptance; the source ledger stays **325 VERIFIED / 54 IN_PROGRESS / 269 TODO / 4 BLOCKED, 58/98 requirements**, without premature promotion.
+
+## 2026-11-06 — Genre research requirement acceptance
+
+- Existing `RHYTHM_RESEARCH.md` documents 15 required musical genres, BPM/accents/drums/bass/synthesis/processing/math implications, five required technical sources (independently checked on 2026-11-05) and supplemental independent sources. No redundant web study was done.
+- New `GENRE_IMPLEMENTATION_MATRIX.md` links 15 genres to real 50-preset catalog IDs, actual BPM, four root degrees and sound assignments; five primary technical sources now each have Source→Technique→Implementation→Preset/Patch→Verification with explicit unreproduced features.
+- **PASS:** [genre source CI 42233466514](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514) validates 15 genre rows and 5 links to real implemented presets/voices and existing tests; [full UI/audio 42233466373](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373) PASS.
+- Verified R-RES-001/002/003 and their 29 historical children (32 new verified task rows). M09 VERIFIED, **not** an assertion of exact genre authenticity or human listening.
+- Historical ledger now **357 VERIFIED / 51 IN_PROGRESS / 240 TODO / 4 BLOCKED / 0 FAILED**, **61/98 parent requirements**. Operational **4/14 VERIFIED**, remaining 3 IN_PROGRESS / 5 TODO / 2 BLOCKED.

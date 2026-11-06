@@ -157,6 +157,18 @@ verified.set('R-GEO-002',{
  evidence:"CI:42224570142; tests/geometry-acceptance.mjs, phase-label-adaptation.mjs (600 states), playback-hand-clearance.mjs (12,916 cases), animated-adjacent-ring-clearance.mjs (50 presets + live mobile audio), multi-lane-magnification.mjs; all R-GEO-002 conditions PASS",
  commit:'bddc6a4497d4f0c9b2ac234a2cecef6a000631ee'
 });
+verified.set('R-RES-001',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
+verified.set('R-RES-002',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
+verified.set('R-RES-003',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
 // The real transport/Canvas regression proves >1.4x scale across multiple
 // frames, audible-event timing, stationary reduced-motion brightness and no
 // residual pulse after transport stops. Full UI/audio pipeline passed.

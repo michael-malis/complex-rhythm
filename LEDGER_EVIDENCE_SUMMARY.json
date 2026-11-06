@@ -1,9 +1,9 @@
 {
   "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633; earlier proof https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
   "tasks": {
-    "VERIFIED": 281,
+    "VERIFIED": 282,
     "BLOCKED": 4,
-    "IN_PROGRESS": 64,
+    "IN_PROGRESS": 63,
     "TODO": 303,
     "FAILED": 0
   },
@@ -19,6 +19,7 @@
     "R-GEO-006",
     "R-NUM-001",
     "R-NUM-002",
+    "R-NUM-003",
     "R-NUM-004",
     "R-NUM-005",
     "R-NUM-006",

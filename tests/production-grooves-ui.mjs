@@ -87,6 +87,20 @@ try{
    assert.ok(view.pageOverrun<=2,'no page-wide horizontal scrolling');
    assert.equal(view.katexErrors,0,'valid KaTeX across all actual root expressions');
    assert.deepEqual(errors,[],'no browser errors');
+   if(width===1440&&theme==='light'){
+    await page.setViewportSize({width:390,height:844});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const resized=await page.evaluate(()=>({
+     docOverrun:document.documentElement.scrollWidth-innerWidth,
+     equationOverflow:getComputedStyle(document.querySelector('#laneEq0')).overflowX,
+     katexErrors:document.querySelectorAll('.katex-error').length
+    }));
+    assert.ok(resized.docOverrun<=2,'live resize must not introduce page-wide overflow');
+    assert.equal(resized.equationOverflow,'visible','math must refit without scrollbars after resize');
+    assert.equal(resized.katexErrors,0,'math must remain valid after live resize');
+    await page.setViewportSize({width,height});
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   }
    await page.screenshot({path:'artifacts/production-grooves/'+width+'-'+theme+'.png',fullPage:true});
    results.push({width,height,theme,grooves:options.length,formula:view});
    await page.close();

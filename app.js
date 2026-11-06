@@ -82,11 +82,22 @@ const GROOVE_LABELS=Object.freeze({
  'iron':'05 · Peak · relentless acid pressure',
  'bossa-classic':'06 · Acoustic · bongo and cross-stick'
 });
+const PRESET_COLLECTIONS=Object.freeze({
+ grooves:['grooves'],
+ club:['bunker','hardhouse','acid','hardcore'],
+ breaks:['dnb','jungle'],
+ acoustic:['brazil','other'],
+ mathematics:['poly','experimental']
+});
+const collectionForCategory=category=>
+ Object.keys(PRESET_COLLECTIONS).find(group=>PRESET_COLLECTIONS[group].includes(category))||'mathematics';
 const inBrowse=(preset,category)=>category==='grooves'
- ? GROOVE_IDS.includes(preset.id):preset.category===category;
+ ? GROOVE_IDS.includes(preset.id):category==='all'
+ ? (browseCollection==='grooves'?GROOVE_IDS.includes(preset.id):PRESET_COLLECTIONS[browseCollection]?.includes(preset.category))
+ : preset.category===category;
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker',browseCollection='club';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -265,7 +276,8 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
- $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`;
+ $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${Object.keys(PRESET_COLLECTIONS).length} collections`;
+ $('collectionSelect').value=browseCollection;
  $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
  const selected=PRESETS.find(p=>p.id===activePresetId);
@@ -904,7 +916,14 @@ function applyPreset(p){
  cycleBars=p.bars===2?2:1;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
- activeCategory=p.category;browseCategory=browseCategory==='grooves'&&GROOVE_IDS.includes(p.id)?'grooves':p.category;
+ activeCategory=p.category;
+ if(browseCategory==='all'&&PRESET_COLLECTIONS[browseCollection]?.includes(p.category)){
+  // Preserve the broad collection view when an example is explicitly loaded.
+ }else if(browseCategory==='grooves'&&GROOVE_IDS.includes(p.id)){
+  browseCollection='grooves';
+ }else{
+  browseCategory=p.category;browseCollection=collectionForCategory(p.category);
+ }
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -1535,7 +1554,17 @@ function setupEvents() {
   button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
   if(open)renderRootRule();
  });
- $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
+ $('collectionSelect').addEventListener('change',e=>{
+  browseCollection=e.target.value;
+  browseCategory=browseCollection==='grooves'?'grooves':'all';
+  renderPresets();
+ });
+ $('categorySelect').addEventListener('change',e=>{
+  browseCategory=e.target.value;
+  if(browseCategory==='grooves')browseCollection='grooves';
+  else if(browseCategory!=='all')browseCollection=collectionForCategory(browseCategory);
+  renderPresets();
+ });
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{
   const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);

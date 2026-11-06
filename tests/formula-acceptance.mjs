@@ -4,6 +4,19 @@ import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const screens=[[1600,1000],[1440,900],[1280,800],[1024,768],[768,1024],[390,844]];
 const reports=[];fs.mkdirSync('artifacts/formula-acceptance',{recursive:true});
+const mandatoryReferences=[
+  ['z=a+bi',/z=a\+bi/],
+  ['polar',/z=r\\left\(\\cos\\theta\+i\\sin\\theta\\right\)/],
+  ['exponential',/z=re\^\{i\\theta\}/],
+  ['modulus',/r=\\sqrt\{a\^2\+b\^2\}/],
+  ['argument',/\\theta=\\operatorname\{atan2\}\(b,a\)/],
+  ['roots',/w_k=\\sqrt\[n\]\{r\}/],
+  ['root set',/R_n\(z\)=\\\{/],
+  ['indices',/k=0,\\ldots,n-1/],
+  ['nonzero',/z\\ne0/],
+  ['coordinate identities',/\\Re\(z\).*\\Im\(z\).*\\arg\(z\)/]
+];
+
 try{
  for(const [width,height] of screens)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
@@ -35,6 +48,10 @@ try{
     fractionalEquations:document.querySelector('#rootPhaseFormula .frac-line')!==null};
   });
   assert.equal(value.formulas.length,10,'ten mandatory formula references '+width+'/'+theme);
+  for(let i=0;i<mandatoryReferences.length;i++){
+   assert.match(value.formulas[i].content,mandatoryReferences[i][1],
+    'mandatory formula '+mandatoryReferences[i][0]+' must match contractual KaTeX source at '+width+'/'+theme);
+  }
   assert.ok(value.formulas.every(f=>f.rendered&&f.math&&!f.clipping),
    'KaTeX and MathML present, formulas not clipped in hidden area '+width+'/'+theme);
   assert.equal(value.errors,0,'no KaTeX errors '+width+'/'+theme);
@@ -54,9 +71,19 @@ try{
     value.labels.phaseThreequarters.rect.left<value.plot.x+value.plot.width/2,
     'time phases follow top/right/bottom/left geometry');
   assert.deepEqual(errors,[],'no JavaScript errors');
+  // Preserve DOM-derived, per-formula evidence and an actual screenshot for
+  // each required viewport/theme state. These are not human visual sign-offs.
+  const screenshot='artifacts/formula-acceptance/'+width+'-'+theme+'.png';
   reports.push({width,height,theme,formulaCount:value.formulas.length,
-    fractionSizes:Object.fromEntries(Object.entries(value.labels).map(([k,l])=>[k,l.font])),
-    clippingErrors:0});
+    referenceFormulas:value.formulas.map((f,index)=>({
+      index:index+1,latex:f.content,hasMathML:f.math,rendered:f.rendered,clipped:f.clipping
+    })),
+    graphFractions:Object.fromEntries(Object.entries(value.labels).map(([k,l])=>[k,{
+      latex:l.raw,font:l.font,mathml:l.mathml,stacked:l.verticalFraction
+    }])),
+    selectedRootLatex:value.selected,selectedRootHasStackedFraction:value.fractionalEquations,
+    screenshot:screenshot.replace('artifacts/',''),clippingErrors:0});
+  await page.screenshot({path:screenshot,fullPage:true});
   await page.close();
  }
  const page=await browser.newPage({viewport:{width:1280,height:800}});

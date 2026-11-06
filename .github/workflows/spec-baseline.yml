@@ -1,7 +1,9 @@
 name: Requirement registry and baseline
 on:
+  pull_request:
+    branches: [main]
   push:
-    branches: [upgrade/spec-2026-11-math-audio]
+    branches: [main]
     paths:
       - MASTER_IMPLEMENTATION_SPEC.md
       - TASKS.md
@@ -9,6 +11,8 @@ on:
       - scripts/**
       - tests/spec-baseline.mjs
       - .github/workflows/spec-baseline.yml
+      - NEXT_EXECUTION_PLAN.md
+      - scripts/verify-execution-plan.mjs
   workflow_dispatch:
 permissions:
   contents: read
@@ -23,6 +27,8 @@ jobs:
           node-version: '22'
       - name: Validate requirement registry
         run: node scripts/verify-traceability.mjs
+      - name: Validate 14-item execution coverage
+        run: node scripts/verify-execution-plan.mjs
       - name: Install Chromium
         run: |
           npm install --no-save playwright@1.56.1

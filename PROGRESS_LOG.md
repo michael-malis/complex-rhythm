@@ -73,3 +73,81 @@
 - The previously TODO T-GEO-007-02 has a reproducible >=28px painted Canvas-diameter measurement across six responsive sizes in both themes; all seven other R-GEO-007 children already had independent passed evidence.
 - The verified R-GEO-007 parent and its eight children were reconciled by [ledger CI 42209716913](https://github.com/michael-malis/complex-rhythm/actions/runs/42209716913) without changing any requirement's acceptance wording. Ledger: **294 VERIFIED, 60 IN_PROGRESS, 294 TODO, 4 BLOCKED, 0 FAILED; 52/98 requirements VERIFIED**.
 - This validates the R-GEO-007 test matrix, not the separate geometry-collision elimination requirement R-GEO-002, and not human visual approval.
+
+## 2026-11-06 — Post-merge active backlog and rhythm browser UX
+
+- Based the next phase on the actual merged `main@454b7c4466851e82946034ce4a47019c716ee218`; preserved the existing 98 requirements, 652 task evidence rows, and verified statuses.
+- Replaced the sprawling operational description with **14 macro tasks (M01–M14)** in `NEXT_EXECUTION_PLAN.md`. Each of the 46 open original requirements appears in exactly one macro; the 358 historical unfinished rows are **not** individual day-to-day tickets. `scripts/verify-execution-plan.mjs` enforces coverage and consistent historical IDs. This change does not create new verification claims.
+- Implemented the user-requested `CR-UX-001`: Rhythm examples starts expanded at all sizes. Switching Category browses without loading another preset, editing state, stopping playback, or changing sample family behavior. The Example dropdown clearly asks for an explicit selection if the current rhythm belongs to another category; selecting a rhythm still loads it normally.
+- Decoupled `browseCategory` from the loaded preset's `activeCategory` to ensure that sample fallback and instrument gain remain consistent when browsing.
+- Updated `tests/ui-smoke.mjs`, `tests/preset-modified.mjs`, added `tests/preset-category-navigation.mjs`, and registered these tests in the full UI workflow. An intermediate new test incorrectly called `inputValue()` on an `option`; corrected to `getAttribute('value')` and preserved the failed run for traceability.
+- **Full PASS:** [GitHub Actions 42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501), including the plan validator, real category switching while Web Audio is active on desktop and mobile, preserved edited preset identity, all original math/audio tests. Marked **M02 VERIFIED**. Historical source counters remain **294/652 VERIFIED** and **52/98 requirements VERIFIED** until specific original requirements pass their acceptance gates.
+- Corrected stale merge/deployment language in `README.md`, `FINAL_REPORT.md` and the report synchronization script. Published does not mean fully accepted. New work remains on `planning/post-merge-2026-11-06` pending its own review/merge.
+
+## 2026-11-06 — Unified rhythm execution and post-merge QA (second development phase)
+
+- Created consolidated technical GitHub Issues [#5–#15](https://github.com/michael-malis/complex-rhythm/issues); reused [#2](https://github.com/michael-malis/complex-rhythm/issues/2) and [#3](https://github.com/michael-malis/complex-rhythm/issues/3) for human-dependent blockers. No unverified assignment to a person or autonomous coding agent was claimed.
+- Updated M01 governance: all source-preserving audit, mathematical baseline, preset-diversity and UI/audio GitHub workflows now target PR/main and are read-only where they previously pushed to the retired upgrade branch. New `scripts/verify-ledger-summary.mjs` independently checks that the 652 task rows and 98 requirement parents match JSON summary, without promoting any statuses.
+- Updated M08: `activateLoadedRhythm()` consolidates preset/JSON audio switching; imports select the correct sound category before scheduling and map unknown projects to neutral audio instead of inheriting the previously loaded genre. `samplePlan()` is an immutable diagnostic. `markCustom(false)` removes the duplicate voice-bus invalidation previously caused by changing BPM or lane cycle length.
+- Updated M10: `currentSchedulerLanes()` is now the shared mathematical event projection for timeline and Web Audio. Added `tests/unified-rhythm-import.mjs`, `tests/single-reschedule-per-edit.mjs` and `tests/all-presets-same-semantics.mjs`; the latter compares all 50 catalog selections with their JSON imports for identical track models, provenance, phase maps, sound families and planner outputs. Imported custom titles are preserved on re-export.
+- **PASS:** [full UI/audio CI 42218090614](https://github.com/michael-malis/complex-rhythm/actions/runs/42218090614); [single bus invalidation CI 42216970184](https://github.com/michael-malis/complex-rhythm/actions/runs/42216970184). This demonstrates technical progress in M08/M10, **not** completion of all source R-SND/R-PST conditions or human listening.
+- Geometry audit `tests/geometry-collision-audit.mjs` measured 12 viewport/theme cases for 50 presets: initially **120 dot/label overlaps**, **0 between-ring overlaps**, and **388 within-ring overlaps on dense default views**. Dense roots are intended to remain investigable with zoom. Implemented dynamic phase-label placement and added `tests/phase-label-adaptation.mjs` to test 50 presets across responsive themes; requirement R-GEO-002 remains open until this and the remaining arrow/geometry criteria genuinely pass.
+- Historical task counts remain **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED**, **52/98 verified parent requirements**. Macro progress: **1 VERIFIED / 3 IN_PROGRESS / 8 TODO / 2 BLOCKED**. No original task statuses changed as a side effect of planning or diagnostics.
+
+## 2026-11-06 — Three atomic geometry subchecks verified
+
+- **PASS:** [complete UI/audio regression 42222450657](https://github.com/michael-malis/complex-rhythm/actions/runs/42222450657). Dynamic phase labels avoid root markers and all four geometric ring arcs in **600 actual preset/viewport/theme combinations** (50 × 6 × 2).
+- **PASS:** `tests/playback-hand-clearance.mjs`: 12,916 independent playback hand/phase/viewport cases with clearance for active root halos, plus the actual segmented Canvas draw integration.
+- Verified T-GEO-002-02 (root/label), T-GEO-002-03 (root/playback pointer) and T-GEO-002-04 (KaTeX fraction/ring) with the CI and commit linked directly in TASKS.md. T-GEO-002-01 remains TODO because simultaneous **animated** neighboring markers could still need clearance. Parent R-GEO-002 and macro M03 remain IN_PROGRESS.
+- Full source ledger now **297 VERIFIED / 60 IN_PROGRESS / 291 TODO / 4 BLOCKED / 0 FAILED**, with **52/98 parent requirements VERIFIED**. No previously verified task status was reset.
+
+## 2026-11-06 — R-GEO-002 parent accepted after animated mobile clearance
+
+- **Full PASS:** [UI/audio CI 42224570142](https://github.com/michael-malis/complex-rhythm/actions/runs/42224570142): mobile simultaneous attacks, 50-preset geometry, root/fraction label separation (600 states), playback hand clearance (12,916 cases), 128-phase nonselected lane zoom with preserved pan, 28px baseline markers, old audio and MathML tests.
+- Fixed simultaneous beat pulses on tight concentric rings: a minimum 1.4x root expansion is retained, but the compact outline and halo are adapted to measured radial spacing to avoid obscuring adjacent active dots. Normal-size plots retain the full accent and glow.
+- R-GEO-002 and T-GEO-002-01 are now VERIFIED; the previously verified T-GEO-002-02/-03/-04 keep their own evidence. This does not complete the unrelated R-UI-007 or R-QT-003 and does not represent human music or device acceptance.
+- Historical totals **299 VERIFIED / 59 IN_PROGRESS / 290 TODO / 4 BLOCKED / 0 FAILED**, **53/98 requirements**. Operational macros: 1/14 accepted, M03 still in progress.
+
+## 2026-11-06 — M04 readability and contrast accepted
+
+- [Full UI/audio CI 42227657811](https://github.com/michael-malis/complex-rhythm/actions/runs/42227657811) PASS. `tests/expanded-ui-typography.mjs` audits five expanded documentation/control panels plus all 37 existing instrument labels, 15 actual synthesized voices versus sample-only fallback, all generated root-family settings, tooltips and 12 responsive theme states. No missing label or unreadably small control in the sampled matrix.
+- `tests/accessibility-contrast.mjs` measured 198 visible text samples per state across 7 viewports and 2 themes: 4.5:1 normal, 7:1 important math/numeric, 3:1 graphics, 108 CSS font-size rules >=16px; 0 violations. Confirmed the explicitly specified light text colors.
+- Accepted R-UI-004 (six children) and R-UI-005 (three children), all 11 historical tasks VERIFIED. Macro M04 VERIFIED. Source ledger now 310/652 VERIFIED, 55/98 parent requirements VERIFIED. No change to original criteria or manual acceptance blockers.
+
+## 2026-11-06 — M03 responsive geometry and mathematical typography complete
+
+- [Full UI/audio CI 42229288619](https://github.com/michael-malis/complex-rhythm/actions/runs/42229288619) PASS. New `tests/responsive-content-access.mjs` confirmed no page-wide horizontal overflow, clipped content, lane/panel overlap, missing critical controls or sub-16px control text at all six mandatory viewport dimensions and in both themes. Four lanes reflow 2×2 or one column as required; compact viewport scrolls vertically; no global transform scaling.
+- New `tests/formula-geometry-complete.mjs` confirmed ten required KaTeX+MathML references, root formula centering, separate math lines and visible horizontal scrolling after adding all five allowed extra root families on each viewport/theme. Root/phase label and 28px dot geometry remain protected by prior CI.
+- Verified R-UI-006 (seven children), R-UI-007 (three remaining children, ten already verified) and R-QT-003 (two remaining children, four already verified). With previously verified R-GEO-002, macro **M03 VERIFIED**. Updated all three evidence tables atomically. Original criteria preserved; external visual screenshot #2 and human audio/mobile/screen-reader #3 still blocked.
+- New baseline: **325 VERIFIED / 54 IN_PROGRESS / 269 TODO / 4 BLOCKED / 0 FAILED; 58/98 parent requirements**; macro **3/14** verified.
+
+## 2026-11-06 — Independent coincidence and source-mapping regression
+
+- [Full UI/audio CI 42231878412](https://github.com/michael-malis/complex-rhythm/actions/runs/42231878412) PASS after correctly opening the Advanced Cartesian editor in the root-angle infographic test. Added `tests/cross-lane-coincidence.mjs`: 50 preset event maps and a deliberate four-lane simultaneous root-union fixture, preserving per-lane source identity and scheduler interval partitioning.
+- [Preset diversity CI 42232392096](https://github.com/michael-malis/complex-rhythm/actions/runs/42232392096) PASS for the separate genre matrix validator. New `GENRE_IMPLEMENTATION_MATRIX.md` connects 15 existing source-researched genres to real BPM, root degrees and voice selection, validated against `PRESET_INVENTORY.json`. No external research was repeated and no new product feature was added.
+- M09 moved from TODO to IN_PROGRESS. M08/M10 remain IN_PROGRESS pending the full original sound/genre acceptance; the source ledger stays **325 VERIFIED / 54 IN_PROGRESS / 269 TODO / 4 BLOCKED, 58/98 requirements**, without premature promotion.
+
+## 2026-11-06 — Genre research requirement acceptance
+
+- Existing `RHYTHM_RESEARCH.md` documents 15 required musical genres, BPM/accents/drums/bass/synthesis/processing/math implications, five required technical sources (independently checked on 2026-11-05) and supplemental independent sources. No redundant web study was done.
+- New `GENRE_IMPLEMENTATION_MATRIX.md` links 15 genres to real 50-preset catalog IDs, actual BPM, four root degrees and sound assignments; five primary technical sources now each have Source→Technique→Implementation→Preset/Patch→Verification with explicit unreproduced features.
+- **PASS:** [genre source CI 42233466514](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514) validates 15 genre rows and 5 links to real implemented presets/voices and existing tests; [full UI/audio 42233466373](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373) PASS.
+- Verified R-RES-001/002/003 and their 29 historical children (32 new verified task rows). M09 VERIFIED, **not** an assertion of exact genre authenticity or human listening.
+- Historical ledger now **357 VERIFIED / 51 IN_PROGRESS / 240 TODO / 4 BLOCKED / 0 FAILED**, **61/98 parent requirements**. Operational **4/14 VERIFIED**, remaining 3 IN_PROGRESS / 5 TODO / 2 BLOCKED.
+
+## 2026-11-06 — User-directed progressive disclosure (pending validation)
+
+- Revised the existing composition panel for **union of mathematical points**, not arbitrary nested operation trees. Exposed the existing one-point and generated-root-set actions at the top, kept base/added/union event strips, and moved intersection/Euclidean controls into advanced mathematical settings.
+- Removed always-visible “Magnify plot” toolbar in favor of conditional dense-root enlargement based on real minimum phase chord spacing. Preserved the existing underlying magnified and pannable Canvas mode.
+- Moved oscillator/filter/envelope settings into a collapsed advanced synth section; kept lane volume and instrument preview visible. Sample-backed voices hide irrelevant synth controls.
+- Existing 14 macro tasks and historical VERIFIED entries were not reset. **PASS** [full UI/audio CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060), including the new real desktop/mobile union-first workflow, all expanded sound controls, 12 responsive/contrast views, 50 preset geometry and original math/audio tests. No original requirement is automatically certified by this extra UX milestone.
+
+## 2026-11-06 — Acid synthesizer requirement formally verified
+
+- Independent OfflineAudioContext recorded 15 pairwise differences among six acid instruments and 18 controlled parameter-response renders in `tests/acid-parameter-response.mjs`. Actual saw/square oscillators, resonant biquad, cutoff/filter envelope, decay, accent, pitch glide/modulation and drive waveshaper are implemented in `synthesis.js` and remain editable under Advanced sound settings. [Full CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS.
+- Marked original R-SND-003 + ten technical child checks VERIFIED, preserving R-SND-001/004 and M07 as open for distinctive drums and sonic review. Historical **368/652 VERIFIED**, **62/98 requirements**. Operational macro **4/14 VERIFIED**, M07 IN_PROGRESS.
+
+## 2026-11-06 — Dynamic mathematical editing accepted
+
+- [Full CI 42241763532](https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532) passed 4 live angular editors + an added point, with precise phase values, preserved caret/focus, KaTeX/MathML, one Web Audio scheduler, and the prior 41-event coalescing/12-layout checks.
+- R-TEX-007 and all eleven original children VERIFIED; M06 IN_PROGRESS because per-formula before/after R-TEX-008 audit is not yet complete. Historical **380/652 VERIFIED, 63/98 requirements**.

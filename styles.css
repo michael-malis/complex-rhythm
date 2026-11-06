@@ -94,6 +94,7 @@ html{font-size:18px}
 .label-half{bottom:0;left:50%;transform:translateX(-50%)}
 .label-threequarters{left:0;top:50%;transform:translateY(-50%)}
 .figure-tools{display:flex;gap:15px;align-items:center;justify-content:center;flex-wrap:wrap;padding:9px 11px}
+.figure-tools[hidden],.advanced-sound-settings[hidden]{display:none!important}
 .figure-tools-hint{font-size:16px;color:var(--sub)}
 .selected-root-math{border-top:1px solid var(--fine);border-bottom:1px solid var(--fine);margin-top:13px;padding:9px 0;overflow-wrap:anywhere}
 .selected-root-math>.math-notation{padding:4px 0}
@@ -277,3 +278,50 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .angular-layer .layer-velocity{grid-column:1/-1}
 .composition-actions{display:flex;flex-wrap:wrap;gap:8px}
 @media(max-width:520px){.angular-layer{gap:7px 5px}.angular-layer>label:not(.layer-velocity){font-size:16px}}
+
+
+/* Required compact mathematical rule and accessible expanded unit-circle explanation. */
+.root-rule-header{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.root-rule-info-toggle{min-width:44px;min-height:44px;width:44px;height:44px;border-radius:50%;font-weight:750;background:var(--panel);color:var(--ink);margin-left:auto}
+.root-rule-info-toggle[aria-expanded="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.root-rule-spacing{font-size:18px;color:var(--ink);max-width:100%;overflow-x:auto;padding-top:4px}
+.root-rule-info-panel{margin-top:13px;border-top:1px solid var(--fine);padding-top:12px}
+.root-rule-info-grid{display:grid;grid-template-columns:minmax(230px,280px) minmax(0,1fr);gap:15px;align-items:center}
+.root-rule-svg{width:100%;max-width:280px;aspect-ratio:1;display:block;overflow:visible;color:var(--ink)}
+.root-info-axis{stroke:var(--muted);stroke-width:1;stroke-opacity:.45}
+.root-info-circle{stroke:var(--muted);stroke-width:1.8;fill:none}
+.root-info-axis-text{font-size:16px;fill:var(--sub);font-weight:650}
+.root-info-input-ray{stroke:var(--accent);stroke-width:2;stroke-dasharray:5 4}
+.root-info-spoke{stroke:var(--root-info-color,var(--track-1));stroke-width:1;stroke-opacity:.32}
+.root-info-marker{fill:var(--root-info-color,var(--track-1));stroke:var(--panel);stroke-width:1.2}
+.root-info-marker.first{stroke:var(--ink);stroke-width:1.5}
+.root-info-center{fill:var(--sub)}
+.root-rule-info-math{min-width:0;display:grid;gap:9px;color:var(--ink);font-size:18px}
+.root-rule-info-math .math-notation{max-width:100%;overflow-x:auto;min-height:24px}
+.root-rule-mapping{font-size:17px;line-height:1.5;color:var(--sub)}
+.root-rule-angle-heading{font-size:18px;font-weight:650;margin:12px 0 5px;color:var(--ink)}
+.root-rule-angle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 15px;max-height:210px;overflow-y:auto;overflow-x:hidden;list-style:none;padding:7px;border:1px solid var(--fine);margin:0;scrollbar-gutter:stable}
+.root-rule-angle-list li{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0;font-size:17px;padding:4px 2px;border-bottom:1px solid var(--fine)}
+.root-rule-angle-list .math-notation{min-width:0;overflow-x:auto}
+.root-info-degree{color:var(--sub);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:800px){.root-rule-info-grid{grid-template-columns:minmax(0,1fr)}.root-rule-svg{margin:auto}}
+@media(max-width:519px){.root-rule-angle-list{grid-template-columns:minmax(0,1fr)}.root-rule-header .root-rule-kicker{flex:1 1 160px}}
+
+/* Progressive disclosure: combine mathematical root points first.
+   Advanced set operations and signal synthesis remain available but never
+   compete with the visual union controls on the default surface. */
+.composition-actions{margin:8px 0 14px;justify-content:flex-start}
+.composition-actions .secondary-btn{font-weight:650}
+.advanced-math-settings,.advanced-sound-settings{
+ border-block-start:1px solid var(--fine);margin-top:14px;padding-top:11px
+}
+.advanced-math-settings>summary,.advanced-sound-settings>summary{
+ cursor:pointer;min-height:44px;padding:10px 4px;font-size:17px;color:var(--sub)
+}
+.advanced-sound-settings>summary .quiet{font-size:16px;font-weight:400;margin-inline-start:8px}
+.advanced-math-settings[open],.advanced-sound-settings[open]{padding-bottom:12px}
+.sound-basics{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;padding-top:8px}
+.sound-basics .lane-gain-controls{flex:1 1 210px;min-width:0}
+.sound-basics .lane-gain-controls h4{font-size:17px;font-weight:650;margin:0 0 7px}
+.sound-basics #previewBtn{flex:0 1 auto}
+@media(max-width:519px){.sound-basics{align-items:stretch}.sound-basics #previewBtn{width:100%}.advanced-sound-settings>summary .quiet{display:block;margin:3px 0 0}}

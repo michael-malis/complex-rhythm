@@ -1,67 +1,55 @@
-name: Preset diversity audit
+name: Preset diversity audit (read-only)
 on:
-  push:
-    branches: [upgrade/spec-2026-11-math-audio]
+  pull_request:
+    branches: [main]
     paths:
       - app.js
       - math-io.js
       - tests/preset-diversity.mjs
+      - GENRE_IMPLEMENTATION_MATRIX.md
+      - RHYTHM_RESEARCH.md
+      - PRESET_INVENTORY.json
+      - PRESET_STRUCTURE_AUDIT.md
+      - scripts/verify-preset-structure.mjs
+      - scripts/verify-genre-mapping.mjs
+      - .github/workflows/preset-diversity.yml
+  push:
+    branches: [main]
+    paths:
+      - app.js
+      - math-io.js
+      - tests/preset-diversity.mjs
+      - GENRE_IMPLEMENTATION_MATRIX.md
+      - RHYTHM_RESEARCH.md
+      - PRESET_INVENTORY.json
+      - PRESET_STRUCTURE_AUDIT.md
+      - scripts/verify-preset-structure.mjs
+      - scripts/verify-genre-mapping.mjs
       - .github/workflows/preset-diversity.yml
   workflow_dispatch:
 permissions:
-  contents: write
-concurrency:
-  group: preset-diversity-research
-  cancel-in-progress: true
+  contents: read
 jobs:
   report:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate 15 genre-to-preset source mappings
+        run: node scripts/verify-genre-mapping.mjs
       - name: Install Chromium
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Generate reproducible preset audit
+      - name: Generate and verify mathematical diversity without committing to main
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-diversity.log 2>&1 &
           node tests/preset-diversity.mjs
-      - name: Save report without overwriting newer source revisions
-        run: |
-          set -euo pipefail
-          BRANCH='upgrade/spec-2026-11-math-audio'
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          SOURCE_APP_SHA="$(git rev-parse HEAD:app.js)"
-          SOURCE_MATH_SHA="$(git rev-parse HEAD:math-io.js)"
-          git add PRESET_DIVERSITY_REPORT.md PRESET_INVENTORY.md PRESET_INVENTORY.json
-          if git diff --cached --quiet; then
-            echo 'No changes to reproducible mathematical inventory.'
-            exit 0
-          fi
-          git commit -m 'Update mathematical preset diversity report'
-          for attempt in 1 2 3; do
-            git fetch origin "$BRANCH"
-            REMOTE_APP_SHA="$(git rev-parse "origin/$BRANCH:app.js")"
-            REMOTE_MATH_SHA="$(git rev-parse "origin/$BRANCH:math-io.js")"
-            if [[ "$REMOTE_APP_SHA" != "$SOURCE_APP_SHA" || "$REMOTE_MATH_SHA" != "$SOURCE_MATH_SHA" ]]; then
-              echo 'Newer app/math model exists. Stale report is retained as an artifact; a newer workflow owns publication.'
-              exit 0
-            fi
-            git rebase "origin/$BRANCH"
-            if git push origin "HEAD:$BRANCH"; then
-              exit 0
-            fi
-            echo "Concurrent branch update detected; retry $attempt."
-          done
-          echo 'Unable to publish report after 3 safely rebased attempts.'
-          exit 1
+      - name: Verify 50-preset mathematical structure and similarity evidence
+        run: node scripts/verify-preset-structure.mjs
       - name: Preserve report as artifact
         if: always()
         uses: actions/upload-artifact@v4

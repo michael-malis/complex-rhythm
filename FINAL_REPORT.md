@@ -1,9 +1,7 @@
 # Final acceptance report — not yet accepted
 
-**Date:** 5 November 2026.  
-**Assessment:** **NOT COMPLETE. DO NOT MERGE OR CLAIM PRODUCTION READY.**  
-**Working branch:** [upgrade/spec-2026-11-math-audio](https://github.com/michael-malis/complex-rhythm/tree/upgrade/spec-2026-11-math-audio).  
-**Draft integration:** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1).  
+**Post-merge status (6 November 2026):** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was merged into [main](https://github.com/michael-malis/complex-rhythm/tree/main) at `454b7c4466851e82946034ce4a47019c716ee218`; its UI regression and GitHub Pages deployment passed. **The app is published, but full requirements and human acceptance are NOT COMPLETE.** Do not claim production-readiness signoff merely because a PR was merged.  
+**Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
 ## 1–6. Requirement accounting
@@ -13,12 +11,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **294** |
-| Tasks formally marked IN_PROGRESS | 60 |
-| Tasks formally marked TODO | 294 |
+| Tasks formally marked VERIFIED | **380** |
+| Tasks formally marked IN_PROGRESS | 49 |
+| Tasks formally marked TODO | 219 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **52 of 98** |
+| Parent requirements VERIFIED | **63 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -122,10 +120,10 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
 | VII — final verification | NOT PASSED | 294 VERIFIED, 294 TODO, 60 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
-**Release condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. Until then, remain on draft PR rather than silently publishing incomplete work.
+**Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 
 ## Engineering acceptance addendum — 2026-11-06
 
 The complete browser, pure-math, sound-rendering, four-lane rhythm, interoperability, typography, responsive and audio stress workflow **passed** for commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`: [GitHub Actions 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633). The sound stress test now measures a four-times interpolated inter-sample peak estimate in addition to sampled peaks; this is not a certified reconstruction/true-peak meter.
 
-Three mandatory LaTeX requirements (formula coverage, dynamic updates, both themes) and the twelve-state viewport matrix now have requirement-specific reproducible evidence in the three-way task registry. Current ledger: **233 VERIFIED, 66 IN_PROGRESS, 349 TODO, 4 BLOCKED = 652 records; 46/98 parent requirements VERIFIED.** Additional automated evidence or human verification is required for the remainder. No production deployment, human audio approval, missing annotated reference image or real-device/screen-reader acceptance is claimed.
+Three mandatory LaTeX requirements (formula coverage, dynamic updates, both themes) and the twelve-state viewport matrix now have requirement-specific reproducible evidence in the three-way task registry. Historical CI snapshot at 42151010633: **233 VERIFIED, 66 IN_PROGRESS, 349 TODO, 4 BLOCKED = 652 records; 46/98 parent requirements VERIFIED**; latest authoritative totals are in the first table and `LEDGER_EVIDENCE_SUMMARY.json`. Additional automated evidence or human verification is required for the remainder. The later main merge and Pages deployment occurred; neither establishes human audio, missing annotated image or real-device/screen-reader acceptance.

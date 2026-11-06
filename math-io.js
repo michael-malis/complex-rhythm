@@ -125,6 +125,36 @@ function mathPhaseAt(elapsedSeconds,cycleBars,barSeconds){
  const span=barSeconds*cycleBars;
  return (((elapsedSeconds/span)%1)+1)%1;
 }
+// Compute the visible parts of a playback hand without drawing through
+// any root marker. All coordinates are relative to the same circle center;
+// this affects only rendering, never mathematical phases or audio scheduling.
+function mathRadialVisibleSegments(length,angle,markers,padding=4){
+ if(!Number.isFinite(length)||length<0||!Number.isFinite(angle)||
+  !Array.isArray(markers)||markers.length>4096||
+  !Number.isFinite(padding)||padding<0||padding>64)
+  throw Error('Invalid playback hand geometry');
+ const ux=Math.cos(angle),uy=Math.sin(angle),blocked=[];
+ for(const mark of markers){
+  if(!mark||![mark.x,mark.y,mark.radius].every(Number.isFinite)||
+   mark.radius<0||mark.radius>4096)throw Error('Invalid root marker geometry');
+  const along=mark.x*ux+mark.y*uy;
+  const perp=mark.x*uy-mark.y*ux;
+  const radius=mark.radius+padding;
+  if(Math.abs(perp)>=radius)continue;
+  const halfChord=Math.sqrt(Math.max(0,radius*radius-perp*perp));
+  const start=Math.max(0,along-halfChord),end=Math.min(length,along+halfChord);
+  if(end>start)blocked.push([start,end]);
+ }
+ blocked.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const segments=[];
+ let cursor=0;
+ for(const [start,end] of blocked){
+  if(start>cursor+1e-9)segments.push({from:cursor,to:start});
+  cursor=Math.max(cursor,end);
+ }
+ if(length>cursor+1e-9)segments.push({from:cursor,to:length});
+ return segments;
+}
 function mathAnalyzeSchedule(schedule,tolerance=1e-6){
  if(!Array.isArray(schedule)||!Number.isFinite(tolerance)||tolerance<=0)throw Error('Invalid schedule analysis');
  const ordered=[...schedule].sort((a,b)=>a.time-b.time||a.lane-b.lane);
@@ -139,7 +169,7 @@ function mathAnalyzeSchedule(schedule,tolerance=1e-6){
  }
  return {totalEvents:ordered.length,uniqueMoments,sharedMoments,sharedLaneEvents};
 }
-const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM,planEvents:mathPlanEvents,commonCycle:mathCommonCycle,phaseAt:mathPhaseAt,analyzeSchedule:mathAnalyzeSchedule};
+const exports={principalArg:mathPrincipalArg,polarOf:mathPolarOf,fromPolar:mathFromPolar,parseAngle:mathAngle,parseComplex:mathParseComplex,rootPhases:mathRootPhases,unique:mathUnique,intersection:mathIntersect,euclidean:mathEuclidean,lcm:mathLCM,planEvents:mathPlanEvents,commonCycle:mathCommonCycle,phaseAt:mathPhaseAt,radialVisibleSegments:mathRadialVisibleSegments,analyzeSchedule:mathAnalyzeSchedule};
 root.RhythmMath=Object.freeze(exports);
 if(typeof module!=='undefined'&&module.exports)module.exports=exports;
 })(typeof window!=='undefined'?window:globalThis);

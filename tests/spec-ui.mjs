@@ -108,8 +108,8 @@ try{
  ok(spacing.chord>=34-1e-8,'magnified outer n64 points separated at least 34px: '+JSON.stringify(spacing));
  await page.locator('.lane[data-lane="3"] .lane-select').click();
  await page.waitForTimeout(80);
- const smaller=(await page.locator('#orbitCanvas').boundingBox()).width;
- ok(smaller===900,'a single root has no adjacent-root separation requirement');
+ const beforeInner=(await page.locator('#orbitCanvas').boundingBox()).width;
+ ok(beforeInner>=spacing.width-1,'selecting a sparse lane preserves zoom required by another dense lane');
  await page.locator('#trackN3').fill('64');
  await page.waitForTimeout(80);
  spacing=await page.evaluate(()=>{
@@ -117,7 +117,7 @@ try{
    const radius=window.RhythmResearch.radiiForSize(width)[3];
    return {width,chord:2*radius*Math.sin(Math.PI/64)};
  });
- ok(spacing.width>smaller,'editing n while magnified recomputes plot size');
+ ok(spacing.width>beforeInner,'densifying the innermost lane increases four-lane magnification');
  ok(spacing.chord>=34-1e-8,'innermost n64 circle has minimum root chord 34px: '+JSON.stringify(spacing));
  await page.locator('#zoomBtn').click();
  ok((await page.locator('#zoomBtn').getAttribute('aria-pressed'))==='false','zoom toggle restores standard view');

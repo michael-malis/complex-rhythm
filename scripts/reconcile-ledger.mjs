@@ -130,6 +130,47 @@ verified.set('R-GEO-007',{
  evidence:'CI:42209284567; tests/geometry-acceptance.mjs actual 28px+ Canvas diameters, 4 radii and 16 painted cardinal markers across 12 viewport/theme states; tests/formula-acceptance.mjs label placements; tests/collision-lanes.mjs simultaneous events; tests/ui-smoke.mjs dragging/resize; tests/spec-ui.mjs magnification; comparative screenshots',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+verified.set('R-UI-006',{
+ evidence:"CI:42229288619; tests/responsive-content-access.mjs: 6 mandatory viewports × both themes; four-lane grid reflow, no text clipping or page-wide x overflow, critical controls remain reachable, 16px minimum, vertical scrolling, existing magnified plot; no global scale",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
+verified.set('R-UI-007',{
+ evidence:"CI:42229288619; tests/responsive-content-access.mjs, formula-acceptance.mjs, touch-targets.mjs, geometry-acceptance.mjs: 6 mandatory viewports × both themes; all critical controls, readouts and four rings accessible, no panel/lane overlap or clipping, proper font scales and zoom",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
+verified.set('R-QT-003',{
+ evidence:"CI:42229288619; tests/formula-geometry-complete.mjs: 10 mathematical KaTeX+MathML references and five additional root families across 6 viewport sizes × both themes; no formula/label overlap, clipping or off-center root displays, long formulas scroll; tests/accessibility-contrast.mjs thresholds pass",
+ commit:'bad7c7589519b1cc49667f7c956187f69676a63b'
+});
+verified.set('R-UI-004',{
+ evidence:"CI:42227657811; tests/expanded-ui-typography.mjs: all mandatory expanded panels, 37 selectable voice labels, 15 synth-specific control groups, generated root families, tooltips and 12 responsive theme/viewport states; all PASS",
+ commit:'1f9e9eb8444ca345c7285343344bfad7d4da5419'
+});
+verified.set('R-UI-005',{
+ evidence:"CI:42227657811; tests/accessibility-contrast.mjs: 14 actual light/dark viewport cases, 198 text samples per case (normal >=4.5:1, key mathematical/numeric >=7:1), track palette >=3:1, all 108 authored CSS font-size rules >=16px; light palette --ink #202420, --sub #414b47, --muted #46534e",
+ commit:'1f9e9eb8444ca345c7285343344bfad7d4da5419'
+});
+// Responsive Canvas marker/ring/fraction/pointer geometry and event-aware
+// pan/zoom are accepted only after the complete run including the mobile
+// simultaneous-attack test passes.
+verified.set('R-GEO-002',{
+ evidence:"CI:42224570142; tests/geometry-acceptance.mjs, phase-label-adaptation.mjs (600 states), playback-hand-clearance.mjs (12,916 cases), animated-adjacent-ring-clearance.mjs (50 presets + live mobile audio), multi-lane-magnification.mjs; all R-GEO-002 conditions PASS",
+ commit:'bddc6a4497d4f0c9b2ac234a2cecef6a000631ee'
+});
+verified.set('R-RES-001',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
+verified.set('R-RES-002',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
+verified.set('R-RES-003',{
+ evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
+ commit:'62511a44119f489739721f408117f70024351b55'
+});
+verified.set('R-SND-003',{evidence:"CI:42240006060 full UI/audio PASS; tests/acid-parameter-response.mjs six acid voices, 15 pairwise waveform comparisons, 18 oscillator/filter/slide/drive/decay/accent/modulation renders; tests/audio-offline.mjs output spectral/attack and peak metrics; synthesis.js real oscillator, resonant biquad, filter envelope, waveshaper and pitch automation; synth controls preserved under Advanced sound settings. Human genre listening remains M13.",commit:'3b3ce2132c5fa8cad2c119323c794b993ba7b433'});
+verified.set('R-TEX-007',{evidence:"CI:42241763532 full UI/audio PASS; tests/math-live-input-stability.mjs 4 live 120-degree lane editors and additional point preserve focus/caret, exact phases, KaTeX/MathML and one scheduler; tests/live-edit-reschedule.mjs 41 rapid argument edits coalesced; tests/formula-acceptance.mjs and formula-geometry-complete.mjs no raw TeX, clipping, collisions or offscreen math in 12 layout states; tests/root-angle-infographic.mjs 4 lanes, zero/negative angles and audio phases.",commit:'a6d5c6718878e1946d54ac3a884e6f8dcb89cd69'});
 // The real transport/Canvas regression proves >1.4x scale across multiple
 // frames, audible-event timing, stationary reduced-motion brightness and no
 // residual pulse after transport stops. Full UI/audio pipeline passed.

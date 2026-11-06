@@ -58,3 +58,48 @@ Display a compact, readable, always-available KaTeX explanation near the selecte
 ### Acceptance evidence for verified engineering changes
 
 Angle-first editing, dual-unit synchronization, direct single-angle additions, symmetric generated families, phase-source provenance, JSON roundtrip and preservation of named modified presets passed in [full regression 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), including `tests/angle-first.mjs` and `tests/preset-modified.mjs`. Human sound evaluation, physical-device/screen-reader signoff and the second annotated source screenshot remain explicit separate release blockers under CR-ANG-004. The term VERIFIED above covers executable engineering criteria, not final production approval.
+
+## CR-UX-001 · Persistent rhythm example browser
+
+**Priority:** P1 · **Status:** VERIFIED (full automated UI/audio regression passed)
+
+The Rhythm examples section is expanded on initial page load on desktop and mobile. The user can still collapse it intentionally.
+
+Browsing a new category **must filter the example dropdown only**; it must not automatically replace the current loaded preset, reset Modified state, change BPM or root sets, restart the transport, or affect the audio/sample category. The currently loaded preset remains identifiable while browsing another category. Only explicitly choosing an example changes the loaded rhythm. Selecting a preset by mathematical ratio is still an explicit load action. New JSON import and explicit preset selection keep the displayed category synchronized with the loaded preset.
+
+**Acceptance:** desktop/mobile Chromium tests with an active Web Audio transport, zero unintended state changes while browsing five categories, and explicit selection of a new example while playback remains active. Tests: `tests/preset-category-navigation.mjs`, `tests/preset-modified.mjs`, `tests/ui-smoke.mjs`.
+
+## CR-PLAN-002 · Consolidated operational task list
+
+**Priority:** P0 · **Status:** VERIFIED (14-item plan and exact historical coverage tested)
+
+The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidence ledger. Daily execution and project updates use **14 outcome-focused macro tasks** in `NEXT_EXECUTION_PLAN.md`, each with dependencies, measurable exit tests and exact original `R-*` mappings. This reduces the **active work list** without discarding verified or blocked evidence or silently waiving any of the 98 original acceptance requirements.
+
+**Acceptance:** every originally unverified requirement is mapped to exactly one macro task; no duplicates/missing IDs; statuses of historic tasks unchanged by planning; unapproved feature candidates excluded from mandatory counters.
+
+**CI proof:** [42213078501](https://github.com/michael-malis/complex-rhythm/actions/runs/42213078501) passed the full UI/audio regression, including category navigation on 1440px and 390px, preset identity, all 50 presets and the consolidated 14-task coverage validator.
+
+## CR-RHYTHM-003 · Unified beat triggering and rhythm interaction semantics
+
+**Priority:** P0 · **Status:** TODO (planning completed; implementation and dedicated acceptance pending)
+
+**Scope:** tighten and unify existing rules only. This change neither adds a product feature nor introduces a new independent macro task; execute under **M08** (Web Audio / transport / event triggering) and **M10** (mathematical consistency and musical structure across the 50 presets).
+
+- Every audible strike starts from the same canonical phase event produced by the complex-root/added-angle/Euclidean model. Sound and Canvas/time-window visualization use the same event data. Preserve lane-specific cycle lengths, source provenance and per-event accent/velocity.
+- Intra-lane coincident roots merge where set-union semantics require it; coincident strikes from different lanes remain distinct. Do not homogenize the instruments, patterns, genre identities or rhythm formulas.
+- Define a consistent behavior for Play, Pause, Resume, Reset, explicit preset selection, ratio selection, JSON import and live changes of root arguments, degrees, BPM, additional layers, cycle length and audio patch. Browser category filtering never triggers a new rhythm.
+- Use the already implemented Web Audio clock, scheduler, and safe voice cancellation. Prevent duplicate timers, stale notes, lost attacks and unwanted phase jumps after live edits or preset switching.
+- Ensure visual hit pulses follow real audio scheduling, without changing the mathematical root positions. Keep accessible reduced-motion feedback.
+
+**Acceptance:** compare canonical events, actual audio event schedules and rendered event counts in all four lanes across all 50 presets; verify simultaneous hits and overlap semantics, four-lane high-density tests, Play/Pause/Resume/Reset, live edits, preset changes, JSON and required polynomial ratios including `7:11:13:17` and `4:7:9:13`. Retain prior passing evidence, repair actual defects and run complete regression at the implementation SHA. Musical/auditory human acceptance remains separately blocked under M13.
+
+**Specification:** see `NEXT_EXECUTION_PLAN.md` section “Unified rhythm-triggering model”. **No new features and no increase from 14 macro tasks.**
+
+## CR-UX-005 · Union-first mathematical composition and progressive audio disclosure
+
+**Priority:** P1 · **Status:** VERIFIED ([full UI/audio CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS). **No new product features.**
+
+- The user explicitly requested **union of points**, not nested set expressions. Make `R_n(z) ∪ ...` a visible, primary mathematical exploration workflow with explicit “Add point” and “Add root set” controls, multiple added sets, distinct resulting phases and collapsed shared phases. Keep intersection and Euclidean operations available in advanced mathematical settings; preserve saved/imported semantics and the original five-layer limit.
+- Hide the generic “Magnify plot” button from uncomplicated fit views. Offer a clearly named contextual magnification control only when actual combined root phases have less than the 34px inspection separation, and keep exit available while magnified. Preserve dense-root magnification and pan tests.
+- Keep lane volume and preview visible, but collapse oscillator/filter/synthesis sliders under “Advanced sound settings” and hide the whole synth panel for sample-backed voices. Preserve sound parameters, transport and JSON. No audio engine removal or wave-view feature.
+- Acceptance: on real desktop/mobile layouts, union-of-point controls are immediately discoverable, overlapping roots trigger only one lane event, multiple added sets work, importing existing intersection settings remains possible, sparse plots have no distracting zoom button, dense plots can still magnify, and sound settings are accessible on demand. Full UI/audio CI must pass with additional focused tests before status promotion.

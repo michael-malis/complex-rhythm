@@ -1,10 +1,10 @@
 {
-  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42209284567; baseline proof https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532 math input/geometry/audio proof",
   "tasks": {
-    "VERIFIED": 294,
+    "VERIFIED": 380,
+    "IN_PROGRESS": 49,
+    "TODO": 219,
     "BLOCKED": 4,
-    "IN_PROGRESS": 60,
-    "TODO": 294,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -15,6 +15,7 @@
     "R-TEX-001",
     "R-TEX-003",
     "R-GEO-001",
+    "R-GEO-002",
     "R-GEO-003",
     "R-GEO-004",
     "R-GEO-005",
@@ -59,7 +60,17 @@
     "R-QT-002",
     "R-QT-004",
     "R-QA-001",
-    "R-QA-003"
+    "R-QA-003",
+    "R-UI-004",
+    "R-UI-005",
+    "R-UI-006",
+    "R-UI-007",
+    "R-QT-003",
+    "R-RES-001",
+    "R-RES-002",
+    "R-RES-003",
+    "R-SND-003",
+    "R-TEX-007"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -67,5 +78,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "An engineering proof does not replace the missing human audio and original screenshot acceptance."
+  "note": "Dynamic root/math/audio/input requirement R-TEX-007 VERIFIED. R-TEX-008 formula-by-formula documentation still open."
 }

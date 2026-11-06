@@ -73,7 +73,7 @@ for(const study of EXPERIMENTAL_STUDIES){
 
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -219,23 +219,31 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
  $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`;
- $('categorySelect').value=activeCategory;
+ $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
- if(!activePresetId){
+ const selected=PRESETS.find(p=>p.id===activePresetId);
+ const inBrowseCategory=selected?.category===browseCategory;
+ if(activePresetId&&!inBrowseCategory){
+  const option=document.createElement('option');
+  option.value='__browse__';option.textContent='Choose an example in this category';
+  option.disabled=true;select.append(option);
+ }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of PRESETS.filter(p=>p.category===activeCategory)){
+ for(const p of PRESETS.filter(p=>p.category===browseCategory)){
   const option=document.createElement('option');option.value=p.id;
   option.textContent=p.name+(p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
- select.value=activePresetId||'__custom__';
- const selected=PRESETS.find(p=>p.id===activePresetId);
- $('presetInfo').textContent=selected?
+ select.value=inBrowseCategory?activePresetId:activePresetId?'__browse__':'__custom__';
+ const description=selected?
   (presetModified?'Modified version of '+selected.name+'. ':'')+
   (selected.character&&selected.mathNote?`${selected.character} Mathematical structure: ${selected.mathNote}`:''):
   (importedProjectName?'Imported project: '+importedProjectName:'');
+ $('presetInfo').textContent=selected&&!inBrowseCategory?
+  `Currently loaded: ${selected.name}${presetModified?' · Modified':''}. Switching categories does not change the rhythm. Select an example to load it. `+description:
+  description;
  const relation=POLYRHYTHM_RELATIONS.find(r=>r.preset===activePresetId);
  $('ratioSelect').value=relation?.ratio||'';
 }
@@ -276,11 +284,22 @@ function syncPrimaryAngles(i,fields=null){
 }
 function renderRootRule(){
  const track=tracks[selectedTrack];if(!track)return;
+ const model=window.RootAngleInfo.model(track.a,track.b,track.n);
  renderTeX('rootRuleEquation','\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}',true);
- renderTeX('rootRuleValues','\\theta=\\arg(z),\\quad n='+track.n+',\\quad k=0,\\ldots,'+(track.n-1));
- const caption=$('rootRuleCaption');
- if(caption)caption.textContent='The argument rotates the pattern; the root degree creates '+track.n+
-  ' equally spaced event'+(track.n===1?'':'s')+'. Circle size identifies an instrument lane, not |z|.';
+ if(model.zero)renderTeX('rootRuleValues','z=0,\\quad \\arg(0)\\text{ is undefined}');
+ else renderTeX('rootRuleValues','\\theta='+window.RootAngleInfo.piTeX(model.theta)+
+  '\\,('+Number(model.thetaDeg.toFixed(3))+'^\\circ),\\quad n='+track.n+
+  ',\\quad k=0,\\ldots,'+(track.n-1));
+ renderTeX('rootRuleSpacing','\\Delta='+window.RootAngleInfo.piTeX(model.spacing)+
+  '\\,('+Number(model.spacingDeg.toFixed(3))+'^\\circ)');
+ $('rootRuleCaption').textContent=model.zero?
+  'The zero complex value has undefined argument and no rhythm events.':
+  'Changing the argument by δ rotates each root by δ/n; spacing remains 2π/n. The circle represents time, not |z|.';
+ window.RootAngleInfo.render(model,{
+  panel:$('rootRuleInfoPanel'),diagram:$('rootRuleDiagram'),input:$('rootRuleInput'),
+  delta:$('rootRuleDelta'),formula:$('rootRuleFormula'),list:$('rootRuleAngleList'),
+  lane:selectedTrack
+ },renderTeX);
 }
 
 function syncVisibleInputs(i) {
@@ -452,8 +471,8 @@ function renderTracks() {
    t.cycleBars=v;
    updateLaneStatus(i);
    if(!playing)pausedPhase=((pausedPhase/cycleSeconds())%1+1)%1;
-   else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.008;}
-   markCustom();renderWindowTimeline();
+   else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.006;}
+   markCustom(false);
   });
   lengthInput.addEventListener('change',()=>{if(lengthInput.getAttribute('aria-invalid')==='true'){lengthInput.value=String(t.cycleBars);lengthInput.removeAttribute('aria-invalid')}});
   length.append(lengthLabel,lengthInput);row.append(length);
@@ -486,16 +505,20 @@ function chooseTrack(i,fromTrackList=false) {
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
 function renderSoundControls() {
- const wrap=$('patchControls');if(!wrap)return;wrap.replaceChildren();
+ const wrap=$('patchControls'),basic=$('laneGainControls'),advanced=$('advancedSoundDetails');
+ if(!wrap||!basic||!advanced)return;
+ wrap.replaceChildren();basic.replaceChildren();
  const t=tracks[selectedTrack];if(!t)return;
- const h=document.createElement('h4');h.textContent='Instrument dynamics';wrap.append(h);
+ const h=document.createElement('h4');h.textContent='Lane volume';basic.append(h);
  const row=document.createElement('label');row.className='patch-control';
  const label=document.createElement('span');label.textContent='Lane gain';
  const output=document.createElement('output');output.textContent=(t.gain??1).toFixed(2);
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
  input.addEventListener('input',()=>{t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);markCustom()});
- row.append(label,output,input);wrap.append(row);
- const defaults=window.RhythmVoices?.definitions?.[t.sound];if(!defaults)return;
+ row.append(label,output,input);basic.append(row);
+ const defaults=window.RhythmVoices?.definitions?.[t.sound];
+ advanced.hidden=!defaults;
+ if(!defaults)return;
  const sub=document.createElement('h4');sub.textContent='Sound synthesis · '+SOUNDS[t.sound];wrap.append(sub);
  const p=document.createElement('p');p.className='small-explain';p.textContent='These controls modify the actual Web Audio voice for this instrument.';wrap.append(p);
  const grid=document.createElement('div');grid.className='patch-grid';
@@ -535,6 +558,9 @@ function renderSpecialRhythms() {
  const choice=document.createElement('select');choice.id='setOperation';choice.setAttribute('aria-label','Root set operation');
  for(const [value,text] of [['union','Union ∪'],['intersection','Intersection ∩']]){const opt=document.createElement('option');opt.value=value;opt.textContent=text;choice.append(opt)}
  choice.value=t.operation||'union';
+ // Intersection is available for advanced mathematics but does not obscure
+ // the default union-of-points model.
+ if(t.operation==='intersection'||t.euclidean)$('advancedMathDetails').open=true;
  choice.addEventListener('change',()=>{t.operation=choice.value;updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  opRow.append(choice);wrap.append(opRow);
  const euRow=document.createElement('label');euRow.className='math-check';
@@ -561,12 +587,12 @@ function renderSpecialRhythms() {
  cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  fillFields();
 }
-function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();renderRootRule()}
+function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  const slider=$('argumentAngle');slider.disabled=a===null;slider.value=a===null?'0':String(Math.round(a));
- $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();
+ $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();renderRootRule();
 }
 function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
@@ -576,9 +602,9 @@ function renderComposition() {
   renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
- $('compositionMetrics').textContent=`${c.merged.length} unique · ${t.layers.length} extra set${t.layers.length===1?'':'s'}`;
+ $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
- $('overlapSummary').textContent=c.overlaps===0?'No coincident phases.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} — each sounds once.`;
+ $('overlapSummary').textContent=c.overlaps===0?'Each phase appears once in the result.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} · merged into one point and one hit.`;
  const example=$('exampleProof'),exampleMatch=t.operation==='union'&&t.n===4&&t.a===1&&t.b===0&&
  t.layers.length===1&&t.layers[0].n===3&&t.layers[0].a===1&&t.layers[0].b===0&&!t.euclidean;
  if(example){
@@ -678,7 +704,17 @@ function renderLayers(){
  });
 }
 
+// Canonical four-lane event plan used by both the UI timeline and Web Audio.
+// Do not maintain separate phase/event interpretations for presentation and sound.
+function currentSchedulerLanes(){
+ return tracks.map(t=>({
+  cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,
+  gain:t.gain??1,patch:t.patch,events:events(t)
+ }));
+}
 function renderWindowTimeline() {
+ requestAnimationFrame(positionPhaseLabels);
+ updateMagnifyControl();
  const summary=$('commonCycle');if(!summary||!tracks.length)return;
  const common=RhythmMath.commonCycle(tracks);
  summary.textContent=`Common period: ${common} ${common===1?'bar':'bars'}`;
@@ -687,7 +723,7 @@ function renderWindowTimeline() {
  slider.value=String(windowStartBar);
  $('windowStartText').textContent=String(windowStartBar+1);
  const start=windowStartBar,span=4,secPerBar=barSeconds();
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
+ const lanes=currentSchedulerLanes();
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
  const analysis=RhythmMath.analyzeSchedule(scheduled);
  const eventSummary=$('eventSummary');
@@ -753,11 +789,11 @@ function renderWindowTimeline() {
  $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
 }
 let pendingEditReschedule=false;
-function markCustom(){
+function markCustom(reschedule=true){
  if(activePresetId!==null&&!presetModified){presetModified=true;renderPresets()}
  // Invalidate any notes already planned under the old complex-number/patch
  // model. Batch rapid slider/drag inputs into one render-frame update.
- if(playing&&audio&&!pendingEditReschedule){
+ if(reschedule&&playing&&audio&&!pendingEditReschedule){
   pendingEditReschedule=true;
   requestAnimationFrame(()=>{
    pendingEditReschedule=false;
@@ -768,12 +804,31 @@ function markCustom(){
   });
  }
  renderWindowTimeline();
+ if(magnified&&!rootDrag)refreshPlotZoom();
 }
-function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
- cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
- if(audio){loadSamples(prioritySampleKeys())}
- if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
- renderPresets();renderTracks();renderEditor();renderWindowTimeline()}
+// Both explicit example selection and JSON import use the same atomic
+// audio transition after replacing tracks, tempo and loaded category.
+// Browse-only category changes never call this function.
+function activateLoadedRhythm(phase,cycle){
+ if(audio)loadSamples(prioritySampleKeys());
+ if(playing&&audio){
+  cancelVoices();
+  beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();
+  scheduledUntil=audio.currentTime+.006;
+ }
+}
+function applyPreset(p){
+ const phase=transportPhase(),oldCycle=cycleSeconds();
+ const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ cycleBars=p.bars===2?2:1;
+ tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
+ bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
+ activeCategory=p.category;browseCategory=p.category;
+ $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ activateLoadedRhythm(phase,cycle);
+ renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ if(magnified)refreshPlotZoom();
+}
 function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
       // Independently licensed samples, CC0. The brazil/jazz bank is acoustic, not a synth simulation.
       const SAMPLE_FILES={
@@ -1025,7 +1080,7 @@ function scheduleAhead(){
  if(to<=from)return;
  const relFrom=Math.max(0,from-beatEpoch),relTo=Math.max(0,to-beatEpoch);
  if(relTo<=relFrom)return;
- const lanes=tracks.map(t=>({cycleBars:t.cycleBars,muted:t.muted,sound:t.sound,gain:t.gain??1,patch:t.patch,events:events(t)}));
+ const lanes=currentSchedulerLanes();
  const future=RhythmMath.planEvents(lanes,barSeconds(),relFrom,relTo);
  for(const hitEvent of future){
   const at=beatEpoch+hitEvent.time;
@@ -1093,26 +1148,71 @@ async function togglePlay(){
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
 async function previewSound(){if(!initAudio())return;try{await audio.resume();const t=tracks[selectedTrack];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
- canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0)}
+ canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+ requestAnimationFrame(positionPhaseLabels);updateMagnifyControl()}
+// Only offer enlargement when the real combined root phases are closer
+// than the required 34 CSS-pixel inspection spacing at the current fit size.
+// A displayed zoom remains reversible even if a later edit thins the pattern.
+function updateMagnifyControl(){
+ const controls=$('figureTools'),btn=$('zoomBtn'),plot=$('plotArea');
+ if(!controls||!btn||!plot||!tracks.length)return;
+ const width=canvas.getBoundingClientRect().width;
+ if(!width)return;
+ const radii=getRadii(width);
+ const dense=tracks.some((track,lane)=>{
+  const phases=events(track).map(e=>e.phase);
+  if(phases.length<2)return false;
+  let gap=1+phases[0]-phases[phases.length-1];
+  for(let i=1;i<phases.length;i++)gap=Math.min(gap,phases[i]-phases[i-1]);
+  return 2*radii[lane]*Math.sin(Math.PI*gap)<34;
+ });
+ controls.hidden=!(magnified||dense);
+ btn.setAttribute('aria-label',magnified?'Fit all four rhythm rings':'Magnify closely spaced root points');
+ const hint=$('zoomHint');
+ if(hint)hint.textContent=magnified?'Scroll the enlarged diagram to inspect dense roots.':'Roots overlap at this size. Magnify to separate the points.';
+}
 function refreshPlotZoom(){
  const plot=$('plotArea'),btn=$('zoomBtn');
  if(!plot||!btn)return;
  plot.classList.toggle('focused',magnified);
  btn.setAttribute('aria-pressed',String(magnified));
- btn.textContent=magnified?'Fit entire cycle':'Magnify plot';
+ btn.textContent=magnified?'Fit entire cycle':'Magnify dense roots';
+ updateMagnifyControl();
  if(magnified){
-  const lane=selectedTrack,n=Math.max(1,tracks[lane]?.n||1);
-  // Solve the actual four-ring geometry, rather than using stale fixed ratios.
-  // Chord separation between adjacent nth roots must be >=34 CSS pixels.
+  // A zoom must make ALL four lanes inspectable, even if the selected lane
+  // has only one root. Added root families can have closer adjacent phases
+  // than the underlying nth roots, so use the actual merged event phases.
+  const minimumGaps=tracks.map(t=>{
+   const phases=events(t).map(ev=>ev.phase);
+   if(phases.length<2)return Infinity;
+   let nearest=1+phases[0]-phases[phases.length-1];
+   for(let j=1;j<phases.length;j++)nearest=Math.min(nearest,phases[j]-phases[j-1]);
+   return nearest;
+  });
+  const sufficient=size=>minimumGaps.every((gap,lane)=>
+   !Number.isFinite(gap)||2*getRadii(size)[lane]*Math.sin(Math.PI*gap)>=34
+  );
   let lo=900,hi=5000;
   while(lo<hi){
    const mid=Math.floor((lo+hi)/2);
-   if(n===1||2*getRadii(mid)[lane]*Math.sin(Math.PI/n)>=34)hi=mid;
+   if(sufficient(mid))hi=mid;
    else lo=mid+1;
   }
   const size=lo;
+  const previous=canvas.getBoundingClientRect();
+  // Keep the user's current pan center when an edit changes the zoom level.
+  // Entering magnification from Fit starts at the center by the same rule.
+  const focusX=previous.width>0?(plot.scrollLeft+plot.clientWidth/2)/previous.width:.5;
+  const focusY=previous.height>0?(plot.scrollTop+plot.clientHeight/2)/previous.height:.5;
   canvas.style.width=size+'px';canvas.style.height=size+'px';
-  requestAnimationFrame(()=>{plot.scrollLeft=Math.max(0,(size-plot.clientWidth)/2);plot.scrollTop=Math.max(0,(size-plot.clientHeight)/2);resizeCanvas()});
+  requestAnimationFrame(()=>{
+   const scrollX=Math.max(0,Math.min(plot.scrollWidth-plot.clientWidth,
+    size*focusX-plot.clientWidth/2));
+   const scrollY=Math.max(0,Math.min(plot.scrollHeight-plot.clientHeight,
+    size*focusY-plot.clientHeight/2));
+   plot.scrollLeft=scrollX;plot.scrollTop=scrollY;
+   resizeCanvas();
+  });
  }else{
   canvas.style.width='';canvas.style.height='';
   requestAnimationFrame(resizeCanvas);
@@ -1131,6 +1231,86 @@ function selectRootIndexAtPoint(p,t,r) {
 }
 function rgba(i,alpha){const c=RGB[i];return `rgba(${c[0]},${c[1]},${c[2]},${alpha})`}
 function getRadii(side){const outer=side*.427,spacing=Math.min(outer/3-7,Math.max(40,side*.095));return [outer,outer-spacing,outer-2*spacing,outer-3*spacing]}
+// Responsive mathematical labels are positioned tangentially to the cycle
+// axis, keeping the phase direction while avoiding rendered root markers.
+// Dynamic placement is required because different presets occupy different
+// phases; no root coordinates or time values are modified by this layout.
+// Root marker geometry for all four lanes. Keep an actual >=1.4x beat
+// diameter at mandatory responsive sizes while not obscuring the neighboring
+// ring's simultaneously active markers. The halo is omitted in compact space;
+// the brighter center and enlarged root still provide the audible beat cue.
+function visualRootMarker(spacing,requestedPulse=0,coincident=false){
+ const maximum=Math.min(8,Math.max(5.6,(spacing-.8)/2-14));
+ const pulse=Math.max(0,Math.min(maximum,requestedPulse));
+ const compact=pulse>0&&spacing<51;
+ return {
+  pulse,radius:14+pulse,
+  strokeWidth:compact?.5:coincident?2.6:1.6,
+  glow:pulse>0&&spacing>=56
+ };
+}
+function positionPhaseLabels(){
+ const area=$('plotArea');
+ if(!area||area.classList.contains('focused')||!tracks.length)return;
+ const box=canvas.getBoundingClientRect();
+ if(box.width<200||box.height<200)return;
+ const side=Math.min(box.width,box.height),radii=getRadii(side);
+ const cx=box.left+box.width/2,cy=box.top+box.height/2;
+ const dots=[];
+ tracks.forEach((track,lane)=>{
+  for(const ev of composePhases(track).merged){
+   const a=-Math.PI/2+TAU*ev.phase,r=radii[lane];
+   dots.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});
+  }
+ });
+ const options=[
+  {id:'phaseZero',axis:'x',dir:1},
+  {id:'phaseQuarter',axis:'y',dir:1},
+  {id:'phaseHalf',axis:'x',dir:-1},
+  {id:'phaseThreequarters',axis:'y',dir:-1}
+ ];
+ for(const item of options){
+  const el=$(item.id);if(!el)continue;
+  const label=el.getBoundingClientRect(),w=label.width,h=label.height;
+  if(!w||!h)continue;
+  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4);
+  const shifts=[55,68,82,96,110,125,140].filter(x=>x<=maxShift);
+  if(!shifts.length)shifts.push(maxShift);
+  let best=shifts[0],fewest=Infinity;
+  for(const shift of shifts){
+   let left,top;
+   if(item.id==='phaseZero'){left=cx+shift-w/2;top=box.top+4}
+   else if(item.id==='phaseHalf'){left=cx-shift-w/2;top=box.bottom-4-h}
+   else if(item.id==='phaseQuarter'){left=box.right-4-w;top=cy+shift-h/2}
+   else {left=box.left+4;top=cy-shift-h/2}
+   let markerConflicts=0;
+   for(const dot of dots){
+    const nearestX=Math.max(left,Math.min(dot.x,left+w));
+    const nearestY=Math.max(top,Math.min(dot.y,top+h));
+    if((dot.x-nearestX)**2+(dot.y-nearestY)**2<17**2)markerConflicts++;
+   }
+   // A label may cover an empty section of a circular ring even when no
+   // nearby marker is present. Penalize direct arc/rectangle intersections,
+   // including the antialiased ring stroke, not only label-marker crossings.
+   const minX=Math.max(left,Math.min(cx,left+w));
+   const minY=Math.max(top,Math.min(cy,top+h));
+   const closest=Math.hypot(cx-minX,cy-minY);
+   const farthest=Math.max(
+    Math.hypot(cx-left,cy-top),
+    Math.hypot(cx-(left+w),cy-top),
+    Math.hypot(cx-left,cy-(top+h)),
+    Math.hypot(cx-(left+w),cy-(top+h))
+   );
+   const ringConflicts=radii.filter(r=>closest<=r+3&&farthest>=r-3).length;
+   const score=markerConflicts*100+ringConflicts*20;
+   if(score<fewest){best=shift;fewest=score}
+   if(!score)break;
+  }
+  const value='calc(50% '+(item.dir>0?'+ ':'- ')+best+'px)';
+  if(item.axis==='x'&&el.style.left!==value)el.style.left=value;
+  if(item.axis==='y'&&el.style.top!==value)el.style.top=value;
+ }
+}
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
  ctx.clearRect(0,0,w,h);
@@ -1151,7 +1331,20 @@ function draw() {
   ctx.strokeStyle=chosen?COLORS[i]:(dark?'#63675e':'#c4c5bc');ctx.lineWidth=chosen?2:1.2;ctx.stroke();
  });
  const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(selectedPhase*16)/16:selectedPhase);
- ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(angle)*radii[selectedTrack],Math.sin(angle)*radii[selectedTrack]);
+ // Prevent the playback pointer from obscuring visible mathematical roots.
+ // The outer edge is still phase-accurate; only sections under markers are skipped.
+ const markerDiscs=tracks.flatMap((track,i)=>composePhases(track).merged.map(mark=>{
+  const a=-Math.PI/2+TAU*mark.phase,r=radii[i];
+  return {x:Math.cos(a)*r,y:Math.sin(a)*r,radius:22};
+ }));
+ const handSegments=RhythmMath.radialVisibleSegments(
+  radii[selectedTrack],angle,markerDiscs,6
+ );
+ ctx.beginPath();
+ for(const segment of handSegments){
+  ctx.moveTo(Math.cos(angle)*segment.from,Math.sin(angle)*segment.from);
+  ctx.lineTo(Math.cos(angle)*segment.to,Math.sin(angle)*segment.to);
+ }
  ctx.strokeStyle=playing?(dark?'#c4c9ba':'#676d62'):(dark?'#5a5e54':'#cfcec5');ctx.lineWidth=1.3;ctx.stroke();
  if(rootDrag&&rootDrag.moved){
   const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;
@@ -1159,25 +1352,26 @@ function draw() {
   for(let k=0;k<n;k++){const a=-Math.PI/2+(arg+TAU*k)/n;ctx.beginPath();ctx.arc(Math.cos(a)*r,Math.sin(a)*r,4,0,TAU);ctx.stroke()}
   ctx.restore();
  }
+ const ringSpacing=Math.min(radii[0]-radii[1],radii[1]-radii[2],radii[2]-radii[3]);
  tracks.forEach((t,i)=>{
-  const r=radii[i],c=composePhases(t),spacing=c.merged.length?TAU*r/c.merged.length:40;
+  const r=radii[i],c=composePhases(t);
   const phase=RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()),duration=laneSeconds(t);
-  const size=14; // 28px visible event diameter, at least twice the original 12–14px
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
    const proximity=((phase-mark.phase)%1+1)%1*duration;
    // Hold the 1.4x+ beat accent for several animation frames. A one-frame
    // mathematical peak can be missed by 60 Hz displays between audio attacks.
    const beatActive=playing&&audio&&audio.currentTime>=beatEpoch&&!t.muted&&proximity<.18;
-   const pulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
-   const radius=size+pulse;
-   if(pulse>0){
+   const requestedPulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
+   const marker=visualRootMarker(ringSpacing,requestedPulse,mark.base&&mark.added);
+   const {radius,pulse}=marker;
+   if(marker.glow){
     ctx.save();ctx.beginPath();ctx.arc(x,y,radius+4.5,0,TAU);
     ctx.strokeStyle=COLORS[i];ctx.globalAlpha=Math.min(.6,.24+pulse*.035);ctx.lineWidth=2.6;ctx.stroke();ctx.restore();
    }
-   ctx.beginPath();ctx.arc(x,y,mark.base&&mark.added?radius+2.1:radius,0,TAU);
+   ctx.beginPath();ctx.arc(x,y,radius,0,TAU);
    ctx.fillStyle=mark.added&&!mark.base?(dark?'#20221d':'#faf8f3'):COLORS[i];
-   ctx.fill();ctx.lineWidth=mark.base&&mark.added?2.6:1.6;ctx.strokeStyle=COLORS[i];ctx.stroke();
+   ctx.fill();ctx.lineWidth=marker.strokeWidth;ctx.strokeStyle=COLORS[i];ctx.stroke();
    if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fill()}
    if(pulse>0){ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(2,radius*.32),0,TAU);ctx.fillStyle=dark?'rgba(255,255,255,.62)':'rgba(255,248,217,.65)';ctx.fill();ctx.restore()}
    // Reduced-motion users still see the audio-clock beat as a stationary
@@ -1201,7 +1395,7 @@ function draw() {
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
  requestAnimationFrame(draw);
 }
-function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:'My complex rhythm',bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function validateImportedFields(project){
  const validate=(value,allowed,description)=>{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error(description+' must be an object');
@@ -1226,16 +1420,34 @@ function validateImportedFields(project){
 async function loadJson(file){try{if(file.size>100000)throw Error('File is too large');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Expected roots-rhythm/1 with four tracks');
  validateImportedFields(d);
  if(d.tracks.some(t=>!t||typeof t!=='object'||(t.cycleBars!==undefined&&(!Number.isInteger(t.cycleBars)||t.cycleBars<1||t.cycleBars>16))||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>64||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>64||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Check a, b, n and sound for every track');
- const phase=transportPhase(),oldCycle=cycleSeconds(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;cycleBars=d.bars===2?2:1;tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=safeInt(d.bpm,50,260,138);if(audio)loadSamples(prioritySampleKeys());$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
+ const phase=transportPhase(),oldCycle=cycleSeconds();
+ const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ cycleBars=d.bars===2?2:1;
+ tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
+ bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
  const sourcePreset=PRESETS.find(p=>p.name===importedName);
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
- if(sourcePreset)activeCategory=sourcePreset.category;
- renderPresets();renderTracks();renderEditor();renderWindowTimeline();showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
+ // Unnamed imported material has no genre identity: do not inherit a stale
+ // previous preset's sample mappings or claim that it is a previous preset.
+ activeCategory=sourcePreset?.category||'other';
+ browseCategory=activeCategory;
+ $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ activateLoadedRhythm(phase,cycle);
+ renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ if(magnified)refreshPlotZoom();
+ showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
- $('categorySelect').addEventListener('change',e=>{activeCategory=e.target.value;const first=PRESETS.find(p=>p.category===activeCategory);if(first)applyPreset(first)});
+ $('rootRuleInfoToggle').addEventListener('click',()=>{
+  const panel=$('rootRuleInfoPanel'),button=$('rootRuleInfoToggle');
+  const open=panel.hidden;panel.hidden=!open;
+  button.setAttribute('aria-expanded',String(open));
+  button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
+  if(open)renderRootRule();
+ });
+ $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{
   const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);
@@ -1261,8 +1473,8 @@ function setupEvents() {
  $('bpm').addEventListener('input',e=>{
   const phase=transportPhase(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds()):0;
   bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);
-  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.008}
-  markCustom();
+  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
+  markCustom(false);
  });
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
  $('loadRootExample').addEventListener('click',()=>{
@@ -1371,6 +1583,9 @@ window.RhythmResearch=Object.freeze({
   audioTime:audio?.currentTime??0,beatEpoch
  }),
 
+ // Diagnostic snapshot only: tracks and sample-family selection cannot be mutated here.
+ samplePlan:()=>({category:activeCategory,keys:[...prioritySampleKeys()]}),
+ markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,

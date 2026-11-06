@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 <script defer src="vendor/katex/katex.min.js"></script>
 <script defer src="math-io.js"></script>
+<script defer src="root-angle-infographic.js"></script>
 <script defer src="synthesis.js"></script>
 <script defer src="app.js"></script>
 </head>
@@ -21,7 +22,7 @@
  <div class="top-actions"><button type="button" id="themeBtn" class="utility-btn" aria-pressed="false">Dark mode</button>
  <details class="file-actions" id="fileMenu"><summary>Project files</summary><div class="file-menu"><button id="loadBtn" type="button">Import JSON</button><button id="saveBtn" type="button">Export JSON</button></div></details></div>
 </header>
-<details class="preset-strip" id="presetDetails"><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">35 examples</span></summary>
+<details class="preset-strip" id="presetDetails" open><summary><span>Rhythm examples</span><span class="quiet" id="presetCount">35 examples</span></summary>
  <div class="preset-controls">
  <label>Category<select id="categorySelect" aria-label="Rhythm category"><option value="poly">Polyrhythms</option><option value="brazil">Brazilian rhythms</option><option value="bunker">Bunker techno</option><option value="other">Other studies</option><option value="dnb">Drum &amp; Bass</option><option value="jungle">Jungle</option><option value="hardhouse">Hard House</option><option value="acid">Acid / 303</option><option value="hardcore">Hardcore / Gabber</option><option value="experimental">Mathematical experiments</option></select></label>
  <label>Example<select id="presetSelect" aria-label="Choose a rhythm example"></select></label>
@@ -57,7 +58,7 @@
   </div>
  </details>
  <p id="eventSummary" class="stage-events" aria-live="polite">Four-bar event summary</p>
- <div class="figure-tools"><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn">Magnify plot</button><span class="figure-tools-hint">Scroll the magnified plot to explore dense root sets.</span></div>
+ <div class="figure-tools" id="figureTools" hidden><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn" aria-label="Magnify densely spaced roots">Magnify dense roots</button><span id="zoomHint" class="figure-tools-hint">Zoom is available when roots overlap; scroll to inspect the enlarged rings.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
  <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>
  <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="260" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
@@ -67,20 +68,35 @@
  <div class="panel-heading"><div><div class="eyebrow">PARAMETERS / FOUR LANES</div><h2 id="tracksHeading" tabindex="-1">Root angles · four lanes</h2></div><span class="quiet math-notation" id="cartesianHeading"></span></div>
  <div id="tracks" class="track-list" role="group" aria-label="Four independently editable complex-root rhythms"></div>
  <aside class="root-rule" aria-label="Root angle generation formula">
-  <div class="root-rule-header"><span class="root-rule-kicker">THE MATHEMATICS / ROOT PLACEMENT</span><span class="root-rule-tag">Selected lane</span></div>
+  <div class="root-rule-header"><span class="root-rule-kicker">THE MATHEMATICS / ROOT PLACEMENT</span><span class="root-rule-tag">Selected lane</span><button id="rootRuleInfoToggle" type="button" class="root-rule-info-toggle" aria-label="Show root geometry explanation" aria-controls="rootRuleInfoPanel" aria-expanded="false" title="How complex-root angles map to rhythm time">i</button></div>
   <div id="rootRuleEquation" class="root-rule-equation math-notation"></div>
   <div id="rootRuleValues" class="root-rule-values math-notation"></div>
+  <div id="rootRuleSpacing" class="root-rule-spacing math-notation"></div>
   <div class="root-rule-key"><span><b>θ</b> sets rotation</span><span><b>n</b> sets event count</span><span><b>k</b> enumerates roots</span></div>
   <p id="rootRuleCaption" class="root-rule-caption"></p>
+  <section id="rootRuleInfoPanel" class="root-rule-info-panel" aria-label="Root angle geometric explanation" hidden>
+   <div class="root-rule-info-grid">
+    <svg id="rootRuleDiagram" class="root-rule-svg"></svg>
+    <div class="root-rule-info-math">
+     <div id="rootRuleInput" class="math-notation"></div>
+     <div id="rootRuleDelta" class="math-notation"></div>
+     <div id="rootRuleFormula" class="math-notation"></div>
+     <p class="root-rule-mapping">Complex arguments increase counterclockwise from +Re. Rhythm phases display those same angles from 12 o'clock clockwise. A change of δ in the input rotates each root by δ/n; the spacing remains 2π/n.</p>
+    </div>
+   </div>
+   <p class="root-rule-angle-heading">All generated root arguments (radians and degrees)</p>
+   <ol id="rootRuleAngleList" class="root-rule-angle-list" tabindex="0" aria-label="All generated root arguments"></ol>
+  </section>
  </aside>
- <details id="compositionPanel" class="composition-panel"><summary><span>Additional angles &amp; symmetric roots</span><span class="quiet" id="compositionMetrics">Select a lane</span></summary>
+ <details id="compositionPanel" class="composition-panel"><summary><span>Combine root points · union</span><span class="quiet">Additional angles · <span id="compositionMetrics">Select a lane</span></span></summary>
   <div class="composition-body">
    <div class="composition-info"><h3 id="compositionHeading" tabindex="-1">Lane 1</h3><div class="composition-equation math-notation" id="compositionEquation"></div></div>
    <div class="selected-root-math"><div class="small-explain">Selected root and its mathematical origin</div><div class="math-notation" id="selectedRootFormula"></div><div class="math-notation" id="rootPhaseFormula"></div></div>
    <div class="composition-lesson">
-    <div><strong>Add individual angles or symmetric roots</strong><p>Each angle specifies one event directly. Generate a symmetric family only when you want equally spaced events; matching phases sound once within a lane.</p></div>
-    <button id="loadRootExample" class="secondary-btn" type="button">Try 4 + 3 roots</button>
+    <div><strong>Build a union of points</strong><p>Start from the base roots. Add individual points or several equally spaced root sets. Shared phases are combined into one point and one hit on this lane.</p></div>
+    <button id="loadRootExample" class="secondary-btn" type="button">Show 4 ∪ 3 example</button>
    </div>
+   <div class="composition-actions" role="group" aria-label="Add points to the root union"><button id="addLayer" type="button" class="secondary-btn">+ Add point</button><button id="addRootFamily" type="button" class="secondary-btn">+ Add root set</button></div>
    <div id="exampleProof" class="example-proof math-notation" aria-live="polite" hidden></div>
    <div class="composition-strips" aria-label="Base, additional and resulting event phases">
     <div class="phase-row"><div class="phase-label"><span>Base</span><output id="baseCount">0</output></div><div class="phase-strip" id="baseStrip" aria-label="Base root positions"></div></div>
@@ -90,8 +106,10 @@
    <p id="overlapSummary" class="composition-note">No shared phases.</p>
    <div class="composition-tools"><label for="argumentAngle">Rotate base <span id="argMathLabel" class="math-notation"></span></label><input id="argumentAngle" type="range" min="-180" max="180" step="1" value="0"><output id="argumentText" for="argumentAngle">0°</output></div>
    <p class="small-explain">Changing the argument rotates the regular roots. Added angles are individual accents; their radius is irrelevant.</p>
-   <div id="extraLayers" class="extra-layers"></div><div id="specialRhythms" class="special-rhythms"></div><div id="patchControls" class="patch-controls"></div>
-   <div class="composition-actions"><button id="addLayer" type="button" class="secondary-btn">+ Add angle</button><button id="addRootFamily" type="button" class="secondary-btn">+ Generate roots</button><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
+   <div id="extraLayers" class="extra-layers" aria-label="Added points and root sets"></div>
+   <details id="advancedMathDetails" class="advanced-math-settings"><summary>Other mathematical operations · intersection and Euclidean rhythm</summary><div id="specialRhythms" class="special-rhythms"></div></details>
+   <div class="sound-basics"><div id="laneGainControls" class="lane-gain-controls"></div><button id="previewBtn" type="button" class="secondary-btn">▶ Preview selected instrument</button></div>
+   <details id="advancedSoundDetails" class="advanced-sound-settings"><summary>Advanced sound settings <span class="quiet">Oscillator · filter · envelope</span></summary><div id="patchControls" class="patch-controls"></div></details>
   </div>
  </details>
  <details class="math-details"><summary>Mathematical notes</summary>

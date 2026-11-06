@@ -1,5 +1,12 @@
 # ROOTS / RHYTHM
 
+## Current mathematical workbench update — November 2026
+
+The graph comes first on phones and tablets; on wide screens, all four editable lane cards are arranged 2×2 next to it. Each track has an independent 1–16-bar cycle; the least common multiple determines the full repeat period. The library contains 50 distinct event timelines, six acid timbres within fifteen new voices, a separate Euclidean generator and actual root-set union/intersection.
+
+Technical acceptance has been reconciled against GitHub Actions: **294 of 652 tasks VERIFIED, 4 BLOCKED**, and **52 of 98 parent requirements** verified. See [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [QA_REPORT.md](QA_REPORT.md) and [draft PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). This is not a fully accepted or deployed release.
+
+
 **Website:** https://michael-malis.github.io/complex-rhythm/
 
 An interactive **mathematical visualization of rhythm**. Each of four instrument lanes uses the arguments of the `n`th roots of `z=a+bi` to place evenly spaced events on a circular timeline. Additional complex-root sets allow layered periodic patterns. Sound supports exploration of the geometry; this is not a DAW or general-purpose beat maker.
@@ -14,7 +21,7 @@ The interface is a scientific workbench rather than a music sequencer.
 - **Mathematical distinctions:** a polyrhythm combines sets across instrument lanes; a composed pattern unions sets within one lane. Degree-one layers express individual accents. This does not claim that nth roots themselves produce arbitrary irregular rhythms.
 - **Consistent presentation:** a single warm neutral stylesheet (`styles.css`), an optional graphite dark theme, and standalone vanilla JavaScript (`app.js`). No external UI framework or CSS overrides are required.
 - **Keyboard/mouse:** numerical inputs are keyboard accessible; dragging a filled root rotates its base set; on the focused Canvas `Shift+Left/Right` turns visible roots by 5°. Other arrows select lanes.
-- **Backwards compatibility:** `roots-rhythm/1` import/export, 35 presets, two-bar Bossa Nova, existing audio samples and Web Audio scheduling are retained.
+- **Backwards compatibility:** `roots-rhythm/1` import/export, 35 original presets plus 15 new experiments (50 total), two-bar Bossa Nova, existing audio samples and Web Audio scheduling are retained.
 
 The latest Chromium screenshots and regression run are in [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions). Listening to every sample on real physical devices and a full screen-reader audit remain separate manual validation tasks.
 
@@ -24,13 +31,13 @@ The latest Chromium screenshots and regression run are in [GitHub Actions](https
 - Use the **arg(z)** slider to rotate event timing without changing `|z|` or `n`.
 - Drag an original root point on its circle to rotate the corresponding evenly-spaced set; the argument of `z` changes by `n` times the dragged angular distance. Extra root layers remain untouched.
 - On the focused Canvas, press `Shift + Left/Right` to rotate event points by 5°; ordinary arrows switch tracks.
-- The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 35 examples remain accessible, including five polyrhythm studies.
+- The application defaults to a **3:4 polyrhythm** to show simultaneous periodic structures. All 50 examples remain accessible, including five original polyrhythm studies.
 
-**Automated QA:** V3 Playwright regression covers seven viewports, all 35 presets, independent lane edits, mathematical union, theme switching, JSON round-trip and Web Audio. See [current CI runs](https://github.com/michael-malis/complex-rhythm/actions). Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
+**Automated QA:** V3 Playwright regression covers seven viewports, all 50 presets, independent lane edits, mathematical union, theme switching, JSON round-trip and Web Audio. See [current CI runs](https://github.com/michael-malis/complex-rhythm/actions). Workflow screenshots are available there. Real-device listening and manual visual review are still pending.
 
 ## Rhythm presets, acoustic audio and poly-rhythmic studies
 
-- 35 patterns across 8 categories. **One Bossa Nova** example remains (Classic, 116 BPM). Three previous Bossa variations were replaced by **2:3, 3:5 and 4:7 polyrhythms**; alongside existing 3:4 and 5:7 examples, the **Polyrhythms** category contains five mathematically distinct ratio studies.
+- 50 patterns across 10 categories (35 originals and 15 new studies). **One Bossa Nova** example remains (Classic, 116 BPM). Three previous Bossa variations were replaced by **2:3, 3:5 and 4:7 polyrhythms**; alongside existing 3:4 and 5:7 examples, the **Polyrhythms** category contains five mathematically distinct ratio studies.
 - Bossa loops span **two 4/4 bars**, not one. The cross-stick line is three hits in bar one (beat 1, & of 2, beat 4), then two in bar two (beat 2, & of 3). The feathered bass drum plays on 1, & of 2, 3, & of 4, against even shaker eighths.
 - New **real, recorded acoustic drum/percussion samples**, from the CC0 Virtuosity Drums library: soft/full kick, cross-stick variations, shaker variations, jazz hi-hat/snare, claves, bongo.
 - Faster drum-and-bass and jungle grooves also gain a quieter acoustic snare/kick body underneath the electronic transient when loaded.
@@ -57,7 +64,7 @@ See [AUDIO_SOURCES.md](AUDIO_SOURCES.md) for the individual files, origins and l
 
 ## QA
 
-See [AUDIO_QA.md](AUDIO_QA.md). Earlier desktop/mobile layout, basic transport and presets were tested in Chromium. **The November 5 mathematical UI redesign has not yet received a new full browser or audio regression pass.** See [TASKS.md](TASKS.md) for outstanding checks.
+See [AUDIO_QA.md](AUDIO_QA.md). Earlier desktop/mobile layout, basic transport and presets were tested in Chromium. **The November upgrade has passed Chromium, mathematical, 50-preset scheduling, Web Audio and contrast tests. Human listening, annotated-source matching and physical device review remain outstanding.** See [TASKS.md](TASKS.md) for outstanding checks.
 
 ## Berlin Bunker · Bass Wall (new)
 

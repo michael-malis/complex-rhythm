@@ -1,0 +1,40 @@
+name: Requirement registry and baseline
+on:
+  push:
+    branches: [upgrade/spec-2026-11-math-audio]
+    paths:
+      - MASTER_IMPLEMENTATION_SPEC.md
+      - TASKS.md
+      - TRACEABILITY.md
+      - scripts/**
+      - tests/spec-baseline.mjs
+      - .github/workflows/spec-baseline.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate requirement registry
+        run: node scripts/verify-traceability.mjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Capture baseline, do not modify application
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-baseline.log 2>&1 &
+          node tests/spec-baseline.mjs
+      - name: Upload baseline evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roots-rhythm-baseline-evidence
+          path: qa/baseline/evidence/
+          if-no-files-found: ignore

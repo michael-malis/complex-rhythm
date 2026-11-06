@@ -1,0 +1,36 @@
+name: Vendor pinned KaTeX assets
+on:
+  push:
+    branches: [upgrade/spec-2026-11-math-audio]
+    paths:
+      - .github/workflows/vendor-katex.yml
+permissions:
+  contents: write
+jobs:
+  vendor:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch pinned package and retain distributable files locally
+        run: |
+          npm install --no-save --ignore-scripts katex@0.16.22
+          mkdir -p vendor/katex
+          cp node_modules/katex/dist/katex.min.js vendor/katex/katex.min.js
+          cp node_modules/katex/dist/katex.min.css vendor/katex/katex.min.css
+          cp -R node_modules/katex/dist/fonts vendor/katex/fonts
+          test -s vendor/katex/katex.min.js
+          test -s vendor/katex/katex.min.css
+          test -s vendor/katex/fonts/KaTeX_Main-Regular.woff2
+          echo 'Vendor assets validated'
+      - name: Commit frozen vendor distribution to upgrade branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add vendor/katex
+          git commit -m 'Vendor KaTeX 0.16.22 including locally served fonts'
+          git push origin HEAD:upgrade/spec-2026-11-math-audio

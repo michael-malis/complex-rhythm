@@ -43,3 +43,14 @@ Display a compact, readable, always-available KaTeX explanation near the selecte
 - Keep all 35 historical presets, 15 new studies, audio scheduling, the existing JSON schema and root-set operations intact.
 - Add dedicated tests for angle-first editing, extra angles, generated families, phase coincidences and import/export.
 - Only change statuses to VERIFIED after passing tests. Human sonic assessment, physical-device review and the missing annotated screenshot remain separate blockers.
+
+## CR-PRESET-005 · Preserve example identity after user edits
+**Priority:** P1 · **Status:** IN_PROGRESS
+
+- Editing a prepared rhythm (BPM, instrument, root angle/degree, root additions, sound patch or volume) **must not replace its title with “Custom rhythm.”**
+- Keep the original preset ID, title, category, and description; append **“· Modified”** to the selected option.
+- Selecting any prepared example afresh resets the modified flag.
+- A genuinely new or anonymous project can still be “Custom rhythm.” An imported JSON with a matching preset name inherits the title, marked Modified; unknown imported names remain visible.
+- JSON export must retain the original title, so future import can recover the source identity without extending the existing schema.
+
+**Acceptance:** edit BPM and root; confirm original name remains selected; verify new selection resets status; verify JSON roundtrip maintains source name; avoid false “Custom rhythm” label. No user-facing popup necessary.

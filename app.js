@@ -1194,6 +1194,20 @@ function getRadii(side){const outer=side*.427,spacing=Math.min(outer/3-7,Math.ma
 // axis, keeping the phase direction while avoiding rendered root markers.
 // Dynamic placement is required because different presets occupy different
 // phases; no root coordinates or time values are modified by this layout.
+// Root marker geometry for all four lanes. Keep an actual >=1.4x beat
+// diameter at mandatory responsive sizes while not obscuring the neighboring
+// ring's simultaneously active markers. The halo is omitted in compact space;
+// the brighter center and enlarged root still provide the audible beat cue.
+function visualRootMarker(spacing,requestedPulse=0,coincident=false){
+ const maximum=Math.min(8,Math.max(5.6,(spacing-.8)/2-14));
+ const pulse=Math.max(0,Math.min(maximum,requestedPulse));
+ const compact=pulse>0&&spacing<51;
+ return {
+  pulse,radius:14+pulse,
+  strokeWidth:compact?.5:coincident?2.6:1.6,
+  glow:pulse>0&&spacing>=56
+ };
+}
 function positionPhaseLabels(){
  const area=$('plotArea');
  if(!area||area.classList.contains('focused')||!tracks.length)return;
@@ -1297,25 +1311,26 @@ function draw() {
   for(let k=0;k<n;k++){const a=-Math.PI/2+(arg+TAU*k)/n;ctx.beginPath();ctx.arc(Math.cos(a)*r,Math.sin(a)*r,4,0,TAU);ctx.stroke()}
   ctx.restore();
  }
+ const ringSpacing=Math.min(radii[0]-radii[1],radii[1]-radii[2],radii[2]-radii[3]);
  tracks.forEach((t,i)=>{
-  const r=radii[i],c=composePhases(t),spacing=c.merged.length?TAU*r/c.merged.length:40;
+  const r=radii[i],c=composePhases(t);
   const phase=RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()),duration=laneSeconds(t);
-  const size=14; // 28px visible event diameter, at least twice the original 12–14px
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
    const proximity=((phase-mark.phase)%1+1)%1*duration;
    // Hold the 1.4x+ beat accent for several animation frames. A one-frame
    // mathematical peak can be missed by 60 Hz displays between audio attacks.
    const beatActive=playing&&audio&&audio.currentTime>=beatEpoch&&!t.muted&&proximity<.18;
-   const pulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
-   const radius=size+pulse;
-   if(pulse>0){
+   const requestedPulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
+   const marker=visualRootMarker(ringSpacing,requestedPulse,mark.base&&mark.added);
+   const {radius,pulse}=marker;
+   if(marker.glow){
     ctx.save();ctx.beginPath();ctx.arc(x,y,radius+4.5,0,TAU);
     ctx.strokeStyle=COLORS[i];ctx.globalAlpha=Math.min(.6,.24+pulse*.035);ctx.lineWidth=2.6;ctx.stroke();ctx.restore();
    }
-   ctx.beginPath();ctx.arc(x,y,mark.base&&mark.added?radius+2.1:radius,0,TAU);
+   ctx.beginPath();ctx.arc(x,y,radius,0,TAU);
    ctx.fillStyle=mark.added&&!mark.base?(dark?'#20221d':'#faf8f3'):COLORS[i];
-   ctx.fill();ctx.lineWidth=mark.base&&mark.added?2.6:1.6;ctx.strokeStyle=COLORS[i];ctx.stroke();
+   ctx.fill();ctx.lineWidth=marker.strokeWidth;ctx.strokeStyle=COLORS[i];ctx.stroke();
    if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fill()}
    if(pulse>0){ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(2,radius*.32),0,TAU);ctx.fillStyle=dark?'rgba(255,255,255,.62)':'rgba(255,248,217,.65)';ctx.fill();ctx.restore()}
    // Reduced-motion users still see the audio-clock beat as a stationary
@@ -1522,6 +1537,7 @@ window.RhythmResearch=Object.freeze({
 
  // Diagnostic snapshot only: tracks and sample-family selection cannot be mutated here.
  samplePlan:()=>({category:activeCategory,keys:[...prioritySampleKeys()]}),
+ markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,

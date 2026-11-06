@@ -9,7 +9,7 @@ try{
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
  await page.locator('#compositionPanel').evaluate(el=>{el.open=true});
  const fixture={format:'roots-rhythm/1',name:'Angle test fixture',bpm:120,bars:1,tracks:[
-  {a:1,b:0,n:4,sound:'technoKick',cycleBars:1,muted:false,layers:[]},
+  {a:2.5,b:0,n:4,sound:'technoKick',cycleBars:1,muted:false,layers:[]},
   {a:0,b:0,n:1,sound:'fmPerc',cycleBars:1,muted:true,layers:[]},
   {a:0,b:0,n:1,sound:'metallic',cycleBars:1,muted:true,layers:[]},
   {a:0,b:0,n:1,sound:'noiseBurst',cycleBars:1,muted:true,layers:[]}
@@ -29,9 +29,20 @@ try{
  let c=await page.evaluate(()=>window.RhythmResearch.current().tracks[0]);
  assert.ok(close(Math.atan2(c.b,c.a),2*Math.PI/3),'canonical angle is two pi thirds');
  assert.equal(c.n,4,'angle edit preserves root count');
+ assert.ok(close(Math.hypot(c.a,c.b),2.5),'angle-only edit retains imported non-unit magnitude');
+ const previous=JSON.stringify(c);
+ await page.locator('#trackAngleRad0').fill('pi/0');
+ assert.equal(await page.locator('#trackAngleRad0').getAttribute('aria-invalid'),'true',
+  'invalid rational pi expression is rejected');
+ assert.equal(JSON.stringify(await page.evaluate(()=>window.RhythmResearch.current().tracks[0])),previous,
+  'invalid angle does not mutate canonical complex state');
  await page.locator('#trackAngleDeg0').fill('0');
  assert.ok(close(Math.atan2((await page.evaluate(()=>window.RhythmResearch.current().tracks[0])).b,
   (await page.evaluate(()=>window.RhythmResearch.current().tracks[0])).a),0),'degrees synchronized with canonical complex');
+ assert.ok(close(Math.hypot(
+  (await page.evaluate(()=>window.RhythmResearch.current().tracks[0])).a,
+  (await page.evaluate(()=>window.RhythmResearch.current().tracks[0])).b),2.5),
+  'degree editing also preserves the original complex modulus');
  assert.equal(await page.locator('#baseCount').textContent(),'4','four base root events');
  await page.locator('#addLayer').click();
  assert.equal(await page.locator('#layer0AngleRad').count(),1,'additional angle is direct radian input');
@@ -66,6 +77,19 @@ try{
  });
  assert.equal(after.events,before,'JSON roundtrip preserves all actual event phases and sources');
  assert.deepEqual(after.layers.map(l=>l.n),[1,3],'JSON retains single added angle and generated root family');
+ // Imported single-angle layers may carry non-unit complex magnitudes.
+ const importedLayerFixture={...fixture,tracks:fixture.tracks.map((t,i)=>i===0?{
+  ...t,layers:[{a:2,b:0,n:1,velocity:.7}]
+ }:t)};
+ await page.locator('#jsonFile').setInputFiles({
+  name:'magnitude.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(importedLayerFixture))
+ });
+ await page.waitForFunction(()=>document.querySelector('#toast').textContent.startsWith('Imported rhythm:'));
+ await page.locator('#layer0AngleDeg').fill('45');
+ const layer=await page.evaluate(()=>window.RhythmResearch.current().tracks[0].layers[0]);
+ assert.ok(close(Math.hypot(layer.a,layer.b),2),'editing a legacy additional angle preserves its modulus');
+ assert.ok(close(Number(await page.locator('#layer0AngleRad').inputValue()),Math.PI/4),
+  'edited additional degrees synchronize radians');
  assert.deepEqual(errors,[],'no runtime script errors');
  fs.mkdirSync('artifacts',{recursive:true});
  fs.writeFileSync('artifacts/angle-first.json',JSON.stringify({

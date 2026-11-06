@@ -9,6 +9,8 @@ on:
       - GENRE_IMPLEMENTATION_MATRIX.md
       - RHYTHM_RESEARCH.md
       - PRESET_INVENTORY.json
+      - PRESET_STRUCTURE_AUDIT.md
+      - scripts/verify-preset-structure.mjs
       - scripts/verify-genre-mapping.mjs
       - .github/workflows/preset-diversity.yml
   push:
@@ -20,6 +22,8 @@ on:
       - GENRE_IMPLEMENTATION_MATRIX.md
       - RHYTHM_RESEARCH.md
       - PRESET_INVENTORY.json
+      - PRESET_STRUCTURE_AUDIT.md
+      - scripts/verify-preset-structure.mjs
       - scripts/verify-genre-mapping.mjs
       - .github/workflows/preset-diversity.yml
   workflow_dispatch:
@@ -44,6 +48,8 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-diversity.log 2>&1 &
           node tests/preset-diversity.mjs
+      - name: Verify 50-preset mathematical structure and similarity evidence
+        run: node scripts/verify-preset-structure.mjs
       - name: Preserve report as artifact
         if: always()
         uses: actions/upload-artifact@v4

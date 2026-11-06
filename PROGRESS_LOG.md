@@ -107,3 +107,9 @@
 - Fixed simultaneous beat pulses on tight concentric rings: a minimum 1.4x root expansion is retained, but the compact outline and halo are adapted to measured radial spacing to avoid obscuring adjacent active dots. Normal-size plots retain the full accent and glow.
 - R-GEO-002 and T-GEO-002-01 are now VERIFIED; the previously verified T-GEO-002-02/-03/-04 keep their own evidence. This does not complete the unrelated R-UI-007 or R-QT-003 and does not represent human music or device acceptance.
 - Historical totals **299 VERIFIED / 59 IN_PROGRESS / 290 TODO / 4 BLOCKED / 0 FAILED**, **53/98 requirements**. Operational macros: 1/14 accepted, M03 still in progress.
+
+## 2026-11-06 — M04 readability and contrast accepted
+
+- [Full UI/audio CI 42227657811](https://github.com/michael-malis/complex-rhythm/actions/runs/42227657811) PASS. `tests/expanded-ui-typography.mjs` audits five expanded documentation/control panels plus all 37 existing instrument labels, 15 actual synthesized voices versus sample-only fallback, all generated root-family settings, tooltips and 12 responsive theme states. No missing label or unreadably small control in the sampled matrix.
+- `tests/accessibility-contrast.mjs` measured 198 visible text samples per state across 7 viewports and 2 themes: 4.5:1 normal, 7:1 important math/numeric, 3:1 graphics, 108 CSS font-size rules >=16px; 0 violations. Confirmed the explicitly specified light text colors.
+- Accepted R-UI-004 (six children) and R-UI-005 (three children), all 11 historical tasks VERIFIED. Macro M04 VERIFIED. Source ledger now 310/652 VERIFIED, 55/98 parent requirements VERIFIED. No change to original criteria or manual acceptance blockers.

@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Full UI/audio geometry acceptance https://github.com/michael-malis/complex-rhythm/actions/runs/42224570142; all R-GEO-002 criteria documented",
+  "generatedFrom": "Full UI/audio CI https://github.com/michael-malis/complex-rhythm/actions/runs/42227657811; previous mathematical/audio and geometry acceptance preserved",
   "tasks": {
-    "VERIFIED": 299,
-    "IN_PROGRESS": 59,
-    "TODO": 290,
+    "VERIFIED": 310,
+    "IN_PROGRESS": 57,
+    "TODO": 281,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -60,7 +60,9 @@
     "R-QT-002",
     "R-QT-004",
     "R-QA-001",
-    "R-QA-003"
+    "R-QA-003",
+    "R-UI-004",
+    "R-UI-005"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -68,5 +70,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-GEO-002 all five historical checks verified; separate UX/typography and human acceptance gates remain unfinished."
+  "note": "R-UI-004/R-UI-005 fully tested (expanded UI, dynamic synthesis, exact contrast) and verified; human audio/device/screenshot blockers remain."
 }

@@ -11,12 +11,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **299** |
-| Tasks formally marked IN_PROGRESS | 59 |
-| Tasks formally marked TODO | 290 |
+| Tasks formally marked VERIFIED | **310** |
+| Tasks formally marked IN_PROGRESS | 57 |
+| Tasks formally marked TODO | 281 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **53 of 98** |
+| Parent requirements VERIFIED | **55 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 

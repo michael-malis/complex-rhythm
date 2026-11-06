@@ -130,6 +130,14 @@ verified.set('R-GEO-007',{
  evidence:'CI:42209284567; tests/geometry-acceptance.mjs actual 28px+ Canvas diameters, 4 radii and 16 painted cardinal markers across 12 viewport/theme states; tests/formula-acceptance.mjs label placements; tests/collision-lanes.mjs simultaneous events; tests/ui-smoke.mjs dragging/resize; tests/spec-ui.mjs magnification; comparative screenshots',
  commit:'e0c9dc70defac2bd78cd44e68a159cdda674e623'
 });
+verified.set('R-UI-004',{
+ evidence:"CI:42227657811; tests/expanded-ui-typography.mjs: all mandatory expanded panels, 37 selectable voice labels, 15 synth-specific control groups, generated root families, tooltips and 12 responsive theme/viewport states; all PASS",
+ commit:'1f9e9eb8444ca345c7285343344bfad7d4da5419'
+});
+verified.set('R-UI-005',{
+ evidence:"CI:42227657811; tests/accessibility-contrast.mjs: 14 actual light/dark viewport cases, 198 text samples per case (normal >=4.5:1, key mathematical/numeric >=7:1), track palette >=3:1, all 108 authored CSS font-size rules >=16px; light palette --ink #202420, --sub #414b47, --muted #46534e",
+ commit:'1f9e9eb8444ca345c7285343344bfad7d4da5419'
+});
 // Responsive Canvas marker/ring/fraction/pointer geometry and event-aware
 // pan/zoom are accepted only after the complete run including the mobile
 // simultaneous-attack test passes.

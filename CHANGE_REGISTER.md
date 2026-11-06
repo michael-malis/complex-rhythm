@@ -58,3 +58,21 @@ Display a compact, readable, always-available KaTeX explanation near the selecte
 ### Acceptance evidence for verified engineering changes
 
 Angle-first editing, dual-unit synchronization, direct single-angle additions, symmetric generated families, phase-source provenance, JSON roundtrip and preservation of named modified presets passed in [full regression 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633), including `tests/angle-first.mjs` and `tests/preset-modified.mjs`. Human sound evaluation, physical-device/screen-reader signoff and the second annotated source screenshot remain explicit separate release blockers under CR-ANG-004. The term VERIFIED above covers executable engineering criteria, not final production approval.
+
+## CR-UX-001 · Persistent rhythm example browser
+
+**Priority:** P1 · **Status:** IN_PROGRESS (implementation committed, CI verification pending)
+
+The Rhythm examples section is expanded on initial page load on desktop and mobile. The user can still collapse it intentionally.
+
+Browsing a new category **must filter the example dropdown only**; it must not automatically replace the current loaded preset, reset Modified state, change BPM or root sets, restart the transport, or affect the audio/sample category. The currently loaded preset remains identifiable while browsing another category. Only explicitly choosing an example changes the loaded rhythm. Selecting a preset by mathematical ratio is still an explicit load action. New JSON import and explicit preset selection keep the displayed category synchronized with the loaded preset.
+
+**Acceptance:** desktop/mobile Chromium tests with an active Web Audio transport, zero unintended state changes while browsing five categories, and explicit selection of a new example while playback remains active. Tests: `tests/preset-category-navigation.mjs`, `tests/preset-modified.mjs`, `tests/ui-smoke.mjs`.
+
+## CR-PLAN-002 · Consolidated operational task list
+
+**Priority:** P0 · **Status:** IN_PROGRESS
+
+The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidence ledger. Daily execution and project updates use **14 outcome-focused macro tasks** in `NEXT_EXECUTION_PLAN.md`, each with dependencies, measurable exit tests and exact original `R-*` mappings. This reduces the **active work list** without discarding verified or blocked evidence or silently waiving any of the 98 original acceptance requirements.
+
+**Acceptance:** every originally unverified requirement is mapped to exactly one macro task; no duplicates/missing IDs; statuses of historic tasks unchanged by planning; unapproved feature candidates excluded from mandatory counters.

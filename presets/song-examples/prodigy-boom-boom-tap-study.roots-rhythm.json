@@ -1,0 +1,103 @@
+{
+  "format": "roots-rhythm/1",
+  "name": "Prodigy Boom Boom Tap (study)",
+  "bpm": 160,
+  "bars": 1,
+  "tracks": [
+    {
+      "a": 1,
+      "b": 0,
+      "n": 1,
+      "sound": "kick",
+      "cycleBars": 1,
+      "muted": false,
+      "operation": "union",
+      "gain": 0.85,
+      "layers": [
+        {
+          "a": -0.382683432365,
+          "b": 0.923879532511,
+          "n": 1,
+          "velocity": 0.45
+        },
+        {
+          "a": -0.707106781187,
+          "b": -0.707106781187,
+          "n": 1,
+          "velocity": 0.9
+        },
+        {
+          "a": 0.707106781187,
+          "b": -0.707106781187,
+          "n": 1,
+          "velocity": 0.42
+        }
+      ]
+    },
+    {
+      "a": -1,
+      "b": 0,
+      "n": 2,
+      "sound": "snare",
+      "cycleBars": 1,
+      "muted": false,
+      "operation": "union",
+      "gain": 0.62,
+      "layers": [
+        {
+          "a": -0.923879532511,
+          "b": 0.382683432365,
+          "n": 1,
+          "velocity": 0.28
+        },
+        {
+          "a": 0.923879532511,
+          "b": -0.382683432365,
+          "n": 1,
+          "velocity": 0.32
+        }
+      ]
+    },
+    {
+      "a": 1,
+      "b": 0,
+      "n": 8,
+      "sound": "hat",
+      "cycleBars": 1,
+      "muted": false,
+      "operation": "union",
+      "gain": 0.22,
+      "layers": []
+    },
+    {
+      "a": 1,
+      "b": 0,
+      "n": 1,
+      "sound": "reese",
+      "cycleBars": 1,
+      "muted": false,
+      "operation": "union",
+      "gain": 0.3,
+      "layers": [
+        {
+          "a": 0.382683432365,
+          "b": 0.923879532511,
+          "n": 1,
+          "velocity": 0.52
+        },
+        {
+          "a": -0.707106781187,
+          "b": -0.707106781187,
+          "n": 1,
+          "velocity": 0.78
+        },
+        {
+          "a": 0.382683432365,
+          "b": -0.923879532511,
+          "n": 1,
+          "velocity": 0.55
+        }
+      ]
+    }
+  ]
+}

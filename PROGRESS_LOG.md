@@ -146,3 +146,8 @@
 
 - Independent OfflineAudioContext recorded 15 pairwise differences among six acid instruments and 18 controlled parameter-response renders in `tests/acid-parameter-response.mjs`. Actual saw/square oscillators, resonant biquad, cutoff/filter envelope, decay, accent, pitch glide/modulation and drive waveshaper are implemented in `synthesis.js` and remain editable under Advanced sound settings. [Full CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS.
 - Marked original R-SND-003 + ten technical child checks VERIFIED, preserving R-SND-001/004 and M07 as open for distinctive drums and sonic review. Historical **368/652 VERIFIED**, **62/98 requirements**. Operational macro **4/14 VERIFIED**, M07 IN_PROGRESS.
+
+## 2026-11-06 — Dynamic mathematical editing accepted
+
+- [Full CI 42241763532](https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532) passed 4 live angular editors + an added point, with precise phase values, preserved caret/focus, KaTeX/MathML, one Web Audio scheduler, and the prior 41-event coalescing/12-layout checks.
+- R-TEX-007 and all eleven original children VERIFIED; M06 IN_PROGRESS because per-formula before/after R-TEX-008 audit is not yet complete. Historical **380/652 VERIFIED, 63/98 requirements**.

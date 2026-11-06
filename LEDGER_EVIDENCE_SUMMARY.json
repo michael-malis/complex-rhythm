@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Acid synthesis and real parameter-response verification: https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060 and https://github.com/michael-malis/complex-rhythm/actions/runs/42234865023",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532 math input/geometry/audio proof",
   "tasks": {
-    "VERIFIED": 368,
-    "IN_PROGRESS": 50,
-    "TODO": 230,
+    "VERIFIED": 380,
+    "IN_PROGRESS": 49,
+    "TODO": 219,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -69,7 +69,8 @@
     "R-RES-001",
     "R-RES-002",
     "R-RES-003",
-    "R-SND-003"
+    "R-SND-003",
+    "R-TEX-007"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -77,5 +78,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-SND-003 technically accepted (real oscillator/filter/envelope/drive and six acid voices). R-SND-001/R-SND-004 and M07 remain open; human listening remains blocked M13."
+  "note": "Dynamic root/math/audio/input requirement R-TEX-007 VERIFIED. R-TEX-008 formula-by-formula documentation still open."
 }

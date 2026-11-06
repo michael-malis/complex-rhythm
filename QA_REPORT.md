@@ -151,3 +151,7 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 ## Acid synthesis technical acceptance — 2026-11-06
 
 [CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS: six acid program waveforms, 15 pairwise differences, and 18 offline parameter changes to oscillator, cutoff, resonance, decay, accent, glide, modulation, filter envelope and drive. Real synthesis state persists after progressive-disclosure UI redesign. R-SND-003 and ten associated children VERIFIED. Listening/genre fidelity M13 and remaining M07 instrument/processing requirements are **not** certified. Ledger 368/652, parent 62/98.
+
+## Dynamic mathematics/audio acceptance — 2026-11-06
+
+**PASS** [42241763532](https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532): four complex-angle editors and an additional union point keep insertion caret/focus, mathematical root phases, formula rendering and live audio schedule synchronized. No duplicate scheduler; existing responsive and render stability checks passed. R-TEX-007 VERIFIED; R-TEX-008 remains open. 380/652 tasks and 63/98 parent requirements verified.

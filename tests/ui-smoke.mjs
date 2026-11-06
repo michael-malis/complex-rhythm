@@ -176,6 +176,7 @@ try {
  await page.locator('#presetDetails').evaluate(el=>el.open=true);
  await page.locator('#categorySelect').selectOption('poly');
  await page.locator('#presetSelect').selectOption('afro');
+ await page.locator('#orbitCanvas').scrollIntoViewIfNeeded();
  const box=await page.locator('#orbitCanvas').boundingBox();
  const cx=box.x+box.width/2,cy=box.y+box.height/2,r=Math.min(box.width,box.height)*.427;
  await page.mouse.move(cx,cy-r);await page.mouse.down();

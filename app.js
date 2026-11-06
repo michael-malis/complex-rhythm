@@ -610,15 +610,22 @@ function renderLayers(){
   const title=document.createElement('div');title.className='layer-angle-title';
   title.textContent=layer.n===1?'Additional angle '+(i+1)+' · single event':'Generated roots '+(i+1)+' · '+layer.n+' events';
   group.append(title);
-  const theta=Math.atan2(layer.b,layer.a);
+  // arg(0) is undefined. Imported zero-valued root families are silent
+  // and must not pretend that they are at an angle of zero radians.
+  const zeroLayer=layer.a===0&&layer.b===0;
+  const theta=zeroLayer?null:Math.atan2(layer.b,layer.a);
+  if(zeroLayer)title.textContent='Zero complex value · no rhythm events';
   const makeField=(id,text,value)=>{
    const label=document.createElement('label');label.textContent=text;label.htmlFor=id;
    const input=document.createElement('input');input.id=id;input.type='text';input.value=value;
    input.maxLength=80;input.inputMode='decimal';input.setAttribute('aria-label',text+' for addition '+(i+1));
    label.append(input);group.append(label);return input;
   };
-  const rad=makeField('layer'+i+'AngleRad','Angle · radians',formatEditorRadians(theta));
-  const deg=makeField('layer'+i+'AngleDeg','Angle · degrees',inputNumber(theta*180/Math.PI));
+  const rad=makeField('layer'+i+'AngleRad','Angle · radians',theta===null?'':formatEditorRadians(theta));
+  const deg=makeField('layer'+i+'AngleDeg','Angle · degrees',theta===null?'':inputNumber(theta*180/Math.PI));
+  if(zeroLayer){
+   rad.placeholder='undefined for z=0';deg.placeholder='undefined for z=0';
+  }
   const apply=(input,isDegrees)=>{
    const raw=input.value.trim();let angle;
    try{
@@ -632,6 +639,8 @@ function renderLayers(){
     const modulus=Math.hypot(layer.a,layer.b)||1;
     const p=RhythmMath.fromPolar(modulus,angle%(2*Math.PI));
     layer.a=p.a;layer.b=p.b;
+    title.textContent=layer.n===1?'Additional angle '+(i+1)+' · single event':'Generated roots '+(i+1)+' · '+layer.n+' events';
+    rad.placeholder='';deg.placeholder='';
    if(isDegrees)rad.value=formatEditorRadians(angle);
    else deg.value=inputNumber(angle*180/Math.PI);
    updateLaneStatus(selectedTrack);renderReadout();markCustom();
@@ -646,7 +655,7 @@ function renderLayers(){
     const n=Number(degree.value),valid=Number.isInteger(n)&&n>=2&&n<=64;
     degree.setAttribute('aria-invalid',String(!valid));
     if(!valid)return;
-    layer.n=n;title.textContent='Generated roots '+(i+1)+' · '+n+' events';
+    layer.n=n;title.textContent=layer.a===0&&layer.b===0?'Zero complex value · no rhythm events':'Generated roots '+(i+1)+' · '+n+' events';
     updateLaneStatus(selectedTrack);renderReadout();markCustom();
    });
    degree.addEventListener('change',()=>{if(degree.getAttribute('aria-invalid')==='true'){

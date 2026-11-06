@@ -16,6 +16,7 @@ on:
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
       - tests/event-properties.mjs
+      - tests/cross-lane-coincidence.mjs
       - tests/collision-lanes.mjs
       - tests/expression-safety.mjs
       - tests/four-lane-polar.mjs
@@ -189,6 +190,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-new-studies.log 2>&1 &
           node tests/new-preset-live-qa.mjs
+      - name: Preserve simultaneous independent lane hits and merged same-lane source provenance
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-cross-lane.log 2>&1 &
+          node tests/cross-lane-coincidence.mjs
       - name: Verify root-set event provenance across 400 deterministic random configurations
         if: ${{ !cancelled() }}
         run: |

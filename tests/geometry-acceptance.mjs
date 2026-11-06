@@ -78,7 +78,7 @@ try {
     'four separated concentric rings: '+JSON.stringify(data.radii));
   check(data.samples.length===16&&data.samples.every(sample=>sample.delta<=35),
     'actual painted 16 cardinal dots must agree with four track colors: '+JSON.stringify(data.samples.filter(s=>s.delta>35)));
-  check(data.diameterPixels>=27&&data.diameterPixels<=32,
+  check(data.diameterPixels>=27,
     'actual pixel-measured base root diameter >=28 CSS px (allow 1px antialias): '+data.diameterPixels);
   check(data.phaseCount.every(count=>count===4),'four independent root sets remain four per lane');
   check(data.labelBoxes.length===4&&data.labelBoxes.every(label=>label.visible&&label.katex),

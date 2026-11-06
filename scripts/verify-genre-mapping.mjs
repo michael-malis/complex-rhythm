@@ -50,6 +50,8 @@ for(const url of requiredSources){
  assert.ok(matrix.includes(url),'Required source missing from technique mapping: '+url);
 }
 const synth=fs.readFileSync('synthesis.js','utf8');
+assert.ok(synth.includes('voicesDefinitions'),'Synth definitions must remain in source engine');
+const knownVoices=new Set(inventory.presets.flatMap(p=>p.lanes.map(l=>l.sound)));
 for(const line of sourceRows){
  const fields=line.split('|').slice(1,-1).map(s=>s.trim());
  assert.equal(fields.length,5,'Expected source, technique, implementation, patch and verification');
@@ -57,7 +59,11 @@ for(const line of sourceRows){
  assert.ok(technique.length>=35&&implementation.length>=50&&patches.length>=20,
   'Mapping must explain concrete technique, code and existing patch');
  assert.ok(/synthesis\.js|math-io\.js|app\.js/.test(implementation),'No implementation file for '+source);
- assert.ok(/\`[a-z][A-Za-z0-9]+\`/.test(patches),'No real patch/preset reference for '+source);
+ const linked=[...patches.matchAll(/\`([a-z][A-Za-z0-9-]+)\`/g)].map(x=>x[1]);
+ assert.ok(linked.some(id=>catalog.has(id)),'No real catalog preset referenced for '+source);
+ assert.ok(linked.some(id=>knownVoices.has(id)),'No actual sound family linked to '+source);
+ for(const name of linked)assert.ok(catalog.has(name)||knownVoices.has(name),
+  'Unknown preset/voice in source mapping: '+name);
  const proof=[...tests.matchAll(/\`(tests\/[a-z0-9-]+\.mjs)\`/g)].map(x=>x[1]);
  assert.ok(proof.length>=1,'No executable test reference for '+source);
  for(const filename of proof)assert.ok(fs.existsSync(filename),'Untracked test evidence: '+filename);

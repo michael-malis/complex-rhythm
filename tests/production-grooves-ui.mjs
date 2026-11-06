@@ -19,6 +19,33 @@ try{
     assert.match(await slider.getAttribute('aria-label'),/Instrument volume/);
    }
    const identity=await page.evaluate(()=>window.RhythmResearch.transport().activePresetId);
+   // Collections are a separate high-level browsing axis; all fifty presets
+   // must belong to one musical family, while Featured is an intentional view.
+   const allIds=new Set();
+   for(const collection of ['club','breaks','acoustic','mathematics']){
+    await page.locator('#collectionSelect').selectOption(collection);
+    assert.equal(await page.locator('#categorySelect').inputValue(),'all',
+      'switching collection defaults to all styles: '+collection);
+    const choices=await page.locator('#presetSelect option').evaluateAll(options=>
+      options.filter(o=>!o.disabled&&o.value&&!o.value.startsWith('__')).map(o=>o.value));
+    assert.ok(choices.length>=1,'every collection contains playable examples: '+collection);
+    for(const value of choices){
+     assert.ok(!allIds.has(value),'musical collections must not duplicate a preset: '+value);
+     allIds.add(value);
+    }
+    assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),identity,
+     'collection navigation never changes active music: '+collection);
+   }
+   assert.equal(allIds.size,50,'four musical collections cover all fifty canonical presets');
+   await page.locator('#collectionSelect').selectOption('club');
+   await page.locator('#categorySelect').selectOption('acid');
+   assert.equal(await page.locator('#collectionSelect').inputValue(),'club',
+    'specific style auto-synchronizes its musical family');
+   assert.ok(await page.locator('#presetSelect option[value="acid-303"]').count(),
+    'acid style contains its established patterns');
+   await page.locator('#collectionSelect').selectOption('grooves');
+   assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
+    'featured collection displays six curated examples');
    await page.locator('#categorySelect').selectOption('grooves');
    const options=await page.locator('#presetSelect option').evaluateAll(items=>
      items.filter(e=>e.value!=='__browse__').map(e=>({value:e.value,text:e.textContent})));

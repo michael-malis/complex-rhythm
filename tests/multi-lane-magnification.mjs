@@ -53,12 +53,19 @@ try{
  assert.ok(a.metrics[3].chord>=34-1e-8,'innermost dense root circle uses >=34px spacing: '+JSON.stringify(a));
  assert.ok(a.scrollWidth>a.clientWidth,'zoomed graph remains pannable to inspect close roots');
 
- // Changing a nonselected lane must recalculate the magnification.
+ // For an isolated root family, changing a nonselected lane must
+ // recalculate magnification using its new spacing, not the selected lane.
+ const baseOnly=fixture(true);
+ baseOnly.name='64 phases on the inner ring';
+ baseOnly.tracks[3].layers=[];
+ await importProject(baseOnly);
+ await page.waitForFunction(()=>document.querySelector('#orbitCanvas').getBoundingClientRect().width>=2400);
+ const beforeEdit=await inspect();
  await page.locator('#trackN3').fill('32');
  await page.waitForTimeout(90);
  let b=await inspect();
- assert.ok(b.width<a.width,'reducing density on nonselected lane shrinks magnification: '+JSON.stringify([a.width,b.width]));
- assert.ok(b.metrics[3].chord>=34-1e-8,'remaining additional family and base roots still inspectable');
+ assert.ok(b.width<beforeEdit.width,'reducing density on nonselected lane shrinks magnification: '+JSON.stringify([beforeEdit.width,b.width]));
+ assert.ok(b.metrics[3].chord>=34-1e-8,'remaining root family remains inspectable');
 
  // An explicit import while zoomed resets to the geometry's actual density.
  await importProject(fixture(false));
@@ -76,7 +83,7 @@ try{
  await page.waitForFunction(()=>document.querySelector('#zoomBtn').getAttribute('aria-pressed')==='false');
  assert.deepEqual(errors,[],'no runtime JS exceptions');
  fs.writeFileSync('artifacts/multi-lane-magnification.json',JSON.stringify({
-  status:'PASS',initial:a,afterNonselectedEdit:b,sparse,restored
+  status:'PASS',initial:a,baseOnlyBeforeEdit:beforeEdit,afterNonselectedEdit:b,sparse,restored
  },null,2));
  console.log('PASS: 128 phases on a nonselected inner lane remain separable after zoom, live edit and import');
  await page.close();

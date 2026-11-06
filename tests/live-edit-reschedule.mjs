@@ -25,6 +25,35 @@ try{
   assert.equal(current.timerActive,true,'scheduler intact during edit');
   samples.push(current);
  }
+ const preDrag=await page.evaluate(()=>{
+  const t=window.RhythmResearch.current().tracks[0],r=document.querySelector('#orbitCanvas').getBoundingClientRect();
+  return {a:t.a,b:t.b,n:t.n,modulus:Math.hypot(t.a,t.b),
+   radius:window.RhythmResearch.radiiForSize(Math.min(r.width,r.height))[0],
+   box:{left:r.left,top:r.top,width:r.width,height:r.height},
+   generation:window.RhythmResearch.transport().voiceBusGenerations};
+ });
+ const origin={x:preDrag.box.left+preDrag.box.width/2,
+  y:preDrag.box.top+preDrag.box.height/2-preDrag.radius};
+ const delta=.13;
+ await page.mouse.move(origin.x,origin.y);
+ await page.mouse.down();
+ await page.mouse.move(preDrag.box.left+preDrag.box.width/2+Math.sin(delta)*preDrag.radius,
+  preDrag.box.top+preDrag.box.height/2-Math.cos(delta)*preDrag.radius,{steps:3});
+ await page.mouse.up();
+ await page.waitForFunction(previous=>window.RhythmResearch.transport().voiceBusGenerations>previous,
+  preDrag.generation,{timeout:5000});
+ const postDrag=await page.evaluate(()=>{
+  const t=window.RhythmResearch.current().tracks[0],status=window.RhythmResearch.transport();
+  return {a:t.a,b:t.b,n:t.n,modulus:Math.hypot(t.a,t.b),playing:status.playing,
+   generation:status.voiceBusGenerations,roots:window.RhythmResearch.rootPhases(t)};
+ });
+ assert.equal(postDrag.n,preDrag.n,'live root dragging preserves polynomial degree');
+ assert.ok(Math.abs(postDrag.modulus-preDrag.modulus)<1e-8,
+  'live drag preserves modulus of complex number');
+ assert.ok(Math.abs(Math.atan2(postDrag.b,postDrag.a)-Math.atan2(preDrag.b,preDrag.a))>.01,
+  'live root drag changes the argument of all roots');
+ assert.equal(postDrag.roots.length,postDrag.n,'drag retains all root phases');
+ assert.equal(postDrag.playing,true,'root drag retains playing transport');
  const beforeBurst=await page.evaluate(()=>window.RhythmResearch.transport());
  await page.evaluate(()=>{
   const slider=document.querySelector('#argumentAngle');
@@ -51,7 +80,7 @@ try{
  assert.deepEqual(errors,[],'no runtime exceptions from continuous editing');
  fs.mkdirSync('artifacts',{recursive:true});
  fs.writeFileSync('artifacts/live-edit-reschedule.json',JSON.stringify({cases:samples,initial:before,
-  phaseBurst:afterBurst,final:paused,pass:true},null,2));
+  drag:{before:preDrag,after:postDrag},phaseBurst:afterBurst,final:paused,pass:true},null,2));
  console.log('PASS live mathematical editing:',samples.length,'degrees, 41 phase updates coalesced, active Web Audio schedule refreshed');
  await page.close();
 }finally{await browser.close()}

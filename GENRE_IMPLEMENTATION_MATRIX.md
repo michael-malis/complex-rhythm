@@ -18,9 +18,23 @@
 | Terrorcore | `terror-geometry` | 220 | `4:7:9:13` | gabberKick, noiseBurst, acidScreaming, metallic | aggressive fast kicks and noise; not an authentic full track | HARD CULTR |
 | Hardtek | `hardtek-mobius` | 178 | `5:7:9:4` | frenchcoreKick, raveStab, fmPerc, acidHard | 5:7:9:4 phase roles with pitched kick and synthetic stabs | SONAA / research synthesis |
 | Freetekno | `hardtek-mobius` | 178 | `5:7:9:4` | frenchcoreKick, raveStab, fmPerc, acidHard | free-party rhythmic exploration; no claim of live FX-rack parity | research synthesis |
-| Breakcore | `breakcore-prime-shards` | 190 | `7:5:11:3` | hardcoreKick, snare, noiseBurst, reese | 7:5:11:3 asymmetry; NOT sampled break slicing | Attack / Touissant rhythmic geometry |
+| Breakcore | `breakcore-prime-shards` | 190 | `7:5:11:3` | hardcoreKick, snare, noiseBurst, reese | 7:5:11:3 asymmetry; NOT sampled break slicing | Attack / Toussaint rhythmic geometry |
 | Polyrhythmic techno | `minimal` | 124 | `5:7:8:1` | tom, rim, hat, kick | 5:7-root mathematical juxtaposition across independent lanes | Toussaint mathematical rhythm |
 | IDM / algorithmic percussion | `complex-roots-overload` | 186 | `7:11:13:17` | hardcoreKick, fmPerc, hoover, metallic | multi-prime root event logic and FM/noise textures | Toussaint / Euclidean sources |
+
+## Source → technique → implementation → preset/patch → verification
+
+This table maps the five required technical articles to **existing** signal-processing and mathematical mechanisms. It records missing parity explicitly, rather than implying every historical recording technique is implemented.
+
+| Source | Technique described by source | Actual implementation / limitation | Concrete preset and patch | Automated verification |
+|---|---|---|---|---|
+| [Roland: Mastering the TB-303 Sequencer](https://articles.roland.com/mastering-the-tb-303-sequencer-in-roland-cloud/) | Accent affecting timbre and level; slide across successive notes | `synthesis.js`: acid `accent` changes resonance-filter envelope via `depth`; event velocity controls amp. `slide` creates pitch motion **within a triggered voice**, not full legato gate continuity | `acid-reactor` using `acidHard` | `tests/audio-offline.mjs` parameter changes; `tests/audio-mix-stress.mjs` scheduler |
+| [Roland: Beyond Acid](https://articles.roland.com/beyond-acid-pushing-the-tb-303-into-new-sonic-territory/) | Saw/square oscillator and resonant filter variations for percussive, bass and driven sound | `synthesis.js`: six acid voice definitions with different `osc`, `q`, `cutoff`, `depth`, `drive`, `decay` values | `acid-singularity` with `acidPsychedelic` and `acidDark` | `tests/audio-offline.mjs`, `tests/audio-voice-differentiation.mjs` (when present) |
+| [Attack Magazine: Industrial Techno](https://www.attackmagazine.com/technique/beat-dissected/industrial-techno/) | 909-rooted kick, offbeat cymbals, metallic/noise transient layers and processing | `math-io.js` phase scheduler with independent root degrees; `synthesis.js` has `metallic` FM and `noiseBurst`; **not** a literal 909 sample machine/bitcrusher | `industrial-fracture` with `hardcoreKick`, `metallic` | `tests/required-polyrhythms.mjs`, `tests/audio-offline.mjs` |
+| [Attack Magazine: Processing Berghain Kicks](https://www.attackmagazine.com/technique/tutorials/processing-berghain-kicks-with-multiband-distortion/) | Layered kick, filtered low rumble and selective multiband saturation | `synthesis.js` kick voices use pitch envelopes, sine sublayer and waveshaper. **No true independent multiband distortion rack or reverb-rumble chain** | `rotterdam-collision` with `gabberKick`, `berlin-bass-wall` with `berlinrumble` | `tests/audio-offline.mjs`, `tests/audio-mix-stress.mjs` |
+| [MusicRadar: Producer's Guide to the TB-303](https://www.musicradar.com/news/producers-guide-to-the-roland-tb-303-and-clones) | Monophonic saw/square oscillator, resonant cutoff, pitch/slide/accents | `synthesis.js` acid voice envelope/filter/sweep, `app.js` independent 1–16-bar root cycles. **Mathematical scheduler is not the original TB-303 step sequencer** | `acid-reactor` with `acidHard`; `acid-303` sample-backed preset | `tests/audio-offline.mjs`, `tests/transport-switching.mjs`, `tests/cross-lane-coincidence.mjs` |
+
+**Acceptance boundary:** these source descriptions and code/test links show technical lineage, not independently verified sound authenticity or full multiband/legato feature parity. Missing elements are limitations, not silently inferred features.
 
 ## Traceability/limitations
 

@@ -258,9 +258,10 @@ function formatEditorRadians(theta){
  }
  return inputNumber(theta);
 }
-function syncPrimaryAngles(i){
+function syncPrimaryAngles(i,fields=null){
  const track=tracks[i],p=RhythmMath.polarOf(track.a,track.b);
- const radians=$('trackAngleRad'+i),degrees=$('trackAngleDeg'+i),degree=$('trackN'+i);
+ const radians=fields?.rad??$('trackAngleRad'+i),degrees=fields?.deg??$('trackAngleDeg'+i),
+  degree=fields?.degree??$('trackN'+i);
  if(radians&&document.activeElement!==radians){
   radians.value=p.theta===null?'':formatEditorRadians(p.theta);
   radians.placeholder=p.theta===null?'undefined for z=0':'e.g. 2π/3';
@@ -352,7 +353,9 @@ function buildLaneFields(row,t,i) {
  nInput.addEventListener('change',()=>{if(nInput.getAttribute('aria-invalid')==='true'){
   nInput.value=String(t.n);nInput.setAttribute('aria-invalid','false');
  }});
- syncPrimaryAngles(i);
+ // Initial construction occurs before the card is connected to document.
+ // Write both angle fields from canonical state using local references.
+ syncPrimaryAngles(i,{rad,deg,degree:nInput});
  const advanced=document.createElement('details');advanced.className='advanced-coordinates';
  const advancedSummary=document.createElement('summary');advancedSummary.textContent='Advanced · Cartesian / legacy polar';
  advanced.append(advancedSummary);row.append(advanced);

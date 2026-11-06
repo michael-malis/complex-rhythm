@@ -1,0 +1,100 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+
+const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+fs.mkdirSync('artifacts/production-grooves',{recursive:true});
+const results=[];
+try{
+ for(const [width,height] of [[1440,900],[390,844]]){
+  for(const theme of ['light','dark']){
+   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
+   const errors=[];page.on('pageerror',e=>errors.push(e.message));
+   await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+   if(theme==='dark')await page.locator('#themeBtn').click();
+   for(let lane=0;lane<4;lane++){
+    const slider=page.locator('#laneGain'+lane);
+    assert.ok(await slider.isVisible(),'volume is visible without advanced panels in lane '+lane);
+    assert.ok((await slider.boundingBox()).height>=44,'instrument gain has usable touch target');
+    assert.match(await slider.getAttribute('aria-label'),/Instrument volume/);
+   }
+   const identity=await page.evaluate(()=>window.RhythmResearch.transport().activePresetId);
+   await page.locator('#categorySelect').selectOption('grooves');
+   const options=await page.locator('#presetSelect option').evaluateAll(items=>
+     items.filter(e=>e.value!=='__browse__').map(e=>({value:e.value,text:e.textContent})));
+   assert.equal(options.length,6,'curated groove view has exactly six examples');
+   assert.ok(options.every(v=>/^0[1-6] · /.test(v.text)),'six grooves are clearly labeled by sound');
+   assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),identity,
+     'browsing collections is not loading another rhythm');
+   await page.locator('#presetSelect').selectOption('berlin-bass-wall');
+   assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
+     'selected curated preset remains visible in its collection');
+   const loaded=await page.evaluate(()=>window.RhythmResearch.current());
+   assert.equal(loaded.tracks[0].n,4,'Bass Wall must retain every-quarter kick');
+   assert.equal(loaded.tracks[1].sound,'berlinrumble','Bass Wall requires a separate rumble voice');
+   const otherGain=loaded.tracks[1].gain;
+   await page.locator('#laneGain0').fill('73');
+   const after=await page.evaluate(()=>window.RhythmResearch.current());
+   assert.ok(Math.abs(after.tracks[0].gain-.73)<1e-8,'primary slider changes actual voice gain');
+   assert.equal(after.tracks[1].gain,otherGain,'volume of another lane is unchanged');
+   await page.locator('#compositionPanel').evaluate(el=>{el.open=true});
+   assert.equal(Number(await page.locator('#laneGain').inputValue()),.73,
+     'secondary selected-lane gain mirrors primary slider');
+   await page.locator('#laneGain').fill('.64');
+   assert.equal(Number(await page.locator('#laneGain0').inputValue()),64,
+     'secondary and primary gain controls stay synchronized');
+   await page.locator('#laneSound0').selectOption('bongoLow');
+   assert.equal((await page.evaluate(()=>window.RhythmResearch.samplePlan())).keys.includes('bongo'),true,
+     'low acoustic bongo resolves to actual bongo sample');
+   await page.locator('#laneSound0').selectOption('bongoHigh');
+   assert.equal((await page.evaluate(()=>window.RhythmResearch.samplePlan())).keys.includes('bongo'),true,
+     'high acoustic bongo resolves to actual bongo sample');
+   const fixture={format:'roots-rhythm/1',name:'Numeric root union UI',
+    bpm:120,bars:1,tracks:[
+     {a:1,b:0,n:4,sound:'bongoLow',cycleBars:1,layers:[{a:.5,b:Math.sqrt(3)/2,n:1,velocity:.7}]},
+     {a:1,b:0,n:3,sound:'bongoHigh',cycleBars:1,layers:[]},
+     {a:1,b:0,n:8,sound:'hat',cycleBars:1,layers:[]},
+     {a:1,b:0,n:2,sound:'kick',cycleBars:1,layers:[]}
+    ]};
+   await page.locator('#jsonFile').setInputFiles({
+    name:'numeric-union.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))
+   });
+   await page.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Imported rhythm: Numeric root union UI'));
+   const view=await page.evaluate(()=>{
+    const lane=document.querySelector('#laneEq0');
+    return {
+     latex:[...lane.querySelectorAll('annotation')].map(x=>x.textContent),
+     mathML:lane.querySelectorAll('math').length,
+     terms:lane.querySelectorAll('.lane-math-term').length,
+     equationOverflow:getComputedStyle(lane).overflowX,
+     ruleOverflow:['rootRuleEquation','rootRuleValues','rootRuleSpacing']
+      .map(id=>getComputedStyle(document.getElementById(id)).overflowX),
+     rootOverflow:document.querySelector('#rootRuleEquation .katex-html')?.scrollWidth-
+      document.querySelector('#rootRuleEquation').clientWidth,
+     pageOverrun:document.documentElement.scrollWidth-innerWidth,
+     katexErrors:document.querySelectorAll('.katex-error').length
+    };
+   });
+   assert.equal(view.terms,2,'base and added nth-root families are separate wrap-safe terms');
+   assert.equal(view.mathML,2,'both coordinate roots remain accessible MathML');
+   assert.ok(view.latex[1].includes('0.5')&&view.latex[1].includes('0.866'),
+     'added point is printed as its numeric a+bi value, not opaque u1: '+JSON.stringify(view.latex));
+   assert.ok(view.latex.every(x=>!/u_\{|\\varphi/.test(x)),
+     'no opaque symbolic name for added numeric root');
+   assert.equal(view.equationOverflow,'visible','no scrollable formula within lane card');
+   assert.ok(view.ruleOverflow.every(x=>x==='visible'),'root-placement card has no scrollbars');
+   assert.ok(view.rootOverflow<=3,'root placement formula fits its width');
+   assert.ok(view.pageOverrun<=2,'no page-wide horizontal scrolling');
+   assert.equal(view.katexErrors,0,'valid KaTeX across all actual root expressions');
+   assert.deepEqual(errors,[],'no browser errors');
+   await page.screenshot({path:'artifacts/production-grooves/'+width+'-'+theme+'.png',fullPage:true});
+   results.push({width,height,theme,grooves:options.length,formula:view});
+   await page.close();
+  }
+ }
+ fs.writeFileSync('artifacts/production-grooves/report.json',JSON.stringify({
+  status:'PASS',description:'Four viewport/theme production checks for six browsing grooves, acoustic bongo sample aliases, visible independent gain, numeric roots and no math scrollbar; not human listening acceptance',
+  results
+ },null,2));
+ console.log('PASS production UI and six groove collection in '+results.length+' responsive/theme states');
+}finally{await browser.close()}

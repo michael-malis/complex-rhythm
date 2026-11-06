@@ -148,7 +148,7 @@ const MATH_PRESET_RATIOS=Object.freeze({
  'terror-geometry':'4:7:9:13'
 });
 const presetLabel=(preset,category)=>category==='grooves'?GROOVE_LABELS[preset.id]:
- (category==='poly'||category==='experimental')&&MATH_PRESET_RATIOS[preset.id]
+ MATH_PRESET_RATIOS[preset.id]
  ? MATH_PRESET_RATIOS[preset.id]+' · '+preset.name
  : preset.displayName||preset.name;
 const $=id=>document.getElementById(id);

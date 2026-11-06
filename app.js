@@ -1687,5 +1687,20 @@ window.RhythmResearch=Object.freeze({
 let savedTheme='light';
 try{savedTheme=localStorage.getItem('roots-rhythm-theme')||'light'}catch(_){}
 initMath();setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);
+// Keep the *visible* math fitted after window resizing; layout changes do
+// not modify any musical or mathematical source value.
+let pendingMathResize=0;
+window.addEventListener('resize',()=>{
+ if(pendingMathResize)cancelAnimationFrame(pendingMathResize);
+ pendingMathResize=requestAnimationFrame(()=>{
+  pendingMathResize=0;
+  for(let i=0;i<tracks.length;i++){
+   const eq=$('laneEq'+i);if(eq)renderLaneEquation(eq,tracks[i]);
+  }
+  fitRootMath('rootRuleEquation',23,16);
+  fitRootMath('rootRuleValues',18,16);
+  fitRootMath('rootRuleSpacing',18,16);
+ });
+});
 resizeCanvas();requestAnimationFrame(draw);
 })();

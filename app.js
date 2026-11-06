@@ -554,7 +554,23 @@ function renderWindowTimeline() {
  }
  $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
 }
-function markCustom(){if(activePresetId!==null){activePresetId=null;renderPresets()}renderWindowTimeline()}
+let pendingEditReschedule=false;
+function markCustom(){
+ if(activePresetId!==null){activePresetId=null;renderPresets()}
+ // Invalidate any notes already planned under the old complex-number/patch
+ // model. Batch rapid slider/drag inputs into one render-frame update.
+ if(playing&&audio&&!pendingEditReschedule){
+  pendingEditReschedule=true;
+  requestAnimationFrame(()=>{
+   pendingEditReschedule=false;
+   if(!playing||!audio)return;
+   cancelVoices();
+   scheduledUntil=audio.currentTime+.006;
+   scheduleAhead();
+  });
+ }
+ renderWindowTimeline();
+}
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  if(audio){loadSamples(prioritySampleKeys())}
@@ -1111,6 +1127,7 @@ window.RhythmResearch=Object.freeze({
  transport:()=>({
   playing,audioState:audio?.state||'uninitialized',
   transportWanted,transportTicket,schedulerIntervalsCreated,schedulerIntervalsCleared,
+  pendingEditReschedule,
   timerActive:timerId!==null,
   activePresetId,bpm,
   pendingVoiceBusDisposals,completedVoiceBusDisposals,voiceBusGenerations,

@@ -51,11 +51,28 @@ const PRESETS=[
  {id:'steel-rave',category:'hardhouse',name:'Steel Rave · Stabs',bpm:152,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(11,.59)])]},
  {id:'stomp-circuit',category:'hardhouse',name:'Stomp Circuit · Push',bpm:148,tracks:[P(1,0,4,'kick',[L(14,.52)]),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(11,.63)])]},
  {id:'peak-pressure',category:'hardhouse',name:'Peak Pressure · Rave',bpm:156,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(3,.6),L(11,.6)])]},
-// Acid: regular house foundation with syncopated, resonant bass stabs.
- {id:'acid-303',category:'acid',name:'Acid 303 · Classic',bpm:128,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(-1,0,4,'acid',[L(3,.65),L(11,.66)])]},
- {id:'resonance-rush',category:'acid',name:'Resonance · Twister',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(7,.55),L(15,.55)])]},
- {id:'liquid-corrosion',category:'acid',name:'Liquid · Acid Dub',bpm:124,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'acid',[L(3,.62),L(11,.57)])]},
- {id:'303-pressure',category:'acid',name:'303 Pressure · Peak',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(1,.56),L(9,.58)])]}
+// Four musically distinct acid roles; each note remains an nth-root event.
+// Separate voice definitions already implement six proven, measurable acid spectra.
+ {id:'acid-303',category:'acid',name:'Acid 303 · Classic',bpm:128,
+  character:'Sparse classic sawtooth 303 steps against a four-to-the-floor kick and restrained offbeat hats.',
+  mathNote:'Six lead phases from the union of R4(-1) and two single-root accents.',
+  tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),
+   P(-1,0,4,'acidClassic',[L(3,.65),L(11,.66)])]},
+ {id:'resonance-rush',category:'acid',name:'Resonance · Twister',bpm:134,
+  character:'Fast, animated psychedelic squelch over an eighth-note hi-hat roll and extra kick pickup.',
+  mathNote:'Five rotated lead roots from R5(i), with two independently phased single-root syncopations.',
+  tracks:[P(1,0,4,'kick',[L(14,.45)]),P(-1,0,2,'clap'),
+   P(1,0,8,'hat',[L(3,.4)]),P(0,1,5,'acidPsychedelic',[L(7,.55),L(13,.42)])]},
+ {id:'liquid-corrosion',category:'acid',name:'Liquid · Acid Dub',bpm:124,
+  character:'Space between low, dark square-wave acid phrases, broken half-time kick and long open hats.',
+  mathNote:'A deliberately sparse two-root bass family with two soft displaced accents.',
+  tracks:[P(1,0,2,'kick',[L(12,.54)]),P(-1,0,2,'rim'),
+   P(-1,0,4,'openhat'),P(1,0,2,'acidDark',[L(3,.42),L(11,.52)])]},
+ {id:'303-pressure',category:'acid',name:'303 Pressure · Peak',bpm:140,
+  character:'Dense distorted hard-acid stabs fight two snare backbeats and a rapid hi-hat line.',
+  mathNote:'Seven equally spaced off-axis lead roots, plus two sixteenth-grid high-pressure accents.',
+  tracks:[P(1,0,4,'kick',[L(14,.54)]),P(-1,0,2,'snare'),
+   P(1,0,8,'hat',[L(5,.33)]),P(-1,0,7,'acidHard',[L(1,.56),L(9,.7)])]}
 ];
 // Research-informed experimental studies. Original 35 records remain unmodified.
 // Each n-th-root set is still exactly uniform; the combined ensemble is not a single arbitrary root set.

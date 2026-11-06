@@ -20,6 +20,7 @@ on:
       - tests/live-edit-reschedule.mjs
       - tests/preset-modified.mjs
       - tests/preset-category-navigation.mjs
+      - tests/unified-rhythm-import.mjs
       - tests/angle-first.mjs
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
@@ -159,6 +160,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-live-edit.log 2>&1 &
           node tests/live-edit-reschedule.mjs
+      - name: Check imported preset sample families and live transport transitions
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-import-audio.log 2>&1 &
+          node tests/unified-rhythm-import.mjs
       - name: Preserve audio while browsing categories and explicitly selecting examples
         if: ${{ !cancelled() }}
         run: |

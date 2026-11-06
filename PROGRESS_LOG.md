@@ -38,3 +38,12 @@
 - **Transport defects:** cancellation uses synchronous intent + incrementing request token to avoid duplicate schedulers after double/triple click; 10 pause/resume cycles confirmed, 24 live preset transitions retain audio and clear idle Web Audio buses. **Passed [CI 42132119969](https://github.com/michael-malis/complex-rhythm/actions/runs/42132119969)**.
 - **Registered progress:** latest evidence reconciliation has **215 VERIFIED tasks / 651, 42 VERIFIED parent requirements / 98, 70 IN_PROGRESS, 362 TODO, 4 BLOCKED**. Remaining human listening, physical mobile/screen-reader and second annotated screenshot have not been certified. Main/published Pages remain unchanged.
 
+
+## 2026-11-06 — Angle-first engineering regression and traceability
+
+- Continued the existing `upgrade/spec-2026-11-math-audio` branch and PR #1 instead of restarting or replacing the project. Corrected live Canvas drag coordinate stability across page reflow, pointer-release updates and symbolic-radian comparisons in regression tests.
+- Corrected an actual first-render defect: all eight primary radian/degree inputs (four lanes) were initially blank until DOM attachment. Initialize the fields from the canonical complex state and enforce all eight values across seven viewport tests.
+- Primary and additional angle edits now preserve imported non-unit complex magnitudes, and invalid mathematical angle input leaves state unchanged; dedicated JSON compatibility regressions added.
+- Reworked independent-lane, advanced-coordinate and rendered-MathML regression cases to match the angle-first interface; ensured every GitHub Actions test step runs even when another test fails, while retaining the overall failing job if any step fails.
+- **Full UI + audio + mathematical regression passed:** [Actions 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633) at commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`. A fourfold oversampled, windowed-sinc reconstructed peak estimate supplements sample peaks but does not certify a true-peak standard.
+- Evidence reconciliation for `R-QT-001`, `R-QT-002`, `R-QT-004`, and `R-QA-001` marked 18 task rows VERIFIED. New ledger: 233 VERIFIED, 66 IN_PROGRESS, 349 TODO, 4 BLOCKED; 46/98 parent requirements. This is **not** final user-acceptance signoff. Main, human audition, annotated screenshot #2, physical-device and assistive-technology checks remain unverified.

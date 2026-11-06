@@ -62,6 +62,7 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
+ await page.locator('.advanced-coordinates').first().evaluate(el=>{el.open=true});
  const annotation=async id=>await page.locator('#'+id+' annotation').first().textContent();
  const initial=await annotation('selectedRootFormula');
  await page.locator('#trackN0').fill('7');

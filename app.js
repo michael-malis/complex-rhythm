@@ -73,7 +73,7 @@ for(const study of EXPERIMENTAL_STUDIES){
 
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -219,23 +219,31 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
  $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`;
- $('categorySelect').value=activeCategory;
+ $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
- if(!activePresetId){
+ const selected=PRESETS.find(p=>p.id===activePresetId);
+ const inBrowseCategory=selected?.category===browseCategory;
+ if(activePresetId&&!inBrowseCategory){
+  const option=document.createElement('option');
+  option.value='__browse__';option.textContent='Choose an example in this category';
+  option.disabled=true;select.append(option);
+ }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of PRESETS.filter(p=>p.category===activeCategory)){
+ for(const p of PRESETS.filter(p=>p.category===browseCategory)){
   const option=document.createElement('option');option.value=p.id;
   option.textContent=p.name+(p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
- select.value=activePresetId||'__custom__';
- const selected=PRESETS.find(p=>p.id===activePresetId);
- $('presetInfo').textContent=selected?
+ select.value=inBrowseCategory?activePresetId:activePresetId?'__browse__':'__custom__';
+ const description=selected?
   (presetModified?'Modified version of '+selected.name+'. ':'')+
   (selected.character&&selected.mathNote?`${selected.character} Mathematical structure: ${selected.mathNote}`:''):
   (importedProjectName?'Imported project: '+importedProjectName:'');
+ $('presetInfo').textContent=selected&&!inBrowseCategory?
+  `Currently loaded: ${selected.name}${presetModified?' · Modified':''}. Switching categories does not change the rhythm. Select an example to load it. `+description:
+  description;
  const relation=POLYRHYTHM_RELATIONS.find(r=>r.preset===activePresetId);
  $('ratioSelect').value=relation?.ratio||'';
 }
@@ -770,7 +778,7 @@ function markCustom(){
  renderWindowTimeline();
 }
 function applyPreset(p){const phase=transportPhase(),oldCycle=cycleSeconds();const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
- cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;activeCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ cycleBars=p.bars===2?2:1;tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;activeCategory=p.category;browseCategory=p.category;$('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  if(audio){loadSamples(prioritySampleKeys())}
  if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
  renderPresets();renderTracks();renderEditor();renderWindowTimeline()}
@@ -1232,10 +1240,10 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
- if(sourcePreset)activeCategory=sourcePreset.category;
+ if(sourcePreset){activeCategory=sourcePreset.category;browseCategory=sourcePreset.category}
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
- $('categorySelect').addEventListener('change',e=>{activeCategory=e.target.value;const first=PRESETS.find(p=>p.category===activeCategory);if(first)applyPreset(first)});
+ $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{
   const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);

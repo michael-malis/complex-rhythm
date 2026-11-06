@@ -36,6 +36,32 @@ for(const line of rows){
 assert.deepEqual([...found].sort(),expected.sort(),'Missing researched genres');
 assert.ok(research.includes('https://articles.roland.com/mastering-the-tb-303-sequencer-in-roland-cloud/'));
 assert.ok(research.includes('https://www.attackmagazine.com/technique/beat-dissected/industrial-techno/'));
-console.log(JSON.stringify({status:'PASS',genres:found.size,catalog:catalog.size,
+const requiredSources=[
+ 'https://articles.roland.com/mastering-the-tb-303-sequencer-in-roland-cloud/',
+ 'https://articles.roland.com/beyond-acid-pushing-the-tb-303-into-new-sonic-territory/',
+ 'https://www.attackmagazine.com/technique/beat-dissected/industrial-techno/',
+ 'https://www.attackmagazine.com/technique/tutorials/processing-berghain-kicks-with-multiband-distortion/',
+ 'https://www.musicradar.com/news/producers-guide-to-the-roland-tb-303-and-clones'
+];
+const sourceRows=matrix.split('\n').filter(line=>/^\| \[(?:Roland:|Attack Magazine:|MusicRadar:)/.test(line));
+assert.equal(sourceRows.length,5,'All five primary sources must map to implemented techniques');
+for(const url of requiredSources){
+ assert.ok(research.includes(url),'Required article must remain in original research: '+url);
+ assert.ok(matrix.includes(url),'Required source missing from technique mapping: '+url);
+}
+const synth=fs.readFileSync('synthesis.js','utf8');
+for(const line of sourceRows){
+ const fields=line.split('|').slice(1,-1).map(s=>s.trim());
+ assert.equal(fields.length,5,'Expected source, technique, implementation, patch and verification');
+ const [source,technique,implementation,patches,tests]=fields;
+ assert.ok(technique.length>=35&&implementation.length>=50&&patches.length>=20,
+  'Mapping must explain concrete technique, code and existing patch');
+ assert.ok(/synthesis\.js|math-io\.js|app\.js/.test(implementation),'No implementation file for '+source);
+ assert.ok(/\`[a-z][A-Za-z0-9]+\`/.test(patches),'No real patch/preset reference for '+source);
+ const proof=[...tests.matchAll(/\`(tests\/[a-z0-9-]+\.mjs)\`/g)].map(x=>x[1]);
+ assert.ok(proof.length>=1,'No executable test reference for '+source);
+ for(const filename of proof)assert.ok(fs.existsSync(filename),'Untracked test evidence: '+filename);
+}
+console.log(JSON.stringify({status:'PASS',genres:found.size,primaryTechniqueSources:sourceRows.length,catalog:catalog.size,
  method:'15 mapped real IDs with exact BPM, lane root degrees and voice names',
  caveat:'Human listening and genre authenticity are not certified'},null,2));

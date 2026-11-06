@@ -141,3 +141,8 @@
 - Removed always-visible “Magnify plot” toolbar in favor of conditional dense-root enlargement based on real minimum phase chord spacing. Preserved the existing underlying magnified and pannable Canvas mode.
 - Moved oscillator/filter/envelope settings into a collapsed advanced synth section; kept lane volume and instrument preview visible. Sample-backed voices hide irrelevant synth controls.
 - Existing 14 macro tasks and historical VERIFIED entries were not reset. **PASS** [full UI/audio CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060), including the new real desktop/mobile union-first workflow, all expanded sound controls, 12 responsive/contrast views, 50 preset geometry and original math/audio tests. No original requirement is automatically certified by this extra UX milestone.
+
+## 2026-11-06 — Acid synthesizer requirement formally verified
+
+- Independent OfflineAudioContext recorded 15 pairwise differences among six acid instruments and 18 controlled parameter-response renders in `tests/acid-parameter-response.mjs`. Actual saw/square oscillators, resonant biquad, cutoff/filter envelope, decay, accent, pitch glide/modulation and drive waveshaper are implemented in `synthesis.js` and remain editable under Advanced sound settings. [Full CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS.
+- Marked original R-SND-003 + ten technical child checks VERIFIED, preserving R-SND-001/004 and M07 as open for distinctive drums and sonic review. Historical **368/652 VERIFIED**, **62/98 requirements**. Operational macro **4/14 VERIFIED**, M07 IN_PROGRESS.

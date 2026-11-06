@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "Original genre technical study plus implemented 15/15 genre and 5/5 primary source traceability verified at CI https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514 ; full UI/audio regression https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373",
+  "generatedFrom": "Acid synthesis and real parameter-response verification: https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060 and https://github.com/michael-malis/complex-rhythm/actions/runs/42234865023",
   "tasks": {
-    "VERIFIED": 357,
-    "IN_PROGRESS": 51,
-    "TODO": 240,
+    "VERIFIED": 368,
+    "IN_PROGRESS": 50,
+    "TODO": 230,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -68,7 +68,8 @@
     "R-QT-003",
     "R-RES-001",
     "R-RES-002",
-    "R-RES-003"
+    "R-RES-003",
+    "R-SND-003"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -76,5 +77,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-RES-001/002/003 technically accepted for research/source mapping only; does not establish authentic genre reproduction or human audio acceptance."
+  "note": "R-SND-003 technically accepted (real oscillator/filter/envelope/drive and six acid voices). R-SND-001/R-SND-004 and M07 remain open; human listening remains blocked M13."
 }

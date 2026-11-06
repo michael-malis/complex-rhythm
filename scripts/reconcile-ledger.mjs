@@ -169,6 +169,7 @@ verified.set('R-RES-003',{
  evidence:"CI:42233466514 genre-mapping source-to-technique validator PASS; RHYTHM_RESEARCH.md (five original URLs reverified 2026-11-05 and independent secondary sources); GENRE_IMPLEMENTATION_MATRIX.md 15 genre/real preset/BPM/root/voice rows and five source-technique-code-patch-test mappings; CI:42233466373 full UI/audio PASS; genre authenticity and human listening excluded",
  commit:'62511a44119f489739721f408117f70024351b55'
 });
+verified.set('R-SND-003',{evidence:"CI:42240006060 full UI/audio PASS; tests/acid-parameter-response.mjs six acid voices, 15 pairwise waveform comparisons, 18 oscillator/filter/slide/drive/decay/accent/modulation renders; tests/audio-offline.mjs output spectral/attack and peak metrics; synthesis.js real oscillator, resonant biquad, filter envelope, waveshaper and pitch automation; synth controls preserved under Advanced sound settings. Human genre listening remains M13.",commit:'3b3ce2132c5fa8cad2c119323c794b993ba7b433'});
 // The real transport/Canvas regression proves >1.4x scale across multiple
 // frames, audible-event timing, stationary reduced-motion brightness and no
 // residual pulse after transport stops. Full UI/audio pipeline passed.

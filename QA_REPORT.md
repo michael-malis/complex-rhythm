@@ -147,3 +147,7 @@ All eight atomic R-GEO-007 checks now have independent reproducible automated ev
 ## Complete genre research/mapping acceptance — 2026-11-06
 
 **Source research criteria PASS:** [CI 42233466514](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466514) validated 15/15 mandatory genre implementation rows, exact catalog BPM/root degrees/sound names, and 5/5 original source-article technique→code→preset→test mappings. Five primary links were independently fetched on 2026-11-05 and recorded in RHYTHM_RESEARCH.md; additional sources and limitations included. [Full regression 42233466373](https://github.com/michael-malis/complex-rhythm/actions/runs/42233466373) PASS. R-RES-001/-002/-003 and 29 children accepted, M09 VERIFIED. No human listening, sound authenticity, physical-phone or screen-reader signoff. Historical 357/652 VERIFIED, parent 61/98.
+
+## Acid synthesis technical acceptance — 2026-11-06
+
+[CI 42240006060](https://github.com/michael-malis/complex-rhythm/actions/runs/42240006060) PASS: six acid program waveforms, 15 pairwise differences, and 18 offline parameter changes to oscillator, cutoff, resonance, decay, accent, glide, modulation, filter envelope and drive. Real synthesis state persists after progressive-disclosure UI redesign. R-SND-003 and ten associated children VERIFIED. Listening/genre fidelity M13 and remaining M07 instrument/processing requirements are **not** certified. Ledger 368/652, parent 62/98.

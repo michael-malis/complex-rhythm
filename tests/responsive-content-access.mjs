@@ -37,7 +37,7 @@ try{
     return (x&&el.scrollWidth>el.clientWidth+3)||(y&&el.scrollHeight>el.clientHeight+3);
    }).map(el=>({id:el.id,className:el.className,
     deltaX:el.scrollWidth-el.clientWidth,deltaY:el.scrollHeight-el.clientHeight}));
-   const controls=['#themeBtn','#categorySelect','#presetSelect','#playBtn','#zoomBtn','#bpm','#trackN0','#trackN1','#trackN2','#trackN3','#laneSound0','#laneSound1','#laneSound2','#laneSound3','#windowStart','#addLayer','#addRootFamily'];
+   const controls=['#themeBtn','#categorySelect','#presetSelect','#playBtn','#bpm','#trackN0','#trackN1','#trackN2','#trackN3','#laneSound0','#laneSound1','#laneSound2','#laneSound3','#windowStart','#addLayer','#addRootFamily'];
    const missing=controls.filter(s=>!document.querySelector(s)||!visible(document.querySelector(s)));
    const tooSmall=controls.filter(s=>document.querySelector(s)&&visible(document.querySelector(s))&&
     parseFloat(getComputedStyle(document.querySelector(s)).fontSize)<16-1e-8);

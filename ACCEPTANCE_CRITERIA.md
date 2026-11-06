@@ -89,11 +89,11 @@ Every requirement begins at TODO. Do not infer PASS from code existence. For eac
 | R-QM-010 | T-QM-010 | All explicit conditions in R-QM-010 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
 | R-QM-011 | T-QM-011 | All explicit conditions in R-QM-011 pass with reproducible evidence | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
 | R-QM-012 | T-QM-012 | все математические тесты пройдены с документированными допусками. | VERIFIED | CI:42107150484; tests/math-io.test.mjs; tests/ui-smoke.mjs; 60 math + 144 UI assertions |
-| R-QT-001 | T-QT-001, 8 child tasks | All explicit conditions in R-QT-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-QT-002 | T-QT-002 | All explicit conditions in R-QT-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-QT-001 | T-QT-001, 8 child tasks | All explicit conditions in R-QT-001 pass with reproducible evidence | VERIFIED | CI:42151010633; tests/formula-acceptance.mjs; 12 theme-viewport states, 10 KaTeX/MathML formulas, three stacked fractions, no raw TeX; screenshot artifact |
+| R-QT-002 | T-QT-002 | All explicit conditions in R-QT-002 pass with reproducible evidence | VERIFIED | CI:42151010633; tests/formula-acceptance.mjs; tests/live-edit-reschedule.mjs; live complex value/degree/pointer changes update formulas |
 | R-QT-003 | T-QT-003, 6 child tasks | All explicit conditions in R-QT-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-QT-004 | T-QT-004 | все обязательные математические подписи отображаются корректно во всех проверяемых состояниях. | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
-| R-QA-001 | T-QA-001, 6 child tasks | All explicit conditions in R-QA-001 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
+| R-QT-004 | T-QT-004 | все обязательные математические подписи отображаются корректно во всех проверяемых состояниях. | VERIFIED | CI:42151010633; tests/formula-acceptance.mjs; 6 viewport sizes x light/dark, zero KaTeX errors or clipping |
+| R-QA-001 | T-QA-001, 6 child tasks | All explicit conditions in R-QA-001 pass with reproducible evidence | VERIFIED | CI:42151010633; tests/ui-smoke.mjs; tests/formula-acceptance.mjs; 12+ viewport/theme screenshots and expanded panels |
 | R-QA-002 | T-QA-002, 8 child tasks | All explicit conditions in R-QA-002 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-QA-003 | T-QA-003, 7 child tasks | All explicit conditions in R-QA-003 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |
 | R-QA-004 | T-QA-004 | All explicit conditions in R-QA-004 pass with reproducible evidence | IN_PROGRESS | Implementation available; requirement-wide acceptance pending |

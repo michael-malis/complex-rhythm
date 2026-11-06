@@ -1,10 +1,10 @@
 {
   "generatedFrom": "Evidence at CI run https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
   "tasks": {
-    "VERIFIED": 207,
+    "VERIFIED": 215,
     "BLOCKED": 4,
-    "IN_PROGRESS": 71,
-    "TODO": 369,
+    "IN_PROGRESS": 70,
+    "TODO": 362,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -15,6 +15,7 @@
     "R-TEX-001",
     "R-TEX-003",
     "R-GEO-004",
+    "R-GEO-005",
     "R-GEO-006",
     "R-NUM-001",
     "R-NUM-002",

@@ -11,14 +11,14 @@
 | Measure | Exact recorded value |
 |---|---:|
 | Requirements in supplied specification | 98 |
-| Registered tasks in TASKS.md | 651 |
-| Atomic subtasks | 553 |
-| Tasks formally marked VERIFIED | **215** |
-| Tasks formally marked IN_PROGRESS | 70 |
-| Tasks formally marked TODO | 362 |
+| Registered tasks in TASKS.md | 652 |
+| Atomic subtasks | 554 |
+| Tasks formally marked VERIFIED | **233** |
+| Tasks formally marked IN_PROGRESS | 66 |
+| Tasks formally marked TODO | 349 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **42 of 98** |
+| Parent requirements VERIFIED | **46 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -102,7 +102,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 50 examples and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are automatically reconciled for known evidence (215 task records VERIFIED; 4 blockers). Gate VII still cannot pass while 362 tasks remain TODO, 70 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are automatically reconciled for known evidence (233 task records VERIFIED; 4 blockers). Gate VII still cannot pass while 362 tasks remain TODO, 70 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -123,3 +123,9 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 | VII — final verification | NOT PASSED | 215 VERIFIED, 362 TODO, 70 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Release condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. Until then, remain on draft PR rather than silently publishing incomplete work.
+
+## Engineering acceptance addendum — 2026-11-06
+
+The complete browser, pure-math, sound-rendering, four-lane rhythm, interoperability, typography, responsive and audio stress workflow **passed** for commit `cd3cd36e7cc0fe52585bcde157c6f7982316da30`: [GitHub Actions 42151010633](https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633). The sound stress test now measures a four-times interpolated inter-sample peak estimate in addition to sampled peaks; this is not a certified reconstruction/true-peak meter.
+
+Three mandatory LaTeX requirements (formula coverage, dynamic updates, both themes) and the twelve-state viewport matrix now have requirement-specific reproducible evidence in the three-way task registry. Current ledger: **233 VERIFIED, 66 IN_PROGRESS, 349 TODO, 4 BLOCKED = 652 records; 46/98 parent requirements VERIFIED.** Additional automated evidence or human verification is required for the remainder. No production deployment, human audio approval, missing annotated reference image or real-device/screen-reader acceptance is claimed.

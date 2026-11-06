@@ -77,6 +77,12 @@ verified.set('R-MDL-006',{
  evidence:'CI:42132894856; tests/collision-lanes.mjs user-visible base=4, added=3, unique=6, cross-lane shared=16; counts from live events() and RhythmMath.analyzeSchedule',
  commit:'e91651707fe6e6dd01ba636621636be41197f42c'
 });
+// Safe syntax, deliberate input validation and canonical-value preservation were
+// exercised in real Chromium and Node; bad text remains editable with a visible error.
+verified.set('R-NUM-004',{
+ evidence:'CI:42133490570; tests/expression-safety.mjs 11 valid examples, 22 rejected strings, 200 deterministic complex inputs and 11 browser editor actions; input preserved on error',
+ commit:'46d4e1a0f95d0832c437c06fbdd7053af9e16a3f'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",

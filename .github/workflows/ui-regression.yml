@@ -20,6 +20,7 @@ on:
       - tests/preset-modified.mjs
       - tests/angle-first.mjs
       - tests/required-polyrhythms.mjs
+      - tests/new-preset-live-qa.mjs
       - tests/formula-acceptance.mjs
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
@@ -104,6 +105,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
           node tests/formula-acceptance.mjs
+      - name: Exercise all 15 new studies under live Web Audio and mathematical phase editing
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-new-studies.log 2>&1 &
+          node tests/new-preset-live-qa.mjs
       - name: Verify root-set event provenance across 400 deterministic random configurations
         if: ${{ !cancelled() }}
         run: |

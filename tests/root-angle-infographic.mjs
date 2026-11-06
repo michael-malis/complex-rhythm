@@ -105,6 +105,9 @@ try{
  await page.locator('#trackN0').fill('7');
  assert.equal((await read(page)).angles.length,7,'degree change updates infographic live');
  const phaseBefore=(await read(page)).angles[0].phase;
+ // Cartesian fields are intentionally inside a collapsed advanced editor.
+ // Expand the actual interface before the user-like input interaction.
+ await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  await page.locator('#trackB0').fill('0.7');
  const edited=await read(page);
  assert.notEqual(edited.angles[0].phase,phaseBefore,'complex argument edit updates displayed phases');

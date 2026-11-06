@@ -1,10 +1,10 @@
 {
-  "generatedFrom": "Evidence at CI run https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484",
+  "generatedFrom": "Reconciled against successfully completed full UI regression: https://github.com/michael-malis/complex-rhythm/actions/runs/42151010633",
   "tasks": {
-    "VERIFIED": 215,
+    "VERIFIED": 233,
     "BLOCKED": 4,
-    "IN_PROGRESS": 70,
-    "TODO": 362,
+    "IN_PROGRESS": 66,
+    "TODO": 349,
     "FAILED": 0
   },
   "verifiedRequirementIds": [
@@ -49,7 +49,11 @@
     "R-QM-009",
     "R-QM-010",
     "R-QM-011",
-    "R-QM-012"
+    "R-QM-012",
+    "R-QT-001",
+    "R-QT-002",
+    "R-QT-004",
+    "R-QA-001"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",

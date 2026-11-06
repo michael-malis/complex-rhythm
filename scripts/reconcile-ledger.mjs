@@ -95,6 +95,16 @@ verified.set('R-GEO-005',{
  evidence:'CI:42134902723; tests/live-edit-reschedule.mjs real Canvas pointer drag while playing, modulus and degree invariant, root phases evenly spaced, Cartesian/polar/KaTeX synchronized, old Web Audio buses flushed',
  commit:'100fbb465d99a73aa95ea895b0caed4c504c8c9a'
 });
+// New exact browser/math/audio evidence: full Actions matrix succeeded.
+for(const [req,what] of [
+ ['R-QT-001','12 viewport/theme states, all required typeset formula families, semantic MathML, no raw TeX'],
+ ['R-QT-002','degree, coefficient and Canvas drag changes recompute all live mathematical formulas'],
+ ['R-QT-004','light/dark formula matrix, zero KaTeX errors and hidden clipping'],
+ ['R-QA-001','12 theme/viewport cases and expanded-panel screenshots']
+]) verified.set(req,{
+ evidence:'CI:42151010633; tests/formula-acceptance.mjs; tests/ui-smoke.mjs; '+what,
+ commit:'cd3cd36e7cc0fe52585bcde157c6f7982316da30'
+});
 const blocked=new Map([
  ["R-AUD-002",{
    evidence:"User image.png annotated control text recovered; second source reference remains unavailable; issues/2",
@@ -138,7 +148,11 @@ const lines=original.split("\n").map(line=>{
  const p=parse(line);
  if(p.length!==13)throw Error("Malformed 11-column task line: "+line.slice(0,100));
  const id=p[1].trim(),req=p[2].trim(),parent=p[3].trim();
- let status="TODO",evidence="-",defects="-",commit="-";
+ // Existing per-task verified evidence must never be erased by a partial
+ // mapping: the ledger is monotonically reconciled, not regenerated from scratch.
+ let status=p[8].trim(),evidence=p[9].trim(),defects=p[10].trim(),commit=p[11].trim();
+ if(!['TODO','IN_PROGRESS','BLOCKED','FAILED','VERIFIED'].includes(status))
+  throw Error('Unknown existing task status '+id+': '+status);
  if(verified.has(req)){
   const v=verified.get(req);
   status="VERIFIED";evidence=v.evidence;commit=v.commit;
@@ -156,7 +170,7 @@ const lines=original.split("\n").map(line=>{
   }
  }else if(req==="R-UI-003"&&parent!=="-"){
   status="IN_PROGRESS";evidence="tests/spec-ui.mjs and single recovered image.png; second annotation pending";
- }else if(active.has(req)&&parent==="-"){
+ }else if(active.has(req)&&parent==="-"&&status==="TODO"){
   status="IN_PROGRESS";evidence="Implementation available; requirement-wide acceptance pending";
  }
  p[8]=" "+status+" ";
@@ -167,7 +181,7 @@ const lines=original.split("\n").map(line=>{
  if(parent==="-")byReq.set(req,{status,evidence});
  return p.join("|");
 });
-if(Object.values(statusCount).reduce((a,b)=>a+b,0)!==651)throw Error("Expected 651 task rows");
+if(Object.values(statusCount).reduce((a,b)=>a+b,0)!==652)throw Error("Expected 652 task rows");
 if(byReq.size!==98)throw Error("Expected 98 requirement parents, got "+byReq.size);
 fs.writeFileSync(pathTask,lines.join("\n"));
 
@@ -194,7 +208,7 @@ changeRow("TRACEABILITY.md","trace");
 changeRow("ACCEPTANCE_CRITERIA.md","acceptance");
 const requirements=[...byReq];
 const summary={
- generatedFrom:"Evidence at CI run "+CI+testRun,
+ generatedFrom:"Full UI/audio CI "+CI+"42151010633; earlier proof "+CI+testRun,
  tasks:statusCount,
  verifiedRequirementIds:requirements.filter(([id,v])=>v.status==="VERIFIED").map(([id])=>id),
  blockedRequirementIds:requirements.filter(([id,v])=>v.status==="BLOCKED").map(([id])=>id),

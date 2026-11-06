@@ -207,7 +207,7 @@ try {
   'mouse drag synchronizes Cartesian readouts');
 
  let total=0;
- for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value))) {
+ for(const category of await page.locator('#categorySelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(value=>value!=='grooves'&&value!=='all'))) {
   await page.locator('#categorySelect').selectOption(category);
   const ids=await page.locator('#presetSelect option').evaluateAll(opts=>opts.map(o=>o.value).filter(x=>!x.startsWith('__')));
   for(const id of ids) {
@@ -216,7 +216,7 @@ try {
    total++;
   }
  }
- verify(total===50,'expected 35 original plus 15 experimental presets');
+ verify(total===51,'expected 35 original, 15 experimental, and one Song Examples study');
  await page.locator('#categorySelect').selectOption('poly');
  const poly=await page.locator('#presetSelect option').allTextContents();
  for(const ratio of ['2 : 3','3 : 4','3 : 5','4 : 7','5 : 7'])
@@ -243,7 +243,7 @@ await page.locator('#fileMenu summary').click();
  verify((await page.locator('#playBtn').textContent()).includes('Play'),'audio transport pauses');
  verify(errors.length===0,'browser JavaScript errors: '+errors.join('; '));
  await page.screenshot({path:'artifacts/workbench-composition.png',fullPage:true});
- console.log('ALL PASS:',checks,'assertions |',sizes.length,'viewports | 35 presets | root union, responsive, theme, audio, JSON');
+ console.log('ALL PASS:',checks,'assertions |',sizes.length,'viewports | 51 browsable examples | root union, responsive, theme, audio, JSON');
  await page.close();
 } finally {
  await context.close();await browser.close();

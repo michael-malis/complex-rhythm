@@ -103,3 +103,40 @@ The 652-row `TASKS.md` is retained as an immutable historical acceptance/evidenc
 - Hide the generic “Magnify plot” button from uncomplicated fit views. Offer a clearly named contextual magnification control only when actual combined root phases have less than the 34px inspection separation, and keep exit available while magnified. Preserve dense-root magnification and pan tests.
 - Keep lane volume and preview visible, but collapse oscillator/filter/synthesis sliders under “Advanced sound settings” and hide the whole synth panel for sample-backed voices. Preserve sound parameters, transport and JSON. No audio engine removal or wave-view feature.
 - Acceptance: on real desktop/mobile layouts, union-of-point controls are immediately discoverable, overlapping roots trigger only one lane event, multiple added sets work, importing existing intersection settings remains possible, sparse plots have no distracting zoom button, dense plots can still magnify, and sound settings are accessible on demand. Full UI/audio CI must pass with additional focused tests before status promotion.
+
+
+## CR-UX-006 · Root formula fit, per-lane volume, curated grooves and acoustic bongo variants
+
+**Priority:** P1 · **Status:** IN_PROGRESS (production PR #16; automated and manual acceptance not yet complete).
+
+**Origin:** Direct user review of screenshot clipping/scrollbar artifacts in the four-lane editor and mathematics card, plus requested instrument-volume, low-end, bongo and preset organization changes on 2026-11-06. This change is part of the normal M03/M05/M07/M08/M10/M11 engineering loop; it does not create a fifteenth macro task or modify the 98 original requirements.
+
+1. **Math: no pointless scrollbars.** Each lane displays the actual numeric complex coordinates of every base and added nth-root family (including n=1) rather than opaque \`u_1\`. The on-lane equation can wrap between distinct set terms; individual KaTeX terms scale down modestly when needed. The root placement rule remains KaTeX/MathML and shrinks mathematically, with no inner vertical/horizontal scrollbars. The underlying double-precision complex state, root phases, project JSON, circle geometry and scheduler are not rounded or changed. A hint makes the display-only coordinate rounding explicit.
+2. **Primary lane volume.** Always expose four independently adjustable volume sliders adjacent to the four visible instrument controls, not only in the composition inspector. Preserve independent per-lane \`gain\` in canonical state, JSON and scheduled audio, including muted/unmuted behavior. Keep the previous selected-lane inspector as a synchronized secondary control so existing workflows remain intact. Master volume remains globally separate.
+3. **Bongo timbres.** Expose an acoustic low-bongo and high-bongo instrument option backed by the existing locally licensed bongo sample, with clearly distinct playback rates and appropriate headroom. No external copyrighted YouTube audio is copied. Use the same attack/phase/event scheduler as all other voices; fallback must remain audible without an asset.
+4. **Browsable groove groups.** Organize original source categories in readable musical families. Add a curated six-groove collection referencing five distinct techno presets plus a Brazilian acoustic bongo/bossa study, including Bass Wall's constant four-on-the-floor kick and complementary rumble. Preserve the full original 50 preset IDs, 35+15 inventory, category-specific audio assignments and structural traceability. Browsing any group is a filter-only action; explicit selection alone changes the active preset.
+5. **Bass Wall body.** Raise low-frequency presence modestly in existing kick/rumble signal processing, without introducing extra planned attacks, changing root phases or claiming human audio acceptance.
+
+**Acceptance:** new real-browser \`tests/production-grooves-ui.mjs\` passes at 1440×900 and 390×844 in both themes, no formula scrollbars/page-overflow/raw TeX, numeric coordinates and responsive wrapping present, four visible 44px-touch volume inputs independently update the underlying state and synchronize inspector gain, acoustic bongo samples resolve and remain instrument-selectable, curated browse shows six distinct preset IDs and never auto-loads. Existing 50-preset source/diversity, full audio math/UI/JSON/transport and light/dark accessibility CI must PASS at the same final code SHA. Human taste/listening and physical mobile/screen-reader assessment remain explicitly blocked under M13. **Do not mark VERIFIED until full CI and evidence review.**
+
+**Implementation PR:** https://github.com/michael-malis/complex-rhythm/pull/16
+
+
+### 2026-11-06 — Collection and genre navigation refinement (same production PR #16)
+
+The user requested clearer preset organization as an **additional part of this production cycle**, not a separate experimental project. The browser now has a two-level hierarchy: **Collection → Style filter → Example**. Four disjoint musical families cover the existing 50 presets without moving their IDs or changing their canonical source category: **Techno & club** (including house/dub), **Breakbeats**, **Acoustic & world**, and **Polyrhythms & complex roots**. A fifth, explicitly curated **Featured grooves** view reuses six of the same presets and is intentionally non-disjoint.
+
+The optional style filter preserves all original technical category values, their source-specific sample routing and backward-compatible tests. Switching a collection or style only changes visible options and never changes the current project, BPM, four root sets, transport, sample settings or JSON identity. Selecting an example still performs the explicit load. Styles auto-synchronize to the relevant high-level collection. The added real-browser coverage in `tests/production-grooves-ui.mjs` verifies a union of **exactly 50 unique IDs across the four source families** on light/dark desktop/mobile, six curated featured examples and filter-only transport behavior.
+
+**Acceptance state:** changed code and automated tests are submitted in PR #16; do not promote counters without a fresh PASS on the final SHA.
+
+
+### 2026-11-07 — User-supplied Song Examples collection (same production PR #16)
+
+A new fully English collection and style, **Song Examples**, contains the user-provided `Prodigy Boom Boom Tap (study)` JSON as a genuinely selectable, playable rhythmic study. The UI display title is `Prodigy · Boom Boom Tap (Rhythm Study)`, while the canonical source `name` stays byte-for-byte the original user value for legacy import/export recognition. The unmodified underlying JSON is retained at `presets/song-examples/prodigy-boom-boom-tap-study.roots-rhythm.json`.
+
+The study uses 160 BPM, a one-bar cycle and four lanes: kick (4 unique hits), snare (4), hi-hat (8), and Reese bass (4). Its 8 added single-root components, exact complex coefficients, velocities, per-lane gains, and operations are preserved; existing local samples/synths supply the sound. There are **no external audio recordings** or imported copyrighted sound assets. The study is an educational reconstruction and is not represented as an official or exact transcription.
+
+**Catalog integrity:** the initial 50 genre and mathematical examples remain the original research-inventory dataset, with their historical evidence, IDs and source categories unchanged; Song Examples adds a separately curated 51st user-visible item. Its sixth top-level collection is filtered without loading or restarting music. `tests/ui-smoke.mjs` covers all 51 user-selectable examples; `tests/song-examples.mjs` verifies exact input coordinates and layers, 160 BPM, 4/4/8/4 event counts, live transport, English title, source JSON export/import round trip, and both themes at 1440px and 390px. The existing 50-preset quantitative diversity baseline remains separate.
+
+**Release:** same PR #16; full same-head regression and registry checks must PASS before any merge to main. No additional historical requirement or manual listening sign-off is asserted.

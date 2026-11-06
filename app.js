@@ -4,7 +4,7 @@ const TAU=2*Math.PI;
 let COLORS=['#ab5847','#567a63','#967438','#80618a'];
 let RGB=[[171,88,71],[86,122,99],[150,116,56],[128,97,138]];
 let theme='light';
-const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',berlinrumble:'Berlin sub-rumble',technoKick:'Techno kick',hardcoreKick:'Distorted hardcore kick',gabberKick:'Gabber kick',frenchcoreKick:'Frenchcore pitched kick',metallic:'Industrial metallic percussion',fmPerc:'FM percussion',noiseBurst:'Noise burst',hoover:'Hoover bass',raveStab:'Rave stab',acidClassic:'Classic 303 Acid',acidHard:'Hard Acid',acidScreaming:'Screaming Acid',acidDark:'Dark Acid',acidIndustrial:'Industrial Acid',acidPsychedelic:'Psychedelic Acid'};
+const SOUNDS={kick:'Kick',snare:'Snare',clap:'Clap',hat:'Closed hat',openhat:'Open hat',rim:'Rim click',tom:'Tom',bass:'Sub bass',shaker:'Shaker',reese:'Reese bass',acid:'Acid synth',surdo:'Surdo',agogo:'Agogô',tamborim:'Tamborim',jazzkick:'Soft acoustic kick',crossstick:'Jazz cross-stick',jazzshaker:'Natural shaker',jazzhat:'Jazz hi-hat',jazzsnare:'Acoustic snare',claves:'Wooden claves',bongo:'Natural bongo',bongoLow:'Acoustic bongo · low',bongoHigh:'Acoustic bongo · high',berlinrumble:'Berlin sub-rumble',technoKick:'Techno kick',hardcoreKick:'Distorted hardcore kick',gabberKick:'Gabber kick',frenchcoreKick:'Frenchcore pitched kick',metallic:'Industrial metallic percussion',fmPerc:'FM percussion',noiseBurst:'Noise burst',hoover:'Hoover bass',raveStab:'Rave stab',acidClassic:'Classic 303 Acid',acidHard:'Hard Acid',acidScreaming:'Screaming Acid',acidDark:'Dark Acid',acidIndustrial:'Industrial Acid',acidPsychedelic:'Psychedelic Acid'};
 // Every audible time point is still the argument of a complex root.
 const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
 // A phase on a 16th-note grid encoded by a degree-1 complex root.
@@ -71,9 +71,65 @@ for(const study of EXPERIMENTAL_STUDIES){
    character:study.character,mathNote:study.mathNote});
 }
 
+// Separately curated song studies are user-provided interpretations, not audio
+// recordings or claimed exact transcriptions. The original 50 catalog entries
+// remain unchanged for the historical diversity/source audit.
+const SONG_EXAMPLES=Object.freeze([
+ {id:'prodigy-boom-boom-tap-study',category:'songs',
+  name:'Prodigy Boom Boom Tap (study)',
+  displayName:'Prodigy · Boom Boom Tap (Rhythm Study)',
+  bpm:160,bars:1,
+  character:'User-supplied, one-bar electronic breakbeat study: kick accents, ghost snare, steady eighth-note hats and Reese bass.',
+  mathNote:'All events are exact complex-root phases. This educational reconstruction is not an official or verified transcription of any recording.',
+  tracks:[
+   {...P(1,0,1,'kick',[
+    {a:-0.382683432365,b:0.923879532511,n:1,velocity:0.45},
+    {a:-0.707106781187,b:-0.707106781187,n:1,velocity:0.9},
+    {a:0.707106781187,b:-0.707106781187,n:1,velocity:0.42}
+   ]),cycleBars:1,operation:'union',gain:0.85},
+   {...P(-1,0,2,'snare',[
+    {a:-0.923879532511,b:0.382683432365,n:1,velocity:0.28},
+    {a:0.923879532511,b:-0.382683432365,n:1,velocity:0.32}
+   ]),cycleBars:1,operation:'union',gain:0.62},
+   {...P(1,0,8,'hat'),cycleBars:1,operation:'union',gain:0.22},
+   {...P(1,0,1,'reese',[
+    {a:0.382683432365,b:0.923879532511,n:1,velocity:0.52},
+    {a:-0.707106781187,b:-0.707106781187,n:1,velocity:0.78},
+    {a:0.382683432365,b:-0.923879532511,n:1,velocity:0.55}
+   ]),cycleBars:1,operation:'union',gain:0.3}
+  ]
+ }
+]);
+const BROWSE_PRESETS=Object.freeze([...PRESETS,...SONG_EXAMPLES]);
+
+// These six genre-diverse grooves remain real canonical mathematical presets.
+// Curated browsing adds a view, never a second preset-loading algorithm.
+const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
+const GROOVE_LABELS=Object.freeze({
+ 'berlin-bass-wall':'01 · Bass Wall · relentless kick / deep rumble',
+ 'concrete':'02 · Drive · clap and rolling bass',
+ 'shaft':'03 · Machinery · snare, hats and toms',
+ 'dust':'04 · Half-light · sparse bass and open hats',
+ 'iron':'05 · Peak · relentless acid pressure',
+ 'bossa-classic':'06 · Acoustic · bongo and cross-stick'
+});
+const PRESET_COLLECTIONS=Object.freeze({
+ grooves:['grooves'],
+ club:['bunker','hardhouse','acid','hardcore','other'],
+ breaks:['dnb','jungle'],
+ acoustic:['brazil'],
+ mathematics:['poly','experimental'],
+ songs:['songs']
+});
+const collectionForCategory=category=>
+ Object.keys(PRESET_COLLECTIONS).find(group=>PRESET_COLLECTIONS[group].includes(category))||'mathematics';
+const inBrowse=(preset,category)=>category==='grooves'
+ ? GROOVE_IDS.includes(preset.id):category==='all'
+ ? (browseCollection==='grooves'?GROOVE_IDS.includes(preset.id):PRESET_COLLECTIONS[browseCollection]?.includes(preset.category))
+ : preset.category===category;
 const $=id=>document.getElementById(id);
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='bunker',browseCollection='club';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -151,6 +207,40 @@ function renderTeX(target,latex,displayMode=false) {
 function complexLaTeX(t) {
  return `${fmtMath(t.a)}${t.b<0?' - ':' + '}${fmtMath(Math.abs(t.b))}i`;
 }
+// Compact rounded values are display-only, not edits to the canonical complex numbers.
+function compactComplexLaTeX(t){
+ const n=v=>{
+  if(Math.abs(v)<1e-12)return '0';
+  if(Math.abs(v)>=1e5||Math.abs(v)<.0001){
+   const [a,e]=v.toExponential(2).split('e');
+   return a+String.raw`\cdot10^{${Number(e)}}`;
+  }
+  return String(Number(v.toPrecision(4)));
+ };
+ return n(t.a)+(t.b<0?' - ':' + ')+n(Math.abs(t.b))+'i';
+}
+function renderLaneEquation(node,track){
+ const op=track.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
+ const terms=[String.raw`R_{${track.n}}\!\left(${compactComplexLaTeX(track)}\right)`,
+  ...track.layers.map(layer=>String.raw`R_{${layer.n}}\!\left(${compactComplexLaTeX(layer)}\right)`)];
+ if(track.euclidean)terms.push(String.raw`E(${track.euclidean.k},${track.euclidean.n})`);
+ node.replaceChildren();
+ node.setAttribute('aria-label','Root sets with numeric complex coordinates');
+ node.title='Displayed coordinates are rounded; edit fields and project JSON keep full precision.';
+ for(let j=0;j<terms.length;j++){
+  const term=document.createElement('span');
+  term.className='lane-math-term';
+  renderTeX(term,(j?String.raw`\;${op}\;`:'')+terms[j]);
+  node.append(term);
+ }
+ const width=node.getBoundingClientRect().width;
+ if(width>0)for(const term of node.children){
+  for(let px=18;px>=14;px--){
+   term.style.fontSize=px+'px';
+   if(term.scrollWidth<=width+1)break;
+  }
+ }
+}
 function initMath() {
  const standard=[
   ['Cartesian form',String.raw`z=a+bi`],
@@ -218,22 +308,24 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
 const POLYRHYTHM_RELATIONS=Object.freeze([{"ratio":"5:7","preset":"minimal","degrees":[5,7]},{"ratio":"7:9","preset":"schranz-machinery","degrees":[7,9]},{"ratio":"7:11","preset":"eleven-against-seven","degrees":[7,11]},{"ratio":"11:13","preset":"acid-singularity","degrees":[11,13]},{"ratio":"5:7:11","preset":"industrial-fracture","degrees":[5,7,11]},{"ratio":"3:5:7:11","preset":"acid-reactor","degrees":[3,5,7,11]},{"ratio":"7:11:13:17","preset":"complex-roots-overload","degrees":[7,11,13,17]},{"ratio":"4:7:9:13","preset":"terror-geometry","degrees":[4,7,9,13]}]);
 function renderPresets(){
- $('presetCount').textContent=`${PRESETS.length} rhythm examples · ${new Set(PRESETS.map(p=>p.category)).size} categories`;
+ $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${Object.keys(PRESET_COLLECTIONS).length} collections`;
+ $('collectionSelect').value=browseCollection;
  $('categorySelect').value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
- const selected=PRESETS.find(p=>p.id===activePresetId);
- const inBrowseCategory=selected?.category===browseCategory;
+ const selected=BROWSE_PRESETS.find(p=>p.id===activePresetId);
+ const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
  if(activePresetId&&!inBrowseCategory){
   const option=document.createElement('option');
-  option.value='__browse__';option.textContent='Choose an example in this category';
+  option.value='__browse__';option.textContent='Choose an example in this collection';
   option.disabled=true;select.append(option);
  }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of PRESETS.filter(p=>p.category===browseCategory)){
+ for(const p of BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory))){
   const option=document.createElement('option');option.value=p.id;
-  option.textContent=p.name+(p.id===activePresetId&&presetModified?' · Modified':'');
+  option.textContent=(browseCategory==='grooves'?GROOVE_LABELS[p.id]:(p.displayName||p.name))+
+    (p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
  select.value=inBrowseCategory?activePresetId:activePresetId?'__browse__':'__custom__';
@@ -282,6 +374,15 @@ function syncPrimaryAngles(i,fields=null){
  }
  if(degree&&document.activeElement!==degree)degree.value=String(track.n);
 }
+function fitRootMath(id,max=18,min=16){
+ const el=$(id);if(!el)return;
+ const katex=el.querySelector('.katex-html');
+ if(!katex)return;
+ for(let px=max;px>=min;px--){
+  el.style.fontSize=px+'px';
+  if(katex.scrollWidth<=el.clientWidth+1)break;
+ }
+}
 function renderRootRule(){
  const track=tracks[selectedTrack];if(!track)return;
  const model=window.RootAngleInfo.model(track.a,track.b,track.n);
@@ -292,6 +393,9 @@ function renderRootRule(){
   ',\\quad k=0,\\ldots,'+(track.n-1));
  renderTeX('rootRuleSpacing','\\Delta='+window.RootAngleInfo.piTeX(model.spacing)+
   '\\,('+Number(model.spacingDeg.toFixed(3))+'^\\circ)');
+ fitRootMath('rootRuleEquation',23,16);
+ fitRootMath('rootRuleValues',18,16);
+ fitRootMath('rootRuleSpacing',18,16);
  $('rootRuleCaption').textContent=model.zero?
   'The zero complex value has undefined argument and no rhythm events.':
   'Changing the argument by δ rotates each root by δ/n; spacing remains 2π/n. The circle represents time, not |z|.';
@@ -457,6 +561,25 @@ function renderTracks() {
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
   head.append(pick,sound,mute);row.append(head);
+  // Always-visible instrument gain in each lane. The selected-lane advanced
+  // editor keeps a synchronized secondary mirror for backward compatibility.
+  const gainRow=document.createElement('label');gainRow.className='lane-volume';
+  gainRow.htmlFor='laneGain'+i;
+  const gainName=document.createElement('span');gainName.textContent='Instrument volume';
+  const gainReadout=document.createElement('output');gainReadout.id='laneGainValue'+i;
+  gainReadout.htmlFor='laneGain'+i;gainReadout.textContent=Math.round((t.gain??1)*100)+'%';
+  const gainSlider=document.createElement('input');gainSlider.type='range';
+  gainSlider.id='laneGain'+i;gainSlider.min='5';gainSlider.max='150';gainSlider.step='1';
+  gainSlider.value=String(Math.round((t.gain??1)*100));
+  gainSlider.setAttribute('aria-label','Instrument volume, lane '+(i+1));
+  gainSlider.addEventListener('input',()=>{
+   t.gain=Number(gainSlider.value)/100;
+   gainReadout.textContent=gainSlider.value+'%';
+   const mirror=$('laneGain'),mirrorOutput=$('selectedGainValue');
+   if(i===selectedTrack&&mirror){mirror.value=String(t.gain);if(mirrorOutput)mirrorOutput.textContent=t.gain.toFixed(2);}
+   markCustom();
+  });
+  gainRow.append(gainName,gainReadout,gainSlider);row.append(gainRow);
   buildLaneFields(row,t,i);
   const length=document.createElement('div');length.className='lane-length';
   const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.textContent='Cycle length · bars';
@@ -485,11 +608,7 @@ function renderTracks() {
 function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
- const setOp=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
- const equation=String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+
-  t.layers.map((layer,j)=>String.raw`\;${setOp}\;R_{${layer.n}}(u_{${j+1}})`).join('')+
-  (t.euclidean?String.raw`\;${setOp}\;E(${t.euclidean.k},${t.euclidean.n})`:'');
- if(eq)renderTeX(eq,equation);
+ if(eq)renderLaneEquation(eq,t);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
  if(i===selectedTrack)renderRootRule();
@@ -512,9 +631,15 @@ function renderSoundControls() {
  const h=document.createElement('h4');h.textContent='Lane volume';basic.append(h);
  const row=document.createElement('label');row.className='patch-control';
  const label=document.createElement('span');label.textContent='Lane gain';
- const output=document.createElement('output');output.textContent=(t.gain??1).toFixed(2);
+ const output=document.createElement('output');output.id='selectedGainValue';output.textContent=(t.gain??1).toFixed(2);
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
- input.addEventListener('input',()=>{t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);markCustom()});
+ input.addEventListener('input',()=>{
+  t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);
+  const slider=$('laneGain'+selectedTrack),label=$('laneGainValue'+selectedTrack);
+  if(slider)slider.value=String(Math.round(t.gain*100));
+  if(label)label.textContent=Math.round(t.gain*100)+'%';
+  markCustom();
+ });
  row.append(label,output,input);basic.append(row);
  const defaults=window.RhythmVoices?.definitions?.[t.sound];
  advanced.hidden=!defaults;
@@ -599,7 +724,7 @@ function renderComposition() {
  const c=composePhases(t),i=selectedTrack;
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
  const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
-  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map((l,j)=>l.n===1?String.raw`\;${setSymbol}\;\{\varphi_{${j+1}}\}`:String.raw`\;${setSymbol}\;R_{${l.n}}(u_{${j+1}})`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
+  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map(l=>String.raw`\;${setSymbol}\;R_{${l.n}}\!\left(${complexLaTeX(l)}\right)`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;
@@ -823,7 +948,14 @@ function applyPreset(p){
  cycleBars=p.bars===2?2:1;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
- activeCategory=p.category;browseCategory=p.category;
+ activeCategory=p.category;
+ if(browseCategory==='all'&&PRESET_COLLECTIONS[browseCollection]?.includes(p.category)){
+  // Preserve the broad collection view when an example is explicitly loaded.
+ }else if(browseCategory==='grooves'&&GROOVE_IDS.includes(p.id)){
+  browseCollection='grooves';
+ }else{
+  browseCategory=p.category;browseCollection=collectionForCategory(p.category);
+ }
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -845,6 +977,7 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       };
       function sampleKey(sound,index=0,velocity=1){
         if(sound==='berlinrumble')return index%2===0?'berlinrumble':'berlinrumble-alt';
+        if(sound==='bongoLow'||sound==='bongoHigh')return 'bongo';
         if(sound==='jazzkick')return velocity>.88?'jazzkick-full':'jazzkick';
         if(sound==='crossstick')return index%3===0?'crossstick-alt':'crossstick';
         if(sound==='jazzshaker')return index%2===0?'jazzshaker':'jazzshaker-alt';
@@ -880,11 +1013,12 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         });
         return Promise.allSettled(jobs).then(()=>{if(playing)updateTransportText();return sampleBuffers.size});
       }
-      function triggerSample(key,at,gainValue,index=0){
+      function triggerSample(key,at,gainValue,index=0,voice=key){
         const buffer=sampleBuffers.get(key);if(!buffer)return false;
         const source=audio.createBufferSource();source.buffer=buffer;
         // Repetition variation is deliberately small; no timing jitter, roots stay exact.
-        source.playbackRate.value=1+([0,-.012,.009,-.007,.004][index%5]);
+        source.playbackRate.value=(voice==='bongoLow'?.79:voice==='bongoHigh'?1.27:1)*
+          (1+([0,-.012,.009,-.007,.004][index%5]));
         const gain=audio.createGain();gain.gain.value=Math.max(.001,gainValue);
         source.connect(gain);gain.connect(voiceBus||master);
         const cleanupNodes=[gain];
@@ -913,9 +1047,13 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
       function playSample(sound,at,velocity,index=0){
         const key=sampleKey(sound,index,velocity);
         const gainTable={kick:.51,snare:.45,clap:.36,hat:.18,openhat:.19,rim:.34,tom:.33,shaker:.21,
-           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,bongo:.25,berlinrumble:.63};
+           jazzkick:.22,crossstick:.34,jazzshaker:.15,jazzhat:.14,jazzsnare:.28,claves:.26,
+         bongo:.25,bongoLow:.32,bongoHigh:.23,berlinrumble:.70};
         const style=activeCategory==='brazil'?.83:1;
-        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style,index);
+        // Bass Wall emphasizes the existing kick/rumble onsets without
+        // introducing extra attacks or moving any mathematical root phase.
+        const wallBoost=activePresetId==='berlin-bass-wall'&&sound==='kick'?1.12:1;
+        const played=triggerSample(key,at,(gainTable[sound]||.32)*velocity*style*wallBoost,index,sound);
         // A restrained acoustic body layer gives fast breakbeats less plastic transients.
         if(played&&['dnb','jungle'].includes(activeCategory)){
           if(sound==='snare'&&sampleBuffers.has('jazzsnare'))triggerSample('jazzsnare',at,.095*velocity,index);
@@ -993,7 +1131,8 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
          // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
          perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
-        const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',jazzsnare:'snare',claves:'rim',bongo:'tom'};
+        const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',
+         jazzsnare:'snare',claves:'rim',bongo:'tom',bongoLow:'tom',bongoHigh:'tom'};
         switch(soundFallback[sound]||sound) {
           case 'kick':
             oscillator(150,44,'sine',1.0,t,.29);
@@ -1395,7 +1534,7 @@ function draw() {
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
  requestAnimationFrame(draw);
 }
-function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?BROWSE_PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function validateImportedFields(project){
  const validate=(value,allowed,description)=>{
   if(!value||typeof value!=='object'||Array.isArray(value))throw Error(description+' must be an object');
@@ -1426,7 +1565,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
- const sourcePreset=PRESETS.find(p=>p.name===importedName);
+ const sourcePreset=BROWSE_PRESETS.find(p=>p.name===importedName);
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
@@ -1434,6 +1573,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  // previous preset's sample mappings or claim that it is a previous preset.
  activeCategory=sourcePreset?.category||'other';
  browseCategory=activeCategory;
+ browseCollection=collectionForCategory(activeCategory);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
@@ -1447,8 +1587,18 @@ function setupEvents() {
   button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
   if(open)renderRootRule();
  });
- $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
- $('presetSelect').addEventListener('change',e=>{const p=PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
+ $('collectionSelect').addEventListener('change',e=>{
+  browseCollection=e.target.value;
+  browseCategory=browseCollection==='grooves'?'grooves':'all';
+  renderPresets();
+ });
+ $('categorySelect').addEventListener('change',e=>{
+  browseCategory=e.target.value;
+  if(browseCategory==='grooves')browseCollection='grooves';
+  else if(browseCategory!=='all')browseCollection=collectionForCategory(browseCategory);
+  renderPresets();
+ });
+ $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('ratioSelect').addEventListener('change',e=>{
   const relation=POLYRHYTHM_RELATIONS.find(r=>r.ratio===e.target.value);
   if(!relation)return;
@@ -1599,5 +1749,20 @@ window.RhythmResearch=Object.freeze({
 let savedTheme='light';
 try{savedTheme=localStorage.getItem('roots-rhythm-theme')||'light'}catch(_){}
 initMath();setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);
+// Keep the *visible* math fitted after window resizing; layout changes do
+// not modify any musical or mathematical source value.
+let pendingMathResize=0;
+window.addEventListener('resize',()=>{
+ if(pendingMathResize)cancelAnimationFrame(pendingMathResize);
+ pendingMathResize=requestAnimationFrame(()=>{
+  pendingMathResize=0;
+  for(let i=0;i<tracks.length;i++){
+   const eq=$('laneEq'+i);if(eq)renderLaneEquation(eq,tracks[i]);
+  }
+  fitRootMath('rootRuleEquation',23,16);
+  fitRootMath('rootRuleValues',18,16);
+  fitRootMath('rootRuleSpacing',18,16);
+ });
+});
 resizeCanvas();requestAnimationFrame(draw);
 })();

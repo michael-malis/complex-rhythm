@@ -720,6 +720,37 @@ function refreshSoundLab(force=false){
  }
  scheduleSoundWavePreview();
 }
+// Shared legacy low-end renderer: exactly the same source graph drives live
+// playback and the offline Sound Lab. No approximated/fabricated bass trace.
+function playNativeLowEnd(ctx,out,sound,at){
+ if(sound!=='bass'&&sound!=='reese')return false;
+ const envelope=(gain,peak,release,attack=.002)=>{
+  gain.gain.setValueAtTime(.0001,at);
+  gain.gain.exponentialRampToValueAtTime(Math.max(.0002,peak),at+attack);
+  gain.gain.exponentialRampToValueAtTime(.0001,at+Math.max(release,attack+.01));
+ };
+ if(sound==='bass'){
+  for(const [type,peak,length] of [['triangle',.55,.36],['sine',.21,.38]]){
+   const osc=ctx.createOscillator();osc.type=type;
+   osc.frequency.setValueAtTime(80,at);
+   osc.frequency.exponentialRampToValueAtTime(54,at+length);
+   const gain=ctx.createGain();envelope(gain,peak,length);
+   osc.connect(gain);gain.connect(out);osc.start(at);osc.stop(at+length+.025);
+  }
+ }else{
+  const filter=ctx.createBiquadFilter();filter.type='lowpass';
+  filter.frequency.setValueAtTime(1100,at);
+  filter.frequency.exponentialRampToValueAtTime(280,at+.3);filter.Q.value=1.1;
+  const amp=ctx.createGain();envelope(amp,.24,.36,.008);
+  filter.connect(amp);amp.connect(out);
+  for(const detune of [-9,9]){
+   const osc=ctx.createOscillator();osc.type='sawtooth';
+   osc.frequency.setValueAtTime(53,at);osc.detune.value=detune;
+   osc.connect(filter);osc.start(at);osc.stop(at+.39);
+  }
+ }
+ return true;
+}
 async function waveLabData(track){
  const rate=24000,seconds=.65;
  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
@@ -732,6 +763,12 @@ async function waveLabData(track){
    throw Error('Selected synth could not be rendered');
   const rendered=await ctx.startRendering();
   return {samples:rendered.getChannelData(0),kind:'Synthesized',seconds};
+ }
+ if(track.sound==='bass'||track.sound==='reese'){
+  const bus=ctx.createGain();bus.gain.value=.82;bus.connect(ctx.destination);
+  playNativeLowEnd(ctx,bus,track.sound,.012);
+  const rendered=await ctx.startRendering();
+  return {samples:rendered.getChannelData(0),kind:'Synthesized fallback',seconds};
  }
  const key=sampleKey(track.sound,0,.82),url=SAMPLE_FILES[key];
  if(!url)throw Error('No recorded source waveform for this instrument. Use Preview to hear its fallback.');
@@ -1250,6 +1287,9 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
          // would square the velocity and make ghost/secondary accents inaudible.
          if(window.RhythmVoices?.play(audio,perHitBus,sound,t,velocity,index,patch)){retainHitBus(perHitBus,t);perHitBus=null;return}
          perHitBus.gain.value=Math.max(.05,Math.min(1,velocity));
+         if(playNativeLowEnd(audio,perHitBus,sound,t)){
+          retainHitBus(perHitBus,t);perHitBus=null;return;
+         }
         const soundFallback={jazzkick:'kick',crossstick:'rim',jazzshaker:'shaker',jazzhat:'hat',
          jazzsnare:'snare',claves:'rim',bongo:'tom',bongoLow:'tom',bongoHigh:'tom'};
         switch(soundFallback[sound]||sound) {
@@ -1272,8 +1312,6 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
             oscillator(800,570,'square',.072,t,.034); noise(t,.025,.13,2600,'highpass'); break;
           case 'tom':
             oscillator(215,94,'sine',.39,t,.27); break;
-          case 'bass':
-            oscillator(80,54,'triangle',.55,t,.36); oscillator(80,54,'sine',.21,t,.38); break;
           case 'shaker':
             noise(t,.11,.084,3400,'highpass'); break;
           case 'berlinrumble': {
@@ -1284,12 +1322,6 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
               const osc=audio.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq*1.045,t);osc.frequency.exponentialRampToValueAtTime(freq,t+.09);
               const g=audio.createGain();g.gain.value=level;osc.connect(g);g.connect(filter);osc.start(t);osc.stop(t+.43);
             }
-            break;
-          }
-          case 'reese': {
-            const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(1100,t);filter.frequency.exponentialRampToValueAtTime(280,t+.3);filter.Q.value=1.1;
-            const amp=audio.createGain();envelope(amp,t,.24,.36,.008);filter.connect(amp);amp.connect(perHitBus||voiceBus||master);
-            for(const detune of [-9,9]){const osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.setValueAtTime(53,t);osc.detune.value=detune;osc.connect(filter);osc.start(t);osc.stop(t+.39)}
             break;
           }
           case 'acid': {

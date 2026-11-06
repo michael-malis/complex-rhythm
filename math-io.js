@@ -130,7 +130,7 @@ function mathPhaseAt(elapsedSeconds,cycleBars,barSeconds){
 // this affects only rendering, never mathematical phases or audio scheduling.
 function mathRadialVisibleSegments(length,angle,markers,padding=4){
  if(!Number.isFinite(length)||length<0||!Number.isFinite(angle)||
-  !Array.isArray(markers)||markers.length>2048||
+  !Array.isArray(markers)||markers.length>4096||
   !Number.isFinite(padding)||padding<0||padding>64)
   throw Error('Invalid playback hand geometry');
  const ux=Math.cos(angle),uy=Math.sin(angle),blocked=[];

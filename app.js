@@ -458,9 +458,26 @@ function renderRootRule(){
  fitRootMath('rootRuleEquation',23,16);
  fitRootMath('rootRuleValues',18,16);
  fitRootMath('rootRuleSpacing',18,16);
- $('rootRuleCaption').textContent=model.zero?
-  'The zero complex value has undefined argument and no rhythm events.':
-  'Changing the argument by δ rotates each root by δ/n; spacing remains 2π/n. The circle represents time, not |z|.';
+ // Mathematical symbols in educational explanations must be KaTeX+MathML
+ // just like the reference equations: no text-only δ/n or 2π/n shortcuts.
+ const caption=$('rootRuleCaption');
+ caption.replaceChildren();
+ const captionText=value=>caption.append(document.createTextNode(value));
+ const captionMath=latex=>{
+  const span=document.createElement('span');span.className='math-notation';
+  renderTeX(span,latex);caption.append(span);
+ };
+ if(model.zero){
+  captionText('For ');captionMath(String.raw`z=0`);
+  captionText(', ');captionMath(String.raw`\\arg(0)`);
+  captionText(' is undefined and there are no rhythm events.');
+ }else{
+  captionText('Changing the argument by ');captionMath(String.raw`\\delta`);
+  captionText(' rotates each root by ');captionMath(String.raw`\\frac{\\delta}{n}`);
+  captionText('; spacing stays ');captionMath(String.raw`\\frac{2\\pi}{n}`);
+  captionText('. The circle represents time, not ');captionMath(String.raw`|z|`);
+  captionText('.');
+ }
  window.RootAngleInfo.render(model,{
   panel:$('rootRuleInfoPanel'),diagram:$('rootRuleDiagram'),input:$('rootRuleInput'),
   delta:$('rootRuleDelta'),formula:$('rootRuleFormula'),list:$('rootRuleAngleList'),

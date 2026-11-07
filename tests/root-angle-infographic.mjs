@@ -154,6 +154,13 @@ try{
  assert.equal((await read(page)).angles.length,7,'degree change updates infographic live');
  await list.focus();await page.keyboard.press('End');
  assert.deepEqual((await trace()).selected,[6],'live degree edit updates traceable root options');
+ await page.locator('#trackN0').fill('64');
+ await list.focus();await page.keyboard.press('End');
+ const denseTrace=await trace();
+ assert.equal(denseTrace.options,64,'all 64 dense mathematical roots are accessible through one list');
+ assert.deepEqual(denseTrace.selected,[63],'keyboard End reaches last of 64 distinct roots');
+ assert.ok(denseTrace.coordinateError<.001,'dense last-root highlight uses exact phase');
+ await page.locator('#trackN0').fill('7');
  await page.locator('#trackN0').focus();
  const phaseBefore=(await read(page)).angles[0].phase;
  // Cartesian fields are intentionally inside a collapsed advanced editor.

@@ -42,7 +42,7 @@
 <main class="workspace">
 <section class="visual-stage" aria-labelledby="orbitHeading">
  <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">Four rings · four playheads</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>
- <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular instrument timelines with one small colored playhead on each ring. A playhead completes one clockwise revolution per lane loop, and touches a root at that lane’s scheduled sound time. Equal loop lengths move together. Click a ring to select its lane. Drag a filled base root to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas>
+ <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular instrument timelines with one small colored playhead on each ring. A playhead completes one clockwise revolution per lane loop, and touches a root at that lane’s scheduled sound time. Equal loop lengths move together. Click a ring to select its lane. Tap a filled base root to inspect its angle and timing, or drag it to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas>
  <div class="circle-labels" id="circleLabels" aria-label="Cycle phases: zero at top, quarter at right, half at bottom, three quarters at left">
    <span class="circle-label label-zero" id="phaseZero"></span><span class="circle-label label-quarter" id="phaseQuarter"></span><span class="circle-label label-half" id="phaseHalf"></span><span class="circle-label label-threequarters" id="phaseThreequarters"></span>
  </div></div>
@@ -60,9 +60,15 @@
   </div>
  </details>
  <p id="eventSummary" class="stage-events" aria-live="polite">Four-bar event summary</p>
+ <div id="rootInspection" class="root-inspection" role="group" aria-label="Selected mathematical root" hidden>
+  <span class="root-inspection-label" id="rootInspectionLane">Selected root</span>
+  <span id="rootInspectionAngle" class="root-inspection-angle math-notation"></span>
+  <span id="rootInspectionTime" class="root-inspection-time"></span>
+  <button id="clearRootInspection" type="button" class="root-inspection-clear" aria-label="Clear inspected root" title="Clear inspected root">×</button>
+ </div>
  <div class="figure-tools" id="figureTools" hidden><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn" aria-label="Magnify densely spaced roots">Magnify dense roots</button><span id="zoomHint" class="figure-tools-hint">Zoom is available when roots overlap; scroll to inspect the enlarged rings.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
- <p class="stage-hint" id="plotHint">Four colored arrows follow their own rings. One revolution = that lane's loop length (1–16 bars); same-length loops move together. Drag a filled root to rotate it.</p>
+ <p class="stage-hint" id="plotHint">Four colored arrows follow their own rings. One revolution = that lane's loop length (1–16 bars); same-length loops move together. Tap a filled root to inspect its angle and timing; drag it to rotate.</p>
  <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="260" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
  <div class="statusbar"><div class="range-field volume-control"><label for="volume">Master volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" step="1" value="65" aria-label="Master output volume"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
 </section>

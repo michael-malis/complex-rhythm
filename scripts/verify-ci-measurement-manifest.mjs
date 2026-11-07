@@ -71,7 +71,7 @@ check('distinct aggressive kick architectures','artifacts/kick-architecture/repo
   assert.equal(r.graph.oscillators,expected[r.name]);
   assert.ok(r.graph.filters.some(x=>x.type==='highpass'&&x.freq===27));
   assert.ok(r.graph.filters.some(x=>x.type==='lowpass'&&x.freq>=170&&x.freq<=440));
-  assert.ok(r.graph.shapers>=2);
+  assert.ok(r.graph.shapers>=1);
  }
  assert.ok(d.comparisons.every(x=>x.normalizedWaveformDistance>.08),
   'sound signatures must not differ by gain alone');

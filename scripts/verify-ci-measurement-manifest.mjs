@@ -58,6 +58,21 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('reproducible historical formula before after','artifacts/math-historical-compare/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.historicalSourceSha,'454b7c4466851e82946034ce4a47019c716ee218');
+ assert.equal(d.afterSource,'current CI pull-request HEAD');
+ assert.equal(d.referenceFormulas,10);
+ assert.equal(d.beforeAfterStates,12);
+ assert.equal(d.screenshots,24);
+ assert.equal(d.reproducibleHistoricalCode,true);
+ assert.equal(d.annotatedOriginalUserScreenshot,false);
+ assert.equal(d.cases?.length,12);
+ assert.ok(d.cases.every(c=>c.before?.references?.length===10&&
+  c.after?.references?.length===10&&c.after?.hasSvg&&c.before?.hasCanvas));
+ return {historicalCommit:'454b7c44',beforeAfterCases:12,actualPngFiles:24,
+  historicalUserAnnotatedImageRecovered:false};
+},'Actual old source-code commit and current real Chromium rendering of ten mandatory formulas in twelve responsive states; separately preserve missing annotated original blocker');
 check('real SVG and Canvas mathematical phase alignment','artifacts/math-graph-svg/report.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.viewportThemeStates,12);
@@ -260,10 +275,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,25,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,26,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 25 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 26 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

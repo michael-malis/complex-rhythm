@@ -20,6 +20,7 @@ on:
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
       - tests/transport-phase-continuity.mjs
+      - tests/cycle-length-visualization.mjs
       - tests/event-properties.mjs
       - tests/cross-lane-coincidence.mjs
       - tests/collision-lanes.mjs
@@ -222,6 +223,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-transport-phase.log 2>&1 &
           node tests/transport-phase-continuity.mjs
+      - name: Verify 1–16-bar loop controls, on-ring bar boundaries and unchanged mathematical roots
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-cycle-length.log 2>&1 &
+          node tests/cycle-length-visualization.mjs
       - name: Import all 35 legacy JSON projects and verify precise root phases
         if: ${{ !cancelled() }}
         run: |

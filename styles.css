@@ -381,3 +381,49 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
  #soundWaveCanvas{height:150px}
  .sound-lab>summary .quiet{margin-left:0}
 }
+
+
+/* Each lane's mathematical roots and interactive controls share one hue.
+   Global transport and master volume are intentionally independent of all
+   four root-lane colors; red is never a fallback for every slider. */
+:root{--ui-control:#386f87;--master-control:#296f90}
+html[data-theme="dark"]{--ui-control:#86bfd3;--master-control:#86c7e9}
+input[type=range]{accent-color:var(--control-color,var(--ui-control))}
+.lane{--control-color:var(--lane-color)}
+.lane .lane-volume input[type=range],.lane input[type=range]{accent-color:var(--lane-color)}
+.lane-volume output{color:var(--lane-color)}
+.lane .mode-button[aria-pressed="true"]{background:var(--panel);color:var(--ink);border-color:var(--lane-color);box-shadow:inset 0 -3px 0 var(--lane-color)}
+.lane .unit-button:focus-visible,.lane .lane-sound:focus-visible,.lane input:focus-visible{outline-color:var(--lane-color)}
+.volume-control{--control-color:var(--master-control)}
+.volume-control input[type=range]{accent-color:var(--master-control)}
+.volume-control output{color:var(--master-control)}
+.composition-panel{--control-color:var(--selected-lane-color,var(--track-1))}
+.composition-panel input[type=range],.composition-panel input[type=checkbox]{accent-color:var(--control-color)}
+.composition-panel>summary:before{color:var(--selected-lane-color,var(--track-1))}
+.composition-panel .phase-mark{border-color:var(--selected-lane-color,var(--track-1));background:var(--selected-lane-color,var(--track-1))}
+.composition-panel .phase-mark.added,.composition-panel .phase-mark.overlap{background:var(--page)}
+.composition-panel .phase-mark.overlap:after{background:var(--mark-color,var(--selected-lane-color,var(--track-1)))}
+.composition-panel .composition-info h3{border-left:3px solid var(--selected-lane-color,var(--track-1));padding-left:8px}
+.composition-panel .lane-gain-controls output{color:var(--selected-lane-color,var(--track-1))}
+.composition-panel .composition-actions .secondary-btn:focus-visible{outline-color:var(--selected-lane-color,var(--track-1))}
+.root-rule{border-left-color:var(--selected-lane-color,var(--track-1))}
+.root-rule .root-info-input-ray{stroke:var(--selected-lane-color,var(--track-1))}
+.root-rule .root-rule-info-toggle[aria-expanded="true"]{border-color:var(--selected-lane-color,var(--track-1));box-shadow:inset 0 0 0 1px var(--selected-lane-color,var(--track-1))}
+
+/* Keep four parameter panels comfortable inside the existing 2-by-2
+   desktop layout without shrinking interaction targets below 44px. */
+@media(min-width:1280px){
+ .track-list{gap:8px}
+ .lane{padding:7px 9px 8px}
+ .lane-head{gap:4px}
+ .lane-volume{margin-top:3px;gap:0 6px}
+ .lane .angle-fields{margin-top:4px;gap:4px 7px}
+ .lane .angle-title{font-size:16px;line-height:1.25}
+ .lane .angle-fields label{font-size:16px;gap:2px}
+ .lane .angle-fields input{height:44px;min-height:44px}
+ .lane .advanced-coordinates{margin-top:3px}
+ .lane .advanced-coordinates>summary{min-height:40px}
+ .lane .lane-alternate-math{padding:2px 0;line-height:1.35}
+ .lane .lane-bottom{margin-top:2px;gap:2px}
+ .lane .lane-length{margin-top:2px}
+}

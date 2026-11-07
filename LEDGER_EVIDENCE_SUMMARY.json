@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42358463110 full R-SND-004 multivoice architecture/audio measurement; previous accepted evidence preserved",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42359549057 full source-mapped mandatory 14-voice inventory and all prior accepted M07 evidence",
   "tasks": {
-    "VERIFIED": 398,
-    "IN_PROGRESS": 45,
-    "TODO": 205,
+    "VERIFIED": 403,
+    "IN_PROGRESS": 44,
+    "TODO": 201,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -74,7 +74,8 @@
     "R-TEX-007",
     "R-SND-006",
     "R-SND-005",
-    "R-SND-004"
+    "R-SND-004",
+    "R-SND-001"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -82,5 +83,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-SND-004 aggressive percussion technically accepted: four independent kick body/attack graphs and measured distinct waveform shapes at two velocities; metallic FM spectral test and production output safety. R-SND-001 (complete set of required instruments) and manual human listening under M13 remain unresolved; M07 stays IN_PROGRESS."
+  "note": "R-SND-001 inventory source-technically VERIFIED: 10 independently rendered synth voices, 3 distinct decoded locally licensed drum recordings, 1 shared live/offline native Reese patch. R-SND-003 Acid and R-SND-004 aggressive percussion previously accepted; macro M07 technically VERIFIED. M13 human listening, device/genre evaluation and screen-reader review remain BLOCKED; no subjective music-quality inference."
 }

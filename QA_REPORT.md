@@ -53,7 +53,7 @@ These are real failure records, not hypothetical problems. Earlier failed CI run
 2. No documented **human listening** across all 50 presets and six acid voices. Technical output is measured, but musical quality remains unverified as explicitly mandated in `R-SND-007`.
 3. No actual-phone audio/gesture assessment, assistive-technology screen-reader walkthrough or independent subjective design review.
 4. Dense high-degree markers can overlap geometrically at default 360px width; magnified scrollable view is implemented rather than shrinking all dots. Need a human review of navigation usability.
-5. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` were reconciled using independent CI evidence: 382 task records VERIFIED, 4 BLOCKED, 47 IN_PROGRESS and 219 TODO. R-SND-006 native Web Audio timing passed [full CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353); remaining M08 output safety and manual acceptance are separate. Seven-gate release acceptance remains unfinished.
+5. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` reconciled through exact-head full CI: **390 VERIFIED**, **46 IN_PROGRESS**, **212 TODO**, **4 BLOCKED**. Original requirements **66/98 VERIFIED**. M08 technical output safety from [PR #32 full CI 42348284633](https://github.com/michael-malis/complex-rhythm/actions/runs/42348284633) uses the same master limiter code as production; R-SND-006 native Web Audio scheduling was separately proven earlier. Human audio and final seven-gate acceptance remain unfinished.
 
 ## 5. Test protocol
 

@@ -261,6 +261,7 @@ function composePhases(track) {
  return {base,added,merged,overlaps:merged.filter(v=>v.shared).length};
 }
 let selectedRootIndex=0;
+let inspectedRoot=null;
 const laneModes=['cart','cart','cart','cart'];
 const laneUnits=['rad','rad','rad','rad'];
 let magnified=false;
@@ -350,6 +351,27 @@ function updateSelectedRootMath() {
  const p=rootPhases(t)[k];
  renderTeX('selectedRootFormula',String.raw`w_{${k}}\approx\sqrt[${t.n}]{${fmtMath(r)}}\,e^{i\frac{${fmtMath(theta)}+2\pi\cdot ${k}}{${t.n}}}`);
  renderTeX('rootPhaseFormula',String.raw`\operatorname{phase}(w_{${k}})=\frac{\theta+2\pi\cdot${k}}{2\pi\cdot${t.n}}\bmod 1\approx${fmtMath(p)}`);
+}
+// An inspected hit is a canonical root phase, not an arbitrary beat-grid note.
+function renderRootInspection(){
+ const panel=$('rootInspection'),selection=inspectedRoot;
+ if(!panel)return;
+ const t=selection&&tracks[selection.lane];
+ const phase=t&&Number.isInteger(selection.index)?rootPhases(t)[selection.index]:undefined;
+ if(!Number.isFinite(phase)||selection.lane!==selectedTrack){
+  panel.hidden=true;
+  if(selection)inspectedRoot=null;
+  return;
+ }
+ const bars=t.cycleBars||1,elapsedBars=phase*bars;
+ const bar=Math.floor(elapsedBars)+1;
+ const beat=1+4*(elapsedBars-Math.floor(elapsedBars));
+ $('rootInspectionLane').textContent='Lane '+(selection.lane+1)+' · root '+(selection.index+1)+'/'+t.n;
+ renderTeX('rootInspectionAngle',String.raw`\theta_{${selection.index}}=${window.RootAngleInfo.piTeX(phase*TAU)}`);
+ $('rootInspectionTime').textContent='Phase '+Number((phase*100).toFixed(3))+
+  '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+'/4';
+ panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
+ panel.hidden=false;
 }
 function principalArg(b,a){return RhythmMath.principalArg(b,a)}
 function fmt(n){
@@ -703,9 +725,10 @@ function updateLaneStatus(i) {
  if(eq)renderLaneEquation(eq,t);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
- if(i===selectedTrack)renderRootRule();
+ if(i===selectedTrack){renderRootRule();renderRootInspection()}
 }
 function chooseTrack(i,fromTrackList=false) {
+ if(i!==selectedTrack)inspectedRoot=null;
  selectedTrack=Math.max(0,Math.min(3,i));
  document.querySelectorAll('.lane').forEach((row,j)=>{
   row.classList.toggle('selected',j===selectedTrack);
@@ -995,7 +1018,7 @@ function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
  const slider=$('argumentAngle');slider.disabled=a===null;slider.value=a===null?'0':String(Math.round(a));
- $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();renderRootRule();
+ $('argumentText').textContent=a===null?'—':`${fmt(a)}°`;renderComposition();renderRootRule();renderRootInspection();
 }
 function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
@@ -1258,6 +1281,7 @@ function applyPreset(p){
  const phase=transportPhase(),oldCycle=cycleSeconds();
  const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  cycleBars=p.bars===2?2:1;
+ inspectedRoot=null;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
  activeCategory=p.category;
@@ -1807,6 +1831,18 @@ function draw() {
    if(t.muted){ctx.beginPath();ctx.arc(x,y,radius+1.3,0,TAU);ctx.strokeStyle=dark?'#555951':'#b5b5ab';ctx.lineWidth=2;ctx.stroke()}
   }
  });
+ // A static selection halo marks the user's inspected root. It never
+ // acts as the retired radial playback pointer, nor changes event timing.
+ if(inspectedRoot&&inspectedRoot.lane===selectedTrack){
+  const t=tracks[inspectedRoot.lane],phase=rootPhases(t)[inspectedRoot.index];
+  if(Number.isFinite(phase)){
+   const angle=-Math.PI/2+TAU*phase,r=radii[inspectedRoot.lane];
+   ctx.save();ctx.beginPath();
+   ctx.arc(Math.cos(angle)*r,Math.sin(angle)*r,Math.max(19,ringSpacing*.32),0,TAU);
+   ctx.strokeStyle=COLORS[inspectedRoot.lane];ctx.lineWidth=2.5;
+   ctx.setLineDash([4,3]);ctx.stroke();ctx.restore();
+  }
+ }
  // Four short, tangential playheads travel ON their own root ring.
  // Draw last: a contrasting triangle remains visible on top of a filled
  // root precisely when that root's sound is scheduled. No radial ray crosses
@@ -1884,6 +1920,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  const phase=transportPhase(),oldCycle=cycleSeconds();
  const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
  cycleBars=d.bars===2?2:1;
+ inspectedRoot=null;
  tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
@@ -1901,6 +1938,7 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  if(magnified)refreshPlotZoom();
  showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
+ $('clearRootInspection').addEventListener('click',()=>{inspectedRoot=null;renderRootInspection()});
  $('rootRuleInfoToggle').addEventListener('click',()=>{
   const panel=$('rootRuleInfoPanel'),button=$('rootRuleInfoToggle');
   const open=panel.hidden;panel.hidden=!open;
@@ -1974,7 +2012,9 @@ function setupEvents() {
   const p=canvasPoint(e),dist=Math.hypot(p.x,p.y);
   const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-dist)})).sort((a,b)=>a.gap-b.gap)[0];
   if(near.gap>Math.max(22,p.side*.06))return;
-  chooseTrack(near.i);const t=tracks[near.i];const k=selectRootIndexAtPoint(p,t,near.r);if(k<0)return;selectedRootIndex=k;updateSelectedRootMath();
+  chooseTrack(near.i);const t=tracks[near.i];const k=selectRootIndexAtPoint(p,t,near.r);if(k<0)return;
+  selectedRootIndex=k;inspectedRoot={lane:near.i,index:k};
+  updateSelectedRootMath();renderRootInspection();
   rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
     centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false};
   canvas.setPointerCapture(e.pointerId);

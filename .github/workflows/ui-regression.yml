@@ -17,6 +17,7 @@ on:
       - tests/acid-parameter-response.mjs
       - tests/acid-preset-diversity.mjs
       - tests/audio-mix-stress.mjs
+      - tests/master-output-safety.mjs
       - tests/transport-switching.mjs
       - tests/transport-race.mjs
       - tests/transport-phase-continuity.mjs
@@ -150,6 +151,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-audio-http.log 2>&1 &
           node tests/audio-offline.mjs
+      - name: Measure real shared master limiter ceiling, subsonic filtering, volume smoothing and transient preservation
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-master-output-safety.log 2>&1 &
+          node tests/master-output-safety.mjs
       - name: Stress-test 50 rhythm schedules and limiter output
         if: ${{ !cancelled() }}
         run: |

@@ -122,8 +122,20 @@ try{
   // Selecting other instruments no longer changes ANY pointer phase.
   await page.locator('.lane[data-lane="2"] .lane-select').click();
   const picked=checkFrame(await capture(),'after selecting another ring');
-  assert.ok(dist(picked.frame.hands[0].phase,second.frame.hands[0].phase)<.14,
-   'selecting a ring cannot jump/restart the other playheads');
+  // Clicking another lane may scroll a large mobile page, so wall time
+  // can legitimately exceed a small fraction of a bar. Verify the *audio
+  // epoch* never restarts, then compare each hand's natural progression
+  // against the measured elapsed time instead of imposing a fake timeout.
+  assert.equal(picked.frame.beatEpoch,second.frame.beatEpoch,
+   'selecting a ring must not restart the shared AudioContext epoch');
+  assert.equal(picked.transport.schedulerIntervalsCreated,second.transport.schedulerIntervalsCreated,
+   'selecting a lane cannot create another scheduler');
+  for(let i=0;i<4;i++){
+   const previous=second.frame.hands[i],now=picked.frame.hands[i];
+   const expected=((previous.phase+(picked.frame.elapsed-second.frame.elapsed)/previous.periodSeconds)%1+1)%1;
+   assert.ok(dist(now.phase,expected)<1e-8,
+    'lane selection preserves the absolute playhead phase while the audio clock advances, lane '+i);
+  }
 
   // Tempo and live root-count edits must never break audio/visual phase.
   const beforeTempo=await capture();

@@ -4,80 +4,8 @@ on:
     branches: [main]
   push:
     branches: [main]
-    paths:
-      - index.html
-      - app.js
-      - math-io.js
-      - synthesis.js
-      - tests/math-io.test.mjs
-      - tests/spec-ui.mjs
-      - tests/audio-offline.mjs
-      - tests/kick-architecture-differentiation.mjs
-      - tests/mandatory-voice-inventory.mjs
-      - tests/percussion-sample-structure.mjs
-      - samples/**
-      - tests/acid-parameter-response.mjs
-      - tests/acid-preset-diversity.mjs
-      - tests/audio-mix-stress.mjs
-      - tests/master-output-safety.mjs
-      - tests/transport-switching.mjs
-      - tests/transport-race.mjs
-      - tests/transport-phase-continuity.mjs
-      - tests/event-properties.mjs
-      - tests/cross-lane-coincidence.mjs
-      - tests/collision-lanes.mjs
-      - tests/expression-safety.mjs
-      - tests/four-lane-polar.mjs
-      - tests/canonical-argument.mjs
-      - tests/live-edit-reschedule.mjs
-      - tests/preset-modified.mjs
-      - tests/preset-category-navigation.mjs
-      - tests/unified-rhythm-import.mjs
-      - tests/single-reschedule-per-edit.mjs
-      - tests/all-presets-same-semantics.mjs
-      - tests/preset-musical-structure.mjs
-      - tests/angle-first.mjs
-      - tests/math-live-input-stability.mjs
-      - tests/required-polyrhythms.mjs
-      - tests/new-preset-live-qa.mjs
-      - tests/formula-acceptance.mjs
-      - tests/math-inline-caption.mjs
-      - tests/composition-source-equation.mjs
-      - MATH_TYPOGRAPHY_AUDIT.md
-      - scripts/verify-math-typography-audit.mjs
-      - CI_MEASUREMENT_MANIFEST.md
-      - scripts/verify-ci-measurement-manifest.mjs
-      - tests/legacy-json-compat.mjs
-      - tests/accessibility-contrast.mjs
-      - tests/expanded-ui-typography.mjs
-      - tests/responsive-content-access.mjs
-      - tests/formula-geometry-complete.mjs
-      - tests/root-angle-infographic.mjs
-      - tests/math-graph-svg-alignment.mjs
-      - tests/math-historical-before-after.mjs
-      - tests/touch-targets.mjs
-      - tests/geometry-acceptance.mjs
-      - tests/geometry-collision-audit.mjs
-      - tests/phase-label-adaptation.mjs
-      - tests/playback-hand-clearance.mjs
-      - tests/orbital-hands-audio-sync.mjs
-      - tests/audio-context-scheduler-proof.mjs
-      - tests/animated-adjacent-ring-clearance.mjs
-      - tests/multi-lane-magnification.mjs
-      - tests/beat-visual-acceptance.mjs
-      - vendor/katex/**
-      - styles.css
-      - tests/ui-smoke.mjs
-      - tests/union-first-ui.mjs
-      - tests/sound-lab.mjs
-      - tests/native-waveform-coverage.mjs
-      - tests/production-grooves-ui.mjs
-      - tests/lane-colors-wheel-controls.mjs
-      - tests/song-examples.mjs
-      - presets/song-examples/**
-      - NEXT_EXECUTION_PLAN.md
-      - scripts/verify-execution-plan.mjs
-      - .github/workflows/ui-regression.yml
+    # No push path filter: every main commit must pass full UI/math/audio QA.
+    # Runtime helpers, presets and release evidence must never bypass regression.
   workflow_dispatch:
 
 permissions:

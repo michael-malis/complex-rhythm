@@ -42,3 +42,5 @@ jobs:
         run: node scripts/verify-execution-plan.mjs
       - name: Verify summary counts agree with source ledger
         run: node scripts/verify-ledger-summary.mjs
+      - name: Enforce full main-branch regression trigger and test coverage
+        run: node scripts/verify-main-regression-trigger.mjs

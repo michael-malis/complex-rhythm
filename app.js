@@ -1758,7 +1758,7 @@ function draw() {
  const pointerEvidence=[];
  hands.forEach(hand=>{
   const r=radii[hand.lane],angle=-Math.PI/2+TAU*hand.phase;
-  const arcLength=Math.min(17,Math.max(8,r*.13));
+  const arcLength=Math.min(r*.4,21,Math.max(10,r*.16));
   const startAngle=angle-arcLength/r;
   const cos=Math.cos(angle),sin=Math.sin(angle),tx=-sin,ty=cos;
   const x=r*cos,y=r*sin;
@@ -1767,12 +1767,12 @@ function draw() {
   ctx.globalAlpha=hand.muted?.45:playing?1:.72;
   ctx.lineCap='round';ctx.lineJoin='round';
   ctx.beginPath();ctx.arc(0,0,r,startAngle,angle);
-  ctx.strokeStyle=COLORS[hand.lane];ctx.lineWidth=hand.lane===selectedTrack?5.5:4.5;ctx.stroke();
+  ctx.strokeStyle=COLORS[hand.lane];ctx.lineWidth=hand.lane===selectedTrack?6.5:5.5;ctx.stroke();
   // Arrow tip is EXACTLY at the root's phase, rather than ahead of it.
   ctx.beginPath();
   ctx.moveTo(x,y);
-  ctx.lineTo(x-tx*11+cos*5,y-ty*11+sin*5);
-  ctx.lineTo(x-tx*11-cos*5,y-ty*11-sin*5);
+  ctx.lineTo(x-tx*13+cos*6,y-ty*13+sin*6);
+  ctx.lineTo(x-tx*13-cos*6,y-ty*13-sin*6);
   ctx.closePath();
   ctx.fillStyle=COLORS[hand.lane];
   ctx.fill();

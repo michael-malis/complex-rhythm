@@ -135,7 +135,7 @@ try {
   assert.ok(m.volume.downJump<.03&&m.volume.upJump<.03,
    'volume automation must not create an abrupt sample discontinuity');
   assert.ok(m.volume.peak<=m.dense.ceiling,'live volume transition stays below -1dBFS');
-  assert.ok(m.transient.first>=m.transient.scheduled-1/sampleRate&&
+  assert.ok(m.transient.first>=m.transient.scheduled-1/sr&&
    m.transient.driftMs<5,'kick transient must remain within 5 ms of planned root onset');
   cases.push(m);
  }

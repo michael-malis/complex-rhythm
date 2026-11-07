@@ -25,6 +25,7 @@ try {
     canvas:[rect('#orbitCanvas').width,rect('#orbitCanvas').height],
     lanes:document.querySelectorAll('.lane').length,
     inputs:document.querySelectorAll('.lane input[type=number]').length,
+    loopSelectors:[...document.querySelectorAll('.lane .lane-length select')].map(el=>({value:el.value,options:el.options.length})),
     visibleAngles:[...document.querySelectorAll('.angle-fields input[type=text]')].map(el=>({id:el.id,value:el.value})),
     fieldHeight:rect('#trackN0').height,
     sceneLeft:rect('.visual-stage').left,
@@ -41,7 +42,9 @@ try {
   verify(data.theme==='light'&&data.computedBackground==='rgb(242, 239, 232)','warm-paper initial theme '+width);
   verify(data.scroll<=data.viewport+2,'horizontal overflow '+width+': '+JSON.stringify(data));
   verify(Math.abs(data.canvas[0]-data.canvas[1])<2&&data.canvas[0]>190,'square Canvas '+width);
-  verify(data.lanes===4&&data.inputs===16,'four visible mathematical input rows and independent cycle fields '+width);
+  verify(data.lanes===4&&data.inputs===12&&data.loopSelectors.length===4&&
+   data.loopSelectors.every(s=>s.options===16&&s.value==='1'),
+   '12 mathematical number fields plus four independent 1–16-bar loop selectors '+width);
   verify(data.visibleAngles.length===8&&data.visibleAngles.every(x=>x.value==='0'),
    'default four lanes initialize both radians and degrees: '+width+' '+JSON.stringify(data.visibleAngles));
   verify(data.fieldHeight>=44,'small input target '+width);

@@ -109,4 +109,60 @@ This table compares the **required source notation in MASTER_IMPLEMENTATION_SPEC
 
 **Evidence paths** refer to files *inside the \`rhythm-ui-screenshots\` GitHub Actions artifact*, not to repository-tracked screenshots. The set \`{width}-{theme}\` expands to 1600-light/dark, 1440-light/dark, 1280-light/dark, 1024-light/dark, 768-light/dark, and 390-light/dark (twelve cases, with heights defined in the tests). \`tests/formula-acceptance.mjs\` now writes per-formula source annotations and actual browser screenshots for all twelve cases, and \`tests/formula-geometry-complete.mjs\` and \`tests/root-angle-infographic.mjs\` already write their own 12-image matrices. Per-formula runtime measurements are in \`formula-acceptance/measurements.json\`.
 
-**Verification status:** Source-to-render locations and update mechanisms are independently cross-checked against the code. The newly added screenshot capture and JSON enrichment are **PENDING CI on the new commit**. Do not label R-TEX-008 or M06 VERIFIED until the new workflow succeeds and all required historical children have evidence. A historical pixel-by-pixel before screenshot and a physical screen-reader audit are explicitly **not** implied by this table.
+**Verification status:** Source-to-render locations and update mechanisms are independently cross-checked against the code. The original per-formula screenshot capture and JSON enrichment **passed in subsequent full UI regression**. This addendum adds a stricter live-location and screenshot-artifact validator, which requires a fresh CI run before new claims can be made. Do not label R-TEX-008 or M06 VERIFIED until the new workflow succeeds and all required historical children have evidence. A historical pixel-by-pixel before screenshot and a physical screen-reader audit are explicitly **not** implied by this table.
+
+
+## 2026-11-07 — Complete per-location live KaTeX evidence matrix (M05/M06)
+
+The preceding historical typography measurements and contractual source-to-output
+rows are retained without alteration. This addendum enumerates **every actual
+live mathematical DOM location** now asserted by the enriched
+\`tests/formula-acceptance.mjs\`, including its dynamic source and update path.
+Unlike a mock formula snapshot, the test inspects actual KaTeX \`annotation\`
+and embedded MathML **in 12 full-browser viewport/theme scenarios**.
+
+**Historical before comparison:** Source specification notation is known,
+but a dated original per-formula "before" capture is not available.
+No change in old visual accuracy is inferred. The existing first
+annotated image cannot stand in for the missing second image (M12).
+
+All entries below use screenshot locator **S**:
+[successful UI-regression run and uploaded screenshots](https://github.com/michael-malis/complex-rhythm/actions/workflows/ui-regression.yml),
+\`rhythm-ui-screenshots\` artifact, \`formula-acceptance/{width}-{theme}.png\`,
+with \`{width}\` in 1600, 1440, 1280, 1024, 768, 390 and both
+\`light\`/\`dark\`. Machine-readable evidence is
+\`formula-acceptance/measurements.json\`. A new validation script checks
+each of the 12 screenshot files and the full runtime matrix, not merely
+presence of an audit heading.
+
+| DOM ID (test selector) | Current formula / placement | Value source | Update trigger | Verification and screenshot |
+|---|---|---|---|---|
+| \`ref:0\`–\`ref:9\` | Ten required reference formulas, \`#formulaReference .formula-math\`, in the contract's exact order | \`initMath()\` static KaTeX source | Initial render; CSS responds to viewport and theme | 10 source/MathML assertions per state, S |
+| \`cartesianHeading\` | \`z=a+bi\` alongside four lanes | \`initMath()\` | Initialization and responsive layout | KaTeX+MathML, S |
+| \`argMathLabel\` | \`\arg(z)\` beside argument slider | \`initMath()\` | Initialization | Semantic \`arg\` command, S |
+| \`mathExampleUnion\` | \`R_4(1)\cup R_3(1)\` in mathematical notes | \`initMath()\` | Initialization | KaTeX set operator, S |
+| \`phaseZero\` | Zero phase at top | \`initMath()\`, cycle-phase origin | Initialization, Canvas/DOM resize | MathML and graph bounds, S |
+| \`phaseQuarter\` | \`\dfrac{1}{4}\` at right | \`initMath()\` | Resize/reflow | Stacked fraction MathML, S |
+| \`phaseHalf\` | \`\dfrac{1}{2}\` at bottom | \`initMath()\` | Resize/reflow | Stacked fraction MathML, S |
+| \`phaseThreequarters\` | \`\dfrac{3}{4}\` at left | \`initMath()\` | Resize/reflow | Stacked fraction MathML, S |
+| \`rootRuleEquation\` | Root argument formula \`\theta_k=(\theta+2\pi k)/n\` | Selected-lane \`a,b,n\` | \`renderRootRule()\` on edits, preset/import, selection | KaTeX/MathML, responsive centering, S |
+| \`rootRuleValues\` | Live canonical argument, degree and range | \`RootAngleInfo.model(a,b,n)\` | Input, drag, selection, import | Contains selected \`n\`, undefined-zero branch, S |
+| \`rootRuleSpacing\` | \`\Delta=2\pi/n\` (plus degrees) | \`RootAngleInfo.model(a,b,n)\` | Degree and lane edits | MathML and current spacing, S |
+| \`rootRuleInput\` | Expanded \`\theta=\arg(z)\` with numeric angle | \`RootAngleInfo.render()\` | Info disclosure + canonical lane updates | SVG-adjacent MathML, S |
+| \`rootRuleDelta\` | Expanded \`\Delta=2\pi/n\` | \`RootAngleInfo.render()\` | Info disclosure + degree updates | SVG-adjacent MathML, S |
+| \`rootRuleFormula\` | Expanded \`\theta_k\` identity | \`RootAngleInfo.render()\` | Info disclosure + canonical lane updates | SVG-adjacent MathML, S |
+| \`selectedRootFormula\` | Selected \`w_k\`, real modulus, radical and root angle | \`tracks[selectedTrack]\`, \`selectedRootIndex\`, \`Math.hypot\` | \`updateSelectedRootMath()\` | Live degree, coefficient and Canvas drag regression, S |
+| \`rootPhaseFormula\` | Derived normalized phase for the selected root | \`rootPhases(track)[k]\` | \`updateSelectedRootMath()\` | Rendered fraction, live phase and zero case, S |
+| \`compositionEquation\` | \`R_n(z)\cup R_m(w)\` / intersection / Euclidean operation | \`tracks[selectedTrack].layers\`, \`operation\`, \`euclidean\` | \`renderComposition()\` | KaTeX+MathML; 5-family overflow audit, S |
+| \`laneEq0\` | Full root-family expression for Lane 1 | \`tracks[0]\` | \`renderTracks()\`, \`updateLaneStatus(0)\` | MathML, bounded responsive formula, S |
+| \`laneEq1\` | Full root-family expression for Lane 2 | \`tracks[1]\` | \`renderTracks()\`, \`updateLaneStatus(1)\` | MathML, bounded responsive formula, S |
+| \`laneEq2\` | Full root-family expression for Lane 3 | \`tracks[2]\` | \`renderTracks()\`, \`updateLaneStatus(2)\` | MathML, bounded responsive formula, S |
+| \`laneEq3\` | Full root-family expression for Lane 4 | \`tracks[3]\` | \`renderTracks()\`, \`updateLaneStatus(3)\` | MathML, bounded responsive formula, S |
+
+**Automated scope:** \`scripts/verify-math-typography-audit.mjs\`
+asserts 10 static formula renderings, 16 live DOM locations, all four
+graphic phase labels, lack of raw/errored TeX, screenshot dimensions
+and 12 saved actual Chromium PNGs. It does not claim a human pixel
+review, so **M05/M06 and R-TEX-008 remain under evidence review**;
+the historic 380/652 and 63/98 ledger counts are not promoted by
+document creation alone.

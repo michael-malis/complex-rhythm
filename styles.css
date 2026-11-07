@@ -232,6 +232,16 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 
 /* Event statistics derive from the same absolute schedule driving Web Audio. */
 .stage-events{font-size:17px;line-height:1.45;color:var(--sub);margin:6px 14px 10px}
+/* An inspected Canvas root is explained in one compact, optional line.
+   No additional UI is shown until a user actually selects a base root. */
+.root-inspection{--root-inspection-color:var(--track-1);margin:4px 14px 9px;padding:5px 7px 5px 11px;border-left:4px solid var(--root-inspection-color);background:var(--fine);border-radius:4px;display:flex;flex-wrap:wrap;align-items:center;gap:5px 12px;min-width:0;font-size:17px;line-height:1.4;color:var(--ink)}
+.root-inspection[hidden]{display:none!important}
+.root-inspection-label{font-weight:700;color:var(--root-inspection-color)}
+.root-inspection-angle{display:inline-flex;align-items:center;min-width:0}
+.root-inspection-time{color:var(--sub);min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.root-inspection-clear{min-width:44px;min-height:44px;margin-left:auto;border:0;font-size:23px;line-height:1;color:var(--sub);padding:5px 10px}
+@media(max-width:519px){.root-inspection{margin:4px 9px 9px;gap:4px 8px}.root-inspection-time{font-size:16px}}
+
 .lane-equation,.lane-eq{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
 
 /* Touch / keyboard event inspection works without tiny per-marker hit targets. */

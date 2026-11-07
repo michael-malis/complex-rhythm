@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353 full real Web Audio clock test, plus all prior accepted evidence",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42348284633 full shared production audio safety measurements; prior evidence preserved",
   "tasks": {
-    "VERIFIED": 382,
-    "IN_PROGRESS": 47,
-    "TODO": 219,
+    "VERIFIED": 390,
+    "IN_PROGRESS": 46,
+    "TODO": 212,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -72,7 +72,8 @@
     "R-RES-003",
     "R-SND-003",
     "R-TEX-007",
-    "R-SND-006"
+    "R-SND-006",
+    "R-SND-005"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -80,5 +81,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-SND-006 native Web Audio architecture formally accepted using actual oscillator start times relative to AudioContext.currentTime, not timer-only rhythm generation. M08 remains IN_PROGRESS for separate R-SND-005; manual M12/M13 and release M14 remain unresolved."
+  "note": "R-SND-005 technically accepted based on measured production master output ceiling, subsonic filtering, smoothed gain, onset and 50-schedule stress. Combined with independently accepted R-SND-006, M08 is technically VERIFIED. Human sound listening, hardware/phone tests and missing annotated image remain M12/M13 blockers."
 }

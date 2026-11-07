@@ -86,9 +86,13 @@ check('real SVG and Canvas mathematical phase alignment','artifacts/math-graph-s
   assert.deepEqual(state.lanes.map(l=>l.roots),[4,1,7,0]);
   assert.deepEqual(state.lanes.map(l=>l.shared),[2,0,0,0]);
   assert.ok(state.lanes.every(l=>l.mathml&&l.svgRadius>60));
+  assert.ok(state.lanes.every(l=>Array.isArray(l.markerDiametersCssPx)&&
+   l.markerDiametersCssPx.length===l.roots&&
+   l.markerDiametersCssPx.every(px=>Number.isFinite(px)&&px>=4.5&&px<=30)),
+   'all root infographic SVG markers require actual CSS-pixel diameter measurements');
  }
  return {states:12,measuredLaneGeometries:48,includesZeroAnd64:true,
-  genuineKaTeXSharedRootPhases:true};
+  genuineKaTeXSharedRootPhases:true,physicalSvgMarkerDiameters:true};
 },'True projected SVG root screen coordinates and Canvas ring time phases, four lane source families, source-backed shared KaTeX fractions and live responsive resizing; no raster text');
 check('selected complex root source provenance','artifacts/complex-source-equation/report.json',d=>{
  assert.equal(d.status,'PASS');

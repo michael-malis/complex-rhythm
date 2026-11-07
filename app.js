@@ -1454,6 +1454,9 @@ async function togglePlay(){
   cancelVoices();
   beatEpoch=audio.currentTime+.055-pausedPhase*cycleSeconds();
   scheduledUntil=audio.currentTime;
+  // The pending-start intent ends atomically when the audio scheduler starts.
+  // Keeping this true after PLAY was inaccurate in CI diagnostics and UI state.
+  transportWanted=false;
   playing=true;
   updateTransportText();scheduleAhead();
   if(timerId!==null){clearInterval(timerId);schedulerIntervalsCleared++}
@@ -1894,7 +1897,7 @@ window.RhythmResearch=Object.freeze({
  transport:()=>({
   playing,audioState:audio?.state||'uninitialized',
   transportWanted,transportTicket,schedulerIntervalsCreated,schedulerIntervalsCleared,
-  pendingEditReschedule,
+  pendingEditReschedule,phase:transportPhase(),pausedPhase,cycleSeconds:cycleSeconds(),
   timerActive:timerId!==null,
   activePresetId,bpm,
   pendingVoiceBusDisposals,completedVoiceBusDisposals,voiceBusGenerations,

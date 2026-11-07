@@ -36,6 +36,8 @@ on:
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
       - tests/formula-acceptance.mjs
+      - MATH_TYPOGRAPHY_AUDIT.md
+      - scripts/verify-math-typography-audit.mjs
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/expanded-ui-typography.mjs
@@ -227,6 +229,9 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
           node tests/formula-acceptance.mjs
+      - name: Verify per-formula typography audit against all real Chromium screenshots
+        if: ${{ !cancelled() }}
+        run: node scripts/verify-math-typography-audit.mjs
       - name: Exercise all 15 new studies under live Web Audio and mathematical phase editing
         if: ${{ !cancelled() }}
         run: |

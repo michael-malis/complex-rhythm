@@ -55,12 +55,12 @@ acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
 Do **not** promote any historical status merely because this script passed. The
 source-specific R-SND-006 acceptance is separately documented from completed
 [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-Source ledger status now stands at **403/652** and **68/98** after the exact
-full CI 42359549057 proof of R-SND-001's 14 mandatory original instruments,
-including all 14 different normalized source waveforms at two viewport sizes.
-M07 and M08 are technically VERIFIED. M13 human listening and real devices,
-M12 original screenshots and M14 release signoff remain open. Neither waveform
-uniqueness nor automated signal metrics claim human-perceived quality.
+Original source ledger status now stands at **410/652** and **69/98** after the
+source-specific R-PST-006 technical acceptance from full CI 42363730593 and
+independent diversity CI 42363730599. M07, M08 and M10 are technically VERIFIED.
+Twenty-two real independent CI reports are mandatory. M13 listening and real
+devices, M12 original annotated comparison and M14 final signoff remain open.
+No math signal measurement is a claim of subjectively excellent music.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

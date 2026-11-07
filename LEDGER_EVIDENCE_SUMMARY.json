@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42359549057 full source-mapped mandatory 14-voice inventory and all prior accepted M07 evidence",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42363730593 full rhythm semantics and accent proof; separate source-mapped diversity audit run 42363730599; previous accepted source evidence preserved",
   "tasks": {
-    "VERIFIED": 403,
-    "IN_PROGRESS": 44,
-    "TODO": 201,
+    "VERIFIED": 410,
+    "IN_PROGRESS": 43,
+    "TODO": 195,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -75,7 +75,8 @@
     "R-SND-006",
     "R-SND-005",
     "R-SND-004",
-    "R-SND-001"
+    "R-SND-001",
+    "R-PST-006"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -83,5 +84,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-SND-001 inventory source-technically VERIFIED: 10 independently rendered synth voices, 3 distinct decoded locally licensed drum recordings, 1 shared live/offline native Reese patch. R-SND-003 Acid and R-SND-004 aggressive percussion previously accepted; macro M07 technically VERIFIED. M13 human listening, device/genre evaluation and screen-reader review remain BLOCKED; no subjective music-quality inference."
+  "note": "Original R-PST-006 technically accepted: all 50 canonical root-time maps and original 15 experimental source-backed per-lane accent/cross-lane coincidence structures independently tested. M10 technically VERIFIED. Subjective listening/genre quality M13 and source-image comparison M12 remain blocked, final release M14 TODO."
 }

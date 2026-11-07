@@ -1310,15 +1310,10 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) { showToast('This browser does not support Web Audio.'); return false; }
         audio = new AC();
-        master = audio.createGain(); master.gain.value = volume * .80;
-        // Avoid Web Audio DynamicsCompressor look-ahead: it delayed measured onsets >5 ms.
-        // Rely on pre-limiter headroom, a subsonic high-pass, and a smooth output ceiling.
-        compressor=null;
-         subFilter=audio.createBiquadFilter();subFilter.type='highpass';subFilter.frequency.value=20;subFilter.Q.value=.707;master.connect(subFilter);
-         limiter=audio.createWaveShaper();const ceiling=new Float32Array(4096);
-         for(let i=0;i<ceiling.length;i++){const x=2*i/(ceiling.length-1)-1;ceiling[i]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
-         limiter.curve=ceiling;limiter.oversample='2x';
-         subFilter.connect(limiter);limiter.connect(audio.destination);
+        // Exactly the same measured high-pass, saturating master ceiling and
+        // onset-preserving chain is used in OfflineAudioContext regression.
+        const output=window.RhythmVoices.createMasterOutputChain(audio,audio.destination,volume*.8);
+        master=output.master;subFilter=output.subFilter;limiter=output.limiter;compressor=null;
         const frames = Math.floor(audio.sampleRate * 1.0);
         noiseBuffer = audio.createBuffer(1, frames, audio.sampleRate);
         const samples = noiseBuffer.getChannelData(0);
@@ -1881,7 +1876,7 @@ function setupEvents() {
   markCustom(false);
  });
  enableFocusedWheel($('volume'));
- $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
+ $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)window.RhythmVoices.setMasterVolume(master,volume,audio.currentTime)});
  $('loadRootExample').addEventListener('click',()=>{
   const t=tracks[selectedTrack];
   t.a=1;t.b=0;t.n=4;t.operation='union';

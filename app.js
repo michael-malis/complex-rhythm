@@ -1775,8 +1775,14 @@ function draw() {
   ctx.lineTo(x-tx*11-cos*5,y-ty*11-sin*5);
   ctx.closePath();
   ctx.fillStyle=COLORS[hand.lane];
-  ctx.strokeStyle=dark?'#20221d':'#faf8f3';
-  ctx.lineWidth=1.4;ctx.fill();ctx.stroke();
+  ctx.fill();
+  // While stopped, a hand parked exactly on a root must not recolor that
+  // root's mathematical center pixel (all cardinal-marker QA samples).
+  // On playback, a contrasting arrowhead outline remains visible over hits.
+  if(playing){
+   ctx.strokeStyle=dark?'#20221d':'#faf8f3';
+   ctx.lineWidth=1.4;ctx.stroke();
+  }
   ctx.restore();
  });
  lastOrbitalHandFrame={elapsed,beatEpoch,audioTime:audio?.currentTime??null,

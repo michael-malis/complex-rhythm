@@ -54,6 +54,7 @@ on:
       - tests/formula-geometry-complete.mjs
       - tests/root-angle-infographic.mjs
       - tests/math-graph-svg-alignment.mjs
+      - tests/math-historical-before-after.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
@@ -287,6 +288,18 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-source-equation.log 2>&1 &
           node tests/composition-source-equation.mjs
+      - name: Checkout reproducible historical math release for actual before and after comparison
+        uses: actions/checkout@v4
+        with:
+          ref: 454b7c4466851e82946034ce4a47019c716ee218
+          path: historical-before
+          persist-credentials: false
+      - name: Audit historical and current mathematical DOM across all responsive themes
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-math-present.log 2>&1 &
+          python3 -m http.server 8768 --bind 127.0.0.1 --directory historical-before >/tmp/rhythm-math-before.log 2>&1 &
+          node tests/math-historical-before-after.mjs
       - name: Verify per-formula typography audit against all real Chromium screenshots
         if: ${{ !cancelled() }}
         run: node scripts/verify-math-typography-audit.mjs

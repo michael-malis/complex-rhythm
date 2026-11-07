@@ -111,6 +111,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-infographic.log 2>&1 &
           node tests/root-angle-infographic.mjs
+      - name: Inspect clicked orbit roots, accessible angle formulas and exact loop beat timing
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-inspector.log 2>&1 &
+          node tests/orbit-root-inspection.mjs
       - name: Verify SVG and Canvas mathematical phase geometry and real shared-root MathML
         if: ${{ !cancelled() }}
         run: |

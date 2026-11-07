@@ -56,6 +56,7 @@ try{
    canvas:window.__orbitCanvas.arcs.slice(),
    transport:window.RhythmResearch.transport(),
    source:window.RhythmResearch.current(),
+   selectedLane:Number(document.querySelector('.lane.selected')?.dataset.lane),
    radii:window.RhythmResearch.radiiForSize(Math.min(
     document.querySelector('#orbitCanvas').getBoundingClientRect().width,
     document.querySelector('#orbitCanvas').getBoundingClientRect().height))
@@ -77,6 +78,11 @@ try{
     assert.ok(near(arrow.start,hand.startAngle,1e-8),label+' pointer arc follows a short tangential path');
     assert.ok(arrow.end-arrow.start>0&&arrow.end-arrow.start<.45,
       label+' pointer never becomes a long radial line');
+    const expectedArcLength=Math.min(hand.radius*.4,21,Math.max(10,hand.radius*.16));
+    assert.ok(near((arrow.end-arrow.start)*arrow.radius,expectedArcLength,.001),
+      label+' actual painted arc uses the slightly enlarged tangential arrow length');
+    assert.equal(arrow.width,i===d.selectedLane?6.5:5.5,
+      label+' actual Canvas stroke has the slightly enlarged selected/nonselected thickness');
     assert.equal(arrow.color.toLowerCase(),hand.color.toLowerCase(),
       label+' pointer color matches the mathematical root ring');
    }

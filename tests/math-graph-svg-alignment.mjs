@@ -41,10 +41,17 @@ const measure=(page,lane)=>page.evaluate(lane=>{
  const roots=[...svg.querySelectorAll('circle.root-info-marker')].map((node,k)=>{
   const x=Number(node.getAttribute('cx')),y=Number(node.getAttribute('cy'));
   const actual=project(x,y),phase=expected[k];
+  // Measure actual SVG marker diameter in CSS pixels, not only its source r attribute.
+  const markerRadius=Number(node.getAttribute('r'));
+  const edgeX=project(x+markerRadius,y),edgeY=project(x,y+markerRadius);
+  const markerDiameterCssPx=2*Math.min(
+   Math.hypot(edgeX.x-actual.x,edgeX.y-actual.y),
+   Math.hypot(edgeY.x-actual.x,edgeY.y-actual.y)
+  );
   const target={x:center.x+radius*Math.sin(TAU*phase),y:center.y-radius*Math.cos(TAU*phase)};
   const dx=actual.x-center.x,dy=actual.y-center.y;
   const measuredPhase=((Math.atan2(dx,-dy)/TAU)%1+1)%1;
-  return {index:k,phase,measuredPhase,
+  return {index:k,phase,measuredPhase,markerDiameterCssPx,
    coordinateError:Math.hypot(actual.x-target.x,actual.y-target.y),
    circleError:Math.abs(Math.hypot(dx,dy)-radius),
    insideSvg:actual.x>=frame.left-1&&actual.x<=frame.right+1&&
@@ -101,6 +108,8 @@ function check(result,context){
   assert.ok(Math.min(wrap,1-wrap)<2e-6,'SVG visible angular position derives from canonical root phase: '+context+' index '+i);
   assert.ok(m.coordinateError<1.2&&m.circleError<1.2&&m.insideSvg,
    'SVG point lies on rendered unit circle at the right phase: '+context+' index '+i);
+  assert.ok(Number.isFinite(m.markerDiameterCssPx)&&m.markerDiameterCssPx>=4.5&&m.markerDiameterCssPx<=30,
+   'measured SVG root marker diameter in CSS pixels: '+context+' index '+i);
   assert.equal(entry.index,i,'SVG and mathematical list root indices agree');
   assert.ok(Math.abs(entry.phase-m.phase)<1e-9&&
    Math.abs(entry.degrees-Number((m.phase*360).toFixed(3)))<1e-7,
@@ -159,6 +168,7 @@ try{
      'no stale coincident phase formula in other independent lane');
    }
    lanes.push({lane,roots:measured.expectedCount,svgRadius:measured.svgRadius,
+    markerDiametersCssPx:measured.svgMarkers.map(marker=>Number(marker.markerDiameterCssPx.toFixed(3))),
     shared:measured.sharedFormula.shared.length,mathml:measured.angleFormula.mathml});
   }
   assert.deepEqual(errors,[],'no JS errors in SVG/Canvas math '+width+'/'+theme);

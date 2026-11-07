@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42378900168 full semantic KaTeX MathML/12 viewport technical acceptance, PR #40; all previous accepted source evidence preserved",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42393323480 complete real CSS-pixel SVG/Canvas/KaTeX mathematical geometry and 25 independent reports, PR #43, earlier CI evidence retained",
   "tasks": {
-    "VERIFIED": 425,
-    "IN_PROGRESS": 42,
-    "TODO": 181,
+    "VERIFIED": 442,
+    "IN_PROGRESS": 40,
+    "TODO": 166,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -77,7 +77,9 @@
     "R-SND-004",
     "R-SND-001",
     "R-PST-006",
-    "R-TEX-002"
+    "R-TEX-002",
+    "R-TEX-005",
+    "R-TEX-006"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -85,5 +87,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-TEX-002 mathematical surrogates replaced by accessible KaTeX HTML+MathML and technically accepted across the 10 contractual formula references, four selected-lane root explanations, 16 dynamic locations and 12 responsive states. M05 still IN_PROGRESS for R-TEX-005 graph formula coverage and R-TEX-006 Canvas/DOM/SVG math alignment; M06 still IN_PROGRESS for R-TEX-008 audit. M12 unavailable second annotated screenshot and M13 device accessibility remain BLOCKED."
+  "note": "All four original M05 requirements now independently accepted: semantic math R-TEX-002 and mandatory source formulas R-TEX-004, root/angle/shared-phase formula placement R-TEX-005, and physically screen-projected SVG/DOM/Canvas geometry R-TEX-006. M05 technically VERIFIED. R-TEX-008 historical original view audit and M06 remain IN_PROGRESS; second original annotated screenshot M12, human sound/phone/screen-reader M13 and final M14 remain unaccepted."
 }

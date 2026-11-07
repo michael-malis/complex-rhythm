@@ -664,7 +664,7 @@
 
 ### T-TEX-005-09 — Root angle rule: compact formula + explanatory infographic
 
-**Status:** TODO. This user-requested UI enhancement extends R-TEX-005; it has not been implemented or tested.
+**Status:** VERIFIED. This user-approved enhancement is implemented in `index.html`, `app.js` and `root-angle-infographic.js`, and tested by `tests/root-angle-infographic.mjs` (four lanes, live audio, keyboard disclosure and 12 viewport/theme states) and `tests/math-graph-svg-alignment.mjs`. The canonical task row `T-TEX-005-09` is the source of truth; its exact-HEAD acceptance evidence is recorded above. This does not certify the separate missing user-annotated screenshot or human-device acceptance.
 
 **Placement and visual hierarchy**
 - Keep a compact, always-visible **Root geometry** summary inside the active track's existing parameter editor (variant C). Display the properly typeset formula `\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}`, current argument `\\theta` in radians and degrees, root degree `n`, and angular spacing `\\Delta=2\\pi/n`.

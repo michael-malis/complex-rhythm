@@ -1,5 +1,8 @@
 # QA report — specification upgrade
 
+**Latest technical QA acceptance (8 November 2026):** Original R-QA-002 plus eight atomic requirements accepted after [PR #51](https://github.com/michael-malis/complex-rhythm/pull/51), [exact full CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982), and 26 independently validated real measurement artifacts. Actual Chromium measured text computed fonts and colors, WCAG ratios, DOM bounding boxes, true CSS-pixel SVG marker diameters (4 lanes × 6 responsive sizes × 2 themes), 44px touch targets, critical intersection and clipping checks. Screenshots supplement measurements; neither manual sound nor original annotated source screenshots are asserted. Source totals: **459/652 VERIFIED**, **74/98 parent requirements VERIFIED**; M11 remains IN_PROGRESS for R-QA-004/005, M12/M13 BLOCKED and final acceptance NOT COMPLETE.
+
+
 **Date:** 2026-11-05  
 **Release status (post-merge 2026-11-06):** NOT COMPLETE. PR #1 was merged into `main` and GitHub Pages published successfully. This deployment is not the complete requirements/human acceptance signoff; follow-up fixes remain in Draft PR #4.
 

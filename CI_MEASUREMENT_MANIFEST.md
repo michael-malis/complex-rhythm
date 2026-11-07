@@ -59,13 +59,8 @@ acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
 Do **not** promote any historical status merely because this script passed. The
 source-specific R-SND-006 acceptance is separately documented from completed
 [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-Original source ledger now records **450/652** tasks VERIFIED and **73/98**
-requirements VERIFIED after source-wide R-TEX-005/006 acceptance from full CI
-42393323480. M05 engineering macro technically VERIFIED, with **25 genuine
-independent real measured CI outputs** required. M06 historical math comparison
-R-TEX-008, M12 missing original annotated screenshot, M13 human/device sound
-and accessibility, and M14 final release remain open. No automated graph or
-audio metric substitutes for manual acceptance.
+Original source ledger now records **459/652** tasks VERIFIED and **74/98**
+requirements VERIFIED after exact [full CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982) proved R-QA-002 with computed visual measurements and physical SVG marker diameters. M05/M06 are technically VERIFIED and all 26 real measurement outputs are required by the manifest; M11 remains IN_PROGRESS for R-QA-004/005. M12 missing original annotation, M13 human audio/physical-device/screen-reader validation, and M14 final release remain unaccepted. No automated graph or audio metric substitutes for manual acceptance.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

@@ -41,8 +41,8 @@
  <label>Preset<select id="presetSelect" aria-label="Choose a rhythm preset"></select></label></div><div id="presetInfo" class="preset-info" aria-live="polite"></div></details>
 <main class="workspace">
 <section class="visual-stage" aria-labelledby="orbitHeading">
- <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">One cycle, four rhythms</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>
- <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular timelines. Click a ring to select a lane. Drag a filled base root to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas>
+ <div class="stage-heading"><div><div class="eyebrow">FIGURE 01 / CIRCULAR TIME</div><h1 id="orbitHeading">Four rings · four playheads</h1></div><span class="stage-meta" id="timeDisplay">Bar 1 · 4/4</span></div>
+ <div class="canvas-shell" id="plotArea"><canvas id="orbitCanvas" tabindex="0" role="img" aria-label="Four circular instrument timelines with one small colored playhead on each ring. A playhead completes one clockwise revolution per lane loop, and touches a root at that lane’s scheduled sound time. Equal loop lengths move together. Click a ring to select its lane. Drag a filled base root to rotate it. Arrow keys switch lanes and Shift plus arrow keys rotates roots." aria-describedby="plotHint">Canvas is not supported.</canvas>
  <div class="circle-labels" id="circleLabels" aria-label="Cycle phases: zero at top, quarter at right, half at bottom, three quarters at left">
    <span class="circle-label label-zero" id="phaseZero"></span><span class="circle-label label-quarter" id="phaseQuarter"></span><span class="circle-label label-half" id="phaseHalf"></span><span class="circle-label label-threequarters" id="phaseThreequarters"></span>
  </div></div>
@@ -62,7 +62,7 @@
  <p id="eventSummary" class="stage-events" aria-live="polite">Four-bar event summary</p>
  <div class="figure-tools" id="figureTools" hidden><button type="button" id="zoomBtn" aria-pressed="false" class="secondary-btn" aria-label="Magnify densely spaced roots">Magnify dense roots</button><span id="zoomHint" class="figure-tools-hint">Zoom is available when roots overlap; scroll to inspect the enlarged rings.</span></div>
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
- <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>
+ <p class="stage-hint" id="plotHint">Four colored arrows follow their own rings. One revolution = that lane's loop length (1–16 bars); same-length loops move together. Drag a filled root to rotate it.</p>
  <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="260" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
  <div class="statusbar"><div class="range-field volume-control"><label for="volume">Master volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" step="1" value="65" aria-label="Master output volume"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
 </section>

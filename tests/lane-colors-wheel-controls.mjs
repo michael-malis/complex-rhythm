@@ -19,6 +19,7 @@ try{
    const lanes=[...document.querySelectorAll('.lane')].map((row,i)=>({
     i,color:rgb(row.style.getPropertyValue('--lane-color')),slider:css(row.querySelector('input[type=range]')).accentColor,
     dot:css(row.querySelector('.lane-dot')).backgroundColor,
+     leftBorderWidth:css(row).borderLeftWidth,leftBorderColor:css(row).borderLeftColor,
     percent:css(row.querySelector('.lane-volume output')).color,
     expectedPercent:rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 70%, '+css(document.documentElement).getPropertyValue('--ink').trim()+' 30%)')
    }));
@@ -30,6 +31,8 @@ try{
   for(const lane of paint.lanes){
    assert.equal(lane.color,lane.slider,'instrument slider hue follows the root ring on lane '+lane.i);
    assert.equal(lane.color,lane.dot,'instrument root marker hue follows its lane '+lane.i);
+    assert.equal(lane.leftBorderWidth,'5px','instrument panel left accent is 5px on lane '+lane.i);
+    assert.equal(lane.leftBorderColor,lane.color,'instrument panel left accent matches its root color on lane '+lane.i);
    assert.equal(lane.expectedPercent,lane.percent,'instrument gain readout has the lane hue with readable contrast on lane '+lane.i);
    assert.notEqual(lane.color,paint.master,'master volume is independent from lane '+lane.i);
   }

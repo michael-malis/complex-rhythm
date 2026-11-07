@@ -77,6 +77,25 @@ try{
   await page.close();
  }
 
+ const phone=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
+ await phone.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await importFixture(phone,fixture);
+ await phone.locator('#rootRuleInfoToggle').tap();
+ await phone.locator('#rootRuleAngleList li[data-index="2"]').tap();
+ const touch=await phone.evaluate(()=>({
+  selected:[...document.querySelectorAll('#rootRuleAngleList li.is-inspected')].map(x=>Number(x.dataset.index)),
+  markers:[...document.querySelectorAll('#rootRuleDiagram .root-info-marker.is-inspected')].map(x=>Number(x.dataset.index)),
+  expanded:document.querySelector('#rootRuleInfoToggle').getAttribute('aria-expanded'),
+  unchanged:window.RhythmResearch.current().tracks[0].n,
+  overflow:document.documentElement.scrollWidth>innerWidth+1
+ }));
+ assert.deepEqual(touch.selected,[2],'real mobile touch highlights chosen root-angle row');
+ assert.deepEqual(touch.markers,[2],'touch highlights the same root on the SVG circle');
+ assert.equal(touch.expanded,'true');
+ assert.equal(touch.unchanged,4,'touch tracing does not edit complex-root degree');
+ assert.equal(touch.overflow,false,'interactive root rows do not cause mobile overflow');
+ await phone.close();
+
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});

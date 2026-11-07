@@ -56,6 +56,7 @@ try{
    canvas:window.__orbitCanvas.arcs.slice(),
    transport:window.RhythmResearch.transport(),
    source:window.RhythmResearch.current(),
+
    radii:window.RhythmResearch.radiiForSize(Math.min(
     document.querySelector('#orbitCanvas').getBoundingClientRect().width,
     document.querySelector('#orbitCanvas').getBoundingClientRect().height))
@@ -77,6 +78,11 @@ try{
     assert.ok(near(arrow.start,hand.startAngle,1e-8),label+' pointer arc follows a short tangential path');
     assert.ok(arrow.end-arrow.start>0&&arrow.end-arrow.start<.45,
       label+' pointer never becomes a long radial line');
+    const expectedArcLength=Math.min(hand.radius*.4,21,Math.max(10,hand.radius*.16));
+    assert.ok(near((arrow.end-arrow.start)*arrow.radius,expectedArcLength,.001),
+      label+' actual painted arc uses the slightly enlarged tangential arrow length');
+    assert.equal(arrow.width,i===d.frame.selectedLane?6.5:5.5,
+      label+' actual Canvas stroke has the slightly enlarged selected/nonselected thickness');
     assert.equal(arrow.color.toLowerCase(),hand.color.toLowerCase(),
       label+' pointer color matches the mathematical root ring');
    }
@@ -121,6 +127,7 @@ try{
    'the colored pointer traverses its ring while playback runs');
   // Selecting other instruments no longer changes ANY pointer phase.
   await page.locator('.lane[data-lane="2"] .lane-select').click();
+  await page.waitForFunction(()=>window.RhythmResearch.orbitalHands().selectedLane===2);
   const picked=checkFrame(await capture(),'after selecting another ring');
   // Clicking another lane may scroll a large mobile page, so wall time
   // can legitimately exceed a small fraction of a bar. Verify the *audio

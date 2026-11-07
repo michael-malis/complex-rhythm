@@ -229,3 +229,12 @@ No other math requirement is promoted: R-TEX-002/005/006 contain separate source
 **Measurement:** `tests/audio-context-scheduler-proof.mjs` isolates a genuine native two-oscillator bass voice on one lane, mutes the other three lanes, selects eight roots and 240 BPM, and records `OscillatorNode.prototype.start` calls with `AudioContext.currentTime`. It compares the absolute Web Audio attack timestamps against `beatEpoch + RhythmMath.planEvents(...).time`, allowing at most 12 ms for the existing measured output-chain compensation and edge-of-window clamping. It also requires at least one future-dated attack with a lead of 15 ms or more, exactly two native oscillators per audible event, one lookahead interval while playing and none after Pause. Both desktop and mobile Chromium cases write raw measured evidence to `artifacts/audio-clock-scheduling/report.json`.
 
 **Release control:** Required UI CI now invokes the proof, and `verify-ci-measurement-manifest.mjs` demands the **18th** independent real measurement file before the workflow can pass. This adds test coverage, not an additional timer or audio implementation. Human loudspeaker latency and listening acceptance are explicitly excluded; R-SND-006 and its historical parent remain IN_PROGRESS until separately reconciled using a successful exact-HEAD CI run.
+
+
+### 2026-11-07 — CR-UX-012: Slightly larger four orbital playheads
+
+**Requested visual refinement:** Enlarge the four instrument-colored arrows without introducing a large radial line or changing the mathematical root markers, audio schedule, colors, orbital radii or pointer-tip phase.
+
+**Implemented:** Tangential path length increases from the former 8–17 CSS-pixel adaptive range to approximately 10–21 CSS pixels (capped at 40% of the local radius); line widths become 6.5px on the selected lane and 5.5px elsewhere (previously 5.5/4.5px). Each triangular tip extends 13px back along the tangent and 6px to either side of the ring's local radius (previously 11px and 5px). The tip point itself remains exactly at the event root phase.
+
+**Acceptance:** The mandatory actual-Canvas orbit test now checks per-lane painted arc length and stroke thickness in desktop/mobile × light/dark states, including lane selection while playing, alongside existing four independent audio-clock phase proofs, 1/2/4 bar speeds, Pause/Resume/Reset and root-hit timing. Historic requirements stay 65/98 and 382/652 pending a separate requirement-specific acceptance; this is a bounded UX refinement within M03/M08/M11.

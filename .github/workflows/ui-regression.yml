@@ -53,6 +53,7 @@ on:
       - tests/responsive-content-access.mjs
       - tests/formula-geometry-complete.mjs
       - tests/root-angle-infographic.mjs
+      - tests/math-graph-svg-alignment.mjs
       - tests/touch-targets.mjs
       - tests/geometry-acceptance.mjs
       - tests/geometry-collision-audit.mjs
@@ -181,6 +182,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-infographic.log 2>&1 &
           node tests/root-angle-infographic.mjs
+      - name: Verify SVG and Canvas mathematical phase geometry and real shared-root MathML
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-svg-math-alignment.log 2>&1 &
+          node tests/math-graph-svg-alignment.mjs
       - name: Verify full formula centering, zero overlap and scrollable five-family roots
         if: ${{ !cancelled() }}
         run: |

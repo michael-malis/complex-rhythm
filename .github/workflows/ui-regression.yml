@@ -35,6 +35,7 @@ on:
       - tests/unified-rhythm-import.mjs
       - tests/single-reschedule-per-edit.mjs
       - tests/all-presets-same-semantics.mjs
+      - tests/preset-musical-structure.mjs
       - tests/angle-first.mjs
       - tests/math-live-input-stability.mjs
       - tests/required-polyrhythms.mjs
@@ -316,6 +317,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-live-edit.log 2>&1 &
           node tests/live-edit-reschedule.mjs
+      - name: Verify mathematical groove structure, ghost velocities and cross-lane phase coincidences for all 50 presets
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-musical-structure.log 2>&1 &
+          node tests/preset-musical-structure.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |

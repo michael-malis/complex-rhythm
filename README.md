@@ -25,6 +25,12 @@ The interface is a scientific workbench rather than a music sequencer.
 
 The latest Chromium screenshots and regression run are in [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions). Listening to every sample on real physical devices and a full screen-reader audit remain separate manual validation tasks.
 
+## Understanding the loop length on each circle
+
+Each circular ring is **one complete loop for that instrument**, not necessarily one bar. The **Loop length** dropdown on each lane selects **1–16 bars** for one full revolution. The root positions are fractions of that entire loop: changing Lane 1 from 1 bar to 4 bars keeps its exact complex-root phases but spaces the same number of notes across four 4/4 bars. It changes playback timing without adding roots or changing their angles.
+
+The ring has **colored marks at the start of each bar**. A compact guide below the graph lists the current bar and loop length for all four lanes; selecting a lane explains its timing. Expand **Compare hits across bars** to see the actual four-bar event schedule and the least-common-multiple repeat period of the four independent loops. The guide, graph and Web Audio use the same canonical cycle-length data. The existing `roots-rhythm/1` JSON schema and all preset files remain compatible.
+
 ## Mathematical exploration controls (Nov 2026)
 
 - Enter `z = a + bi` and choose root degree `n` for the selected instrument.

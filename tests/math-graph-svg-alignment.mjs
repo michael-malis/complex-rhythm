@@ -24,6 +24,8 @@ async function importProject(page,project){
  await page.waitForFunction(name=>document.querySelector('#toast').textContent.includes('Imported rhythm: '+name),project.name);
 }
 const measure=(page,lane)=>page.evaluate(lane=>{
+ // Playwright serializes this function into the browser: no Node closure variables.
+ const TAU=2*Math.PI;
  const t=window.RhythmResearch.current().tracks[lane];
  const svg=document.querySelector('#rootRuleDiagram'),canvas=document.querySelector('#orbitCanvas'),
   panel=document.querySelector('#rootRuleInfoPanel'),list=document.querySelector('#rootRuleAngleList');

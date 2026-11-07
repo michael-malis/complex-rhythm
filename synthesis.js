@@ -276,6 +276,32 @@ function voicesPlay(ctx,out,name,time,velocity=1,index=0,overrides=null){
  if(p.noise>0)voicesNoise(ctx,at,Math.min(d,.2),name.length*163+index*71,(p.family==='noise'?.55:Math.min(.12,p.noise*.08))*velocity,mix,p.family==='kick'?1000:2400);
  return true;
 }
-const exposed=Object.freeze({definitions:voicesDefinitions,play:voicesPlay});root.RhythmVoices=exposed;
+// Single master output graph for BOTH the running app and OfflineAudioContext QA.
+// A subsonic high-pass precedes a smooth saturating -1 dBFS-safe ceiling;
+// waveshaping has no intrinsic compressor lookahead or hidden onset shift.
+const MASTER_CEILING=.84;
+function createMasterOutputChain(ctx,destination,initialGain=.52){
+ if(!ctx||!destination||!Number.isFinite(initialGain)||initialGain<0||initialGain>2)
+  throw Error('Invalid master output configuration');
+ const master=ctx.createGain();master.gain.value=initialGain;
+ const subFilter=ctx.createBiquadFilter();subFilter.type='highpass';
+ subFilter.frequency.value=20;subFilter.Q.value=.707;
+ const limiter=ctx.createWaveShaper(),curve=new Float32Array(4096);
+ for(let i=0;i<curve.length;i++){
+  const x=2*i/(curve.length-1)-1;
+  curve[i]=MASTER_CEILING*Math.tanh(3.2*x)/Math.tanh(3.2);
+ }
+ limiter.curve=curve;limiter.oversample='2x';
+ master.connect(subFilter);subFilter.connect(limiter);limiter.connect(destination);
+ return {master,subFilter,limiter};
+}
+function setMasterVolume(master,normalizedVolume,time){
+ if(!master?.gain||!Number.isFinite(normalizedVolume)||normalizedVolume<0||
+    normalizedVolume>1||!Number.isFinite(time)||time<0)
+  throw Error('Invalid master volume automation');
+ // Smooth input changes; no instantaneous gain discontinuity/click.
+ master.gain.setTargetAtTime(normalizedVolume*.8,time,.014);
+}
+const exposed=Object.freeze({definitions:voicesDefinitions,play:voicesPlay,createMasterOutputChain,setMasterVolume,MASTER_CEILING});root.RhythmVoices=exposed;
 if(typeof module!=='undefined'&&module.exports)module.exports=exposed;
 })(typeof window!=='undefined'?window:globalThis);

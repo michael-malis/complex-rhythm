@@ -46,13 +46,18 @@
  <div class="circle-labels" id="circleLabels" aria-label="Cycle phases: zero at top, quarter at right, half at bottom, three quarters at left">
    <span class="circle-label label-zero" id="phaseZero"></span><span class="circle-label label-quarter" id="phaseQuarter"></span><span class="circle-label label-half" id="phaseHalf"></span><span class="circle-label label-threequarters" id="phaseThreequarters"></span>
  </div></div>
+ <div id="cycleGuide" class="cycle-guide" aria-label="Four lane loop lengths and current bar">
+  <div class="cycle-guide-heading">ONE FULL TURN PER LANE <span>Colored ticks = bar starts</span></div>
+  <div class="cycle-guide-lanes" id="cycleGuideLanes" aria-live="off"></div>
+  <p class="cycle-guide-hint" id="cycleGuideHint">A complete circle can span more than one bar. Choose a lane's Loop length to change its timing.</p>
+ </div>
  <details id="windowPanel" class="window-panel">
-  <summary>Polymetric time window <output id="commonCycle">Common period: 1 bar</output></summary>
+  <summary>Compare hits across bars <output id="commonCycle">Common period: 1 bar</output></summary>
   <div class="window-body">
     <label for="windowStart">View from bar <output id="windowStartText">1</output>
       <input id="windowStart" type="range" min="0" max="0" value="0" step="1">
     </label>
-    <p class="small-explain">A bounded four-bar view of the actual repeating schedules. The common cycle is the least common multiple of all lane lengths.</p>
+    <p class="small-explain">Each horizontal row shows real hit times over four bars. A ring above covers the full loop of its own lane. The common repeat time is the least common multiple of the four loop lengths.</p>
     <div class="window-axis" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4 bars</span></div>
     <div id="windowTimeline" class="window-timeline" aria-label="Upcoming mathematical events in four-bar time window"></div>
     <p id="windowCounts" class="window-counts" role="status"></p>

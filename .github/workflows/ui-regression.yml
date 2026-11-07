@@ -52,6 +52,7 @@ on:
       - tests/geometry-collision-audit.mjs
       - tests/phase-label-adaptation.mjs
       - tests/playback-hand-clearance.mjs
+      - tests/orbital-hands-audio-sync.mjs
       - tests/animated-adjacent-ring-clearance.mjs
       - tests/multi-lane-magnification.mjs
       - tests/beat-visual-acceptance.mjs
@@ -178,11 +179,16 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-animated-ring.log 2>&1 &
           node tests/animated-adjacent-ring-clearance.mjs
-      - name: Enforce playback hand gaps around mathematical root markers in every preset
+      - name: Preserve legacy radial exclusion math (the old radial hand is no longer rendered)
         if: ${{ !cancelled() }}
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-hand-clearance.log 2>&1 &
           node tests/playback-hand-clearance.mjs
+      - name: Verify four real Canvas orbit hands reach root phases on the AudioContext clock at 1 2 and 4 bar lengths
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-orbit-hands.log 2>&1 &
+          node tests/orbital-hands-audio-sync.mjs
       - name: Require phase labels not to cover roots across every preset and responsive theme
         if: ${{ !cancelled() }}
         run: |

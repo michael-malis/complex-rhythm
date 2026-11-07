@@ -19,7 +19,8 @@ try{
    const lanes=[...document.querySelectorAll('.lane')].map((row,i)=>({
     i,color:rgb(row.style.getPropertyValue('--lane-color')),slider:css(row.querySelector('input[type=range]')).accentColor,
     dot:css(row.querySelector('.lane-dot')).backgroundColor,
-    percent:css(row.querySelector('.lane-volume output')).color
+    percent:css(row.querySelector('.lane-volume output')).color,
+    expectedPercent:rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 70%, '+css(document.documentElement).color+' 30%)')
    }));
    return {lanes,master:css(document.querySelector('#volume')).accentColor,
     global:css(document.documentElement).getPropertyValue('--accent').trim(),
@@ -29,7 +30,7 @@ try{
   for(const lane of paint.lanes){
    assert.equal(lane.color,lane.slider,'instrument slider hue follows the root ring on lane '+lane.i);
    assert.equal(lane.color,lane.dot,'instrument root marker hue follows its lane '+lane.i);
-   assert.equal(lane.color,lane.percent,'instrument volume readout follows lane '+lane.i);
+   assert.equal(lane.expectedPercent,lane.percent,'instrument gain readout has the lane hue with readable contrast on lane '+lane.i);
    assert.notEqual(lane.color,paint.master,'master volume is independent from lane '+lane.i);
   }
   assert.equal(new Set(paint.lanes.map(l=>l.color)).size,4,'four instruments have four distinct hues');

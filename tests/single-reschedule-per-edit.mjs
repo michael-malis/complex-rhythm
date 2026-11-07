@@ -37,7 +37,7 @@ try{
   el.value=String(Math.min(Number(el.max),Number(el.value)+9));
   el.dispatchEvent(new Event('input',{bubbles:true}));
  })));
- measurements.push(await check('lane cycle length edit',()=>page.locator('#laneBars0').fill('3')));
+ measurements.push(await check('lane cycle length edit',()=>page.locator('#laneBars0').selectOption('3')));
  measurements.push(await check('root phase edit',()=>page.locator('#trackAngleDeg0').fill('37')));
 
  await page.locator('#playBtn').click();

@@ -25,6 +25,7 @@ try{
   if(theme==='dark')await page.locator('#themeBtn').click();
   await page.locator('#compositionPanel').evaluate(el=>el.open=true);
   await page.locator('.math-details').evaluate(el=>el.open=true);
+  await page.locator('#rootRuleInfoToggle').click();
   const value=await page.evaluate(()=>{
    const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,left:r.left,right:r.right,
       top:r.top,bottom:r.bottom,width:r.width,height:r.height}};
@@ -40,8 +41,21 @@ try{
     rendered:!!el.querySelector('.katex'),width:rect(el).width,
     clipping:el.scrollWidth>el.clientWidth+3&&getComputedStyle(el).overflowX==='hidden'
    }));
+   const inspect=id=>{
+    const el=document.getElementById(id);
+    const box=rect(el),annotation=el.querySelector('annotation')?.textContent||'';
+    return {id,annotation,mathml:!!el.querySelector('math'),
+      katex:!!el.querySelector('.katex'),width:box.width,
+      pageClipped:box.left<-2||box.right>innerWidth+2,
+      katexError:!!el.querySelector('.katex-error')};
+   };
+   const dynamicIds=['cartesianHeading','argMathLabel','mathExampleUnion',
+    'rootRuleEquation','rootRuleValues','rootRuleSpacing','rootRuleInput',
+    'rootRuleDelta','rootRuleFormula','selectedRootFormula','rootPhaseFormula',
+    'compositionEquation','laneEq0','laneEq1','laneEq2','laneEq3'];
+   const renderedLocations=dynamicIds.map(inspect);
    const body=document.body.innerText;
-   return{plot,labels,formulas,
+   return{plot,labels,formulas,renderedLocations,
     errors:document.querySelectorAll('.katex-error').length,
     rawLatex:/\\(?:dfrac|sqrt|frac|theta|operatorname|arg|cup|cap)\b/.test(body),
     selected:document.querySelector('#selectedRootFormula annotation')?.textContent||'',
@@ -54,6 +68,12 @@ try{
   }
   assert.ok(value.formulas.every(f=>f.rendered&&f.math&&!f.clipping),
    'KaTeX and MathML present, formulas not clipped in hidden area '+width+'/'+theme);
+  assert.equal(value.renderedLocations.length,16,'all dynamic mathematical locations audited');
+  assert.ok(value.renderedLocations.every(x=>x.mathml&&x.katex&&!x.katexError&&x.annotation.length>0),
+   'all graph, root rule, SVG-linked, compositional and per-lane equations use KaTeX/MathML at '+width+'/'+theme+
+    ': '+JSON.stringify(value.renderedLocations.filter(x=>!x.mathml||!x.katex||x.katexError||!x.annotation)));
+  assert.ok(value.renderedLocations.every(x=>!x.pageClipped),
+   'no mandatory mathematical formula extends past viewport at '+width+'/'+theme);
   assert.equal(value.errors,0,'no KaTeX errors '+width+'/'+theme);
   assert.equal(value.rawLatex,false,'no visible raw TeX '+width+'/'+theme);
   assert.ok(value.fractionalEquations,'selected-root phase uses vertical fraction');
@@ -82,6 +102,7 @@ try{
       latex:l.raw,font:l.font,mathml:l.mathml,stacked:l.verticalFraction
     }])),
     selectedRootLatex:value.selected,selectedRootHasStackedFraction:value.fractionalEquations,
+    renderedLocations:value.renderedLocations,
     screenshot:screenshot.replace('artifacts/',''),clippingErrors:0});
   await page.screenshot({path:screenshot,fullPage:true});
   await page.close();

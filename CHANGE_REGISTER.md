@@ -310,3 +310,12 @@ Exact [PR #38](https://github.com/michael-malis/complex-rhythm/pull/38) head `54
 All six original atomic `T-PST-006-01…06` and parent `T-PST-006` are therefore technically VERIFIED. Original parent requirement R-PST-006 is accepted; **M10 operational macro now VERIFIED**. Historic project totals **410/652 VERIFIED**, **43 IN_PROGRESS**, **195 TODO**, **4 BLOCKED**, **0 FAILED** and **69/98 verified parent requirements**; operational macros **7 VERIFIED / 4 IN_PROGRESS / 1 TODO / 2 BLOCKED**.
 
 No inference about subjective quality, physical headphones, genre authenticity, source screenshot parity or final user acceptance is made: M12/M13 remain BLOCKED and M14 remains TODO.
+
+
+### 2026-11-07 — M05/R-TEX-002: Semantic inline mathematics in root-placement explanations
+
+**Source-level mathematical defect:** The selected-lane root-placement caption previously displayed the variables and fractional laws `δ/n`, `2π/n` and `|z|` directly in plain text rather than the same accessible KaTeX and MathML used by the adjacent root equation. The expanded SVG-linked root-angle list also used unformatted `z = 0` in the zero-complex branch.
+
+**Implementation:** Preserve the canonical complex-number/rhythm model, the mathematical event phases, the four rings and all 50 presets. Render each mathematical symbol in the root-placement explanation through the existing safe `renderTeX` helper as genuine inline semantic markup, leaving English connective prose as text nodes. The zero-complex label and undefined `\arg(0)` now use actual inline KaTeX/MathML. Add explicit inline wrapping CSS so semantic fractions remain readable without horizontal scroll or page clipping. The expanded root-angle SVG's zero state now produces the same real mathematical markup.
+
+**Independent evidence:** Add `tests/math-inline-caption.mjs` and require its machine-readable `artifacts/math-semantic-caption/report.json` as **CI measurement #23**, covering twelve viewport/theme combinations, actual annotation+MathML+KaTeX, live n-degree edit (focus preserved), imported zero complex value and SVG-adjacent explanation, no raw symbolic fraction shortcuts or overflow. Existing source-matched formula acceptance, selected-root origin, responsive geometry, phase collision, root-event/audio scheduling and all previous 22 evidence files remain mandatory. R-TEX-002 and M05 statuses remain IN_PROGRESS until exact HEAD CI passes and the 15 original requirement rows can be reconciled separately.

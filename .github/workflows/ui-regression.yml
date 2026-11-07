@@ -41,6 +41,7 @@ on:
       - tests/required-polyrhythms.mjs
       - tests/new-preset-live-qa.mjs
       - tests/formula-acceptance.mjs
+      - tests/math-inline-caption.mjs
       - MATH_TYPOGRAPHY_AUDIT.md
       - scripts/verify-math-typography-audit.mjs
       - CI_MEASUREMENT_MANIFEST.md
@@ -269,6 +270,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula.log 2>&1 &
           node tests/formula-acceptance.mjs
+      - name: Verify semantic inline mathematical explanations and the zero-complex state
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-inline-math.log 2>&1 &
+          node tests/math-inline-caption.mjs
       - name: Verify per-formula typography audit against all real Chromium screenshots
         if: ${{ !cancelled() }}
         run: node scripts/verify-math-typography-audit.mjs

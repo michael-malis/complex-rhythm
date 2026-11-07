@@ -166,3 +166,10 @@ and 12 saved actual Chromium PNGs. It does not claim a human pixel
 review, so **M05/M06 and R-TEX-008 remain under evidence review**;
 the historic 380/652 and 63/98 ledger counts are not promoted by
 document creation alone.
+
+
+## 2026-11-07 — Inline mathematical explanations are semantic (M05 / R-TEX-002)
+
+The selected-lane root-placement **caption** and the SVG-adjacent zero-complex case were previously unmeasured as mathematical typography. In the root caption, plain `δ/n`, `2π/n` and `|z|` expressions used ordinary text nodes. The source now renders `\delta`, `\frac{\delta}{n}`, `\frac{2\pi}{n}` and `|z|` as distinct inline KaTeX+MathML tokens, with true geometric spacing; zero displays `z=0` and `\arg(0)` as semantic formulas, including in the expanded root-angle explanation list. This is not an audio/geometry algorithm change.
+
+**New separate evidence:** `tests/math-inline-caption.mjs` measures every inline token, actual embedded `math` and `annotation` nodes, computed minimum 16px font, viewport clipping and browser runtime errors in all six prescribed viewport sizes and both themes. It also checks live degree edits, caret focus and the imported zero case. Machine-readable artifact: `artifacts/math-semantic-caption/report.json`; full CI measurement manifest now has 23 real reports. This guarantees semantic HTML/MathML in these locations only, not the unavailable historical second annotated screenshot, perceptual approval or assistive technology hardware testing.

@@ -264,6 +264,7 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-rule-key span{font-size:16px;color:var(--sub)}
 .root-rule-key b{font-weight:700;color:var(--ink)}
 .root-rule-caption{font-size:16px;color:var(--sub);line-height:1.5;margin:7px 0 0}
+.root-rule-caption .math-notation{display:inline-block;vertical-align:baseline;font-size:1em;color:var(--ink);white-space:nowrap}
 @media(max-width:520px){.angle-fields{gap:8px 7px}.angle-fields label{font-size:16px}.root-rule{padding:11px}.root-rule-equation{font-size:19px}}
 
 /* Angle-only additions, and optional generated n-root families. */

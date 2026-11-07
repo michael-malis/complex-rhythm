@@ -66,7 +66,9 @@ function render(data,refs,renderMath){
  renderMath(refs.formula,'\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}');
  refs.list.replaceChildren();
  if(data.zero){
-  const li=document.createElement('li');li.textContent='z = 0: no argument or rhythm events.';
+  const li=document.createElement('li'),value=document.createElement('span');
+  value.className='math-notation';renderMath(value,'z=0');
+  li.append(value,document.createTextNode(': no argument or rhythm events.'));
   refs.list.append(li);return;
  }
  for(const hit of data.roots){

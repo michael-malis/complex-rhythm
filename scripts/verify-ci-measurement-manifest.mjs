@@ -58,6 +58,21 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('semantic root explanation in twelve responsive states','artifacts/math-semantic-caption/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.viewports,12);assert.equal(d.captionTerms,4);
+ assert.equal(d.dynamicDegreeAndZero,true);
+ assert.equal(d.cases?.length,12);
+ for(const c of d.cases){
+  assert.equal(c.regular?.length,4);
+  assert.ok(c.regular.every(x=>x.mathml&&x.rendered&&!x.error&&x.font>=16&&!x.clipped));
+ }
+ const dynamic=d.cases.find(x=>x.editedSpacing);
+ assert.ok(dynamic&&dynamic.zeroCaption?.length===2&&dynamic.zeroDiagramMath?.length===1);
+ assert.ok(dynamic.zeroCaption.every(x=>x.mathml&&x.rendered&&!x.error));
+ assert.ok(dynamic.zeroDiagramMath[0].mathml);
+ return {measuredStates:12,semanticInlineFormulas:4,liveEditAndZero:true};
+},'Real KaTeX/MathML inline explanatory geometry, live root-degree re-render, canonical zero-complex case and SVG-adjacent math across 12 viewport/theme cases');
 check('50-preset root-phase musical structure','artifacts/preset-structure/report.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.originalCatalogSize,50);assert.equal(d.experimentalCount,15);
@@ -214,10 +229,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,22,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,23,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 22 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 23 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

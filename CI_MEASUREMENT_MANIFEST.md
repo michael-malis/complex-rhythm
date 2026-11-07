@@ -6,7 +6,7 @@ actually run the measurement scripts, preserve the machine-readable results,
 and verify that reports contain the requested instrument/viewport coverage.
 
 The last step before uploading the final screenshot artifact runs
-`node scripts/verify-ci-measurement-manifest.mjs`. It reads **22 report
+`node scripts/verify-ci-measurement-manifest.mjs`. It reads **23 report
 files produced by the preceding independent browser/audio tests** and
 writes `artifacts/release-evidence-manifest.json`. The validator fails
 when a report is missing, malformed, empty or claims PASS despite a
@@ -23,6 +23,7 @@ known measured failure. Paths refer to real outputs in the uploaded
 | Expanded UI typography and names | `expanded-ui-typography.json` | ≥12 tested states, actual PASS |
 | Phase-label/root intersections | `geometry/phase-label-adaptation.json` | All 50 canonical studies and ≥12 viewport/theme states, zero collisions |
 | KaTeX/MathML sources and screenshots | `math-typography-audit/summary.json` | Ten reference, sixteen live, four phase labels and twelve authentic screenshots |
+| Semantic inline mathematical captions | `math-semantic-caption/report.json` | 12 actual viewport/theme runs, KaTeX+MathML formula tokens instead of textual fractions, dynamic root-degree changes, zero-complex SVG-adjacent notation and no layout clipping |
 | 50-preset root-to-hit musical structure | `preset-structure/report.json` | Every original preset: exact 4-bar event schedule and chunked proof, source provenance, per-lane unique roots; 15 experimental studies with bounded density, distinct instruments, quiet first-degree pickups and intentional cross-lane coincidence |
 | All 14 original instrument families | `mandatory-voice-inventory/report.json` | Fourteen distinct real source waveforms in two viewport cases: 10 Web Audio synths, 3 decoded sample sources, one Reese fallback; all selectable, non-silent, preserve root phases/transport and avoid overflow |
 | Aggressive kick architecture and timbre differentiation | `kick-architecture/report.json` | Four actual Web Audio kick graphs, 8 offline renders at two velocity levels, six gain-normalized distinct waveform pairs, measured kick body/sub filtering and per-patch transient layers |

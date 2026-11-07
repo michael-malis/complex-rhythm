@@ -1,7 +1,7 @@
 
 /* Roots / Rhythm — a single typographic and component system. */
-:root{--page:#f2efe8;--panel:#fffdfa;--plot:#faf8f3;--ink:#202420;--sub:#414b47;--muted:#46534e;--line:#d8d6ce;--fine:#e7e4dc;--accent:#9d4939;--focus:#8d6137;--track-1:#ab5847;--track-2:#567a63;--track-3:#967438;--track-4:#80618a;color-scheme:light}
-html[data-theme="dark"]{--page:#1b1c19;--panel:#242621;--plot:#20221d;--ink:#f2f0e8;--sub:#d9dfd1;--muted:#c4cdbc;--line:#42453e;--fine:#353831;--accent:#db9176;--focus:#e0b475;--track-1:#df9883;--track-2:#98b39a;--track-3:#d5b16e;--track-4:#bda0ca;color-scheme:dark}
+:root{--page:#f2efe8;--panel:#fffdfa;--plot:#faf8f3;--ink:#202420;--sub:#414b47;--muted:#46534e;--line:#d8d6ce;--fine:#e7e4dc;--accent:#3d6d80;--focus:#306c8f;--track-1:#ab5847;--track-2:#567a63;--track-3:#967438;--track-4:#80618a;color-scheme:light}
+html[data-theme="dark"]{--page:#1b1c19;--panel:#242621;--plot:#20221d;--ink:#f2f0e8;--sub:#d9dfd1;--muted:#c4cdbc;--line:#42453e;--fine:#353831;--accent:#a4c9dc;--focus:#a4d3eb;--track-1:#df9883;--track-2:#98b39a;--track-3:#d5b16e;--track-4:#bda0ca;color-scheme:dark}
 *,*:before,*:after{box-sizing:border-box}
 html{background:var(--page);scroll-behavior:smooth}
 body{margin:0;min-width:0;font:18px/1.46 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -386,8 +386,8 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 /* Each lane's mathematical roots and interactive controls share one hue.
    Global transport and master volume are intentionally independent of all
    four root-lane colors; red is never a fallback for every slider. */
-:root{--ui-control:#386f87;--master-control:#296f90}
-html[data-theme="dark"]{--ui-control:#86bfd3;--master-control:#86c7e9}
+:root{--ui-control:#49687e;--master-control:#2565a8}
+html[data-theme="dark"]{--ui-control:#a6c2d7;--master-control:#85bdf2}
 input[type=range]{accent-color:var(--control-color,var(--ui-control))}
 .lane{--control-color:var(--lane-color)}
 .lane .lane-volume input[type=range],.lane input[type=range]{accent-color:var(--lane-color)}

@@ -1002,7 +1002,7 @@ function renderComposition() {
  $('compositionPanel').style.setProperty('--selected-lane-color',COLORS[i]);
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
  const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
-  renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map(l=>String.raw`\;${setSymbol}\;R_{${l.n}}\!\left(${complexLaTeX(l)}\right)`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
+  renderTeX('compositionEquation',String.raw`R_{${t.n}}\!\left(${complexLaTeX(t)}\right)`+(t.layers.length?t.layers.map(l=>String.raw`\;${setSymbol}\;R_{${l.n}}\!\left(${complexLaTeX(l)}\right)`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
   const resultLabel=$('unionStrip')?.parentElement?.querySelector('.phase-label span');if(resultLabel)resultLabel.textContent=t.operation==='intersection'?'Intersection':'Union';
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;

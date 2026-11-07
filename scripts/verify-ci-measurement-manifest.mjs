@@ -58,6 +58,20 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('selected complex root source provenance','artifacts/complex-source-equation/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.viewports,12);
+ assert.equal(d.sourceSpecificRootFamilies,true);
+ assert.equal(d.dynamicDegreeCartesianIntersectionAndZero,true);
+ assert.equal(d.cases?.length,12);
+ assert.ok(d.cases.every(x=>x.base.includes('R_{4}')&&x.base.includes('2 + 3i')&&
+  x.base.includes('R_{3}')&&x.base.includes('E(5,16)')));
+ const edited=d.cases.find(x=>x.editedSpacing||x.changedCoefficient);
+ assert.ok(edited&&edited.degree?.includes('R_{7}')&&
+  edited.changedCoefficient.includes('2 + 4i')&&edited.intersection.includes('\\cap')&&
+  edited.zero.includes('0 + 0i'));
+ return {measuredStates:12,realBaseSources:true,liveOperations:true,zeroBasePreservesAdditionalFamilies:true};
+},'Exact actual complex source inside KaTeX root-set formula, 12 responsive themes and live Cartesian/degree/set-op/zero cases');
 check('semantic root explanation in twelve responsive states','artifacts/math-semantic-caption/report.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.viewports,12);assert.equal(d.captionTerms,4);
@@ -229,10 +243,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,23,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,24,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 23 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 24 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

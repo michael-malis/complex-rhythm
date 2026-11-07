@@ -255,9 +255,10 @@ function composePhases(track) {
  const added=RhythmMath.unique(extra);
  const merged=events(track).map(ev=>({
   phase:ev.phase,base:ev.sources.some(s=>s.kind==='base'),added:ev.sources.some(s=>s.kind!=='base'),
-  euclidean:ev.sources.some(s=>s.kind==='euclidean')
+  euclidean:ev.sources.some(s=>s.kind==='euclidean'),
+  shared:ev.sources.length>1
  }));
- return {base,added,merged,overlaps:merged.filter(v=>v.base&&v.added).length};
+ return {base,added,merged,overlaps:merged.filter(v=>v.shared).length};
 }
 let selectedRootIndex=0;
 const laneModes=['cart','cart','cart','cart'];
@@ -1042,7 +1043,7 @@ function renderComposition() {
   target.replaceChildren();
   for(const item of values){
    const phase=typeof item==='number'?item:item.phase;
-   const marker=document.createElement('span'),overlap=mode==='union'&&item.base&&item.added,added=mode==='added'||(mode==='union'&&item.added&&!item.base);
+   const marker=document.createElement('span'),overlap=mode==='union'&&item.shared,added=mode==='added'||(mode==='union'&&item.added&&!item.base);
    marker.className='phase-mark '+(overlap?'overlap':added?'added':'base');
    marker.style.left=(2+phase*96)+'%';marker.style.borderColor=COLORS[i];
    if(!added&&!overlap)marker.style.backgroundColor=COLORS[i];

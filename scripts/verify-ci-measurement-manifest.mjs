@@ -58,6 +58,25 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('distinct aggressive kick architectures','artifacts/kick-architecture/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.sr,32000);
+ assert.equal(d.ceilingDbFS,-1);
+ assert.equal(d.rendered?.length,8,'four patches at two gain levels');
+ assert.equal(d.comparisons?.length,6,'all six pairwise kick timbre comparisons');
+ const expected={technoKick:2,hardcoreKick:3,gabberKick:3,frenchcoreKick:4};
+ for(const r of d.rendered){
+  assert.ok(r.started&&r.peak>.035&&r.peak<=Math.pow(10,-1/20));
+  assert.ok(r.rms>.003&&r.segments.attack>.002&&r.segments.body>.002);
+  assert.equal(r.graph.oscillators,expected[r.name]);
+  assert.ok(r.graph.filters.some(x=>x.type==='highpass'&&x.freq===27));
+  assert.ok(r.graph.filters.some(x=>x.type==='lowpass'&&x.freq>=170&&x.freq<=440));
+  assert.ok(r.graph.shapers>=1);
+ }
+ assert.ok(d.comparisons.every(x=>x.normalizedWaveformDistance>.08),
+  'sound signatures must not differ by gain alone');
+ return {measuredPatches:4,realRenders:8,distinctPairs:6,productionGraph:true};
+},'Four distinct Web Audio kick architectures; 8 live-graph offline renders, 6 gain-normalized waveform comparisons, sub/bass filtering and transient shapes');
 check('offline sound and spectral metrics','artifacts/audio-renders/metrics.json',d=>{
  assert.equal(d.sampleRate,32000,'audio metrics require known sample rate');
  assert.equal(d.voices?.length,15,'all 15 original synthesized programs must be measured');
@@ -163,10 +182,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,19,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,20,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 19 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 20 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

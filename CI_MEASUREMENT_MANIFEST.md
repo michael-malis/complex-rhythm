@@ -6,7 +6,7 @@ actually run the measurement scripts, preserve the machine-readable results,
 and verify that reports contain the requested instrument/viewport coverage.
 
 The last step before uploading the final screenshot artifact runs
-`node scripts/verify-ci-measurement-manifest.mjs`. It reads **19 report
+`node scripts/verify-ci-measurement-manifest.mjs`. It reads **20 report
 files produced by the preceding independent browser/audio tests** and
 writes `artifacts/release-evidence-manifest.json`. The validator fails
 when a report is missing, malformed, empty or claims PASS despite a
@@ -23,6 +23,7 @@ known measured failure. Paths refer to real outputs in the uploaded
 | Expanded UI typography and names | `expanded-ui-typography.json` | ≥12 tested states, actual PASS |
 | Phase-label/root intersections | `geometry/phase-label-adaptation.json` | All 50 canonical studies and ≥12 viewport/theme states, zero collisions |
 | KaTeX/MathML sources and screenshots | `math-typography-audit/summary.json` | Ten reference, sixteen live, four phase labels and twelve authentic screenshots |
+| Aggressive kick architecture and timbre differentiation | `kick-architecture/report.json` | Four actual Web Audio kick graphs, 8 offline renders at two velocity levels, six gain-normalized distinct waveform pairs, measured kick body/sub filtering and per-patch transient layers |
 | Rendered synthesis and spectra | `audio-renders/metrics.json` | 15 synthesized programs at actual 32 kHz sample rate |
 | Actual shared master-output safety | `master-output-safety/report.json` | Same code as production at 32/48kHz; 48 live-voice root events, ≤−1dBFS sample/4× interpolated peak, 20Hz filtering of 5Hz energy, smooth volume changes, and kick attack <5ms |
 | Multi-lane audio stress and onsets | `audio-mix-stress.json` | ≥50 actual schedules with a finite measured audio-onset drift |

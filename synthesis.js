@@ -245,16 +245,50 @@ function voicesPlay(ctx,out,name,time,velocity=1,index=0,overrides=null){
  amp.gain.exponentialRampToValueAtTime(peak,at+(p.family==='kick'?.0015:.004));
  amp.gain.exponentialRampToValueAtTime(.0001,at+d);
  mix.connect(filter);filter.connect(drive);drive.connect(amp);amp.connect(out);
- const osc=(type,fStart,fEnd,detune=0,level=1)=>{
+ const osc=(type,fStart,fEnd,detune=0,level=1,destination=mix)=>{
   const gen=ctx.createOscillator(),g=ctx.createGain();gen.type=type;
   gen.frequency.setValueAtTime(Math.max(20,fStart),at);
   gen.frequency.exponentialRampToValueAtTime(Math.max(20,fEnd),at+Math.min(d*.8,.23));
-  gen.detune.value=detune;g.gain.value=level;gen.connect(g);g.connect(mix);gen.start(at);gen.stop(at+d+.02);return gen;
+  gen.detune.value=detune;g.gain.value=level;
+  gen.connect(g);g.connect(destination);gen.start(at);gen.stop(at+d+.02);return gen;
  };
  if(p.family==='kick'){
-  osc(p.osc,p.start,p.base,0,p.osc==='sawtooth'?.55:1);
-  osc('sine',p.start*.45,p.base,.1,.45);
-  if(p.family==='kick'&&p.slide>.1)osc('triangle',p.base*.9,p.base*1.3,0,.2);
+  // Isolate the pitched bass body from the transient. Each kick has a real
+  // independent body filter and oscillator architecture; not a gain-only preset.
+  const subHighpass=ctx.createBiquadFilter(),bodyLowpass=ctx.createBiquadFilter();
+  subHighpass.type='highpass';subHighpass.frequency.value=27;subHighpass.Q.value=.707;
+  bodyLowpass.type='lowpass';
+  bodyLowpass.frequency.value=name==='technoKick'?170:name==='hardcoreKick'?290:
+    name==='gabberKick'?440:270;
+  bodyLowpass.Q.value=.72;
+  subHighpass.connect(bodyLowpass);bodyLowpass.connect(mix);
+  osc(p.osc,p.start,p.base,0,p.osc==='sawtooth'?.55:1,subHighpass);
+  osc('sine',p.start*.45,p.base,.1,.45,subHighpass);
+  if(name==='frenchcoreKick'){
+   // A separately pitched overtone carries the melodic Frenchcore tail.
+   osc('triangle',p.base*2.3,p.base*1.55,0,.19,subHighpass);
+  }
+  if(name==='hardcoreKick'||name==='gabberKick'||name==='frenchcoreKick'){
+   // A short, pitch-swept, saturated high-frequency attack is not achievable
+   // by increasing the loudness of the bass body.
+   const tick=ctx.createOscillator(),tickHighpass=ctx.createBiquadFilter();
+   const tickDrive=ctx.createWaveShaper(),tickGain=ctx.createGain();
+   const harsh=name==='gabberKick',pitched=name==='frenchcoreKick';
+   tick.type=harsh?'sawtooth':pitched?'sine':'triangle';
+   tick.frequency.setValueAtTime(harsh?2500:pitched?1050:1650,at);
+   tick.frequency.exponentialRampToValueAtTime(harsh?470:pitched?250:320,at+.022);
+   tickHighpass.type='highpass';
+   tickHighpass.frequency.value=harsh?600:pitched?250:410;
+   tickHighpass.Q.value=.7;
+   tickDrive.curve=voicesCurve(harsh?4.2:pitched?1.65:2.8);
+   tickDrive.oversample='2x';
+   tickGain.gain.setValueAtTime(.0001,at);
+   tickGain.gain.exponentialRampToValueAtTime((harsh?.11:pitched?.065:.09)*Math.max(.2,velocity),at+.0016);
+   tickGain.gain.exponentialRampToValueAtTime(.0001,at+(harsh?.056:pitched?.044:.034));
+   tick.connect(tickHighpass);tickHighpass.connect(tickDrive);
+   tickDrive.connect(tickGain);tickGain.connect(mix);
+   tick.start(at);tick.stop(at+.07);
+  }
  }else if(p.family==='acid'){
   const pitch=p.base*Math.pow(2,((index%7)-3)/12);
   const carrier=osc(p.osc,p.start||pitch,pitch,0,1);

@@ -1024,13 +1024,13 @@ function renderComposition() {
    if(x<1e-8||1-x<1e-8)return '0';
    for(let q=1;q<=64;q++){
     const p=Math.round(x*q);
-    if(Math.abs(x-p/q)<1e-8)return q===1?String(p):String.raw`\\frac{${p}}{${q}}`;
+    if(Math.abs(x-p/q)<1e-8)return q===1?String(p):String.raw`\frac{${p}}{${q}}`;
    }
    return fmtMath(x);
   };
   const visible=shared.slice(0,6).map(e=>phaseMath(e.phase));
-  if(shared.length>6)visible.push(String.raw`\\ldots`);
-  renderTeX(phaseFormula,String.raw`\\Phi_{\\mathrm{shared}}=\\left\\{${visible.join(',\\;')}\\right\\}`);
+  if(shared.length>6)visible.push(String.raw`\ldots`);
+  renderTeX(phaseFormula,String.raw`\Phi_{\mathrm{shared}}=\left\{${visible.join(',\\;')}\right\}`);
  }else phaseFormula.replaceChildren();
  const example=$('exampleProof'),exampleMatch=t.operation==='union'&&t.n===4&&t.a===1&&t.b===0&&
  t.layers.length===1&&t.layers[0].n===3&&t.layers[0].a===1&&t.layers[0].b===0&&!t.euclidean;

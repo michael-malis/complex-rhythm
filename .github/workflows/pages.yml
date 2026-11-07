@@ -1,8 +1,11 @@
 name: Publish ROOTS RHYTHM
+# Publish only the exact main-branch commit whose full UI/math/audio CI passed.
+# Never publish directly on push or manual dispatch: those bypass the regression gate.
 on:
-  push:
+  workflow_run:
+    workflows: ["Rhythm Studio UI regression"]
+    types: [completed]
     branches: [main]
-  workflow_dispatch:
 permissions:
   contents: read
   pages: write
@@ -12,15 +15,52 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Check that the tested commit is still main HEAD
+        id: revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          CURRENT_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "${CURRENT_SHA}" == "${TESTED_SHA}" ]]; then
+            echo 'is_current=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo "Skipping stale release: tested ${TESTED_SHA}, main is ${CURRENT_SHA}"
+            echo 'is_current=false' >> "${GITHUB_OUTPUT}"
+          fi
       - uses: actions/checkout@v4
+        if: steps.revision.outputs.is_current == 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
       - uses: actions/configure-pages@v5
+        if: steps.revision.outputs.is_current == 'true'
       - uses: actions/upload-pages-artifact@v4
+        if: steps.revision.outputs.is_current == 'true'
         with:
           path: .
+      - name: Refuse to deploy if main moved during preparation
+        id: final_revision
+        if: steps.revision.outputs.is_current == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          CURRENT_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
+          if [[ "${CURRENT_SHA}" == "${TESTED_SHA}" ]]; then
+            echo 'is_current=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo "Skipping stale release: tested ${TESTED_SHA}, main is ${CURRENT_SHA}"
+            echo 'is_current=false' >> "${GITHUB_OUTPUT}"
+          fi
       - id: deployment
+        if: steps.final_revision.outputs.is_current == 'true'
         uses: actions/deploy-pages@v4

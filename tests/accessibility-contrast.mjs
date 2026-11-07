@@ -21,6 +21,11 @@ try{
     await page.locator(selector).evaluate(el=>{el.open=true});
   const measured=await page.evaluate(()=>{
    const toRgb=value=>{
+    // Modern CSS color-mix() resolves to color(srgb r g b), where channels
+    // are 0..1, NOT 0..255. Treating these as byte RGB falsely reports
+    // high-contrast dark-theme labels as near-black.
+    const srgb=value.trim().match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*[\d.]+)?\)$/i);
+    if(srgb)return srgb.slice(1,4).map(x=>Number(x)*255);
     const hex=value.trim().match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i);
     if(hex){
       const h=hex[1].length===3?[...hex[1]].map(x=>x+x).join(''):hex[1];

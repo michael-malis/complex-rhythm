@@ -58,6 +58,23 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('real SVG and Canvas mathematical phase alignment','artifacts/math-graph-svg/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.viewportThemeStates,12);
+ assert.equal(d.laneGeometryStates,48);
+ for(const field of ['realSvgCanvasMathAgreement','zeroAnd64RootDegrees','dynamicResize',
+  'sourceExactSharedPhases','mathmlFractions','vectorOnly'])assert.equal(d[field],true);
+ assert.equal(d.humanVisualComparison,false);
+ assert.equal(d.report?.length,12);
+ for(const state of d.report){
+  assert.equal(state.lanes?.length,4);
+  assert.deepEqual(state.lanes.map(l=>l.roots),[4,1,7,0]);
+  assert.deepEqual(state.lanes.map(l=>l.shared),[2,0,0,0]);
+  assert.ok(state.lanes.every(l=>l.mathml&&l.svgRadius>60));
+ }
+ return {states:12,measuredLaneGeometries:48,includesZeroAnd64:true,
+  genuineKaTeXSharedRootPhases:true};
+},'True projected SVG root screen coordinates and Canvas ring time phases, four lane source families, source-backed shared KaTeX fractions and live responsive resizing; no raster text');
 check('selected complex root source provenance','artifacts/complex-source-equation/report.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.viewports,12);
@@ -243,10 +260,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,24,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,25,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 24 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 25 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

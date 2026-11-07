@@ -58,6 +58,21 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('full required instrument source inventory','artifacts/mandatory-voice-inventory/report.json',d=>{
+ assert.equal(d.status,'PASS');assert.equal(d.requiredCount,14);
+ assert.equal(d.cases?.length,2,'desktop and mobile required sound rendering');
+ for(const c of d.cases){
+  assert.equal(c.verifiedVoices,14);
+  assert.equal(c.recordedSources,3);assert.equal(c.standaloneSynthesis,10);
+  assert.equal(c.nativeFallback,1);assert.equal(c.uniqueWaveforms,14);
+  assert.ok(c.mathRootsPreserved&&c.noTransportTimers&&c.noOverflow);
+  assert.equal(c.runtimeErrors,0);
+  assert.equal(c.rows?.length,14);
+  assert.equal(new Set(c.rows.map(r=>r.waveformSha256)).size,14);
+  assert.ok(c.rows.every(r=>r.peak>.005&&r.peak<3&&r.waveformBytes>1200));
+ }
+ return {measuredStates:2,mandatoryVoices:14,distinctRealWaveforms:14};
+},'All R-SND-001 required instruments: 10 real synth patches, 3 independently recorded drum sources, 1 native Reese fallback, with 14 unique normalized real waveform renders in desktop/mobile UI');
 check('distinct aggressive kick architectures','artifacts/kick-architecture/report.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.sr,32000);
@@ -182,10 +197,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,20,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,21,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 20 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 21 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

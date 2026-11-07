@@ -20,9 +20,9 @@ assert.equal(Object.values(counted).reduce((a,b)=>a+b,0),652);
 // Narrative addenda are not separate task records: prevent their status
 // from contradicting the authoritative canonical row after reconciliation.
 const tasksText=fs.readFileSync('TASKS.md','utf8');
-const addendum=tasksText.match(/^### (T-[A-Z]+-\\d{3}(?:-\\d{2})?) [^\\n]*\\n\\n\\*\\*Status:\\*\\* (TODO|IN_PROGRESS|VERIFIED|BLOCKED|FAILED)\\b/gm)||[];
+const addendum=tasksText.match(/^### (T-[A-Z]+-\d{3}(?:-\d{2})?) [^\n]*\n\n\*\*Status:\*\* (TODO|IN_PROGRESS|VERIFIED|BLOCKED|FAILED)\b/gm)||[];
 for(const block of addendum){
- const match=block.match(/^### (T-[A-Z]+-\\d{3}(?:-\\d{2})?) [^\\n]*\\n\\n\\*\\*Status:\\*\\* (TODO|IN_PROGRESS|VERIFIED|BLOCKED|FAILED)/);
+ const match=block.match(/^### (T-[A-Z]+-\d{3}(?:-\d{2})?) [^\n]*\n\n\*\*Status:\*\* (TODO|IN_PROGRESS|VERIFIED|BLOCKED|FAILED)/);
  assert.ok(match,'Malformed narrative addendum status');
  const canonical=rows.find(row=>row[0]===match[1]);
  assert.ok(canonical,'Narrative addendum has unknown task '+match[1]);

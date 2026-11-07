@@ -36,14 +36,9 @@ try {
    catalog.push({id:p.id,category:p.category,bpm:p.bpm,events:all.length,exact,noLost,
      withSound:p.tracks.every(t=>typeof t.sound==='string'&&t.sound.length>0)});
   }
+  // Stress exactly the same limiter/filter graph used by live app playback.
   function outputChain(ctx){
-   const bus=ctx.createGain();bus.gain.value=.52;
-   const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=20;hp.Q.value=.707;
-   const limit=ctx.createWaveShaper(),curve=new Float32Array(4096);
-   for(let k=0;k<curve.length;k++){const x=2*k/(curve.length-1)-1;curve[k]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
-   limit.curve=curve;limit.oversample='2x';
-   bus.connect(hp);hp.connect(limit);limit.connect(ctx.destination);
-   return bus;
+   return window.RhythmVoices.createMasterOutputChain(ctx,ctx.destination,.52).master;
   }
   // Four-times oversampled inter-sample peak ESTIMATE with a windowed-sinc
   // reconstruction. Unlike a raw sample peak, this can detect between-sample

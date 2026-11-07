@@ -22,12 +22,8 @@ try{
   for(const [i,name] of names.entries()){
    const sr=32000,seconds=.65;
    const context=new OfflineAudioContext(1,Math.round(sr*seconds),sr);
-   const bus=context.createGain(),sub=context.createBiquadFilter(),ceiling=context.createWaveShaper();
-   sub.type='highpass';sub.frequency.value=20;
-   // Identical ceiling transfer curve to the live engine; exercise final output safety.
-   const curve=new Float32Array(4096);
-   for(let k=0;k<curve.length;k++){const x=2*k/(curve.length-1)-1;curve[k]=.84*Math.tanh(3.2*x)/Math.tanh(3.2)}
-   ceiling.curve=curve;ceiling.oversample='2x';bus.connect(sub);sub.connect(ceiling);ceiling.connect(context.destination);
+   // Shared production output graph, not an independently copied approximation.
+   const bus=window.RhythmVoices.createMasterOutputChain(context,context.destination,1).master;
    const started=window.RhythmVoices.play(context,bus,name,.02,.7,i);
    const audio=await context.startRendering(),data=audio.getChannelData(0);
    const peak=data.reduce((a,v)=>Math.max(a,Math.abs(v)),0);

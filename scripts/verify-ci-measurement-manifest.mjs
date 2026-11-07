@@ -63,6 +63,26 @@ check('offline sound and spectral metrics','artifacts/audio-renders/metrics.json
  assert.equal(d.voices?.length,15,'all 15 original synthesized programs must be measured');
  return {synthPrograms:d.voices.length,sampleRate:d.sampleRate};
 },'Actual rendered audio buffers; no human listening claim');
+check('actual shared master output chain','artifacts/master-output-safety/report.json',d=>{
+ assert.equal(d.status,'PASS');assert.equal(d.ceilingDbFS,-1);
+ assert.equal(d.realProductionGraph,true,'must measure the same graph used in app.js');
+ assert.equal(d.cases?.length,2,'two actual OfflineAudioContext sample rates required');
+ for(const item of d.cases){
+  assert.ok([32000,48000].includes(item.sampleRate));
+  assert.equal(item.dense.events,48);
+  assert.equal(item.dense.filterType,'highpass');assert.equal(item.dense.filterHz,20);
+  assert.equal(item.dense.limiterOversampling,'2x');
+  assert.ok(item.dense.finite&&item.volume.finite);
+  assert.ok(item.dense.peak>0.02&&item.dense.peak<=Math.pow(10,-1/20));
+  assert.ok(item.dense.oversampledPeak<=Math.pow(10,-1/20));
+  assert.ok(item.subHz5<item.passHz100*.35);
+  assert.ok(item.volume.quiet<item.volume.before*.32&&
+   item.volume.recovered>item.volume.before*.75);
+  assert.ok(item.volume.downJump<.03&&item.volume.upJump<.03);
+  assert.ok(item.transient.driftMs>=-1/item.sampleRate*1000&&item.transient.driftMs<5);
+ }
+ return {measuredStates:d.cases.length,sourceGraph:'production',maxOutputDbFS:-1};
+},'Actual production master limiter/filter, 4x intersample estimate, two rates, dynamic volume smoothing, 20Hz subsonic rejection, <5ms attack');
 check('multi-lane audio load','artifacts/audio-mix-stress.json',d=>{
  assert.ok(d.catalog?.length>=50,'full 50-preset stress schedule required');
  assert.ok(d.onset&&Number.isFinite(d.onset.driftMs),'actual audio clock/onset measurement required');
@@ -143,10 +163,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,18,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,19,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 18 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 19 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

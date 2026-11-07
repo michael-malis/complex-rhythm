@@ -13,6 +13,7 @@ on:
       - tests/spec-ui.mjs
       - tests/audio-offline.mjs
       - tests/kick-architecture-differentiation.mjs
+      - tests/mandatory-voice-inventory.mjs
       - tests/percussion-sample-structure.mjs
       - samples/**
       - tests/acid-parameter-response.mjs
@@ -147,6 +148,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-percussion-samples.log 2>&1 &
           node tests/percussion-sample-structure.mjs
+      - name: Verify all fourteen mandatory instruments render distinct real sources without changing root phases
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-required-voice-inventory.log 2>&1 &
+          node tests/mandatory-voice-inventory.mjs
       - name: Prove four aggressive kicks have genuinely differentiated pitched bodies and saturated transient graphs
         if: ${{ !cancelled() }}
         run: |

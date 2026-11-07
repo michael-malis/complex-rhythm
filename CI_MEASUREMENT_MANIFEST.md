@@ -58,12 +58,12 @@ acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
 Do **not** promote any historical status merely because this script passed. The
 source-specific R-SND-006 acceptance is separately documented from completed
 [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-Source ledger status now stands at **425/652** and **70/98** after original
-R-TEX-002 semantic mathematical formula acceptance from full CI 42378900168,
-where 23 independent real browser/audio measurement reports were mandatory.
-M05 and M06 remain IN_PROGRESS for R-TEX-005/006 graph/DOM geometry and
-R-TEX-008 audit. M13 human/device sound, M12 source screenshot and M14 final
-signoff remain explicitly unaccepted. No simulated subjective result is claimed.
+Source ledger status now stands at **442/652** and **72/98** after actual
+merged-main full CI 42393799287 and original R-TEX-005/006 mathematical
+SVG/Canvas graph placement acceptance. All 25 independent real measurement
+reports are mandatory. M05 is technically VERIFIED; M06 remains IN_PROGRESS
+for R-TEX-008 historical per-formula audit. M13 manual audio/device sound,
+M12 missing original screenshot and M14 final signoff remain unaccepted.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

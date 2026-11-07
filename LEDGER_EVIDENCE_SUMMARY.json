@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42378900168 full semantic KaTeX MathML/12 viewport technical acceptance, PR #40; all previous accepted source evidence preserved",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42393799287 full merged-main SVG and Canvas source-provenance math verification plus exact PR #43 CI 42393323480",
   "tasks": {
-    "VERIFIED": 425,
-    "IN_PROGRESS": 42,
-    "TODO": 181,
+    "VERIFIED": 442,
+    "IN_PROGRESS": 40,
+    "TODO": 166,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -77,7 +77,9 @@
     "R-SND-004",
     "R-SND-001",
     "R-PST-006",
-    "R-TEX-002"
+    "R-TEX-002",
+    "R-TEX-005",
+    "R-TEX-006"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -85,5 +87,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-TEX-002 mathematical surrogates replaced by accessible KaTeX HTML+MathML and technically accepted across the 10 contractual formula references, four selected-lane root explanations, 16 dynamic locations and 12 responsive states. M05 still IN_PROGRESS for R-TEX-005 graph formula coverage and R-TEX-006 Canvas/DOM/SVG math alignment; M06 still IN_PROGRESS for R-TEX-008 audit. M12 unavailable second annotated screenshot and M13 device accessibility remain BLOCKED."
+  "note": "R-TEX-005 and R-TEX-006 source technically accepted: 48 physically mapped SVG/Canvas mathematical states, 12 responsive themes, 50-preset phase-label placement and 25 measured reports. M05 technically VERIFIED. M06 remains IN_PROGRESS for R-TEX-008 historical per-formula audit; M12 and M13 manual reviews BLOCKED, M14 TODO."
 }

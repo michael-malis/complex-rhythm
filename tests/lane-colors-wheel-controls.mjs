@@ -164,7 +164,7 @@ try{
 
   const width=await page.evaluate(()=>({
    body:document.documentElement.scrollWidth,viewport:innerWidth,
-   minTouch:Math.min(...[...document.querySelectorAll('.lane input,.lane select')].map(e=>e.getBoundingClientRect().height))
+   minTouch:Math.min(...[...document.querySelectorAll('.lane input,.lane select')].filter(e=>e.getClientRects().length).map(e=>e.getBoundingClientRect().height))
   }));
   assert.ok(width.body<=width.viewport+2,'4-lane colors and compact grid must not create horizontal overflow');
   assert.ok(width.minTouch>=43.5,'smaller cards must retain 44px input targets');

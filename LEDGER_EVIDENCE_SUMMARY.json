@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42348284633 full shared production audio safety measurements; prior evidence preserved",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42358463110 full R-SND-004 multivoice architecture/audio measurement; previous accepted evidence preserved",
   "tasks": {
-    "VERIFIED": 390,
-    "IN_PROGRESS": 46,
-    "TODO": 212,
+    "VERIFIED": 398,
+    "IN_PROGRESS": 45,
+    "TODO": 205,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -73,7 +73,8 @@
     "R-SND-003",
     "R-TEX-007",
     "R-SND-006",
-    "R-SND-005"
+    "R-SND-005",
+    "R-SND-004"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -81,5 +82,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "R-SND-005 technically accepted based on measured production master output ceiling, subsonic filtering, smoothed gain, onset and 50-schedule stress. Combined with independently accepted R-SND-006, M08 is technically VERIFIED. Human sound listening, hardware/phone tests and missing annotated image remain M12/M13 blockers."
+  "note": "R-SND-004 aggressive percussion technically accepted: four independent kick body/attack graphs and measured distinct waveform shapes at two velocities; metallic FM spectral test and production output safety. R-SND-001 (complete set of required instruments) and manual human listening under M13 remain unresolved; M07 stays IN_PROGRESS."
 }

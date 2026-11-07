@@ -1422,6 +1422,18 @@ function cycleSeconds(){return barSeconds()*(tracks.length?RhythmMath.commonCycl
 function laneSeconds(track){return barSeconds()*(track.cycleBars||1)}
 function playbackElapsed(){return playing&&audio?Math.max(0,audio.currentTime-beatEpoch):pausedPhase*cycleSeconds()}
 function lanePhase(track){return RhythmMath.phaseAt(playbackElapsed(),track.cycleBars||1,barSeconds())}
+// One phase clock for BOTH visible orbit hands and audible hits:
+// planEvents() schedules at (cycle + root.phase) * cycleBars * barSeconds.
+// The playhead must use the same beatEpoch, bar duration and cycleBars
+// instead of the selected lane's angle or a 16-step reduced-motion quantizer.
+function orbitHandStates(elapsed=playbackElapsed()){
+ return tracks.map((t,i)=>({
+  lane:i,cycleBars:t.cycleBars||1,
+  phase:RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()),
+  periodSeconds:laneSeconds(t),muted:t.muted,color:COLORS[i]
+ }));
+}
+let lastOrbitalHandFrame=null;
 function transportPhase(){if(!playing||!audio)return pausedPhase;return ((Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds())%1+1)%1}
 let pendingVoiceBusDisposals=0,completedVoiceBusDisposals=0,voiceBusGenerations=0;
 function cancelVoices(){
@@ -1684,7 +1696,7 @@ function positionPhaseLabels(){
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
  ctx.clearRect(0,0,w,h);
- const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],elapsed=playbackElapsed(),selectedPhase=lanePhase(tracks[selectedTrack]);
+ const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],elapsed=playbackElapsed();
  ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fillRect(0,0,w,h);
  ctx.save();ctx.translate(cx,cy);ctx.textAlign='center';ctx.textBaseline='middle';
  const guide=dark?'#4d5046':'#d8d5cd',baseInk=dark?'#dcded3':'#55584f';
@@ -1700,22 +1712,6 @@ function draw() {
   ctx.beginPath();ctx.arc(0,0,r,0,TAU);
   ctx.strokeStyle=chosen?COLORS[i]:(dark?'#63675e':'#c4c5bc');ctx.lineWidth=chosen?2:1.2;ctx.stroke();
  });
- const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(selectedPhase*16)/16:selectedPhase);
- // Prevent the playback pointer from obscuring visible mathematical roots.
- // The outer edge is still phase-accurate; only sections under markers are skipped.
- const markerDiscs=tracks.flatMap((track,i)=>composePhases(track).merged.map(mark=>{
-  const a=-Math.PI/2+TAU*mark.phase,r=radii[i];
-  return {x:Math.cos(a)*r,y:Math.sin(a)*r,radius:22};
- }));
- const handSegments=RhythmMath.radialVisibleSegments(
-  radii[selectedTrack],angle,markerDiscs,6
- );
- ctx.beginPath();
- for(const segment of handSegments){
-  ctx.moveTo(Math.cos(angle)*segment.from,Math.sin(angle)*segment.from);
-  ctx.lineTo(Math.cos(angle)*segment.to,Math.sin(angle)*segment.to);
- }
- ctx.strokeStyle=playing?(dark?'#c4c9ba':'#676d62'):(dark?'#5a5e54':'#cfcec5');ctx.lineWidth=1.3;ctx.stroke();
  if(rootDrag&&rootDrag.moved){
   const i=rootDrag.track,r=radii[i],arg=rootDrag.startArg,n=rootDrag.n;
   ctx.save();ctx.setLineDash([2,4]);ctx.strokeStyle=COLORS[i];
@@ -1754,6 +1750,38 @@ function draw() {
    if(t.muted){ctx.beginPath();ctx.arc(x,y,radius+1.3,0,TAU);ctx.strokeStyle=dark?'#555951':'#b5b5ab';ctx.lineWidth=2;ctx.stroke()}
   }
  });
+ // Four short, tangential playheads travel ON their own root ring.
+ // Draw last: a contrasting triangle remains visible on top of a filled
+ // root precisely when that root's sound is scheduled. No radial ray crosses
+ // any ring, and equal cycleBars always yield identical clock angles.
+ const hands=orbitHandStates(elapsed);
+ const pointerEvidence=[];
+ hands.forEach(hand=>{
+  const r=radii[hand.lane],angle=-Math.PI/2+TAU*hand.phase;
+  const arcLength=Math.min(17,Math.max(8,r*.13));
+  const startAngle=angle-arcLength/r;
+  const cos=Math.cos(angle),sin=Math.sin(angle),tx=-sin,ty=cos;
+  const x=r*cos,y=r*sin;
+  pointerEvidence.push({...hand,radius:r,angle,startAngle,x,y});
+  ctx.save();
+  ctx.globalAlpha=hand.muted?.45:playing?1:.72;
+  ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.arc(0,0,r,startAngle,angle);
+  ctx.strokeStyle=COLORS[hand.lane];ctx.lineWidth=hand.lane===selectedTrack?5.5:4.5;ctx.stroke();
+  // Arrow tip is EXACTLY at the root's phase, rather than ahead of it.
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x-tx*11+cos*5,y-ty*11+sin*5);
+  ctx.lineTo(x-tx*11-cos*5,y-ty*11-sin*5);
+  ctx.closePath();
+  ctx.fillStyle=COLORS[hand.lane];
+  ctx.strokeStyle=dark?'#20221d':'#faf8f3';
+  ctx.lineWidth=1.4;ctx.fill();ctx.stroke();
+  ctx.restore();
+ });
+ lastOrbitalHandFrame={elapsed,beatEpoch,audioTime:audio?.currentTime??null,
+  bpm,barSeconds:barSeconds(),playing,
+  hands:pointerEvidence};
  const count=events(tracks[selectedTrack]).length;
  ctx.font=`650 ${Math.max(14,Math.min(24,side*.044))}px system-ui`;ctx.fillStyle=baseInk;ctx.fillText(String(count),0,-3);
  ctx.font='18px system-ui';ctx.fillText('events',0,29);
@@ -1956,6 +1984,12 @@ window.RhythmResearch=Object.freeze({
 
  // Diagnostic snapshot only: tracks and sample-family selection cannot be mutated here.
  samplePlan:()=>({category:activeCategory,keys:[...prioritySampleKeys()]}),
+ orbitalHands:()=>({
+  // Captures phases and actual Canvas tip geometry from the most recent frame.
+  // UI and audio use the same beatEpoch/barSeconds/cycleBars.
+  ...(lastOrbitalHandFrame||{elapsed:0,playing:false,hands:[]}),
+  hands:(lastOrbitalHandFrame?.hands||[]).map(h=>({...h}))
+ }),
  markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({

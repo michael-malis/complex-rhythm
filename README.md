@@ -58,6 +58,14 @@ All UI labels, descriptions, tooltips, validation errors and transport messages 
 
 The bottom **Sound Lab · waveform and instrument shaping** disclosure remains **closed by default**, keeping complex-root visualization primary. Open it once, choose any of the four instrument lanes independently of the mathematically selected root ring, and inspect a static waveform. Synthesizers render from the same offline Web Audio engine as real sound and expose oscillator, filter, saturation, resonance, decay and related controls, with a per-lane Reset action. Locally recorded sample-backed voices show a read-only decoded waveform instead. Reese and Sub bass reuse their actual live synthesis graph for offline inspection. When the engine has no available source waveform, the UI says so instead of inventing one. The waveform is a normalized single hit before master output, not a beat timeline or full DAW.
 
+## Four synchronized orbital playheads (AudioContext-timed)
+
+**Each instrument gets its own small colored arrow moving clockwise along its complex-root circle.** There is no longer a single radial line from the center or a pointer restricted to the selected lane. A hand completes one full revolution over that lane's loop length: a one-bar lane rotates once per bar, a two-bar lane at half that rate and a four-bar lane at a quarter of that rate. Equal loop lengths stay aligned at all times, regardless of different root degrees.
+
+**An audible root event occurs precisely when that lane's arrow tip reaches the fixed root marker**. Both drawing and Web Audio event planning use the same `beatEpoch`, 4/4 `barSeconds` and per-instrument `cycleBars`. The former reduced-motion rounding to a 16th-turn is removed: it used to cause visibly incorrect pointer angles, particularly with long loops. Reduced-motion still removes oversized animated beat pulses, but the positional clock remains exact. Each arrow is short and tangent to its corresponding ring rather than running from the center through unrelated roots.
+
+The existing 1–16 bar editor, JSON schema and `RhythmMath.planEvents` scheduling remain unchanged. New browser tests instrument actual Canvas strokes and compare root hit times, 1/1/2/4-bar speeds, real play/pause/BPM/reset transitions and live root edits. These are automated synchronization measurements, not subjective listening acceptance.
+
 ## Instrument colors and focused wheel editing
 
 Every one of the four lanes keeps a distinct mathematical root color, and that same color identifies its **Instrument volume** slider and corresponding **Combine root points** controls. The **Master volume** slider has a separate blue accent and never overwrites per-lane gains. On desktop, all four cards use a tighter two-column layout without reducing interactive controls below 44 CSS pixels.

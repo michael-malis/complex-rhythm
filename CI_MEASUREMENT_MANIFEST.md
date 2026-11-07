@@ -6,7 +6,7 @@ actually run the measurement scripts, preserve the machine-readable results,
 and verify that reports contain the requested instrument/viewport coverage.
 
 The last step before uploading the final screenshot artifact runs
-`node scripts/verify-ci-measurement-manifest.mjs`. It reads **15 report
+`node scripts/verify-ci-measurement-manifest.mjs`. It reads **16 report
 files produced by the preceding independent browser/audio tests** and
 writes `artifacts/release-evidence-manifest.json`. The validator fails
 when a report is missing, malformed, empty or claims PASS despite a
@@ -26,6 +26,7 @@ known measured failure. Paths refer to real outputs in the uploaded
 | Rendered synthesis and spectra | `audio-renders/metrics.json` | 15 synthesized programs at actual 32 kHz sample rate |
 | Multi-lane audio stress and onsets | `audio-mix-stress.json` | ≥50 actual schedules with a finite measured audio-onset drift |
 | Transport phase through Pause/Resume, BPM and Reset | `transport-phase-continuity.json` | Real AudioContext phase, two desktop/mobile cases, zero leaked intervals and restart phase 0 |
+| Per-instrument colors and wheel stepping | `controls-and-lane-colors/report.json` | Four viewport/theme states, root-matched sliders, independent Master Volume, 1° = π/180 rad wheel, live attack count and no duplicate scheduler |
 | Sound Lab synth/local sample view | `sound-lab/measurements.json` | Four desktop/mobile × theme cases PASS |
 | Native fallback audio graphs | `native-waveforms/report.json` | Six native programs across four cases PASS |
 | Original Acid diversity | `acid-presets/report.json` | Four cases PASS |
@@ -45,7 +46,7 @@ underlying computed metrics. Automated output does not establish human
 sound quality, physically measured device audio, screen-reader quality,
 the missing original annotated screenshot, or a subjective production
 acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
-Do **not** promote 380/652 or 63/98 historical statuses merely because
+Do **not** promote 381/652 or 64/98 historical statuses merely because
 this script passed. Reconcile individual source tasks with measured
 evidence before any status changes.
 

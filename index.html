@@ -64,7 +64,7 @@
  <div class="figure-legend" aria-label="Root event legend"><span><i class="legend-mark filled"></i>Base root</span><span><i class="legend-mark hollow"></i>Added root</span><span><i class="legend-mark both"></i>Shared phase</span></div>
  <p class="stage-hint" id="plotHint">Drag a filled point to rotate its root set. Click a ring to inspect its union.</p>
  <div class="transport"><button id="playBtn" class="play-button" type="button" aria-pressed="false">▶ Play</button><div class="range-field"><label for="bpm">Tempo <output id="bpmText" for="bpm">116</output> BPM</label><input id="bpm" type="range" min="50" max="260" value="116"></div><button id="resetBtn" class="utility-btn reset-button" type="button" aria-label="Restart cycle" title="Restart cycle">↺</button></div>
- <div class="statusbar"><div class="range-field volume-control"><label for="volume">Volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" value="65"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
+ <div class="statusbar"><div class="range-field volume-control"><label for="volume">Master volume <output id="volumeText" for="volume">65%</output></label><input id="volume" type="range" min="0" max="100" step="1" value="65" aria-label="Master output volume"></div><p id="audioState" role="status" aria-live="polite">Ready to play</p></div>
 </section>
 <section class="control-panel" aria-labelledby="tracksHeading">
  <div class="panel-heading"><div><div class="eyebrow">PARAMETERS / FOUR LANES</div><h2 id="tracksHeading" tabindex="-1">Root angles · four lanes</h2></div><span class="quiet math-notation" id="cartesianHeading"></span></div>

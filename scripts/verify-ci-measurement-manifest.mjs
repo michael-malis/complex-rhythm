@@ -82,6 +82,15 @@ check('audio-clock transport phase continuity','artifacts/transport-phase-contin
  }
  return {measuredStates:d.cases.length,phaseVerified:true};
 },'AudioContext-backed Pause/Resume/BPM/Reset phases, no stale schedulers');
+check('per-lane colors and focused wheel controls','artifacts/controls-and-lane-colors/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.cases?.length,4,'desktop/mobile by light/dark is required');
+ assert.ok(d.cases.every(x=>x.independentColors&&x.radWheelPiOver180&&
+  x.degreeWheelOne&&x.volumeWheelStepOnePercent&&x.liveHitCountChanged&&
+  x.unchangedScheduler&&x.noOverflow),
+  'root-matched color controls and focused 1-degree wheel edits must all pass');
+ return {measuredStates:d.cases.length,distinctLanes:4};
+},'Independent global/lane colors, pi/180 rad/degree wheel edits, live root count and audio scheduler');
 check('responsive Sound Lab waveform','artifacts/sound-lab/measurements.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.results?.length,4);
@@ -109,10 +118,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,15,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,16,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 15 real measured CI evidence files: geometry, accessibility, formulas, transport timing, audio and presets without human-acceptance claims');
+console.log('PASS 16 real measured CI evidence files: geometry, accessibility, formulas, transport timing, color/wheel input, audio and presets without human-acceptance claims');

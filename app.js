@@ -152,6 +152,27 @@ const presetLabel=(preset,category)=>category==='grooves'?GROOVE_LABELS[preset.i
  ? MATH_PRESET_RATIOS[preset.id]+' · '+preset.name
  : preset.displayName||preset.name;
 const $=id=>document.getElementById(id);
+// Wheel changes are opt-in: only a clicked/focused input consumes scrolling.
+// Native keyboard and pointer behavior stays intact, as does page scrolling
+// everywhere outside the focused control.
+function enableFocusedWheel(input,onStep=null){
+ input.title=(input.title?input.title+'. ':'')+'Click to focus, then scroll to adjust';
+ input.addEventListener('wheel',e=>{
+  if(document.activeElement!==input||input.disabled||e.ctrlKey||!e.deltaY)return;
+  e.preventDefault();
+  const direction=e.deltaY<0?1:-1;
+  if(onStep){onStep(direction);return}
+  const step=Number(input.step)||1,old=Number(input.value);
+  if(!Number.isFinite(old))return;
+  const min=input.min!==''?Number(input.min):-Infinity;
+  const max=input.max!==''?Number(input.max):Infinity;
+  const next=Math.max(min,Math.min(max,Number((old+direction*step).toFixed(8))));
+  if(next===old)return;
+  input.value=String(next);
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+ },{passive:false});
+}
+
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='poly';
 let presetModified=false,importedProjectName=null;
@@ -406,6 +427,7 @@ function fitRootMath(id,max=18,min=16){
 function renderRootRule(){
  const track=tracks[selectedTrack];if(!track)return;
  const model=window.RootAngleInfo.model(track.a,track.b,track.n);
+ document.querySelector('.root-rule')?.style.setProperty('--selected-lane-color',COLORS[selectedTrack]);
  renderTeX('rootRuleEquation','\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}',true);
  if(model.zero)renderTeX('rootRuleValues','z=0,\\quad \\arg(0)\\text{ is undefined}');
  else renderTeX('rootRuleValues','\\theta='+window.RootAngleInfo.piTeX(model.theta)+
@@ -457,10 +479,21 @@ function buildLaneFields(row,t,i) {
  const rad=addInput('trackAngleRad'+i,'Radians · π allowed');
  const deg=addInput('trackAngleDeg'+i,'Degrees · °');
  rad.maxLength=80;deg.maxLength=32;
+ // Both fields step through the SAME mathematical angle: 1° = π/180 rad.
+ // A text field is required to retain symbolic values such as 2π/3.
+ for(const [input,isDegrees] of [[rad,false],[deg,true]]){
+  enableFocusedWheel(input,direction=>{
+   const base=Math.atan2(t.b,t.a)||0;
+   const angle=base+direction*Math.PI/180;
+   input.value=isDegrees?inputNumber(angle*180/Math.PI):formatEditorRadians(angle);
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+  });
+ }
  const nLabel=document.createElement('label');nLabel.className='root-degree';nLabel.textContent='Root degree n';
  const nInput=document.createElement('input');nInput.id='trackN'+i;nInput.type='number';nInput.min='1';nInput.max='64';
  nInput.step='1';nInput.inputMode='numeric';nInput.value=String(t.n);
  nInput.setAttribute('aria-label','Lane '+(i+1)+' root degree n');
+ enableFocusedWheel(nInput);
  nLabel.append(nInput);angular.append(nLabel);row.append(angular);
  const editAngle=(input,isDegrees)=>{
   const raw=input.value.trim(),numeric=Number(raw);
@@ -592,6 +625,7 @@ function renderTracks() {
   gainSlider.id='laneGain'+i;gainSlider.min='5';gainSlider.max='150';gainSlider.step='1';
   gainSlider.value=String(Math.round((t.gain??1)*100));
   gainSlider.setAttribute('aria-label','Instrument volume, lane '+(i+1));
+  enableFocusedWheel(gainSlider);
   gainSlider.addEventListener('input',()=>{
    t.gain=Number(gainSlider.value)/100;
    gainReadout.textContent=gainSlider.value+'%';
@@ -655,6 +689,7 @@ function renderSoundControls(){
  const label=document.createElement('span');label.textContent='Lane gain';
  const output=document.createElement('output');output.id='selectedGainValue';output.textContent=(t.gain??1).toFixed(2);
  const input=document.createElement('input');input.type='range';input.id='laneGain';input.min='.05';input.max='1.5';input.step='.01';input.value=String(t.gain??1);input.setAttribute('aria-label','Selected lane gain');
+ enableFocusedWheel(input);
  input.addEventListener('input',()=>{
   t.gain=Number(input.value);output.textContent=t.gain.toFixed(2);
   const slider=$('laneGain'+selectedTrack),value=$('laneGainValue'+selectedTrack);
@@ -708,6 +743,7 @@ function refreshSoundLab(force=false){
    const out=document.createElement('output');const initial=t.patch?.[key]??defaults[key]??0;out.textContent=String(initial);
    const slider=document.createElement('input');slider.type='range';slider.id='patch'+key;slider.min=min;slider.max=max;slider.step=step;slider.value=initial;
    slider.setAttribute('aria-label',title);
+   enableFocusedWheel(slider);
    slider.addEventListener('input',()=>{
     const value=Number(slider.value);
     t.patch={...(t.patch||{}),[key]:value};out.textContent=String(value);
@@ -926,6 +962,7 @@ function renderReadout() {
 function renderComposition() {
  const t=tracks[selectedTrack];if(!t)return;
  const c=composePhases(t),i=selectedTrack;
+ $('compositionPanel').style.setProperty('--selected-lane-color',COLORS[i]);
  $('compositionHeading').textContent=`Lane ${i+1} · ${SOUNDS[t.sound]}`;
  const setSymbol=t.operation==='intersection'?String.raw`\cap`:String.raw`\cup`;
   renderTeX('compositionEquation',String.raw`R_{${t.n}}(z)`+(t.layers.length?t.layers.map(l=>String.raw`\;${setSymbol}\;R_{${l.n}}\!\left(${complexLaTeX(l)}\right)`).join(''):'')+(t.euclidean?String.raw`\;${setSymbol}\;E(${t.euclidean.k},${t.euclidean.n})`:''));
@@ -978,6 +1015,13 @@ function renderLayers(){
   };
   const rad=makeField('layer'+i+'AngleRad','Angle · radians',theta===null?'':formatEditorRadians(theta));
   const deg=makeField('layer'+i+'AngleDeg','Angle · degrees',theta===null?'':inputNumber(theta*180/Math.PI));
+  for(const [input,isDegrees] of [[rad,false],[deg,true]]){
+   enableFocusedWheel(input,direction=>{
+    const angle=(Math.atan2(layer.b,layer.a)||0)+direction*Math.PI/180;
+    input.value=isDegrees?inputNumber(angle*180/Math.PI):formatEditorRadians(angle);
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+   });
+  }
   if(zeroLayer){
    rad.placeholder='undefined for z=0';deg.placeholder='undefined for z=0';
   }
@@ -1016,6 +1060,7 @@ function renderLayers(){
    degree.addEventListener('change',()=>{if(degree.getAttribute('aria-invalid')==='true'){
     degree.value=String(layer.n);degree.setAttribute('aria-invalid','false');
    }});
+   enableFocusedWheel(degree);
    family.append(degree);group.append(family);
   }else{
    const explanatory=document.createElement('span');explanatory.className='single-angle-note';
@@ -1028,6 +1073,7 @@ function renderLayers(){
   const velocity=document.createElement('label');velocity.className='layer-velocity';velocity.textContent='Accent volume';
   const volume=document.createElement('input');volume.type='range';volume.min='10';volume.max='100';volume.value=String(Math.round(layer.velocity*100));
   volume.setAttribute('aria-label','Volume for additional event group '+(i+1));
+  enableFocusedWheel(volume);
   volume.addEventListener('input',()=>{layer.velocity=Number(volume.value)/100;markCustom()});
   velocity.append(volume);group.append(velocity);wrap.append(group);
  });
@@ -1788,6 +1834,7 @@ function setupEvents() {
   const track=tracks[soundLabLane];if(!track)return;
   track.patch=null;refreshSoundLab(true);markCustom();
  });
+ enableFocusedWheel($('argumentAngle'));
  $('argumentAngle').addEventListener('input',e=>{
   const t=tracks[selectedTrack];if(!applyRotation(t,Number(e.target.value)*Math.PI/180))return;
   syncVisibleInputs(selectedTrack);
@@ -1799,6 +1846,7 @@ function setupEvents() {
   if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
   markCustom(false);
  });
+ enableFocusedWheel($('volume'));
  $('volume').addEventListener('input',e=>{volume=Number(e.target.value)/100;$('volumeText').textContent=e.target.value+'%';if(master&&audio)master.gain.setTargetAtTime(volume*.8,audio.currentTime,.014)});
  $('loadRootExample').addEventListener('click',()=>{
   const t=tracks[selectedTrack];

@@ -58,6 +58,12 @@ All UI labels, descriptions, tooltips, validation errors and transport messages 
 
 The bottom **Sound Lab · waveform and instrument shaping** disclosure remains **closed by default**, keeping complex-root visualization primary. Open it once, choose any of the four instrument lanes independently of the mathematically selected root ring, and inspect a static waveform. Synthesizers render from the same offline Web Audio engine as real sound and expose oscillator, filter, saturation, resonance, decay and related controls, with a per-lane Reset action. Locally recorded sample-backed voices show a read-only decoded waveform instead. Reese and Sub bass reuse their actual live synthesis graph for offline inspection. When the engine has no available source waveform, the UI says so instead of inventing one. The waveform is a normalized single hit before master output, not a beat timeline or full DAW.
 
+## Instrument colors and focused wheel editing
+
+Every one of the four lanes keeps a distinct mathematical root color, and that same color identifies its **Instrument volume** slider and corresponding **Combine root points** controls. The **Master volume** slider has a separate blue accent and never overwrites per-lane gains. On desktop, all four cards use a tighter two-column layout without reducing interactive controls below 44 CSS pixels.
+
+Click or keyboard-focus a numeric/spinner/angle or volume control before scrolling: the mouse wheel adjusts **that control only**, leaving ordinary page scrolling untouched elsewhere. Degree and symbolic-radian fields use the same 1-degree angular step (`π/180 radians`), while gains use one-percentage-point steps. Changing root degree while music is playing updates the actual upcoming sound schedule without starting a second audio scheduler.
+
 ## Preset navigation and instrument quality
 
 - **Exactly two preset selectors:** `Category` and `Preset`. Featured Grooves is a curated shortcut rather than another source collection. The additional root-degree ratio studies are named inside their respective presets, not placed behind a third dropdown.

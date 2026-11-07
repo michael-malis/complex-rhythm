@@ -1,5 +1,8 @@
 # Final acceptance report — not yet accepted
 
+**Latest technical checkpoint (8 November 2026):** Source R-QA-002 and eight original direct-action tasks technically VERIFIED after real measured [PR #51](https://github.com/michael-malis/complex-rhythm/pull/51) and exact [full CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982). Original task accounting: **459 VERIFIED / 38 IN_PROGRESS / 151 TODO / 4 BLOCKED** of 652; **74/98 parent requirements VERIFIED**. Operational macros remain **9/14 VERIFIED**, M01/M11 IN_PROGRESS, M12/M13 BLOCKED, M14 TODO. PR #50 established successful-regression-gated GitHub Pages deployment, independently demonstrated on main run 42419585688 then Pages run 42419924082. This is not final human/device/audio approval.
+
+
 **Release checkpoint (7 November 2026):** [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) merged real historical mathematical screenshot comparisons: first-party Git revision `454b7c44` served independently from the current app, 12 paired responsive light/dark cases, 24 genuine Chromium before/after PNGs, 10 contractual formula refs and per-location MathML/source/update checks; [full CI 42402890258](https://github.com/michael-malis/complex-rhythm/actions/runs/42402890258) passed all 26 measured reports. Source R-TEX-008 accepted, M06 technically complete; **450/652 tasks VERIFIED, 73/98 parent requirements VERIFIED**. Missing user original screenshot M12 and human M13/M14 external approval remain unaccepted.
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
@@ -16,12 +19,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **450** |
-| Tasks formally marked IN_PROGRESS | 39 |
-| Tasks formally marked TODO | 159 |
+| Tasks formally marked VERIFIED | **459** |
+| Tasks formally marked IN_PROGRESS | 38 |
+| Tasks formally marked TODO | 151 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **73 of 98** |
+| Parent requirements VERIFIED | **74 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -105,7 +108,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 51 browsable examples, all separate voices and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (450 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 159 tasks remain TODO, 39 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (459 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 151 tasks remain TODO, 38 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -117,13 +120,13 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 73/98 requirements VERIFIED; second annotated source image still missing |
+| I — audit and traceability | IN_PROGRESS | 74/98 requirements VERIFIED; second annotated source image still missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 450 VERIFIED, 159 TODO, 39 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
+| VII — final verification | NOT PASSED | 459 VERIFIED, 151 TODO, 38 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 

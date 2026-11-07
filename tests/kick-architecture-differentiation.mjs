@@ -76,16 +76,16 @@ try {
    'kick bass body must reject accumulated subsonic energy');
   assert.ok(r.graph.filters.some(f=>f.type==='lowpass'&&f.freq>=170&&f.freq<=440),
    'kick bass body must have its own spectral shaping path');
-  assert.ok(r.graph.shapers>=2,'real drive waveshaper must be present');
+  assert.ok(r.graph.shapers>=1,'real voice drive waveshaper must be present');
   assert.ok(r.firstSample>=.075&&r.firstSample<.092,
    'kick attack begins close to scheduled source time');
   assert.ok(r.segments.attack>.002&&r.segments.body>.002,
    'both transient and body have actual measured output');
   assert.ok(r.segments.end<.015,'no unintended DC or persistent low tail');
   assert.ok(Number.isFinite(r.roughness),'spectral proxy finite');
-  if(r.name==='technoKick')assert.equal(r.graph.shapers,2,
+  if(r.name==='technoKick')assert.equal(r.graph.shapers,1,
    'clean techno kick has one voice drive and no gratuitous transient saturation');
-  else assert.ok(r.graph.shapers>=3,'hardcore/gabber/frenchcore have a distinct driven transient path');
+  else assert.ok(r.graph.shapers>=2,'hardcore/gabber/frenchcore have a distinct driven transient path');
  }
  for(const p of result.comparisons)assert.ok(p.normalizedWaveformDistance>.08,
   'different kicks must remain distinguishable after NORMALIZING overall gain: '+JSON.stringify(p));

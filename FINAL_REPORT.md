@@ -1,11 +1,13 @@
 # Final acceptance report — not yet accepted
 
-**Release checkpoint (7 November 2026):** GitHub Pages publishes the [main branch](https://github.com/michael-malis/complex-rhythm/tree/main). The original production baseline [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was superseded by the completed engineering cycles through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18), including the two-selector preset browser, distinct Acid studies and the optional bottom Sound Lab; see the [current deployment and CI evidence](https://github.com/michael-malis/complex-rhythm/actions). **Published does not mean accepted:** 380/652 historical checks and 63/98 parent requirements are VERIFIED, while original annotated visual comparison and physical listening/mobile/screen-reader review remain outstanding. Do not imply full production acceptance solely from passing CI.  
+**Release checkpoint (7 November 2026):** GitHub Pages publishes the [main branch](https://github.com/michael-malis/complex-rhythm/tree/main). The original production baseline [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was superseded by the completed engineering cycles through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18), including the two-selector preset browser, distinct Acid studies and the optional bottom Sound Lab; see the [current deployment and CI evidence](https://github.com/michael-malis/complex-rhythm/actions). **Published does not mean accepted:** 381/652 historical checks and 64/98 parent requirements are VERIFIED, while original annotated visual comparison and physical listening/mobile/screen-reader review remain outstanding. Do not imply full production acceptance solely from passing CI.  
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
-**Operational progress checkpoint (7 November 2026):** 4/14 macros are VERIFIED, 7/14 are IN_PROGRESS, 1 remains TODO (M14), and 2 are BLOCKED by external/manual acceptance (M12/M13). Specifically M05 and M11 are now *IN_PROGRESS* rather than untouched TODO: [PR #21](https://github.com/michael-malis/complex-rhythm/pull/21) delivered executable KaTeX/MathML and screenshot audits, and [PR #23](https://github.com/michael-malis/complex-rhythm/pull/23) merged the independent 14-measurement evidence gate. This progress classification does **not** change the original ledger's 380/652 verified checks or 63/98 parent requirements, and it does not certify the final release. M08 phase/resume/reset work is tracked in [PR #24](https://github.com/michael-malis/complex-rhythm/pull/24) pending its own CI and merge.
+**Operational progress checkpoint (7 November 2026):** 4/14 macros are VERIFIED, 7/14 are IN_PROGRESS, 1 remains TODO (M14), and 2 are BLOCKED by external/manual acceptance (M12/M13). Specifically M05 and M11 are now *IN_PROGRESS* rather than untouched TODO: [PR #21](https://github.com/michael-malis/complex-rhythm/pull/21) delivered executable KaTeX/MathML and screenshot audits, and [PR #23](https://github.com/michael-malis/complex-rhythm/pull/23) merged the independent 14-measurement evidence gate. The separate acceptance of R-TEX-004 raises the original ledger to 381/652 verified checks and 64/98 parent requirements; this macro progress classification alone did not change those counts, and it does not certify the final release. M08 phase/resume/reset work is tracked in [PR #24](https://github.com/michael-malis/complex-rhythm/pull/24) pending its own CI and merge.
 
+
+**R-TEX-004 accepted (7 November 2026):** CI [42317538760](https://github.com/michael-malis/complex-rhythm/actions/runs/42317538760) and the independent 12-screenshot KaTeX/MathML audit prove the ten mandatory mathematical expressions under R-TEX-004. This one parent requirement has no child tasks and is formally VERIFIED. Historical comparison of before/after images (R-TEX-008), sound listening and real-device accessibility remain unverified or blocked separately.
 
 ## 1–6. Requirement accounting
 
@@ -14,12 +16,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **380** |
-| Tasks formally marked IN_PROGRESS | 49 |
+| Tasks formally marked VERIFIED | **381** |
+| Tasks formally marked IN_PROGRESS | 48 |
 | Tasks formally marked TODO | 219 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **63 of 98** |
+| Parent requirements VERIFIED | **64 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -103,7 +105,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 51 browsable examples, all separate voices and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (380 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 219 tasks remain TODO, 49 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (381 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 219 tasks remain TODO, 48 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -115,13 +117,13 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 63/98 requirements VERIFIED; second annotated source image still missing |
+| I — audit and traceability | IN_PROGRESS | 64/98 requirements VERIFIED; second annotated source image still missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 380 VERIFIED, 219 TODO, 49 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
+| VII — final verification | NOT PASSED | 381 VERIFIED, 219 TODO, 48 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 

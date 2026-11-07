@@ -1,8 +1,8 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42241763532 math input/geometry/audio proof",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42317538760 full R-TEX-004 mandatory formula proof; previous audited sources retained",
   "tasks": {
-    "VERIFIED": 380,
-    "IN_PROGRESS": 49,
+    "VERIFIED": 381,
+    "IN_PROGRESS": 48,
     "TODO": 219,
     "BLOCKED": 4,
     "FAILED": 0
@@ -14,6 +14,7 @@
     "R-UI-008",
     "R-TEX-001",
     "R-TEX-003",
+    "R-TEX-004",
     "R-GEO-001",
     "R-GEO-002",
     "R-GEO-003",
@@ -78,5 +79,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "Dynamic root/math/audio/input requirement R-TEX-007 VERIFIED. R-TEX-008 formula-by-formula documentation still open."
+  "note": "R-TEX-004 formally verified from ten source-matched KaTeX/MathML formulas in 12 viewport/theme states. R-TEX-008 historical before/after and M12 remain unfinished; human audio and device acceptance M13 remain blocked."
 }

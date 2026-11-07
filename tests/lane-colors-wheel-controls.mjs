@@ -20,7 +20,7 @@ try{
     i,color:rgb(row.style.getPropertyValue('--lane-color')),slider:css(row.querySelector('input[type=range]')).accentColor,
     dot:css(row.querySelector('.lane-dot')).backgroundColor,
     percent:css(row.querySelector('.lane-volume output')).color,
-    expectedPercent:rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 70%, '+css(document.documentElement).color+' 30%)')
+    expectedPercent:rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 70%, '+css(document.documentElement).getPropertyValue('--ink').trim()+' 30%)')
    }));
    return {lanes,master:css(document.querySelector('#volume')).accentColor,
     global:css(document.documentElement).getPropertyValue('--accent').trim(),

@@ -65,6 +65,10 @@ try{
   assert.equal(s.markers,4,'unit-circle diagram shows all roots');
   assert.ok(s.mathml>=7,'compact plus expanded math rendered with accessible MathML');
   assert.equal(s.katexErrors,0,'no formula rendering errors');
+  const optionTargets=await page.locator('#rootRuleAngleList li[data-index]').evaluateAll(
+   options=>options.map(option=>option.getBoundingClientRect().height));
+  assert.ok(optionTargets.every(height=>height>=44-0.5),
+   'root-angle tracing remains finger-sized at '+width+'px and '+theme+' theme');
   assert.ok(s.docWidth<=width+1,'info panel must not cause viewport-wide overflow at '+width+'/'+theme);
   report.push({viewport:[width,height],theme,angles:s.angles.map(x=>x.degree),
    mathml:s.mathml,panelWidth:s.rootPanel});

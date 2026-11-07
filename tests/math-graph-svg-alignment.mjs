@@ -152,6 +152,8 @@ try{
      'coincident hits must be represented with actual KaTeX/MathML fractions');
     assert.ok(measured.summary.includes('2 shared phases'),
      'the visible collision count comes from canonical source provenance');
+    assert.equal(await page.locator('#unionStrip .overlap').count(),2,
+     'two source-shared phases must have real shared-color plotted markers');
    }else{
     assert.ok(measured.sharedFormula.hidden&&!measured.sharedFormula.shared.length,
      'no stale coincident phase formula in other independent lane');
@@ -194,6 +196,8 @@ try{
    const extra=await measure(page,0);
    check(extra,'two added complex roots colliding off the base root set');
    assert.equal(extra.sharedFormula.shared.length,1);
+   assert.equal(await page.locator('#unionStrip .overlap').count(),1,
+    'additional-only collision must be a shared-phase marker, not an ordinary added point');
    assert.ok(Math.abs(extra.sharedFormula.shared[0]-.125)<1e-8&&
     extra.sharedFormula.latex.includes('\\frac{1}{8}'),
     'source-derived 1/8 overlap is visible even when no base root is shared');

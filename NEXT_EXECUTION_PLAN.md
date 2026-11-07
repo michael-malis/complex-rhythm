@@ -2,9 +2,14 @@
 
 **Baseline:** `main@454b7c4466851e82946034ce4a47019c716ee218`, after merged [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). Technical and Pages workflows passed on that SHA. **Published ≠ finally accepted.**
 
+**Current release checkpoint (7 November 2026):** The historical baseline above records the initial consolidation only, **not the current main HEAD**. The successful production cycles through [PR #17](https://github.com/michael-malis/complex-rhythm/pull/17) delivered a single `Category → Preset` toolbar, 50 unchanged canonical studies plus one user-supplied `Song Examples` rhythm (51 selectable), differentiated Acid synthesis and lane-local volume. The optional bottom Sound Lab was merged through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18) after its own four CI gates passed and is tracked as CR-UX-008 within M07/M08/M11; the live Pages deployment and ongoing production checks remain separately observable through GitHub Actions.
+
+**Latest formally supported acceptance counts:** **4 VERIFIED / 5 IN_PROGRESS / 3 TODO / 2 BLOCKED = 14 operational macros**, **380/652 historical checks VERIFIED** and **63/98 parent requirements VERIFIED**. The two blocked macros remain M12 (missing second annotated original image) and M13 (human sound, physical-device and screen-reader review). These are not advanced merely by merged code or a green automation run. Current status is separately preserved in [FINAL_REPORT.md](FINAL_REPORT.md), [TASKS.md](TASKS.md) and [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions).
+
+
 ## Project counters: operational versus historical
 
-- **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions; 1 VERIFIED and 13 still open.** Each macro is a coherent, independently testable engineering/product result.
+- **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions; the initial baseline had 1 VERIFIED, and the dated checkpoint above records 4 VERIFIED.** Each macro is a coherent, independently testable engineering/product result.
 - **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; initial post-merge snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
 - **Fourteen macro tasks** are the only new operational units for planning, progress updates, and development PRs. On CI acceptance, report `Mxx` completed, linked source requirement IDs and supporting evidence. No multiplying tasks into another set of hundreds.
 - Product additions approved after this baseline go into `CHANGE_REGISTER.md` with a single macro and measurable acceptance. They do not silently change the 98 original criteria.

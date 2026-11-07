@@ -1,6 +1,6 @@
 # Final acceptance report — not yet accepted
 
-**Post-merge status (6 November 2026):** [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was merged into [main](https://github.com/michael-malis/complex-rhythm/tree/main) at `454b7c4466851e82946034ce4a47019c716ee218`; its UI regression and GitHub Pages deployment passed. **The app is published, but full requirements and human acceptance are NOT COMPLETE.** Do not claim production-readiness signoff merely because a PR was merged.  
+**Release checkpoint (7 November 2026):** GitHub Pages publishes the [main branch](https://github.com/michael-malis/complex-rhythm/tree/main). The original production baseline [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1) was superseded by the completed engineering cycles through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18), including the two-selector preset browser, distinct Acid studies and the optional bottom Sound Lab; see the [current deployment and CI evidence](https://github.com/michael-malis/complex-rhythm/actions). **Published does not mean accepted:** 380/652 historical checks and 63/98 parent requirements are VERIFIED, while original annotated visual comparison and physical listening/mobile/screen-reader review remain outstanding. Do not imply full production acceptance solely from passing CI.  
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
@@ -79,7 +79,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 
 ## 15. Quantitative preset diversity
 
-[Machine-generated full report](PRESET_DIVERSITY_REPORT.md): 50 IDs, 50 distinct absolute four-lane event maps and 50 distinct up to common cyclic rotation; 37 instrument quartets, 44 presets with nonzero phase offsets. Four initial mathematically duplicate legacy patterns were genuinely changed. This is mathematical distinction, not a subjective music-quality score.
+[Machine-generated full report](PRESET_DIVERSITY_REPORT.md): 50 IDs, 50 distinct absolute four-lane event maps and 50 distinct up to common cyclic rotation; 40 instrument quartets, 44 presets with nonzero phase offsets. Four initial mathematically duplicate legacy patterns were genuinely changed. This is mathematical distinction, not a subjective music-quality score.
 
 ## 16. Audio testing
 
@@ -93,14 +93,14 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 
 ## 17. UI/UX test evidence
 
-`tests/ui-smoke.mjs` passes 7 responsive widths/heights with Canvas geometry, editing and compositing, four-lane selection, JSON, transport, 50 presets and real set intersection. `tests/spec-ui.mjs` passes 108 checks on 6 sizes × 2 themes, including formula typesetting and zoom. `tests/accessibility-contrast.mjs` checks WCAG4.5/7 and the 3:1 palette. An earlier run found 4.38:1 on one light-theme logo separator; the color was corrected. **The subsequent full run passed** all 14 configurations with 160 text samples each, no text/palette failures ([Actions 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484)).
+`tests/ui-smoke.mjs` covers 7 responsive widths/heights with Canvas geometry, editing and compositing, four-lane selection, JSON, transport, 50 core presets plus the one additional Song Examples study (51 selectable), and real set intersection. `tests/spec-ui.mjs` passes 108 checks on 6 sizes × 2 themes, including formula typesetting and zoom. `tests/accessibility-contrast.mjs` checks WCAG4.5/7 and the 3:1 palette. An earlier run found 4.38:1 on one light-theme logo separator; the color was corrected. **The subsequent full run passed** all 14 configurations with 160 text samples each, no text/palette failures ([Actions 42107150484](https://github.com/michael-malis/complex-rhythm/actions/runs/42107150484)).
 
 ## 18. Known limitations
 
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
-2. Subjective listening of all 50 examples and physical mobile/headphone and screen-reader tests have not been certified.
+2. Subjective listening of all 51 browsable examples, all separate voices and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are automatically reconciled for known evidence (294 task records VERIFIED; 4 blockers). Gate VII still cannot pass while 294 tasks remain TODO, 60 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (380 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 219 tasks remain TODO, 49 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -112,15 +112,26 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 52/98 requirements VERIFIED; one annotated source image located, second missing |
+| I — audit and traceability | IN_PROGRESS | 63/98 requirements VERIFIED; second annotated source image still missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 294 VERIFIED, 294 TODO, 60 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
+| VII — final verification | NOT PASSED | 380 VERIFIED, 219 TODO, 49 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
+
+## Latest production feature mapping (after PR #17)
+
+- **51 user-browsable rhythm examples:** 50 core-source presets with unchanged IDs and one user-supplied Song Examples study, all using the existing four-lane complex-root model. Separate curated Featured Grooves duplicates six canonical choices by design and is not a 52nd source.
+- **Category → Preset:** one direct genre/category dropdown and one preset dropdown, no extra Collection, Style filter or Ratio selector. Eight mandatory mathematical relations remain prefixed in visible preset names.
+- **Acid quality revision:** four original Acid presets now use four distinct synthesis programs, complex-root configurations and accent patterns. Recomputed static structural evidence lists five timing-similar pairs among the 50 core examples; human listening remains required to establish subjective sonic diversity.
+- **Current status boundary:** full CI for the final engineering PR does not retroactively satisfy R-AUD-002, R-SND-007 or real-device and human acceptance. The authoritative 652/98 status remains the ledger table at the start of this document.
+
+## Optional waveform inspector engineering checkpoint — 2026-11-07
+
+[PR #18](https://github.com/michael-malis/complex-rhythm/pull/18) merged after four required checks passed, including the [full browser UI regression](https://github.com/michael-malis/complex-rhythm/actions/runs/42314198047). The editor moved the synthesized oscillator/filter/envelope tools into a single collapsed bottom Sound Lab with independent four-lane selection, actual on-demand OfflineAudioContext-rendered instrument waveforms, decoded locally licensed samples, patch reset and preview. Live Reese/Sub bass now share the same renderer used for their offline waveform. No additional sequencer is introduced. The new `tests/sound-lab.mjs` verifies responsive light/dark states, actual waveform changes and no transport scheduler duplication. **This is automated engineering evidence, not human audio/device/accessibility acceptance.** The original requirement counts at the top of the report do not change based only on this feature.
 
 ## Engineering acceptance addendum — 2026-11-06
 

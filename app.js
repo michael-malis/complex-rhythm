@@ -1007,7 +1007,31 @@ function renderComposition() {
  updateSelectedRootMath();
  $('compositionMetrics').textContent=`${c.merged.length} distinct points · ${t.layers.length} added set${t.layers.length===1?'':'s'}`;
  $('baseCount').textContent=String(c.base.length);$('addedCount').textContent=String(c.added.length);$('unionCount').textContent=String(c.merged.length);
- $('overlapSummary').textContent=c.overlaps===0?'Each phase appears once in the result.':`${c.overlaps} shared phase${c.overlaps===1?'':'s'} · merged into one point and one hit.`;
+ // A collision is an event with multiple mathematical sources, independent
+ // of whether its roots came from base vs added, added vs added, or Euclidean.
+ // The display uses exactly the canonical per-lane union/intersection events.
+ const shared=events(t).filter(event=>event.sources.length>1);
+ $('overlapSummary').textContent=shared.length===0?
+  'Each phase appears once in the result.':
+  `${shared.length} shared phase${shared.length===1?'':'s'} · merged into one point and one hit.`;
+ const phaseFormula=$('sharedPhaseFormula');
+ phaseFormula.hidden=shared.length===0;
+ if(shared.length){
+  // Use a reduced rational only when it represents the actual phase within
+  // numeric tolerance. Never mislabel an irrational/rotated phase as 1/n.
+  const phaseMath=phase=>{
+   const x=((phase%1)+1)%1;
+   if(x<1e-8||1-x<1e-8)return '0';
+   for(let q=1;q<=64;q++){
+    const p=Math.round(x*q);
+    if(Math.abs(x-p/q)<1e-8)return q===1?String(p):String.raw`\\frac{${p}}{${q}}`;
+   }
+   return fmtMath(x);
+  };
+  const visible=shared.slice(0,6).map(e=>phaseMath(e.phase));
+  if(shared.length>6)visible.push(String.raw`\\ldots`);
+  renderTeX(phaseFormula,String.raw`\\Phi_{\\mathrm{shared}}=\\left\\{${visible.join(',\\;')}\\right\\}`);
+ }else phaseFormula.replaceChildren();
  const example=$('exampleProof'),exampleMatch=t.operation==='union'&&t.n===4&&t.a===1&&t.b===0&&
  t.layers.length===1&&t.layers[0].n===3&&t.layers[0].a===1&&t.layers[0].b===0&&!t.euclidean;
  if(example){

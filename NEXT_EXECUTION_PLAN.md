@@ -4,7 +4,9 @@
 
 **Current release checkpoint (7 November 2026):** The historical baseline above records the initial consolidation only, **not the current main HEAD**. The successful production cycles through [PR #17](https://github.com/michael-malis/complex-rhythm/pull/17) delivered a single `Category → Preset` toolbar, 50 unchanged canonical studies plus one user-supplied `Song Examples` rhythm (51 selectable), differentiated Acid synthesis and lane-local volume. The optional bottom Sound Lab was merged through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18) after its own four CI gates passed and is tracked as CR-UX-008 within M07/M08/M11; the live Pages deployment and ongoing production checks remain separately observable through GitHub Actions.
 
-**Latest formally supported acceptance counts:** **4 VERIFIED / 5 IN_PROGRESS / 3 TODO / 2 BLOCKED = 14 operational macros**, **380/652 historical checks VERIFIED** and **63/98 parent requirements VERIFIED**. The two blocked macros remain M12 (missing second annotated original image) and M13 (human sound, physical-device and screen-reader review). These are not advanced merely by merged code or a green automation run. Current status is separately preserved in [FINAL_REPORT.md](FINAL_REPORT.md), [TASKS.md](TASKS.md) and [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions).
+**Current operational status (after validated PR #21 and PR #23):** **4 VERIFIED / 7 IN_PROGRESS / 1 TODO / 2 BLOCKED = 14 operational macros**, **380/652 historical checks VERIFIED** and **63/98 parent requirements VERIFIED**. The two blocked macros remain M12 (missing second annotated original image) and M13 (human sound, physical-device and screen-reader review). These are not advanced merely by merged code or a green automation run. Current status is separately preserved in [FINAL_REPORT.md](FINAL_REPORT.md), [TASKS.md](TASKS.md) and [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions).
+
+**Status reconciliation:** M05 and M11 advanced from TODO to IN_PROGRESS because [PR #21](https://github.com/michael-malis/complex-rhythm/pull/21) and [PR #23](https://github.com/michael-malis/complex-rhythm/pull/23) both merged after complete CI evidence. They are **not VERIFIED**: the missing historical annotated comparison and project-wide final acceptance are still outstanding. This is a macro-level progress update only; **380/652** legacy child checks and **63/98** parent requirements remain unchanged. The historical 2026-11-06 checkpoints below must be read as dated snapshots, not current counts.
 
 
 ## Project counters: operational versus historical
@@ -23,13 +25,13 @@
 | M02 | Rhythm examples: visible, safe category browsing | CR-UX-001 | P0 | VERIFIED | Open on load; browsing never loads a rhythm or restarts audio; explicit example load works in desktop/mobile |
 | M03 | Circular geometry + responsive layout | R-GEO-002, R-UI-006, R-UI-007, R-QT-003 | P0 | VERIFIED | Zero unintended marker/label/hand clashes or clipped controls at six required viewports × two themes, n=1…64 with zoom |
 | M04 | Readable UI copy, contrast and typography | R-UI-004, R-UI-005 | P1 | VERIFIED | Every mandatory label and tooltip audited; measured contrast passes in both themes |
-| M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | TODO | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
+| M05 | Exact mathematical typography and placement | R-TEX-002, R-TEX-004, R-TEX-005, R-TEX-006 | P1 | IN_PROGRESS | All mandatory root/angle/union formulas use KaTeX + MathML with correct scale and placement |
 | M06 | Formula synchronization and math audit | R-TEX-007, R-TEX-008 | P1 | IN_PROGRESS | Angle/degree/import/theme changes update all formulas without focus loss, raw TeX or layout jumps; auditable catalog |
 | M07 | Distinct instrument synthesis | R-SND-001, R-SND-003, R-SND-004 | P0 | IN_PROGRESS | All required voices and acid/industrial controls produce measurable, correctly routed distinct envelopes and spectra |
 | M08 | Unified beat triggering, transport and audio safety | R-SND-005, R-SND-006 | P0 | IN_PROGRESS | One consistent per-event playback path, preserved phase/velocity/provenance, reliable Play/Pause/Resume/preset switching, synchronized visual hits, stable clock and safe audio output pass tests |
 | M09 | Genre evidence and implementation mapping | R-RES-001, R-RES-002, R-RES-003 | P1 | VERIFIED | Each mandatory genre/source maps to concrete mathematical events, preset IDs and synth decisions |
 | M10 | Consistent rhythm semantics and structure across all 50 presets | R-PST-006 | P1 | IN_PROGRESS | A uniform root-to-phase-to-hit interpretation across 50 presets, distinct intra-lane/cross-lane overlaps, meaningful accents, lane roles, density and per-preset evidence |
-| M11 | Independent measurement and full regression | R-QA-002, R-QA-004, R-QA-005 | P0 | TODO | Complete real computed/style/Canvas/touch/overlap/clip tests and full CI at final code SHA with artifacts |
+| M11 | Independent measurement and full regression | R-QA-002, R-QA-004, R-QA-005 | P0 | IN_PROGRESS | Complete real computed/style/Canvas/touch/overlap/clip tests and full CI at final code SHA with artifacts |
 | M12 | Original annotated visual acceptance | R-AUD-002, R-UI-003 | BLOCKER | BLOCKED | Both original annotated screenshots available and every requested UI correction compared and documented |
 | M13 | Human sound, mobile and accessibility acceptance | R-SND-007, R-PST-004 | BLOCKER | BLOCKED | Human listens to 50 presets and all new voices; phone and screen reader checks recorded; defects re-tested |
 | M14 | Final seven-gate acceptance and traceability | R-GOV-001, R-GOV-002, R-GOV-003, R-GOV-004, R-GOV-005, R-FIN-001, R-FIN-002, R-FIN-003, R-FIN-004 | LAST | TODO | 98/98 requirements & 652/652 historical checks verified, no blockers, all seven gates PASS |
@@ -46,13 +48,13 @@ Each macro has a dedicated GitHub issue except the already completed M02. Existi
 | M02 | [PR #4](https://github.com/michael-malis/complex-rhythm/pull/4) | VERIFIED: explicit example selection; CI 42213078501 |
 | M03 | [#6](https://github.com/michael-malis/complex-rhythm/issues/6) | VERIFIED: [complete responsive and formula CI 42229288619](https://github.com/michael-malis/complex-rhythm/actions/runs/42229288619) |
 | M04 | [#7](https://github.com/michael-malis/complex-rhythm/issues/7) | VERIFIED: [expanded UI + full contrast CI 42227657811](https://github.com/michael-malis/complex-rhythm/actions/runs/42227657811) |
-| M05 | [#8](https://github.com/michael-malis/complex-rhythm/issues/8) | TODO |
+| M05 | [#8](https://github.com/michael-malis/complex-rhythm/issues/8) | IN_PROGRESS: PR #21 merged; 10 static + 16 live MathML locations and 12 real screenshots pass, original annotated before-review not supplied |
 | M06 | [#9](https://github.com/michael-malis/complex-rhythm/issues/9) | IN_PROGRESS: dynamic math/audio/caret accepted, per-formula historical audit pending |
 | M07 | [#10](https://github.com/michael-malis/complex-rhythm/issues/10) | IN_PROGRESS: all R-SND-003 acid checks verified; drum timbre and sonic quality remain open |
 | M08 | [#11](https://github.com/michael-malis/complex-rhythm/issues/11) | IN_PROGRESS: shared event planner, preset/import rescheduling, one transition per edit |
 | M09 | [#12](https://github.com/michael-malis/complex-rhythm/issues/12) | VERIFIED: 15 genre implementation rows and five source-to-code chains validated |
 | M10 | [#13](https://github.com/michael-malis/complex-rhythm/issues/13) | IN_PROGRESS: shared canonical event projection between timeline and audio |
-| M11 | [#14](https://github.com/michael-malis/complex-rhythm/issues/14) | TODO |
+| M11 | [#14](https://github.com/michael-malis/complex-rhythm/issues/14) | IN_PROGRESS: PR #23 merged; 14 real CI measurement artifacts verified, final SHA and human gates remain open |
 | M12 | [#2](https://github.com/michael-malis/complex-rhythm/issues/2) | BLOCKED: second annotated screenshot |
 | M13 | [#3](https://github.com/michael-malis/complex-rhythm/issues/3) | BLOCKED: human audio, physical device, screen reader |
 | M14 | [#15](https://github.com/michael-malis/complex-rhythm/issues/15) | TODO |

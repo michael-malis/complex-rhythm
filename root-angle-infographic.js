@@ -45,14 +45,19 @@ function draw(svg,data){
  if(data.theta!==null)
   svg.append(node('line',{x1:cx,y1:cy,x2:cx+r*Math.sin(data.theta),
    y2:cy-r*Math.cos(data.theta),class:'root-info-input-ray'}));
+ // The focus ray is explanatory only, never another mathematical or sound source.
+ svg.append(node('line',{x1:cx,y1:cy,x2:cx,y2:cy,
+  class:'root-info-focus-ray',visibility:'hidden','aria-hidden':'true'}));
  for(const hit of data.roots){
   const x=cx+r*Math.sin(hit.rad),y=cy-r*Math.cos(hit.rad);
   if(data.n<=16)svg.append(node('line',{x1:cx,y1:cy,x2:x,y2:y,class:'root-info-spoke'}));
   const marker=node('circle',{cx:x,cy:y,r:hit.k===0?5.5:3.8,
-   class:'root-info-marker'+(hit.k===0?' first':'')});
+   'data-index':hit.k,class:'root-info-marker'+(hit.k===0?' first':'')});
   marker.append(node('title',{},'Root '+hit.k+': '+number(hit.deg)+' degrees'));
   svg.append(marker);
  }
+ svg.append(node('circle',{cx,y:cy,r:10.5,class:'root-info-focus-halo',
+  visibility:'hidden','aria-hidden':'true'}));
  svg.append(node('circle',{cx,cy,r:2.3,class:'root-info-center'}));
 }
 function render(data,refs,renderMath){
@@ -64,21 +69,83 @@ function render(data,refs,renderMath){
  renderMath(refs.delta,'\\Delta=\\frac{2\\pi}{n}='+piTeX(data.spacing)+
   '\\,('+number(data.spacingDeg)+'^\\circ)');
  renderMath(refs.formula,'\\theta_k=\\frac{\\theta+2\\pi k}{n}\\pmod{2\\pi}');
- refs.list.replaceChildren();
+ const list=refs.list;
+ const previouslyFocused=document.activeElement===list;
+ const previousLane=list.dataset.lane;
+ const previousIndex=previousLane===String(refs.lane)?Number(list.dataset.activeIndex):NaN;
+ list.replaceChildren();
+ list.dataset.lane=String(refs.lane);
+ list.setAttribute('role','listbox');
  if(data.zero){
   const li=document.createElement('li'),value=document.createElement('span');
   value.className='math-notation';renderMath(value,'z=0');
   li.append(value,document.createTextNode(': no argument or rhythm events.'));
-  refs.list.append(li);return;
+  list.append(li);
+  list.removeAttribute('aria-activedescendant');
+  delete list.dataset.activeIndex;
+  list.onkeydown=null;list.onfocus=null;list.onblur=null;list.onmouseleave=null;
+  return;
  }
  for(const hit of data.roots){
   const li=document.createElement('li'),math=document.createElement('span'),deg=document.createElement('span');
   li.dataset.index=String(hit.k);li.dataset.phase=String(hit.phase);li.dataset.degrees=String(hit.deg);
+  li.id='rootRuleOption'+hit.k;li.setAttribute('role','option');li.setAttribute('aria-selected','false');
   math.className='math-notation';deg.className='root-info-degree';
   renderMath(math,'\\theta_{'+hit.k+'}='+hit.tex);
   deg.textContent=number(hit.deg)+'°';
-  li.append(math,deg);refs.list.append(li);
+  li.append(math,deg);list.append(li);
  }
+ // One keyboard tab stop controls every generated root, even when n=64.
+ // SVG markers and list rows are derived from the same canonical root phases.
+ const markers=[...refs.diagram.querySelectorAll('.root-info-marker')];
+ const focusRay=refs.diagram.querySelector('.root-info-focus-ray');
+ const halo=refs.diagram.querySelector('.root-info-focus-halo');
+ const choose=(index,scroll=false)=>{
+  const valid=Number.isInteger(index)&&index>=0&&index<data.roots.length;
+  for(const [k,item] of [...list.children].entries()){
+   item.classList.toggle('is-inspected',valid&&k===index);
+   item.setAttribute('aria-selected',String(valid&&k===index));
+  }
+  markers.forEach((marker,k)=>marker.classList.toggle('is-inspected',valid&&k===index));
+  focusRay.setAttribute('visibility',valid?'visible':'hidden');
+  halo.setAttribute('visibility',valid?'visible':'hidden');
+  if(!valid){
+   list.removeAttribute('aria-activedescendant');delete list.dataset.activeIndex;
+   return;
+  }
+  const rootHit=data.roots[index],x=140+95*Math.sin(rootHit.rad),y=140-95*Math.cos(rootHit.rad);
+  focusRay.setAttribute('x2',number(x));focusRay.setAttribute('y2',number(y));
+  halo.setAttribute('cx',number(x));halo.setAttribute('cy',number(y));
+  list.setAttribute('aria-activedescendant','rootRuleOption'+index);
+  list.dataset.activeIndex=String(index);
+  if(scroll)list.children[index].scrollIntoView({block:'nearest'});
+ };
+ list.onkeydown=event=>{
+  const keys=['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End','Escape'];
+  if(!keys.includes(event.key))return;
+  event.preventDefault();
+  if(event.key==='Escape'){choose(null);return}
+  const active=Number(list.dataset.activeIndex);
+  const current=Number.isInteger(active)&&active>=0&&active<data.roots.length?active:0;
+  const next=event.key==='Home'?0:event.key==='End'?data.roots.length-1:
+   (event.key==='ArrowDown'||event.key==='ArrowRight'?
+    (current+1)%data.roots.length:(current+data.roots.length-1)%data.roots.length);
+  choose(next,true);
+ };
+ list.onfocus=()=>{
+  const active=Number(list.dataset.activeIndex);
+  choose(Number.isInteger(active)&&active>=0&&active<data.roots.length?active:0);
+ };
+ list.onblur=()=>choose(null);
+ list.onmouseleave=()=>{if(document.activeElement!==list)choose(null)};
+ for(const [k,item] of [...list.children].entries()){
+  item.addEventListener('mouseenter',()=>choose(k));
+  item.addEventListener('click',()=>{list.focus();choose(k,true)});
+ }
+ if(previouslyFocused)choose(Number.isInteger(previousIndex)&&previousIndex>=0&&
+  previousIndex<data.roots.length?previousIndex:0);
+ else if(previousLane===String(refs.lane)&&Number.isInteger(previousIndex)&&
+  previousIndex>=0&&previousIndex<data.roots.length)choose(previousIndex);
 }
 root.RootAngleInfo=Object.freeze({model,piTeX,render});
 })(window);

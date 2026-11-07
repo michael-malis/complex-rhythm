@@ -53,10 +53,12 @@ acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
 Do **not** promote any historical status merely because this script passed. The
 source-specific R-SND-006 acceptance is separately documented from completed
 [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-The source ledger now stands at 390/652 and 66/98 after R-SND-005's
-independent exact-head full audio/UI CI 42348284633. M08 is technically VERIFIED;
-human listening (M13), original screenshots (M12) and final release signoff
-(M14) remain explicitly unaccepted. No device listening is inferred.
+The source ledger now stands at 398/652 and 67/98 after separately accepted
+R-SND-004 per-patch aggressive audio proof from full CI 42358463110. M08 stays
+technically VERIFIED. M07 remains IN_PROGRESS for the complete instrument
+inventory R-SND-001; M13 human listening, M12 source screenshots and M14 final
+release signoff are explicitly not accepted. No perceived sound quality is
+inferred from the six normalized waveform comparisons.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

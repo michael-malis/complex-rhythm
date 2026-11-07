@@ -265,3 +265,10 @@ This is technical/automated acceptance only. Human hearing, real phone/speaker o
 **Measured acceptance:** A browser-driven OfflineAudioContext test creates 8 real renders (four sounds at strong and soft velocity), instruments the actual Web Audio graph nodes (2/3/3/4 carrier/transient oscillators and correct per-voice filters and drive), and verifies finite, appropriately bounded attacks, bass-body/tail envelopes, exact scheduled start region, and **all six pairwise gain-normalized waveform differences**, proving the changes are not merely volume boosts. The generated `artifacts/kick-architecture/report.json` is mandatory as the **20th** independently checked CI measurement. Existing 15-voice, Acid, 50-preset and sound-level acceptance remain mandatory.
 
 **Scope:** R-SND-004 and M07 engineering advancement, not a claim of human-perceived genre authenticity or final audio quality; R-SND-001 and R-SND-004 source parent statuses remain IN_PROGRESS until a separate exact-CI acceptance review.
+
+
+### 2026-11-07 — R-SND-004 original technical acceptance after merged PR #34
+
+The exact PR #34 head `771361176de6411c9e852f59fdf66600a2891371` passed all required GitHub checks including the full UI/audio run [42358463110](https://github.com/michael-malis/complex-rhythm/actions/runs/42358463110) and its **20** independent measurement reports. The new source-specific test shows actual filtered kick-body and saturated pitch-swept transient graphs, eight velocity-varied Web Audio renders and six pairwise comparisons after normalizing signal amplitude. The existing 15-voice spectral and envelope audit covers industrial metallic/FM percussion, and earlier dense 50-preset/sound-pressure tests remain mandatory.
+
+These measured source proofs cover `R-SND-004` and its seven original atomic requirements, so its parent and children are recorded VERIFIED: **398/652 historical tasks**, **67/98 parent requirements**. This does **not** certify perceptual musical quality, speaker compatibility or controlled listening: `R-SND-001` full family inventory and M07 are still IN_PROGRESS; original human listening M13 remains BLOCKED. M08 stays VERIFIED.

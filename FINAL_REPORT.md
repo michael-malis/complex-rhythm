@@ -1,6 +1,6 @@
 # Final acceptance report — not yet accepted
 
-**Release checkpoint (7 November 2026):** [PR #38](https://github.com/michael-malis/complex-rhythm/pull/38) merged true source-backed root accents and shared kick/response phases into all 15 experimental rhythm studies. [Full CI 42363730593](https://github.com/michael-malis/complex-rhythm/actions/runs/42363730593) passed all UI/math/audio tests with 22 measured artifacts; independently [CI 42363730599](https://github.com/michael-malis/complex-rhythm/actions/runs/42363730599) verified all 50 source-generated structural rows against `PRESET_STRUCTURE_AUDIT.md`. Canonical base roots, original 35 rhythms, complex coordinates and all 50 instrument/degree/BPM identities are preserved. Original R-PST-006 acceptance makes **410/652 technical source checks VERIFIED** and **69/98 parent requirements VERIFIED**. M10 complete technically, not a human sound/genre endorsement. GitHub Pages publication is separately tracked in [Actions](https://github.com/michael-malis/complex-rhythm/actions).
+**Release checkpoint (7 November 2026):** [PR #40](https://github.com/michael-malis/complex-rhythm/pull/40) fixed plain-text root-angle fractional explanations using proper KaTeX/MathML and SVG-adjacent zero-complex notation; [full CI 42378900168](https://github.com/michael-malis/complex-rhythm/actions/runs/42378900168) passed all four required checks, including 23 independent real browser/audio evidence reports and 12 viewport/theme math-caption inspections. Original R-TEX-002 technically accepted alongside the earlier accepted R-TEX-004: **425/652 original tasks VERIFIED**, **70/98 parent requirements VERIFIED**. M05 and M06 remain open for chart labels/SVG/Canvas math placement and original audit; final M12/M13/M14 human, device and screenshot gates remain unaccepted. GitHub Pages deployment tracked in [Actions](https://github.com/michael-malis/complex-rhythm/actions).
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
@@ -16,12 +16,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **410** |
-| Tasks formally marked IN_PROGRESS | 43 |
-| Tasks formally marked TODO | 195 |
+| Tasks formally marked VERIFIED | **425** |
+| Tasks formally marked IN_PROGRESS | 42 |
+| Tasks formally marked TODO | 181 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **69 of 98** |
+| Parent requirements VERIFIED | **70 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -105,7 +105,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 51 browsable examples, all separate voices and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (410 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 195 tasks remain TODO, 43 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (425 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 181 tasks remain TODO, 42 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -117,13 +117,13 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 69/98 requirements VERIFIED; second annotated source image still missing |
+| I — audit and traceability | IN_PROGRESS | 70/98 requirements VERIFIED; second annotated source image still missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 410 VERIFIED, 195 TODO, 43 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
+| VII — final verification | NOT PASSED | 425 VERIFIED, 181 TODO, 42 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 

@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42363730593 full rhythm semantics and accent proof; separate source-mapped diversity audit run 42363730599; previous accepted source evidence preserved",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42378900168 full semantic KaTeX MathML/12 viewport technical acceptance, PR #40; all previous accepted source evidence preserved",
   "tasks": {
-    "VERIFIED": 410,
-    "IN_PROGRESS": 43,
-    "TODO": 195,
+    "VERIFIED": 425,
+    "IN_PROGRESS": 42,
+    "TODO": 181,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -76,7 +76,8 @@
     "R-SND-005",
     "R-SND-004",
     "R-SND-001",
-    "R-PST-006"
+    "R-PST-006",
+    "R-TEX-002"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -84,5 +85,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "Original R-PST-006 technically accepted: all 50 canonical root-time maps and original 15 experimental source-backed per-lane accent/cross-lane coincidence structures independently tested. M10 technically VERIFIED. Subjective listening/genre quality M13 and source-image comparison M12 remain blocked, final release M14 TODO."
+  "note": "R-TEX-002 mathematical surrogates replaced by accessible KaTeX HTML+MathML and technically accepted across the 10 contractual formula references, four selected-lane root explanations, 16 dynamic locations and 12 responsive states. M05 still IN_PROGRESS for R-TEX-005 graph formula coverage and R-TEX-006 Canvas/DOM/SVG math alignment; M06 still IN_PROGRESS for R-TEX-008 audit. M12 unavailable second annotated screenshot and M13 device accessibility remain BLOCKED."
 }

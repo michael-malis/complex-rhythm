@@ -83,6 +83,53 @@ try{
  await info.focus();await page.keyboard.press('Space');
  assert.equal((await read(page)).button,'false','Space closes geometry');
  await info.focus();await page.keyboard.press('Enter');
+ // Inspect the actual SVG marker and line with keyboard and pointer. This
+ // is explanatory highlighting; it must not edit the complex-root source.
+ const list=page.locator('#rootRuleAngleList');
+ const trace=()=>page.evaluate(()=>{
+  const list=document.querySelector('#rootRuleAngleList');
+  const selected=[...list.querySelectorAll('li.is-inspected')];
+  const marked=[...document.querySelectorAll('#rootRuleDiagram .root-info-marker.is-inspected')];
+  const ray=document.querySelector('#rootRuleDiagram .root-info-focus-ray');
+  const halo=document.querySelector('#rootRuleDiagram .root-info-focus-halo');
+  const item=selected[0],phase=item?Number(item.dataset.phase):null;
+  return {
+   selected:selected.map(x=>Number(x.dataset.index)),
+   markers:marked.map(x=>Number(x.dataset.index)),
+   active:list.getAttribute('aria-activedescendant'),
+   role:item?.getAttribute('role'),aria:item?.getAttribute('aria-selected'),
+   visible:ray.getAttribute('visibility')==='visible'&&halo.getAttribute('visibility')==='visible',
+   coordinateError:phase===null?null:Math.hypot(
+    Number(ray.getAttribute('x2'))-(140+95*Math.sin(2*Math.PI*phase)),
+    Number(ray.getAttribute('y2'))-(140-95*Math.cos(2*Math.PI*phase))),
+   options:list.querySelectorAll('li[role="option"]').length
+  };
+ });
+ await list.focus();
+ assert.deepEqual((await trace()).selected,[0],'focus starts at the first mathematical root');
+ await page.keyboard.press('ArrowRight');
+ let focus=await trace();
+ assert.deepEqual(focus.selected,[1],'arrow key moves one canonical root');
+ assert.deepEqual(focus.markers,[1],'highlighted SVG marker matches selected angle');
+ assert.ok(focus.visible&&focus.coordinateError<.001,'active radius reaches the exact canonical root');
+ assert.equal(focus.active,'rootRuleOption1','single accessible active descendant');
+ assert.equal(focus.role,'option');assert.equal(focus.aria,'true');
+ await page.keyboard.press('End');
+ assert.deepEqual((await trace()).selected,[3],'End reaches the last root');
+ await page.keyboard.press('ArrowUp');
+ assert.deepEqual((await trace()).selected,[2],'ArrowUp selects the previous root');
+ await page.keyboard.press('Home');
+ assert.deepEqual((await trace()).selected,[0],'Home selects first root');
+ await page.keyboard.press('Escape');
+ assert.deepEqual((await trace()).selected,[],'Escape clears the focused root');
+ await info.focus();
+ await page.locator('#rootRuleAngleList li[data-index="2"]').hover();
+ assert.deepEqual((await trace()).selected,[2],'mouse hover traces the third root');
+ await page.screenshot({path:'artifacts/root-angle-infographic/interactive-root-trace.png',fullPage:true});
+ await page.mouse.move(0,0);
+ assert.deepEqual((await trace()).selected,[],'mouse exit removes the temporary highlight');
+ assert.equal(await page.evaluate(()=>window.RhythmResearch.current().tracks[0].n),4,
+  'root tracing never alters mathematical degree');
  for(let lane=0;lane<4;lane++){
   await page.locator('.lane[data-lane="'+lane+'"] .lane-select').click();
   const state=await read(page);
@@ -94,6 +141,7 @@ try{
   assert.deepEqual(state.angles.map(x=>x.phase),canonical,'lane '+lane+' canonical root phases');
   if(lane===3)assert.ok(state.input.includes('\\arg(0)')&&state.angles.length===0,
    'zero value has no argument and no rhythm events');
+  if(lane===3)assert.equal((await trace()).options,0,'zero has no selectable roots');
   if(lane===1)assert.deepEqual(state.angles.map(x=>x.degree),[0],'n=1 yields only one root');
   if(lane===2)assert.equal(state.angles.length,7,'negative argument produces seven valid roots');
  }
@@ -104,6 +152,9 @@ try{
  const transportStart=await page.evaluate(()=>window.RhythmResearch.transport());
  await page.locator('#trackN0').fill('7');
  assert.equal((await read(page)).angles.length,7,'degree change updates infographic live');
+ await list.focus();await page.keyboard.press('End');
+ assert.deepEqual((await trace()).selected,[6],'live degree edit updates traceable root options');
+ await page.locator('#trackN0').focus();
  const phaseBefore=(await read(page)).angles[0].phase;
  // Cartesian fields are intentionally inside a collapsed advanced editor.
  // Expand the actual interface before the user-like input interaction.

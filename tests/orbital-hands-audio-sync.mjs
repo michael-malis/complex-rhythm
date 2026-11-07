@@ -77,7 +77,6 @@ try{
       label+' pointer never becomes a long radial line');
     assert.equal(arrow.color.toLowerCase(),hand.color.toLowerCase(),
       label+' pointer color matches the mathematical root ring');
-    const scheduled=window === undefined?[]:[]; // no extra timing logic
    }
    assert.ok(dist(d.frame.hands[0].phase,d.frame.hands[1].phase)<1e-9,
     label+' same 1-bar loops ALWAYS share angular phase, independent of root degree');

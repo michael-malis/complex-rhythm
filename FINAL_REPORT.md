@@ -1,10 +1,10 @@
 # Final acceptance report — not yet accepted
 
-**Release checkpoint (7 November 2026):** [PR #29](https://github.com/michael-malis/complex-rhythm/pull/29) is merged into `main`, after four AudioContext-synchronized ring pointers and the independent 18-measurement release evidence gate. The GitHub Pages deployment status must be checked separately in [Actions](https://github.com/michael-malis/complex-rhythm/actions). Formal source status **382/652 tasks VERIFIED**, **65/98 parent requirements VERIFIED** after [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353) and separate technical acceptance of R-SND-006. M08 still needs R-SND-005. Original annotated visual comparison, real-device listening and screen-reader review remain pending. **Published does not mean finally accepted.**
+**Release checkpoint (7 November 2026):** [PR #32](https://github.com/michael-malis/complex-rhythm/pull/32) is merged into `main` with 19 independently verified audio/UI measurement reports. The live master output and OfflineAudioContext use the same 20Hz highpass/2× oversampled soft ceiling, and changing master volume is smoothed. [CI 42348284633](https://github.com/michael-malis/complex-rhythm/actions/runs/42348284633) passed the full UI/audio suite on PR #32, including original 50-pattern stress, independent real clock tests and sound safety at 32/48kHz. Technical source status is **390/652 VERIFIED** and **66/98 requirements VERIFIED** after separate R-SND-005 acceptance. GitHub Pages status is tracked separately in [Actions](https://github.com/michael-malis/complex-rhythm/actions); listening, device checks and original missing annotations remain mandatory M12/M13. **Published does not mean fully accepted.**
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
-**Operational progress checkpoint (7 November 2026):** 4/14 macros VERIFIED, 7/14 IN_PROGRESS, 1 TODO (M14), 2 BLOCKED (M12/M13). M05/M06 mathematical typography and M11 release evidence are still in progress; the accepted R-SND-006 Web Audio scheduling architecture does not close M08 while R-SND-005 output safety is open. Prior formula evidence R-TEX-004 remains accepted. Full real audio-clock CI from PR #29 establishes correct native scheduling, not human listening or physical-device latency.
+**Operational progress checkpoint (7 November 2026):** 5/14 macros VERIFIED (M02, M03, M04, M08, M09), 6/14 IN_PROGRESS, 1 TODO (M14), 2 BLOCKED (M12/M13). The M08 acceptance is technical: production output controls were measured and root-event/audio transport tested in actual Chromium. It does not certify listening quality, physical playback devices, inaccessible source screenshots, nor the seven final release gates.
 
 
 **R-TEX-004 accepted (7 November 2026):** CI [42317538760](https://github.com/michael-malis/complex-rhythm/actions/runs/42317538760) and the independent 12-screenshot KaTeX/MathML audit prove the ten mandatory mathematical expressions under R-TEX-004. This one parent requirement has no child tasks and is formally VERIFIED. Historical comparison of before/after images (R-TEX-008), sound listening and real-device accessibility remain unverified or blocked separately.
@@ -16,12 +16,12 @@
 | Requirements in supplied specification | 98 |
 | Registered tasks in TASKS.md | 652 |
 | Atomic subtasks | 554 |
-| Tasks formally marked VERIFIED | **382** |
-| Tasks formally marked IN_PROGRESS | 47 |
-| Tasks formally marked TODO | 219 |
+| Tasks formally marked VERIFIED | **390** |
+| Tasks formally marked IN_PROGRESS | 46 |
+| Tasks formally marked TODO | 212 |
 | Tasks formally marked BLOCKED | 4 |
 | Tasks formally marked FAILED | 0 |
-| Parent requirements VERIFIED | **65 of 98** |
+| Parent requirements VERIFIED | **66 of 98** |
 
 The CI-generated [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json), [TASKS.md](TASKS.md) and [TRACEABILITY.md](TRACEABILITY.md) hold the current evidence. Verified reflects requirement-by-requirement recorded technical acceptance, not human music or device signoff. **Final acceptance remains NOT COMPLETE.**
 
@@ -105,7 +105,7 @@ Industrial Fracture; Acid Reactor; Rotterdam Collision; Schranz Machinery; Broke
 1. One user-annotated source image was located in conversation files, showing a cramped Track 1 card and highlighted text; its content is recorded in [issue #2](https://github.com/michael-malis/complex-rhythm/issues/2). The second annotated source reference remains unavailable, so final screenshot-based comparison is not fully established.
 2. Subjective listening of all 51 browsable examples, all separate voices and physical mobile/headphone and screen-reader tests have not been certified.
 3. High-degree dense root dots overlap on narrow default views, mitigated through larger pannable zoom; independent visual UX assessment is open.
-4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (382 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 219 tasks remain TODO, 47 IN_PROGRESS and 4 BLOCKED.
+4. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` are reconciled for recorded evidence (390 task records VERIFIED; 4 blocked historic rows). Gate VII cannot pass while 212 tasks remain TODO, 46 IN_PROGRESS and 4 BLOCKED.
 5. KaTeX formulas are accessible HTML/MathML; actual assistive-technology test still required.
 6. Automated Chromium contrast now passes; independent visual perception, screenshot sign-off and screen-reader assessment remain separate.
 
@@ -117,13 +117,13 @@ Representative work commits (the complete history is available in GitHub): `cbe2
 
 | Gate | Status | Evidence or blocker |
 |---|---|---|
-| I — audit and traceability | IN_PROGRESS | 65/98 requirements VERIFIED; second annotated source image still missing |
+| I — audit and traceability | IN_PROGRESS | 66/98 requirements VERIFIED; second annotated source image still missing |
 | II — typography/accessibility | IN_PROGRESS | Automated font, contrast and 14 layout-theme tests passed; annotated screenshot and human accessibility review pending |
 | III — mathematical typography | IN_PROGRESS | KaTeX and vertical fractions tested; independent annotated visual QA missing |
 | IV — geometry | IN_PROGRESS | 28px markers, 40px animated pulses, zoom and provenance; dense-screen visual sign-off pending |
 | V — complex numbers | AUTOMATED TESTS PASS; not formally signed off | Four coordinate quadrants, strict parser and math tests |
 | VI — music/audio | BLOCKED FOR FULL ACCEPTANCE | 50 algorithms and 15 voices, stress checks passed; required human listening absent |
-| VII — final verification | NOT PASSED | 382 VERIFIED, 219 TODO, 47 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
+| VII — final verification | NOT PASSED | 390 VERIFIED, 212 TODO, 46 IN_PROGRESS, 4 BLOCKED; all 98 requirement gates not yet signed off |
 
 **Final acceptance condition:** all mandatory requirements genuinely verified with evidence and all blockers addressed. The code is already merged and published; future changes must use reviewed PRs and the status must remain NOT COMPLETE until the acceptance gates pass.
 

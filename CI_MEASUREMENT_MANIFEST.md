@@ -48,9 +48,11 @@ underlying computed metrics. Automated output does not establish human
 sound quality, physically measured device audio, screen-reader quality,
 the missing original annotated screenshot, or a subjective production
 acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
-Do **not** promote 381/652 or 64/98 historical statuses merely because
-this script passed. Reconcile individual source tasks with measured
-evidence before any status changes.
+Do **not** promote any historical status merely because this script passed. The
+source-specific R-SND-006 acceptance is separately documented from completed
+[CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
+The reconciled source ledger now stands at 382/652 and 65/98. Remaining M08
+output-safety, human and release requirements must be accepted separately.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

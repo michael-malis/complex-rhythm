@@ -7,7 +7,7 @@
 
 | Check | Real test | Result | Reproducible evidence |
 |---|---|---|---|
-| Requirement registry | 98 IDs, 651 tasks, reverse references, acceptance and status consistency | Integrity check passed on initial registry; remaining statuses are pending reconciliation | [Actions 42106152581](https://github.com/michael-malis/complex-rhythm/actions/runs/42106152581) |
+| Requirement registry | 98 IDs, 652 tasks, reverse references, acceptance and status consistency | Integrity check passed on initial registry; remaining statuses are pending reconciliation | [Actions 42106152581](https://github.com/michael-malis/complex-rhythm/actions/runs/42106152581) |
 | Original baseline | 1600×1000, 1440×900, 1280×800, 1024×768, 768×1024, 390×844, each in light/dark | 12 screenshots and font/color/contrast/panel metrics archived | [Actions 42011738339](https://github.com/michael-malis/complex-rhythm/actions/runs/42011738339) |
 | Pure mathematics | Roots of 1/−1/i, coordinate round-trips, zero, degree17/32/64, Euclidean/LCM, 2π periodicity, 640-event dense planner | 60 mathematical assertions passed | [Actions 42105929881](https://github.com/michael-malis/complex-rhythm/actions/runs/42105929881) |
 | Seven-screen UI regression | Four independent editors, root dragging, composition/true intersection, 35 original +15 new presets, JSON round-trip | 166 assertions passed, no user-facing JS errors | [Actions 42106425023](https://github.com/michael-malis/complex-rhythm/actions/runs/42106425023) |
@@ -53,7 +53,7 @@ These are real failure records, not hypothetical problems. Earlier failed CI run
 2. No documented **human listening** across all 50 presets and six acid voices. Technical output is measured, but musical quality remains unverified as explicitly mandated in `R-SND-007`.
 3. No actual-phone audio/gesture assessment, assistive-technology screen-reader walkthrough or independent subjective design review.
 4. Dense high-degree markers can overlap geometrically at default 360px width; magnified scrollable view is implemented rather than shrinking all dots. Need a human review of navigation usability.
-5. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` were reconciled through CI: 294 task records VERIFIED, 4 BLOCKED, 60 IN_PROGRESS and 294 TODO. Seven-gate acceptance remains unfinished.
+5. `TASKS.md`, `TRACEABILITY.md` and `ACCEPTANCE_CRITERIA.md` were reconciled using independent CI evidence: 382 task records VERIFIED, 4 BLOCKED, 47 IN_PROGRESS and 219 TODO. R-SND-006 native Web Audio timing passed [full CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353); remaining M08 output safety and manual acceptance are separate. Seven-gate release acceptance remains unfinished.
 
 ## 5. Test protocol
 

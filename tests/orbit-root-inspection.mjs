@@ -32,7 +32,8 @@ async function tapRoot(page,lane,index){
    y:rect.top+rect.height/2+Math.sin(a)*r,phase:ph};
  },{lane,index});
  assert.ok(Number.isFinite(point.phase),'root must exist in canonical source');
- await page.mouse.click(point.x,point.y);
+ if(page.viewportSize()?.width===390)await page.touchscreen.tap(point.x,point.y);
+ else await page.mouse.click(point.x,point.y);
  return point;
 }
 async function read(page){

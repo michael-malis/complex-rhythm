@@ -68,6 +68,20 @@ check('multi-lane audio load','artifacts/audio-mix-stress.json',d=>{
  assert.ok(d.onset&&Number.isFinite(d.onset.driftMs),'actual audio clock/onset measurement required');
  return {presets:d.catalog.length,onsetDriftMs:d.onset.driftMs};
 },'OfflineAudioContext multi-lane output, transport and event planning');
+check('audio-clock transport phase continuity','artifacts/transport-phase-continuity.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.tests,2,'desktop and mobile AudioContext phase scenarios required');
+ assert.equal(d.cases?.length,2);
+ for(const item of d.cases){
+  assert.ok(item.created>0&&item.created===item.cleared,
+   'transport must leave no live scheduling interval after Reset and Pause');
+  assert.ok(item.phaseAfterRunningReset<.04||item.phaseAfterRunningReset>.96,
+   'running Reset must restart at the beginning of the rhythmic cycle');
+  assert.equal(item.afterPausedReset,0);
+  assert.equal(item.errors,0);
+ }
+ return {measuredStates:d.cases.length,phaseVerified:true};
+},'AudioContext-backed Pause/Resume/BPM/Reset phases, no stale schedulers');
 check('responsive Sound Lab waveform','artifacts/sound-lab/measurements.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.results?.length,4);
@@ -95,10 +109,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,14,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,15,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 14 real measured CI evidence files: geometry, accessibility, formulas, audio and preset quality without human-acceptance claims');
+console.log('PASS 15 real measured CI evidence files: geometry, accessibility, formulas, transport timing, audio and presets without human-acceptance claims');

@@ -297,13 +297,19 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-info-spoke{stroke:var(--root-info-color,var(--track-1));stroke-width:1;stroke-opacity:.32}
 .root-info-marker{fill:var(--root-info-color,var(--track-1));stroke:var(--panel);stroke-width:1.2}
 .root-info-marker.first{stroke:var(--ink);stroke-width:1.5}
+.root-info-marker.is-inspected{stroke:var(--ink);stroke-width:2.8}
+.root-info-focus-ray{stroke:var(--root-info-color,var(--track-1));stroke-width:2.5;stroke-dasharray:4 4;pointer-events:none}
+.root-info-focus-halo{fill:none;stroke:var(--root-info-color,var(--track-1));stroke-width:2.7;pointer-events:none}
 .root-info-center{fill:var(--sub)}
 .root-rule-info-math{min-width:0;display:grid;gap:9px;color:var(--ink);font-size:18px}
 .root-rule-info-math .math-notation{max-width:100%;overflow-x:auto;min-height:24px}
 .root-rule-mapping{font-size:17px;line-height:1.5;color:var(--sub)}
-.root-rule-angle-heading{font-size:18px;font-weight:650;margin:12px 0 5px;color:var(--ink)}
+.root-rule-angle-heading{font-size:18px;font-weight:650;margin:12px 0 5px;color:var(--ink);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.root-rule-angle-hint{font-weight:400;font-size:16px;color:var(--sub)}
 .root-rule-angle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 15px;max-height:210px;overflow-y:auto;overflow-x:hidden;list-style:none;padding:7px;border:1px solid var(--fine);margin:0;scrollbar-gutter:stable}
-.root-rule-angle-list li{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0;font-size:17px;padding:4px 2px;border-bottom:1px solid var(--fine)}
+.root-rule-angle-list li{display:flex;align-items:center;justify-content:space-between;gap:9px;min-width:0;font-size:17px;padding:4px 5px;border-bottom:1px solid var(--fine);cursor:pointer;border-radius:4px}
+.root-rule-angle-list li.is-inspected{background:var(--fine);box-shadow:inset 3px 0 var(--root-info-color,var(--track-1))}
+.root-rule-angle-list:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .root-rule-angle-list .math-notation{min-width:0;overflow-x:auto}
 .root-info-degree{color:var(--sub);white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:800px){.root-rule-info-grid{grid-template-columns:minmax(0,1fr)}.root-rule-svg{margin:auto}}

@@ -59,7 +59,7 @@ acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
 Do **not** promote any historical status merely because this script passed. The
 source-specific R-SND-006 acceptance is separately documented from completed
 [CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-Original source ledger now records **442/652** tasks VERIFIED and **72/98**
+Original source ledger now records **450/652** tasks VERIFIED and **73/98**
 requirements VERIFIED after source-wide R-TEX-005/006 acceptance from full CI
 42393323480. M05 engineering macro technically VERIFIED, with **25 genuine
 independent real measured CI outputs** required. M06 historical math comparison

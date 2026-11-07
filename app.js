@@ -469,12 +469,12 @@ function renderRootRule(){
  };
  if(model.zero){
   captionText('For ');captionMath(String.raw`z=0`);
-  captionText(', ');captionMath(String.raw`\\arg(0)`);
+  captionText(', ');captionMath(String.raw`\arg(0)`);
   captionText(' is undefined and there are no rhythm events.');
  }else{
-  captionText('Changing the argument by ');captionMath(String.raw`\\delta`);
-  captionText(' rotates each root by ');captionMath(String.raw`\\frac{\\delta}{n}`);
-  captionText('; spacing stays ');captionMath(String.raw`\\frac{2\\pi}{n}`);
+  captionText('Changing the argument by ');captionMath(String.raw`\delta`);
+  captionText(' rotates each root by ');captionMath(String.raw`\frac{\delta}{n}`);
+  captionText('; spacing stays ');captionMath(String.raw`\frac{2\pi}{n}`);
   captionText('. The circle represents time, not ');captionMath(String.raw`|z|`);
   captionText('.');
  }

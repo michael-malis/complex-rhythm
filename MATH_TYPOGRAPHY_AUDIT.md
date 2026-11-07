@@ -205,3 +205,20 @@ Source-specific [full CI 42378900168](https://github.com/michael-malis/complex-r
 The original R-TEX-005 conditions (graph phase origin, quarter/half/three-quarter fractions, mathematical source root angles, selected roots and their origin formula, the full root-set expression, result of union/intersection, shared/coincident phase labels, mathematically correct tooltips and the compact plus expanded root-angle infographic) are all covered by real source-linked tests in [full CI 42393323480](https://github.com/michael-malis/complex-rhythm/actions/runs/42393323480). The R-TEX-006 conditions (true SVG/HTML/Canvas geometric position, coordinated scaling, vector/MathML text rather than blurry rasterized formula substitutes, no clipped labels, viewport bounds and actual on-the-fly resize) are covered by `tests/math-graph-svg-alignment.mjs`, the existing `formula-geometry-complete`, `phase-label-adaptation` and `root-angle-infographic` test suites.
 
 Historical source-specific parent R-TEX-005 plus 9 children and R-TEX-006 plus 6 children are now **VERIFIED**, completing **M05 (mathematical typography and placement)**. Screenshots are the true Chromium PNGs in the `rhythm-ui-screenshots` artifact for the full CI run; machine-readable `math-graph-svg/report.json` and `release-evidence-manifest.json` are also retained. This does **not** mean R-TEX-008's historical-before appearance was visually compared to an original annotated screenshot. M06 remains open for that formal audit, M12 for the missing second original annotated UI image and M13 for real-device and assistive-technology testing.
+
+
+## 2026-11-07 — Reproducible Git-history before/after browser evidence for M06
+
+This supplementary audit distinguishes three different things: (1) the **contractual source notation** in `MASTER_IMPLEMENTATION_SPEC.md`; (2) an **actual historical Git code revision** `454b7c4466851e82946034ce4a47019c716ee218`, which is rendered as a genuine historical *before* baseline; (3) the **current PR implementation**, rendered as *after*. The Git baseline is reproducible first-party code, **not** the unavailable second user-annotated original screenshot tracked under M12.
+
+`tests/math-historical-before-after.mjs` checks out the historical exact commit with `actions/checkout@v4` into a separate directory and serves both versions on independent local ports. In **12 required viewport/theme states**, it opens real root-composition and mathematical-reference panels for both versions, records all ten original required formula annotations and MathML, four graph phase fractions, selected-root and source-specific formulas where present, semantic output, bounding boxes and overflow, and captures actual full Chromium screenshots for *both* versions (24 PNG files total). It records the exact historical SHA and the source differences per DOM location, and checks that the new KaTeX/MathML is at least as complete as in the historical baseline.
+
+**Before screens:** `math-historical-compare/before-{width}-{theme}.png`
+
+**After screens:** `math-historical-compare/after-{width}-{theme}.png`
+
+**Paired measurement:** `math-historical-compare/report.json`
+
+**Required screenshot sizes:** 1600×1000, 1440×900, 1280×800, 1024×768, 768×1024, 390×844, each in light and dark.
+
+**Per-formula evidence protocol:** Every row in the earlier 10-formula contract matrix and the 16-location current DOM matrix is linked to this paired screenshot set, to the live KaTeX source and to the previously recorded update path. The new machine-readable historical baseline fills the specific *rendered-before-code* gap. It does not claim that this baseline predates the original user's first design, or that an unavailable annotated original screenshot has been recovered. Missing source annotations and human review for M12 remain independent.

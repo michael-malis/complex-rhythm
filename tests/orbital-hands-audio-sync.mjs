@@ -56,7 +56,9 @@ try{
    canvas:window.__orbitCanvas.arcs.slice(),
    transport:window.RhythmResearch.transport(),
    source:window.RhythmResearch.current(),
-   radii:window.RhythmResearch.radiiForSize(document.querySelector('#orbitCanvas').clientWidth)
+   radii:window.RhythmResearch.radiiForSize(Math.min(
+    document.querySelector('#orbitCanvas').getBoundingClientRect().width,
+    document.querySelector('#orbitCanvas').getBoundingClientRect().height))
   }));
   const checkFrame=(d,label)=>{
    assert.equal(d.frame.hands.length,4,label+' must draw four distinct playheads');
@@ -67,7 +69,7 @@ try{
     const hand=d.frame.hands[i];
     const expected=((d.frame.elapsed/(hand.cycleBars*d.frame.barSeconds))%1+1)%1;
     assert.ok(dist(hand.phase,expected)<1e-9,label+' hand must use the actual shared audio elapsed time, lane '+i);
-    assert.ok(near(hand.radius,d.radii[i]),label+' arrow runs ON its own ring');
+    assert.ok(near(hand.radius,d.radii[i],.5),label+' arrow runs ON its own ring (fractional CSS pixel rounding)');
     assert.ok(near(Math.hypot(hand.x,hand.y),hand.radius),label+' arrow tip stays on the root circumference');
     const arrow=d.canvas[i];
     assert.ok(near(arrow.radius,hand.radius,1e-5),label+' actual drawn pointer radius follows its lane');

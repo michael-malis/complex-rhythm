@@ -602,34 +602,48 @@ function renderTracks() {
   gainRow.append(gainName,gainReadout,gainSlider);row.append(gainRow);
   buildLaneFields(row,t,i);
   const length=document.createElement('div');length.className='lane-length';
-  const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.textContent='Cycle length · bars';
-  const lengthInput=document.createElement('input');lengthInput.id='laneBars'+i;lengthInput.type='number';lengthInput.inputMode='numeric';
-  lengthInput.min='1';lengthInput.max='16';lengthInput.step='1';lengthInput.value=String(t.cycleBars||1);
-  lengthInput.setAttribute('aria-label','Lane '+(i+1)+' cycle length in bars');
-  lengthInput.addEventListener('input',()=>{
+  const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.textContent='Loop length';
+  const lengthInput=document.createElement('select');lengthInput.id='laneBars'+i;
+  lengthInput.setAttribute('aria-label','Lane '+(i+1)+' loop length in bars');
+  for(let bars=1;bars<=16;bars++){
+   const option=document.createElement('option');option.value=String(bars);
+   option.textContent=bars+' '+(bars===1?'bar':'bars');
+   lengthInput.append(option);
+  }
+  lengthInput.value=String(t.cycleBars||1);
+  lengthInput.addEventListener('change',()=>{
    const v=Number(lengthInput.value);
-   if(!Number.isInteger(v)||v<1||v>16){lengthInput.setAttribute('aria-invalid','true');lengthInput.value=String(t.cycleBars);return}
-   lengthInput.removeAttribute('aria-invalid');
+   if(!Number.isInteger(v)||v<1||v>16)return;
+   if(v===t.cycleBars)return;
    if(!playing){const old=cycleSeconds();pausedPhase=pausedPhase*old;}
    t.cycleBars=v;
    updateLaneStatus(i);
    if(!playing)pausedPhase=((pausedPhase/cycleSeconds())%1+1)%1;
    else if(audio){cancelVoices();scheduledUntil=audio.currentTime+.006;}
+   updateCycleGuide(true);
    markCustom(false);
   });
-  lengthInput.addEventListener('change',()=>{if(lengthInput.getAttribute('aria-invalid')==='true'){lengthInput.value=String(t.cycleBars);lengthInput.removeAttribute('aria-invalid')}});
-  length.append(lengthLabel,lengthInput);row.append(length);
+  length.append(lengthLabel,lengthInput);
+  const explanation=document.createElement('p');explanation.className='lane-cycle-explanation';
+  explanation.id='laneCycleExplanation'+i;
+  explanation.textContent='1 full turn = '+t.cycleBars+' '+(t.cycleBars===1?'bar':'bars')+
+   ' ('+(t.cycleBars*4)+' beats)';
+  length.append(explanation);row.append(length);
   const foot=document.createElement('div');foot.className='lane-bottom';
   const eq=document.createElement('span');eq.className='lane-equation';eq.id='laneEq'+i;
   const count=document.createElement('span');count.className='lane-count';count.id='laneCount'+i;
   foot.append(eq,count);row.append(foot);wrap.append(row);updateLaneStatus(i);
  });
+ updateCycleGuide(true);
 }
 function updateLaneStatus(i) {
  const t=tracks[i];if(!t)return;
  const eq=$('laneEq'+i),count=$('laneCount'+i);
  if(eq)renderLaneEquation(eq,t);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
+ const description=$('laneCycleExplanation'+i);
+ if(description)description.textContent='1 full turn = '+t.cycleBars+
+  ' '+(t.cycleBars===1?'bar':'bars')+' ('+(t.cycleBars*4)+' beats)';
  updateLaneAlt(i);
  if(i===selectedTrack)renderRootRule();
 }
@@ -640,6 +654,7 @@ function chooseTrack(i,fromTrackList=false) {
   row.querySelector('.lane-select')?.setAttribute('aria-pressed',String(j===selectedTrack));
  });
  renderEditor();
+ updateCycleGuide(true);
  if(magnified)refreshPlotZoom();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
@@ -1033,6 +1048,42 @@ function renderLayers(){
  });
 }
 
+// A ring represents a COMPLETE individual-lane loop, not necessarily one 4/4 bar.
+// All bar boundaries use the same normalized phase geometry as the real scheduler.
+function laneBarBoundaries(cycleBars){
+ const bars=safeInt(cycleBars,1,16,1);
+ return Array.from({length:bars},(_,i)=>i/bars);
+}
+let lastCycleGuideKey='';
+function updateCycleGuide(force=false){
+ const list=$('cycleGuideLanes'),hint=$('cycleGuideHint');
+ if(!list||!hint||tracks.length!==4)return;
+ const seconds=barSeconds(),elapsed=playbackElapsed();
+ const state=tracks.map((t,i)=>{
+  const bars=t.cycleBars||1;
+  return {lane:i,bars,bar:Math.floor((elapsed/seconds)%bars)+1};
+ });
+ const key=selectedTrack+'|'+state.map(x=>x.bars+':'+x.bar).join('|');
+ if(!force&&key===lastCycleGuideKey)return;
+ lastCycleGuideKey=key;
+ const items=document.createDocumentFragment();
+ state.forEach(({lane,bars,bar})=>{
+  const item=document.createElement('span');item.className='cycle-guide-lane';
+  item.classList.toggle('active',lane===selectedTrack);
+  item.style.setProperty('--lane-color',COLORS[lane]);
+  const name=document.createElement('strong');
+  name.textContent='Lane '+(lane+1)+' · '+bars+' '+(bars===1?'bar':'bars');
+  const progress=document.createElement('span');
+  progress.textContent='Bar '+bar+' of '+bars;
+  item.append(name,progress);
+  items.append(item);
+ });
+ list.replaceChildren(items);
+ const current=state[selectedTrack];
+ hint.textContent='Lane '+(selectedTrack+1)+': one full circle takes '+
+  current.bars+' '+(current.bars===1?'bar':'bars')+
+  '. Short ticks mark bar starts. Root dots keep their angles; a longer loop spaces the sounds farther apart.';
+}
 // Canonical four-lane event plan used by both the UI timeline and Web Audio.
 // Do not maintain separate phase/event interpretations for presentation and sound.
 function currentSchedulerLanes(){
@@ -1653,6 +1704,20 @@ function draw() {
   const r=radii[i],chosen=i===selectedTrack;
   ctx.beginPath();ctx.arc(0,0,r,0,TAU);
   ctx.strokeStyle=chosen?COLORS[i]:(dark?'#63675e':'#c4c5bc');ctx.lineWidth=chosen?2:1.2;ctx.stroke();
+  // Colored radial ticks are BAR boundaries, not new sound events.
+  // Exactly one circle turn = cycleBars bars. Markers stay tied to
+  // mathematical root phases; tick count responds to the loop-length control.
+  const inner=r<40?r+7:r-20,outerTick=r<40?r+19:r-8;
+  ctx.save();ctx.strokeStyle=rgba(i,chosen?.95:.65);
+  ctx.lineWidth=chosen?3:2.2;
+  for(const phase of laneBarBoundaries(t.cycleBars)){
+   const a=-Math.PI/2+TAU*phase;
+   ctx.beginPath();
+   ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);
+   ctx.lineTo(Math.cos(a)*outerTick,Math.sin(a)*outerTick);
+   ctx.stroke();
+  }
+  ctx.restore();
  });
  const angle=-Math.PI/2+TAU*(reducedMotion?Math.floor(selectedPhase*16)/16:selectedPhase);
  // Prevent the playback pointer from obscuring visible mathematical roots.
@@ -1717,6 +1782,7 @@ function draw() {
  const currentBar=Math.floor(elapsed/barSeconds())%common;
  const label=`Bar ${currentBar+1} / ${common} · 4/4`;
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
+ updateCycleGuide();
  requestAnimationFrame(draw);
 }
 function saveJson(){const data={format:'roots-rhythm/1',name:activePresetId?BROWSE_PRESETS.find(p=>p.id===activePresetId)?.name:(importedProjectName||'My complex rhythm'),bpm,bars:cycleBars,tracks};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='complex-rhythm.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -1908,6 +1974,11 @@ window.RhythmResearch=Object.freeze({
 
  // Diagnostic snapshot only: tracks and sample-family selection cannot be mutated here.
  samplePlan:()=>({category:activeCategory,keys:[...prioritySampleKeys()]}),
+ cycleGeometry:()=>tracks.map((t,i)=>({
+  lane:i,cycleBars:t.cycleBars,barBoundaries:laneBarBoundaries(t.cycleBars),
+  barSeconds:barSeconds(),fullTurnSeconds:laneSeconds(t),
+  events:events(t).map(e=>e.phase)
+ })),
  markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({

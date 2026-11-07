@@ -1,9 +1,9 @@
 {
-  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42393323480 complete real CSS-pixel SVG/Canvas/KaTeX mathematical geometry and 25 independent reports, PR #43, earlier CI evidence retained",
+  "generatedFrom": "https://github.com/michael-malis/complex-rhythm/actions/runs/42402890258 real historical first-party before/after Chromium code audit and 26 independently validated measured files",
   "tasks": {
-    "VERIFIED": 442,
-    "IN_PROGRESS": 40,
-    "TODO": 166,
+    "VERIFIED": 450,
+    "IN_PROGRESS": 39,
+    "TODO": 159,
     "BLOCKED": 4,
     "FAILED": 0
   },
@@ -79,7 +79,8 @@
     "R-PST-006",
     "R-TEX-002",
     "R-TEX-005",
-    "R-TEX-006"
+    "R-TEX-006",
+    "R-TEX-008"
   ],
   "blockedRequirementIds": [
     "R-AUD-002",
@@ -87,5 +88,5 @@
     "R-SND-007",
     "R-PST-004"
   ],
-  "note": "All four original M05 requirements now independently accepted: semantic math R-TEX-002 and mandatory source formulas R-TEX-004, root/angle/shared-phase formula placement R-TEX-005, and physically screen-projected SVG/DOM/Canvas geometry R-TEX-006. M05 technically VERIFIED. R-TEX-008 historical original view audit and M06 remain IN_PROGRESS; second original annotated screenshot M12, human sound/phone/screen-reader M13 and final M14 remain unaccepted."
+  "note": "Original R-TEX-008 technical Git-history per-formula mathematical typography audit accepted, with real historical before and current after screenshots, input/source/update/validation mapping. M06 now technically VERIFIED. M12 still BLOCKED for missing second original annotated user screenshot, M13 for human devices/accessibility/audio; M14 final acceptance TODO."
 }

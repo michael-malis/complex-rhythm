@@ -49,6 +49,9 @@ async function startPage(viewport,theme,url){
  if(theme==='dark')await page.locator('#themeBtn').click();
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
  await page.locator('.math-details').evaluate(el=>el.open=true);
+ // Both immutable versions supply the same source-backed R4(1) union R3(1)
+ // worked example; make their shared mathematical phase visible for comparison.
+ await page.locator('#loadRootExample').click();
  if(await page.locator('#rootRuleInfoToggle').count())
   await page.locator('#rootRuleInfoToggle').click();
  return {page,runtime};

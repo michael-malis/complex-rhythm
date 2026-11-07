@@ -160,7 +160,7 @@ try{
   for(let i=0;i<4;i++)assert.ok(dist(resumed.frame.hands[i].phase,frozen.frame.hands[i].phase)<.1,
    'Resume does not skip any lane loop');
   await page.locator('#resetBtn').click();
-  await page.waitForTimeout(10);
+  await page.waitForFunction(()=>window.RhythmResearch.orbitalHands().hands.every(h=>h.phase<.025),null,{timeout:3000});
   const reset=checkFrame(await capture(),'reset');
   assert.ok(reset.frame.hands.every(h=>h.phase<.025),
    'reset sends every orbital playhead back to the start phase');

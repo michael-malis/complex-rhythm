@@ -55,6 +55,7 @@ on:
       - tests/ui-smoke.mjs
       - tests/union-first-ui.mjs
       - tests/sound-lab.mjs
+      - tests/native-waveform-coverage.mjs
       - tests/production-grooves-ui.mjs
       - tests/song-examples.mjs
       - presets/song-examples/**
@@ -101,6 +102,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-sound-lab.log 2>&1 &
           node tests/sound-lab.mjs
+      - name: Verify all six native synthesized instrument waveforms and scheduler isolation
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-native-waveforms.log 2>&1 &
+          node tests/native-waveform-coverage.mjs
       - name: Test math, layout, presets, transport and JSON
         if: ${{ !cancelled() }}
         run: |

@@ -1786,7 +1786,7 @@ function draw() {
   ctx.restore();
  });
  lastOrbitalHandFrame={elapsed,beatEpoch,audioTime:audio?.currentTime??null,
-  bpm,barSeconds:barSeconds(),playing,
+  bpm,barSeconds:barSeconds(),playing,selectedLane:selectedTrack,
   hands:pointerEvidence};
  const count=events(tracks[selectedTrack]).length;
  ctx.font=`650 ${Math.max(14,Math.min(24,side*.044))}px system-ui`;ctx.fillStyle=baseInk;ctx.fillText(String(count),0,-3);

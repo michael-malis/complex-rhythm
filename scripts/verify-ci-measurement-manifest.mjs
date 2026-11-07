@@ -100,6 +100,22 @@ check('four audio-locked orbit hands','artifacts/orbital-hands/report.json',d=>{
   'all four Canvas hand tips must match actual per-lane AudioContext/scheduled root phases');
  return {measuredStates:d.cases.length,actualColoredPlayheads:4};
 },'Measured Canvas arc strokes and exact planEvents sound times for four 1/1/2/4-bar hands');
+check('real AudioContext native oscillator scheduling','artifacts/audio-clock-scheduling/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.cases?.length,2,'desktop and mobile real oscillator traces required');
+ for(const c of d.cases){
+  assert.ok(c.actualOscillatorStarts>=8&&c.actualDistinctSoundEvents>=4,
+   'actual Web Audio oscillator start calls must be measured, not a synthetic event count');
+  assert.equal(c.nativeOscillatorsPerHit,2);
+  assert.ok(c.maxAbsoluteEventErrorMs<12,
+   'oscillator timestamps must match the mathematical scheduled root hits');
+  assert.ok(c.maxFutureLeadMs>=15,
+   'AudioContext.start(time) future scheduling must be observed');
+  assert.ok(c.scheduledFromAudioContext&&c.singleLookaheadInterval);
+  assert.equal(c.leakedIntervals,0);assert.equal(c.errors,0);
+ }
+ return {measuredStates:d.cases.length,realOscillatorScheduling:true};
+},'Observed OscillatorNode.start timestamps vs AudioContext.currentTime, beatEpoch and planned complex-root events');
 check('responsive Sound Lab waveform','artifacts/sound-lab/measurements.json',d=>{
  assert.equal(d.status,'PASS');
  assert.equal(d.results?.length,4);
@@ -127,10 +143,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,17,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,18,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 17 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 18 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

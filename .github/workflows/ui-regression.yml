@@ -53,6 +53,7 @@ on:
       - tests/phase-label-adaptation.mjs
       - tests/playback-hand-clearance.mjs
       - tests/orbital-hands-audio-sync.mjs
+      - tests/audio-context-scheduler-proof.mjs
       - tests/animated-adjacent-ring-clearance.mjs
       - tests/multi-lane-magnification.mjs
       - tests/beat-visual-acceptance.mjs
@@ -109,6 +110,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-orbit-hands.log 2>&1 &
           node tests/orbital-hands-audio-sync.mjs
+      - name: Prove real oscillator start timestamps use AudioContext future scheduling, not timer-only triggers
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-audio-clock-proof.log 2>&1 &
+          node tests/audio-context-scheduler-proof.mjs
       - name: Inspect bottom Sound Lab, selected instrument waves and actual patch rendering
         if: ${{ !cancelled() }}
         run: |

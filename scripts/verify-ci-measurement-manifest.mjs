@@ -58,6 +58,23 @@ check('KaTeX DOM and browser screenshots','artifacts/math-typography-audit/summa
  assert.equal(d.screenshotFileCount,12);
  return {measuredStates:d.screens,referenceFormulas:10,liveMathLocations:16};
 },'KaTeX+MathML runtime source and 12 authentic Chromium PNGs');
+check('50-preset root-phase musical structure','artifacts/preset-structure/report.json',d=>{
+ assert.equal(d.status,'PASS');
+ assert.equal(d.originalCatalogSize,50);assert.equal(d.experimentalCount,15);
+ assert.equal(d.rows?.length,50);
+ assert.equal(new Set(d.rows.map(x=>x.id)).size,50);
+ assert.equal(d.collision.uniqueSameLaneEvents,4);
+ assert.equal(d.collision.coincidentSources,2);
+ assert.equal(d.collision.downbeatLaneAttacks,2);
+ assert.ok(d.rows.every(r=>r.exactChunks&&r.noDuplicates&&r.originalRootsPreserved));
+ for(const r of d.rows.filter(r=>r.experimental)){
+  assert.ok(r.sharedKickResponse&&r.sharedMoments>0);
+  assert.ok(r.explicitStructure&&r.ghostSourceProvenance&&r.ghostCount>=2);
+  assert.ok(r.densityMax-r.densityMin>=2&&r.densityMax/r.densityMin>=1.5);
+  assert.equal(r.lanes?.length,4);
+ }
+ return {presets:50,documentedExperimentalGrooves:15,sharedCrossLaneEvents:true,velocityProvenance:true};
+},'Every original catalog rhythm uses the same root/event scheduler, with documented 15 distinct sparse/dense experimental voice roles, shared kick/response hits and genuine low-velocity first-degree root pickups');
 check('full required instrument source inventory','artifacts/mandatory-voice-inventory/report.json',d=>{
  assert.equal(d.status,'PASS');assert.equal(d.requiredCount,14);
  assert.equal(d.cases?.length,2,'desktop and mobile required sound rendering');
@@ -197,10 +214,10 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
  assert.equal(d.results?.length,4);
  return {measuredStates:d.results.length};
 },'Live on-lane gain, bongo routing and six featured grooves');
-assert.equal(tests.length,21,'the independent release-evidence file inventory must remain exhaustive');
+assert.equal(tests.length,22,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
  note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');
-console.log('PASS 21 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');
+console.log('PASS 22 real measured CI evidence files: orbital playhead timing, geometry, accessibility, formulas, transport, color/wheel input, audio and presets without human-acceptance claims');

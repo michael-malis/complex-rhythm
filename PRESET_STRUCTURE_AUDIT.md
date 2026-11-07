@@ -5,12 +5,13 @@
 ## Observations
 
 - **50 presets / 200 lanes** remain represented by mathematical root and optional extra/Euclidean events.
-- **21** examples have no reduced-velocity accents; many are intentionally pure polyrhythm demonstrations, so this is a review flag, not a defect.
-- **21** use base root sets without added sets, a valid mathematical configuration.
-- **4** have no simultaneous cross-lane moment in the bounded four-bar schedule.
-- **5** unique pairs meet the existing ≥0.85 phase-similarity measure and should be listened to for distinguishability. Mathematical similarity does not imply identical timbre.
+- **7** examples retain only unit-velocity root attacks; these may be deliberately pure mathematical polyrhythm demonstrations, not defects.
+- **7** still have no additional root sets, a valid mathematical configuration.
+- **0** now lack simultaneous cross-lane events in the common-cycle analysis. The 15 experimental pieces include an intentionally shared kick-response anchor, and the original 35 are unchanged.
+- The 15 experimental studies each contain three new genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study retains its previous five separately sourced accents as well.
+- High phase similarity (≥0.85) remains a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
 
-The counts and similarity rows below were rechecked against the generated 50-preset inventory after the four Acid presets were redesigned. The five remaining high-similarity pairs are timing-only candidates for a future listening review, not duplicates of waveform or style.
+All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The original 35 mathematical configurations, all 15 experimental base roots, degree quartets, tempos, voices and original complex arguments are preserved.
 
 ## Quantitative per-preset evidence
 
@@ -51,21 +52,21 @@ The counts and similarity rows below were rechecked against the generated 50-pre
 | `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | none |
 | `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | none |
 | `303-pressure` | acid | 140 | 5:2:9:9 | 5 | 4 | 4 | 4.50 | none |
-| `industrial-fracture` | experimental | 155 | 5:7:11:9 | 1 | 0 | 0 | 2.20 | none |
-| `acid-reactor` | experimental | 148 | 3:5:7:11 | 1 | 0 | 0 | 3.67 | none |
-| `rotterdam-collision` | hardcore | 180 | 4:7:11:3 | 2 | 0 | 0 | 3.67 | none |
-| `schranz-machinery` | hardcore | 158 | 7:9:11:13 | 2 | 0 | 0 | 1.86 | none |
-| `broken-reactor` | experimental | 172 | 5:11:7:13 | 0 | 0 | 0 | 2.60 | none |
-| `frenchcore-spiral` | hardcore | 205 | 4:7:5:11 | 2 | 0 | 0 | 2.75 | none |
-| `acid-singularity` | experimental | 162 | 7:11:13:5 | 1 | 0 | 0 | 2.60 | none |
-| `prime-number-riot` | experimental | 175 | 3:5:7:11 | 1 | 0 | 0 | 3.67 | none |
-| `eleven-against-seven` | experimental | 146 | 7:11:5:13 | 2 | 0 | 0 | 2.60 | none |
-| `mechanical-paradox` | experimental | 168 | 9:13:7:11 | 0 | 0 | 0 | 1.86 | none |
-| `terror-geometry` | hardcore | 220 | 4:7:9:13 | 1 | 0 | 0 | 3.25 | none |
-| `complex-roots-overload` | experimental | 186 | 7:11:13:17 | 0 | 0 | 0 | 2.43 | none |
-| `hardtek-mobius` | hardcore | 178 | 5:7:9:4 | 1 | 0 | 0 | 2.25 | none |
-| `breakcore-prime-shards` | experimental | 190 | 7:5:11:3 | 0 | 0 | 0 | 3.67 | none |
-| `euclidean-fragments` | experimental | 170 | 7:11:13:10 | 1 | 5 | 1 | 1.86 | none |
+| `industrial-fracture` | experimental | 155 | 6:9:11:9 | 3 | 3 | 3 | 1.83 | none |
+| `acid-reactor` | experimental | 148 | 4:7:7:11 | 3 | 3 | 3 | 2.75 | none |
+| `rotterdam-collision` | hardcore | 180 | 5:9:11:3 | 3 | 3 | 3 | 3.67 | none |
+| `schranz-machinery` | hardcore | 158 | 8:11:11:13 | 3 | 3 | 3 | 1.63 | none |
+| `broken-reactor` | experimental | 172 | 6:13:7:13 | 1 | 3 | 3 | 2.17 | none |
+| `frenchcore-spiral` | hardcore | 205 | 5:9:5:11 | 3 | 3 | 3 | 2.20 | none |
+| `acid-singularity` | experimental | 162 | 8:13:13:5 | 2 | 3 | 3 | 2.60 | none |
+| `prime-number-riot` | experimental | 175 | 4:7:7:11 | 3 | 3 | 3 | 2.75 | none |
+| `eleven-against-seven` | experimental | 146 | 8:13:5:13 | 3 | 3 | 3 | 2.60 | none |
+| `mechanical-paradox` | experimental | 168 | 10:15:7:11 | 1 | 3 | 3 | 2.14 | none |
+| `terror-geometry` | hardcore | 220 | 5:9:9:13 | 2 | 3 | 3 | 2.60 | none |
+| `complex-roots-overload` | experimental | 186 | 8:13:13:17 | 1 | 3 | 3 | 2.13 | none |
+| `hardtek-mobius` | hardcore | 178 | 6:9:9:4 | 3 | 3 | 3 | 2.25 | none |
+| `breakcore-prime-shards` | experimental | 190 | 8:7:11:3 | 1 | 3 | 3 | 3.67 | none |
+| `euclidean-fragments` | experimental | 170 | 8:13:13:10 | 2 | 8 | 4 | 1.63 | none |
 
 ## Acceptance boundary
 

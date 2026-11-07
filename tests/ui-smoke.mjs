@@ -93,8 +93,8 @@ try {
  verify((await page.locator('#laneCount1').textContent()).includes('5 hits'),'lane1 independent edits');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 unaffected by lane1 edit');
  await page.locator('#trackN1').fill('4');
- await page.locator('#laneBars0').fill('3');
- await page.locator('#laneBars1').fill('4');
+ await page.locator('#laneBars0').selectOption('3');
+ await page.locator('#laneBars1').selectOption('4');
  verify((await page.locator('#commonCycle').textContent()).includes('12 bars'),'3:4 polymetry common cycle');
  await page.locator('#windowPanel').evaluate(el=>el.open=true);
  await page.waitForTimeout(60);
@@ -103,8 +103,8 @@ try {
  verify((await page.locator('#windowCounts').textContent()).includes('scheduled lane events'),'window shows real scheduled events');
  await page.locator('#windowStart').evaluate(el=>{el.value='7';el.dispatchEvent(new Event('input',{bubbles:true}))});
  verify((await page.locator('#windowStartText').textContent())==='8','explore later bars without generating entire super-cycle');
- await page.locator('#laneBars0').fill('1');
- await page.locator('#laneBars1').fill('1');
+ await page.locator('#laneBars0').selectOption('1');
+ await page.locator('#laneBars1').selectOption('1');
  await page.locator('#trackN0').fill('4');
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
  await page.locator('#addRootFamily').click();

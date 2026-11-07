@@ -56,7 +56,7 @@ function draw(svg,data){
   marker.append(node('title',{},'Root '+hit.k+': '+number(hit.deg)+' degrees'));
   svg.append(marker);
  }
- svg.append(node('circle',{cx,y:cy,r:10.5,class:'root-info-focus-halo',
+ svg.append(node('circle',{cx,cy,r:10.5,class:'root-info-focus-halo',
   visibility:'hidden','aria-hidden':'true'}));
  svg.append(node('circle',{cx,cy,r:2.3,class:'root-info-center'}));
 }

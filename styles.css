@@ -381,3 +381,21 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
  #soundWaveCanvas{height:150px}
  .sound-lab>summary .quiet{margin-left:0}
 }
+
+
+/* One ring = one complete lane loop (1–16 4/4 bars). Bar-boundary ticks
+   live on Canvas; this compact legend makes the otherwise normalized
+   complex-root phases legible without another timeline or sidebar. */
+.lane-length{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:9px;row-gap:2px;align-items:center}
+.lane-length select{min-width:102px;max-width:132px;min-height:44px;padding:6px 7px;font-size:18px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:5px}
+.lane-cycle-explanation{grid-column:1 / -1;font-size:15px;color:var(--sub);line-height:1.4;margin:0 0 2px}
+.cycle-guide{margin:6px 13px 0;padding:9px 0 8px;border-top:1px solid var(--fine)}
+.cycle-guide-heading{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;color:var(--sub);font-size:14px;font-weight:700;letter-spacing:.035em}
+.cycle-guide-heading span{font-weight:400;letter-spacing:0}
+.cycle-guide-lanes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:9px 0 6px}
+.cycle-guide-lane{display:grid;gap:2px;min-width:0;padding:5px 6px;border-left:3px solid var(--lane-color);color:var(--sub);font-size:13px;line-height:1.35}
+.cycle-guide-lane strong{font-size:15px;color:var(--ink);font-weight:600;white-space:normal}
+.cycle-guide-lane.active{background:var(--plot)}
+.cycle-guide-hint{font-size:15px;line-height:1.45;color:var(--sub);margin:0}
+@media(max-width:800px){.cycle-guide-lanes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.cycle-guide{margin:5px 10px 0}.cycle-guide-hint{font-size:15px}.lane-length select{min-width:92px}}

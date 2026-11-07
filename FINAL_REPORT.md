@@ -4,6 +4,9 @@
 **Next development plan:** [14 consolidated operational tasks](NEXT_EXECUTION_PLAN.md) (historic 652-row ledger preserved).  
 **Specification:** [MASTER_IMPLEMENTATION_SPEC.md](MASTER_IMPLEMENTATION_SPEC.md).
 
+**Operational progress checkpoint (7 November 2026):** 4/14 macros are VERIFIED, 7/14 are IN_PROGRESS, 1 remains TODO (M14), and 2 are BLOCKED by external/manual acceptance (M12/M13). Specifically M05 and M11 are now *IN_PROGRESS* rather than untouched TODO: [PR #21](https://github.com/michael-malis/complex-rhythm/pull/21) delivered executable KaTeX/MathML and screenshot audits, and [PR #23](https://github.com/michael-malis/complex-rhythm/pull/23) merged the independent 14-measurement evidence gate. This progress classification does **not** change the original ledger's 380/652 verified checks or 63/98 parent requirements, and it does not certify the final release. M08 phase/resume/reset work is tracked in [PR #24](https://github.com/michael-malis/complex-rhythm/pull/24) pending its own CI and merge.
+
+
 ## 1–6. Requirement accounting
 
 | Measure | Exact recorded value |

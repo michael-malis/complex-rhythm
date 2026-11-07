@@ -38,6 +38,8 @@ on:
       - tests/formula-acceptance.mjs
       - MATH_TYPOGRAPHY_AUDIT.md
       - scripts/verify-math-typography-audit.mjs
+      - CI_MEASUREMENT_MANIFEST.md
+      - scripts/verify-ci-measurement-manifest.mjs
       - tests/legacy-json-compat.mjs
       - tests/accessibility-contrast.mjs
       - tests/expanded-ui-typography.mjs
@@ -322,6 +324,9 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-angle-first.log 2>&1 &
           node tests/angle-first.mjs
+      - name: Independently validate measured CI outputs and write release evidence manifest
+        if: ${{ !cancelled() }}
+        run: node scripts/verify-ci-measurement-manifest.mjs
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

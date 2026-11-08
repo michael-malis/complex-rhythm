@@ -77,6 +77,13 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border
 
 #jsonFile{display:none}
 .phase-mark.overlap:after{background:var(--mark-color,var(--accent))}
+/* One full-size result strip is selectable: no 18px touch targets and no
+   extra beat-maker controls. Matching sources stay highlighted together. */
+#unionStrip{cursor:crosshair;touch-action:pan-y}
+#unionStrip:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.phase-mark.is-inspected{outline:2px solid var(--ink);outline-offset:3px;z-index:3}
+.phase-strip-help{font-size:16px;line-height:1.35;color:var(--sub);margin:0 0 7px}
+
 .layer-title{grid-column:1/-1;font-weight:680;font-size:18px;color:var(--sub);padding:0 0 2px}
 .composition-info p{overflow-wrap:anywhere;max-width:70%;font-variant-numeric:tabular-nums}
 

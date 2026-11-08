@@ -400,6 +400,8 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 
 **Product improvement (CI-pending):** The root inspection halo and three root-set phase strips now stay in sync with the optional four-bar timeline. Selecting a root highlights every actual scheduled occurrence within that lane's visible time window, not just the first hit. Selecting a timeline event (mouse, touch, or keyboard) selects its corresponding canonical base/added/Euclidean source on the circle and shows the same exact-angle inspector. This reuses the original small panels, with no new beat-maker controls.
 
+**Additional timeline correction:** The absolute horizontal bar-axis labels now follow the view-window slider (0–4, 4–8, etc.), so visible timestamp labels never contradict the scrolled polymetric window.
+
 **Mathematical invariant:** Matching is by lane and normalized source phase, never by close x-position or coincident phase across lanes; recurrence is governed by independent cycleBars. Muted lanes remain absent from the audible timeline while their mathematical roots remain inspectable. This is read-only and never changes preset content, phase mathematics, instruments, transport, or scheduler.
 
 **Evidence gate:** Dedicated Chromium desktop/phone source-link test, 1/2/3/4-bar cyclic recurrence checks, keyboard navigation, phase equality, source provenance, and scheduler/JSON immutability; full UI/math/audio CI mandatory before merge. No legacy task or requirement automatically marked verified.

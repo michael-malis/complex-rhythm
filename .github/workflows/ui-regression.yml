@@ -46,6 +46,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-orbit-hands.log 2>&1 &
           node tests/orbital-hands-audio-sync.mjs
+      - name: Confirm four always-colored orbit rings and exact selected-lane accessibility
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-ring-identity.log 2>&1 &
+          node tests/four-ring-identity.mjs
       - name: Prove real oscillator start timestamps use AudioContext future scheduling, not timer-only triggers
         if: ${{ !cancelled() }}
         run: |

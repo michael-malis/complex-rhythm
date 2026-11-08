@@ -230,8 +230,31 @@ jobs:
       - name: Audit historical and current mathematical DOM across all responsive themes
         if: ${{ !cancelled() }}
         run: |
+          test -f historical-before/index.html
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-math-present.log 2>&1 &
           python3 -m http.server 8768 --bind 127.0.0.1 --directory historical-before >/tmp/rhythm-math-before.log 2>&1 &
+          # Verify BOTH servers serve the exact intended Git revision before
+          # Playwright reads their DOM. A directory index or stale server is
+          # never accepted as valid historical comparison evidence.
+          for spec in 8767:index.html 8768:historical-before/index.html; do
+            port="${spec%%:*}"
+            expected="${spec#*:}"
+            ready=0
+            for attempt in $(seq 1 30); do
+              if curl -fsS --max-time 2 "http://127.0.0.1:${port}/index.html" -o "/tmp/rhythm-math-${port}.html" && \
+                 cmp -s "/tmp/rhythm-math-${port}.html" "${expected}" && \
+                 grep -Fq 'class="math-details"' "/tmp/rhythm-math-${port}.html"; then
+                ready=1
+                break
+              fi
+              sleep 0.2
+            done
+            if [ "${ready}" -ne 1 ]; then
+              echo "Historical math comparison server ${port} did not serve expected ${expected}" >&2
+              tail -40 /tmp/rhythm-math-present.log /tmp/rhythm-math-before.log >&2 || true
+              exit 1
+            fi
+          done
           node tests/math-historical-before-after.mjs
       - name: Verify per-formula typography audit against all real Chromium screenshots
         if: ${{ !cancelled() }}

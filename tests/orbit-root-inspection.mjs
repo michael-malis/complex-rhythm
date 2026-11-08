@@ -156,6 +156,78 @@ try{
   await page.close();
  }
  
+ // Every keyboard navigation step traverses visible canonical set events.
+ // No fake roots, silent extra notes, duplicate overlaps, or audio rescheduling.
+ for(const viewport of screens){
+  const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  const augmented={...fixture,name:'Keyboard mathematical inspection QA',
+   tracks:fixture.tracks.map((t,i)=>i===0?{...t,
+    layers:[{a:1,b:0,n:3,velocity:.65}],
+    euclidean:{k:1,n:8,rotation:1,velocity:.58}}:t)};
+  await load(page,augmented);
+  const original=await read(page);
+  await page.locator('#orbitCanvas').focus();
+  await page.keyboard.press(']');
+  let v=await read(page);
+  assert.match(v.label,/Lane 1 · root 1\/4 · shared: base \+ family 1/);
+  assert.match(v.time,/Phase 0%/);
+  assert.ok(v.mathml,'keyboard-selected event uses real MathML');
+  assert.match(await page.locator('#rootInspectionAnnouncement').textContent(),/Angle 0 degrees/);
+  await page.keyboard.press(']');
+  v=await read(page);
+  assert.match(v.label,/Euclidean hit 1\/1/);
+  assert.match(v.time,/Phase 12\.5%/);
+  await page.keyboard.press(']');
+  assert.match((await read(page)).label,/root 2\/4/);
+  await page.keyboard.press(']');
+  assert.match((await read(page)).label,/added root 2\/3 · family 1/);
+  await page.keyboard.press('[');
+  assert.match((await read(page)).label,/root 2\/4/);
+  await page.keyboard.press('Home');
+  assert.match((await read(page)).label,/root 1\/4/);
+  await page.keyboard.press('End');
+  assert.match((await read(page)).label,/root 4\/4/);
+  await page.keyboard.press(']');
+  assert.match((await read(page)).label,/root 1\/4/);
+  await page.keyboard.press('Escape');
+  assert.equal((await read(page)).hidden,true,'Escape clears inspection without editing');
+  assert.match(await page.locator('#rootInspectionAnnouncement').textContent(),/cleared/);
+  await page.keyboard.press('ArrowDown');
+  assert.match((await read(page)).source.tracks[1].n.toString(),/^3$/);
+  await page.keyboard.press(']');
+  assert.match((await read(page)).label,/Lane 2 · root 1\/3/);
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press(']');
+  assert.equal((await read(page)).hidden,true,'a zero-complex lane has no invented keyboard hits');
+  const after=await read(page);
+  assert.deepEqual(after.source.tracks,original.source.tracks,
+   'keyboard browsing never changes the underlying four complex rhythm generators');
+  assert.equal(after.transport.schedulerIntervalsCreated,original.transport.schedulerIntervalsCreated,
+   'keyboard inspection does not touch audio scheduler');
+
+  // In intersection mode, a mathematical base root not in the output
+  // intersection is invisible and must not be clickable or keyboard-selectable.
+  const intersect={...fixture,name:'Intersection hides unmatched base roots',
+   tracks:fixture.tracks.map((t,i)=>i===0?{...t,operation:'intersection',
+    layers:[{a:1,b:0,n:3,velocity:.65}]}:t)};
+  await load(page,intersect);
+  // Import intentionally retains the chosen lane, so select lane 1 explicitly.
+  await page.locator('.lane[data-lane="0"] .lane-select').click();
+  await page.locator('#orbitCanvas').focus();
+  await page.keyboard.press('Home');
+  assert.match((await read(page)).label,/root 1\/4 · shared: base \+ family 1/);
+  await page.keyboard.press(']');
+  assert.match((await read(page)).label,/root 1\/4/);
+  await page.keyboard.press('Escape');
+  await tapRoot(page,0,1);
+  assert.equal((await read(page)).hidden,true,
+   'pointer selection must reject a base root removed by intersection');
+  assert.deepEqual(errors,[]);
+  await page.close();
+ }
+ 
  // When audio is playing, an inspection must not alter the root scheduler.
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
@@ -178,5 +250,5 @@ try{
  await page.close();
  fs.writeFileSync('artifacts/orbit-root-inspection/report.json',
   JSON.stringify({status:'PASS',states:report.length,report,realBrowser:true,audioSchedulerUnchanged:true}));
- console.log('PASS: inspect base, added, shared and Euclidean orbit events with exact math, responsive touch and audio invariants');
+ console.log('PASS: inspect base, added, shared and Euclidean orbit events by touch and keyboard, source-safe intersection, MathML and unchanged audio');
 }finally{await browser.close();}

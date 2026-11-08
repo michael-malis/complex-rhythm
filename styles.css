@@ -265,6 +265,10 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
    Use an outline, never a second hit marker or a change to event geometry. */
 .window-mark.window-inspected{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px var(--panel);z-index:2}
 .window-mark.window-selected.window-inspected{outline-width:3px;z-index:3}
+/* All source recurrences stay highlighted; only the chosen absolute
+   timestamp receives a second, lane-colored focus halo. */
+.window-mark.window-occurrence-focused{outline:3px solid var(--ink);outline-offset:2px;
+  box-shadow:0 0 0 5px var(--lane-color);z-index:4}
 .event-inspection{font-size:17px;line-height:1.5;color:var(--ink);padding:8px 11px;
   border:1px solid var(--line);border-radius:5px;background:var(--panel);min-height:44px}
 

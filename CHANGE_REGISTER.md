@@ -413,3 +413,11 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 **Unchanged:** Four color-coded root rings, four audio-clock playheads, source event phase and provenance, Web Audio scheduler, 1–16-bar loops, mute, presets and JSON. Muted lanes have no timeline attacks. Timeline window changes recompute the actual coincident moments.
 
 **Acceptance:** `tests/root-window-link.mjs` checks real desktop/phone DOM markings against every actual four-lane timeline position, source tooltip and selected event, scrolled window, mute changes, untouched scheduler and JSON state. This is not evidence of human/manual acceptance and does not automatically advance original requirements.
+
+### 2026-11-08 — Inspect the exact selected recurrence across timeline and rings
+
+**User-facing change (CI pending):** A selected event in the four-bar polymetric timeline retains its actual absolute bar. The root inspector and the static dotted cross-lane halos show which other circles coincide at *that occurrence* instead of silently substituting the first recurrence. The selected timestamp is outlined separately while all occurrences of its root phase remain linked; direct circle/phase-strip selection still defaults to its first occurrence.
+
+**Mathematical safety:** The same canonical scheduled event is used. Independent 1–16-bar periods are respected; tempo changes only recompute seconds. Editing a source phase or loop length invalidates any no-longer-possible selected absolute timestamp, reverting to first occurrence. Muted lanes and first-occurrence semantics remain supported. The Web Audio scheduler, track colors and four playheads are unmodified.
+
+**Evidence gate:** Expanded desktop/mobile browser tests compare bar 1 versus bar 2 cross-lane coincidences of the same complex root, Canvas counterpart halo count, exact bar/time after BPM changes, later 2-bar root recurrence, invalidated timestamp fallback, keyboard circle selection, muted state and unchanged track/event scheduler. No historic acceptance status is promoted by a product enhancement alone.

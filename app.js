@@ -401,7 +401,7 @@ function renderRootInspection(){
  $('rootInspectionAnnouncement').textContent=$('rootInspectionLane').textContent+
   '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent;
 }
-// Keyboard inspection walks only actually scheduled, visible canonical events.
+// Keyboard inspection walks the canonical visible set, including muted lanes.
 // It never edits the root generator, the audio clock, or the preset identity.
 function inspectNeighborEvent(direction,edge=null){
  const lane=selectedTrack,t=tracks[lane],all=events(t);

@@ -57,3 +57,42 @@ console.log(JSON.stringify({
  newlyAcceptedOriginalRequirements:newlyAccepted,
  openHistoricalChecks:totalOpen,packages
 },null,2));
+
+
+// Post-baseline user-approved tasks live in the SAME TASKS.md authority,
+// but are not counted as the 652 historically frozen T-* source checks.
+// Reject misplaced IDs, duplicate scopes, broken dependency links or
+// accidental claims of implemented Bunker sound during the planning stage.
+const changeRequest='CR-BNK-001';
+const additional=raw.split('\n').filter(line=>/^\| CR-BNK-001(?:-\d\d)? \|/.test(line))
+ .map(line=>line.split(/(?<!\\)\|/).slice(1,-1).map(value=>value.trim()));
+assert.equal(additional.length,10,'Expected one Bunker change parent and nine outcome tasks');
+const changeIds=new Set(additional.map(row=>row[0]));
+assert.equal(changeIds.size,10,'No duplicate Bunker change task IDs');
+const expectedChangeIds=[changeRequest,...Array.from({length:9},(_,i)=>changeRequest+'-'+String(i+1).padStart(2,'0'))];
+assert.deepEqual([...changeIds],expectedChangeIds,'Stable Bunker IDs and planned order');
+for(const [index,row] of additional.entries()){
+ assert.equal(row.length,11,'Post-baseline tasks use the existing 11-column TASKS schema');
+ const [id,requirement,parent,action,deps,deliverable,acceptance,status,evidence,defects,commit]=row;
+ assert.equal(requirement,changeRequest,'Change tasks cannot masquerade as original R-* requirements');
+ assert.equal(parent,index===0?'-':changeRequest,'Only one approved Bunker package parent');
+ assert.match(action,/^P[01]:/,'Every new task needs an explicit priority');
+ assert.ok(deliverable.length>25&&acceptance.length>35,'Each task needs deliverable and testable acceptance');
+ assert.ok(['TODO','IN_PROGRESS','BLOCKED','FAILED','VERIFIED'].includes(status),'Invalid CR status '+id);
+ if(status==='VERIFIED')assert.ok(evidence!=='-'&&commit!=='-','CR task VERIFIED without evidence '+id);
+ if(status==='BLOCKED'||status==='FAILED')assert.notEqual(defects,'-','CR blocker without reason '+id);
+ if(deps!=='-')for(const dep of deps.split(',').map(x=>x.trim())){
+  assert.ok(changeIds.has(dep),'Unknown CR dependency '+dep);
+  assert.ok(expectedChangeIds.indexOf(dep)<index,'CR dependencies must precede their tasks: '+id);
+  if(status==='VERIFIED')assert.equal(additional[expectedChangeIds.indexOf(dep)][7],'VERIFIED',
+   'Completed CR task has unaccepted dependency '+dep);
+ }
+}
+const crRegister=fs.readFileSync('CHANGE_REGISTER.md','utf8');
+assert.ok(crRegister.includes('## CR-BNK-001 ·'),'Approved scope missing from shared change register');
+assert.ok(plan.includes('## M10 continuation · CR-BNK-001'),'CR work not linked to original M10 plan');
+assert.ok(plan.includes('M13 human acceptance'),'Missing existing listening gate for Bunker changes');
+assert.ok(additional.every(row=>row[7]==='TODO'),'Planning-only PR cannot pre-certify Bunker implementation');
+console.log(JSON.stringify({status:'PASS',postBaselineChange:changeRequest,additionalTasks:additional.length,
+ additionalVerified:additional.filter(row=>row[7]==='VERIFIED').length,
+ combinedTaskRows:rows.length+additional.length,legacyTaskRows:rows.length,macros:active.length},null,2));

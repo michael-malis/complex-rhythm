@@ -114,6 +114,21 @@ try{
   assert.deepEqual(state.tracks,initial,'choosing a ring does not mutate mathematical roots or voices');
   assert.equal(state.transport.schedulerIntervalsCreated,intervals);
 
+  // The accessible label follows source changes, not a stale selection snapshot.
+  await page.locator('#laneMute2').click();
+  state=await readRings(page);
+  assert.match(state.aria,/Selected lane 3 of 4, Rim click, 1 visible event in 2 bars/);
+  assert.ok(!state.aria.split('in 2 bars')[1].startsWith(', muted'),
+   'unmuting updates the Canvas label immediately');
+  await page.locator('#laneMute2').click();
+  state=await readRings(page);
+  assert.match(state.aria,/Rim click, 1 visible event in 2 bars, muted/);
+  await page.locator('#laneSound2').selectOption('tom');
+  state=await readRings(page);
+  assert.match(state.aria,/Tom, 1 visible event in 2 bars, muted/,
+   'switching voices updates the name used by screen readers');
+  await page.locator('#laneSound2').selectOption('rim');
+
   // Live degree edits update the Canvas's accessible event count without a
   // tooltip, new panel, changed preset or duplicate scheduler.
   await page.locator('#trackN2').fill('6');

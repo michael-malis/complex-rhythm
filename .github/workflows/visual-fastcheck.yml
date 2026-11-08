@@ -1,0 +1,39 @@
+name: Fast four-ring visual regression
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'tests/four-ring-identity.mjs'
+      - '.github/workflows/visual-fastcheck.yml'
+permissions:
+  contents: read
+jobs:
+  four-ring-visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: |
+          node --check app.js
+          node --check tests/four-ring-identity.mjs
+      - name: Install minimal Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Validate real Canvas ring colors and accessibility
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-quick-visual-http.log 2>&1 &
+          node tests/four-ring-identity.mjs
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ring-visual-quick-evidence
+          path: artifacts/four-ring-identity/
+          if-no-files-found: ignore

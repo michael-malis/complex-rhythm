@@ -21,6 +21,10 @@ async function status(page){
   transport:window.RhythmResearch.transport(),
   label:document.querySelector('#rootInspectionLane').textContent,
   timing:document.querySelector('#rootInspectionTime').textContent,
+  coincidence:document.querySelector('#rootInspectionCoincidences').textContent,
+  focused:[...document.querySelectorAll('.window-occurrence-focused')].map(dot=>({
+   lane:Number(dot.dataset.lane),absoluteBars:Number(dot.dataset.absoluteBars)
+  })),
   panelHidden:document.querySelector('#rootInspection').hidden,
   marks:[...document.querySelectorAll('.window-lane-events')].map(row=>({
    selected:[...row.querySelectorAll('.window-inspected')].map(dot=>Number(dot.dataset.phase)),
@@ -61,6 +65,25 @@ async function assertCrossLaneOutlines(page){
 try{
  for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
+  // Capture existing, static cross-lane Canvas halos (never moving hands).
+  await page.addInitScript(()=>{
+   const C=CanvasRenderingContext2D.prototype,arc=C.arc,stroke=C.stroke,clear=C.clearRect;
+   C.arc=function(x,y,r,a,b,...rest){this.__inspectedArc={x,y,r};return arc.call(this,x,y,r,a,b,...rest)};
+   C.clearRect=function(...args){
+    if(this.canvas?.id==='orbitCanvas')window.__crossHalos=[];
+    return clear.apply(this,args);
+   };
+   C.stroke=function(...args){
+    if(this.canvas?.id==='orbitCanvas'&&this.__inspectedArc&&
+     this.getLineDash().join(',')==='3,5'){
+     (window.__crossHalos||(window.__crossHalos=[])).push({
+      x:this.__inspectedArc.x,y:this.__inspectedArc.y,r:this.__inspectedArc.r,
+      color:String(this.strokeStyle)
+     });
+    }
+    return stroke.apply(this,args);
+   };
+  });
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
   await page.locator('#jsonFile').setInputFiles({name:'linked.json',mimeType:'application/json',
@@ -75,6 +98,26 @@ try{
   assert.match(firstCoincidence,/simultaneous with Lane 2, Lane 3, Lane 4/);
   await clickAt(page,0,0);
   assert.match(await page.locator('#eventInspection').textContent(),/simultaneous with Lane 2, Lane 3, Lane 4/);
+  let moment=await status(page);
+  assert.match(moment.timing,/selected occurrence · absolute bar 1\.000 · 0\.000 s after start/);
+  assert.deepEqual(moment.focused,[{lane:0,absoluteBars:0}]);
+  // Identical root one bar later has DIFFERENT cross-lane coincidences.
+  // The circle must reflect that selected recurrence, not its phase-zero twin.
+  await clickAt(page,0,.25);
+  moment=await status(page);
+  assert.match(moment.timing,/selected occurrence · absolute bar 2\.000 · 2\.000 s after start/);
+  assert.equal(moment.coincidence,'Same-time mathematical events: Lane 2 · Lane 3');
+  assert.deepEqual(moment.focused,[{lane:0,absoluteBars:1}]);
+  assert.match(await page.locator('#eventInspection').textContent(),/simultaneous with Lane 2, Lane 3/);
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  assert.equal((await page.evaluate(()=>window.__crossHalos||[])).length,2,
+   'Canvas counterparts correspond to the selected bar, not first occurrence');
+  // Tempo changes seconds, but must not change the selected mathematical bar.
+  await page.locator('#bpm').evaluate(el=>{el.value='60';el.dispatchEvent(new Event('input',{bubbles:true}))});
+  moment=await status(page);
+  assert.match(moment.timing,/selected occurrence · absolute bar 2\.000 · 4\.000 s after start/);
+  assert.deepEqual(moment.focused,[{lane:0,absoluteBars:1}]);
+  await page.locator('#bpm').evaluate(el=>{el.value='120';el.dispatchEvent(new Event('input',{bubbles:true}))});
   assert.equal(original.source.tracks.length,4);
   assert.deepEqual(await page.locator('.window-axis span').allTextContents(),
    ['0','1','2','3','4 bars'],'the initial axis measures elapsed bars');
@@ -91,6 +134,8 @@ try{
   assert.match(data.label,/Lane 1 · root 1\/4/);
   assert.deepEqual(data.marks.map(r=>r.selected.length),[4,0,0,0]);
   assert.ok(data.marks[0].selected.every(p=>near(p,0)));
+  assert.deepEqual(data.focused,[],'ring inspection defaults to first occurrence, not a selected timestamp');
+  assert.match(data.timing,/first occurrence/);
   await page.keyboard.press(']');
   data=await status(page);
   assert.match(data.timing,/Phase 25%/);
@@ -120,6 +165,16 @@ try{
   assert.ok(data.marks[1].selected.every(p=>near(p,.5)));
   assert.equal(await page.locator('.lane[data-lane="1"] .lane-select').getAttribute('aria-pressed'),'true');
   assert.match(await page.locator('#eventInspection').textContent(),/Lane 2 · bar 6\.000/);
+  assert.match(data.timing,/selected occurrence · absolute bar 6\.000 · 10\.000 s after start/);
+  assert.deepEqual(data.focused,[{lane:1,absoluteBars:5}]);
+  assert.equal(data.coincidence,'Same-time mathematical events: Lane 1 · Lane 3');
+  // An editor edit invalidates the previous absolute event: show the
+  // canonical source's first occurrence instead of retaining a stale time.
+  await page.locator('#laneBars1').fill('3');
+  data=await status(page);
+  assert.match(data.timing,/first occurrence/);
+  assert.deepEqual(data.focused,[]);
+  await page.locator('#laneBars1').fill('2');
 
   // A true root-family event in the 4-bar lane links by its source,
   // without mislabelling it as an ordinary base root.
@@ -155,6 +210,7 @@ try{
   data=await status(page);
   assert.equal(data.panelHidden,true);
   assert.equal(data.marks.flatMap(r=>r.selected).length,0);
+  assert.deepEqual(data.focused,[]);
 
   assert.equal(data.transport.schedulerIntervalsCreated,intervals,
    'source selection never starts the audio clock or duplicate schedulers');
@@ -162,7 +218,9 @@ try{
    'root and timeline navigation never edits the four complex generators');
   assert.deepEqual(errors,[],'no browser errors');
   await page.screenshot({path:'artifacts/root-window-link/'+viewport.width+'.png',fullPage:true});
-  cases.push({viewport,crossLaneOutlines:true,linkedRecurrences:true,linkedAddedAndEuclidean:true,mutedSafe:true,
+  cases.push({viewport,crossLaneOutlines:true,selectedAbsoluteOccurrence:true,
+   canvasCoincidenceSource:true,tempoRecalculation:true,staleSelectionFallback:true,
+   linkedRecurrences:true,linkedAddedAndEuclidean:true,mutedSafe:true,
    unchangedScheduler:true});
   await page.close();
  }

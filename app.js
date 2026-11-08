@@ -377,9 +377,19 @@ function syncInspectedPhaseMarks(phase){
   mark.classList.toggle('is-inspected',selected);
  }
 }
+// A timeline event identifies one specific recurrence; ring/phase-strip
+// selection defaults to the first occurrence. Retain a selected absolute bar
+// only while it is still an actual occurrence of this canonical source phase.
+function inspectionOccurrence(track,selection,phase){
+ const firstBars=phase*(track.cycleBars||1);
+ const requested=selection?.atBars;
+ const repeat=Number.isFinite(requested)?requested/(track.cycleBars||1)-phase:NaN;
+ const selected=Number.isFinite(requested)&&requested>=0&&
+  Math.round(repeat)>=0&&Math.abs(repeat-Math.round(repeat))<1e-6;
+ return {absoluteBars:selected?requested:firstBars,selected};
+}
 // A mathematical coincidence must occur at the SAME absolute bar position,
 // not merely at the same normalized angle on rings with different lengths.
-// We inspect the selected root's first occurrence after the common start.
 function coincidentLaneEvents(absoluteBars,sourceLane){
  const result=[];
  for(let lane=0;lane<tracks.length;lane++){
@@ -396,12 +406,14 @@ function coincidentLaneEvents(absoluteBars,sourceLane){
 }
 // A selected angular root may appear several times in the visible four-bar
 // window. Match the lane AND canonical phase, not screen position or color.
-function syncInspectedWindowMarks(phase=NaN,lane=-1){
+function syncInspectedWindowMarks(phase=NaN,lane=-1,atBars=NaN){
  for(const dot of document.querySelectorAll('#windowTimeline .window-mark')){
   const current=Number(dot.dataset.phase),delta=Math.abs(current-phase);
   const selected=Number.isFinite(phase)&&Number(dot.dataset.lane)===lane&&
    Math.min(delta,1-delta)<1e-6;
   dot.classList.toggle('window-inspected',selected);
+  dot.classList.toggle('window-occurrence-focused',selected&&Number.isFinite(atBars)&&
+   Math.abs(Number(dot.dataset.absoluteBars)-atBars)<1e-6);
  }
 }
 function renderRootInspection(){
@@ -423,15 +435,21 @@ function renderRootInspection(){
   if(selection){inspectedRoot=null;$('rootInspectionAnnouncement').textContent='Root inspection cleared';}
   return;
  }
- const bars=t.cycleBars||1,elapsedBars=phase*bars;
- const bar=Math.floor(elapsedBars)+1;
+ const bars=t.cycleBars||1;
+ const occurrence=inspectionOccurrence(t,selection,phase);
+ // A live root or loop-length edit can make the previously inspected
+ // absolute timestamp invalid. Fall back to the first valid occurrence.
+ if(!occurrence.selected&&Number.isFinite(selection.atBars))delete selection.atBars;
+ const elapsedBars=occurrence.absoluteBars;
+ const loopBar=Math.floor(((elapsedBars%bars)+bars)%bars)+1;
  const beat=1+4*(elapsedBars-Math.floor(elapsedBars));
- const firstSeconds=elapsedBars*240/bpm;
+ const seconds=elapsedBars*240/bpm;
  const simultaneous=coincidentLaneEvents(elapsedBars,selection.lane);
  const simultaneousText=simultaneous.length
   ?'Same-time mathematical events: '+simultaneous.map(v=>
      'Lane '+(v.lane+1)+(v.muted?' (muted)':'')).join(' · ')
-  :'No other lane has a hit at this first occurrence.';
+  :occurrence.selected?'No other lane has a hit at this selected occurrence.':
+   'No other lane has a hit at this first occurrence.';
  const kinds=[...new Set((match?.sources||[]).map(s=>s.kind==='base'?'base':
   s.kind==='additional'?'family '+(s.sourceIndex+1):'Euclidean'))];
  let description='root '+(selection.index+1)+'/'+t.n;
@@ -441,8 +459,10 @@ function renderRootInspection(){
  $('rootInspectionLane').textContent='Lane '+(selection.lane+1)+' · '+description;
  renderTeX('rootInspectionAngle','\\theta_{'+selection.index+'}='+window.RootAngleInfo.piTeX(phase*TAU));
  $('rootInspectionTime').textContent='Phase '+Number((phase*100).toFixed(3))+
-  '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+
-  '/4 · first occurrence '+firstSeconds.toFixed(3)+' s after start';
+  '% · loop bar '+loopBar+'/'+bars+' · beat '+Number(beat.toFixed(3))+
+  '/4 · '+(occurrence.selected?
+   'selected occurrence · absolute bar '+(elapsedBars+1).toFixed(3)+' · ':
+   'first occurrence ')+seconds.toFixed(3)+' s after start';
  $('rootInspectionCoincidences').textContent=simultaneousText;
  panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
  panel.hidden=false;
@@ -450,7 +470,7 @@ function renderRootInspection(){
   '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent+
   '. '+simultaneousText;
  syncInspectedPhaseMarks(phase);
- syncInspectedWindowMarks(phase,selection.lane);
+ syncInspectedWindowMarks(phase,selection.lane,occurrence.selected?elapsedBars:NaN);
 }
 // Keyboard inspection walks the canonical visible set, including muted lanes.
 // It never edits the root generator, the audio clock, or the preset identity.
@@ -467,10 +487,11 @@ function inspectNeighborEvent(direction,edge=null){
 }
 // The result strip has one large 48px interaction target rather than tiny
 // per-marker buttons. It uses the same events and provenance as the audio clock.
-function inspectCanonicalEvent(event){
+function inspectCanonicalEvent(event,atBars){
  if(!event)return;
  const source=event.sources.find(s=>s.kind==='base')||event.sources[0];
  inspectedRoot={lane:selectedTrack,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
+ if(Number.isFinite(atBars))inspectedRoot.atBars=atBars;
  if(source.kind==='base'){selectedRootIndex=source.index;updateSelectedRootMath();}
  renderRootInspection();
 }
@@ -1323,7 +1344,9 @@ function renderWindowTimeline() {
  for(let first=0;first<scheduled.length;){
   let end=first+1;
   while(end<scheduled.length&&Math.abs(scheduled[end].time-scheduled[first].time)<1e-6)end++;
-  const lanesAtMoment=[...new Set(scheduled.slice(first,end).map(event=>event.lane))];
+  // Tiny floating-time differences can reorder simultaneous lanes. Keep the
+  // explanation stable in ascending lane order, like the circular inspector.
+  const lanesAtMoment=[...new Set(scheduled.slice(first,end).map(event=>event.lane))].sort((a,b)=>a-b);
   if(lanesAtMoment.length>1){
    for(let j=first;j<end;j++)
     simultaneousById.set(scheduled[j].id,lanesAtMoment.filter(lane=>lane!==scheduled[j].lane));
@@ -1350,6 +1373,7 @@ function renderWindowTimeline() {
    const dot=document.createElement('span');dot.className='window-mark';
    dot.dataset.lane=String(i);
    dot.dataset.phase=String(event.phase);
+   dot.dataset.absoluteBars=String(event.time/secPerBar);
    dot.style.left=(100*(event.time/secPerBar-start)/span)+'%';
    const sourceDescription=event.sources.map(src=>src.kind==='base'?'base root '+(src.index+1):
      src.kind==='additional'?'extra root set '+(src.sourceIndex+1)+', root '+(src.index+1):
@@ -1380,7 +1404,7 @@ function renderWindowTimeline() {
    // Selection is read-only; the AudioContext scheduler is untouched.
    if(event.sources.length){
     chooseTrack(i);
-    inspectCanonicalEvent(event);
+    inspectCanonicalEvent(event,event.time/secPerBar);
    }
   };
   markers.addEventListener('click',e=>{
@@ -1409,7 +1433,10 @@ function renderWindowTimeline() {
  // mathematical source edit). Muted lanes have no scheduled audio marks.
  const selection=inspectedRoot;
  const phase=selection?.lane===selectedTrack?inspectionPhase(tracks[selectedTrack],selection):NaN;
- syncInspectedWindowMarks(phase,selection?.lane??-1);
+ const selectedOccurrence=selection&&Number.isFinite(phase)?
+  inspectionOccurrence(tracks[selectedTrack],selection,phase):null;
+ syncInspectedWindowMarks(phase,selection?.lane??-1,
+  selectedOccurrence?.selected?selectedOccurrence.absoluteBars:NaN);
 }
 let pendingEditReschedule=false;
 function markCustom(reschedule=true){
@@ -2014,7 +2041,8 @@ function draw() {
    ctx.setLineDash([4,3]);ctx.stroke();ctx.restore();
    // A separate static dashed outline shows genuinely simultaneous phases
    // on other independently timed rings. Never draw a radial playback hand.
-   const linked=coincidentLaneEvents(phase*(t.cycleBars||1),inspectedRoot.lane);
+   const atBars=inspectionOccurrence(t,inspectedRoot,phase).absoluteBars;
+   const linked=coincidentLaneEvents(atBars,inspectedRoot.lane);
    for(const match of linked){
     const angle=-Math.PI/2+TAU*match.phase,otherR=radii[match.lane];
     ctx.save();ctx.beginPath();

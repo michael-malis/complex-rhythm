@@ -405,3 +405,11 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 **Mathematical invariant:** Matching is by lane and normalized source phase, never by close x-position or coincident phase across lanes; recurrence is governed by independent cycleBars. Muted lanes remain absent from the audible timeline while their mathematical roots remain inspectable. This is read-only and never changes preset content, phase mathematics, instruments, transport, or scheduler.
 
 **Evidence gate:** Dedicated Chromium desktop/phone source-link test, 1/2/3/4-bar cyclic recurrence checks, keyboard navigation, phase equality, source provenance, and scheduler/JSON immutability; full UI/math/audio CI mandatory before merge. No legacy task or requirement automatically marked verified.
+
+### 2026-11-08 — Exact cross-lane coincidences shown on the four-bar timeline
+
+**User-facing change (pending CI):** The polymetric four-bar timeline now gives same-absolute-time attacks on different lanes subtle dashed outlines. The event's tooltip and selected-time explanation identify the other simultaneous lanes; a short timeline note explains the marker. Coincidences come from canonical scheduled seconds, not equal circle angles, and are different from a within-lane merged root source.
+
+**Unchanged:** Four color-coded root rings, four audio-clock playheads, source event phase and provenance, Web Audio scheduler, 1–16-bar loops, mute, presets and JSON. Muted lanes have no timeline attacks. Timeline window changes recompute the actual coincident moments.
+
+**Acceptance:** `tests/root-window-link.mjs` checks real desktop/phone DOM markings against every actual four-lane timeline position, source tooltip and selected event, scrolled window, mute changes, untouched scheduler and JSON state. This is not evidence of human/manual acceptance and does not automatically advance original requirements.

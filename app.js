@@ -1317,6 +1317,19 @@ function renderWindowTimeline() {
  const lanes=currentSchedulerLanes();
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);
  const analysis=RhythmMath.analyzeSchedule(scheduled);
+ // Exactly the same absolute-time groups used by schedule analysis.
+ // Coincidence is about real attack time, NOT equal root angles.
+ const simultaneousById=new Map();
+ for(let first=0;first<scheduled.length;){
+  let end=first+1;
+  while(end<scheduled.length&&Math.abs(scheduled[end].time-scheduled[first].time)<1e-6)end++;
+  const lanesAtMoment=[...new Set(scheduled.slice(first,end).map(event=>event.lane))];
+  if(lanesAtMoment.length>1){
+   for(let j=first;j<end;j++)
+    simultaneousById.set(scheduled[j].id,lanesAtMoment.filter(lane=>lane!==scheduled[j].lane));
+  }
+  first=end;
+ }
  const eventSummary=$('eventSummary');
  if(eventSummary)eventSummary.textContent=`4-bar view · ${analysis.totalEvents} audible hits · ${analysis.uniqueMoments} distinct times · ${analysis.sharedMoments} shared across lanes`;
  if(!$('windowPanel').open)return;
@@ -1341,8 +1354,11 @@ function renderWindowTimeline() {
    const sourceDescription=event.sources.map(src=>src.kind==='base'?'base root '+(src.index+1):
      src.kind==='additional'?'extra root set '+(src.sourceIndex+1)+', root '+(src.index+1):
      'Euclidean accent '+(src.index+1)).join(' + ')||'mathematical event';
-   dot.title=`Bar ${(event.time/secPerBar+1).toFixed(3)} · ${event.instrument||'instrument'} · ${sourceDescription}`;
+   const otherLanes=simultaneousById.get(event.id)||[];
+   const simultaneousText=otherLanes.length?' · simultaneous with '+otherLanes.map(lane=>'Lane '+(lane+1)).join(', '):'';
+   dot.title=`Bar ${(event.time/secPerBar+1).toFixed(3)} · ${event.instrument||'instrument'} · ${sourceDescription}${simultaneousText}`;
    dot.classList.toggle('window-shared',event.sources.length>1);
+   dot.classList.toggle('window-cross-lane',otherLanes.length>0);
    fragment.append(dot);
   }
   markers.append(fragment);
@@ -1356,7 +1372,9 @@ function renderWindowTimeline() {
    const event=current[focusedEvent];
    [...markers.children].forEach((dot,k)=>dot.classList.toggle('window-selected',k===focusedEvent));
    const bar=event.time/secPerBar+1;
-   $('eventInspection').textContent=`Lane ${i+1} · bar ${bar.toFixed(3)} · ${SOUNDS[tracks[i].sound]} · velocity ${event.velocity.toFixed(2)} · ${event.sources.map(describeSource).join(' + ')}`;
+   const coinciding=simultaneousById.get(event.id)||[];
+   const coincidenceLabel=coinciding.length?' · simultaneous with '+coinciding.map(lane=>'Lane '+(lane+1)).join(', '):'';
+   $('eventInspection').textContent=`Lane ${i+1} · bar ${bar.toFixed(3)} · ${SOUNDS[tracks[i].sound]} · velocity ${event.velocity.toFixed(2)} · ${event.sources.map(describeSource).join(' + ')}${coincidenceLabel}`;
    markers.setAttribute('aria-label','Inspect lane '+(i+1)+', event '+(focusedEvent+1)+' of '+current.length+'. '+$('eventInspection').textContent);
    // The time-window and ring are two views of the SAME source event.
    // Selection is read-only; the AudioContext scheduler is untouched.
@@ -1385,7 +1403,8 @@ function renderWindowTimeline() {
   const count=document.createElement('span');count.className='window-count';count.textContent=`${current.length} hits`;
   row.append(label,markers,count);container.append(row);
  }
- $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
+ $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`+
+  (simultaneous?' Dashed outlines mark cross-lane coincidences.':'');
  // Reapply the selection after a timeline redraw (window scroll, BPM edit,
  // mathematical source edit). Muted lanes have no scheduled audio marks.
  const selection=inspectedRoot;

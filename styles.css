@@ -173,6 +173,9 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .window-lane-events{position:relative;height:48px;background:var(--plot);border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .window-lane-events:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(25% - 1px),var(--fine) calc(25% - 1px),var(--fine) 25%);pointer-events:none}
 .window-mark{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:26px;border-radius:4px;background:var(--lane-color);opacity:.92}
+/* Outlines mean equal ABSOLUTE time on different lanes. Shared sources
+   within a lane remain one event, never an extra cross-lane hit. */
+.window-mark.window-cross-lane{outline:2px dashed var(--ink);outline-offset:2px;z-index:1}
 .window-count{color:var(--sub);text-align:right;font-variant-numeric:tabular-nums;font-size:16px}
 .window-counts{font-size:16px;color:var(--sub)}
 .lane-length{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;margin-top:9px}

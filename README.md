@@ -25,6 +25,7 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 **Correct window coordinates:** The optional four-bar timeline labels show the actual elapsed-bar interval (for example, 4–8 bars when viewing from bar 5), not a permanently fixed 0–4 scale.
 
 **Linked circular and linear time:** Selecting a root on a circle (or in the root-set strips) highlights every corresponding scheduled occurrence on that lane in the expanded four-bar timeline. Selecting a timestamp on the timeline opens the matching mathematical root angle and source on its circle. Matching uses canonical lane and root phase, so polyrhythms with 1–16-bar independent cycles are never confused merely because positions overlap on screen. Muted lanes show mathematical roots without inventing audible timeline attacks.
+**Cross-lane coincidence outlines:** In the optional four-bar schedule, dashed outlines identify attacks that occur at the **same absolute time on different instrument lanes**. Inspecting a timestamp names the other coincident lanes. Equal ring angles do not imply simultaneous hits when loop lengths differ. Shared sources within a lane still produce one event, not a cross-lane coincidence. The outlines track mute and window changes without touching audio.
 
 ## Mathematical workbench and current interaction model
 

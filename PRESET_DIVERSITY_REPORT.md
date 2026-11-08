@@ -159,7 +159,7 @@ None found.
 | shaft | bunker | 143 | 4:2:8:2 | 4/2/8/3 | 2 | 4 | kick/snare/hat/tom |
 | dust | bunker | 134 | 4:2:4:2 | 4/2/4/3 | 2,3 | 5 | kick/rim/openhat/bass |
 | iron | bunker | 151 | 4:2:8:4 | 5/2/8/4 | 2,4 | 8 | kick/clap/hat/acid |
-| pressure | bunker | 140 | 4:4:12:5 | 4/6/13/9 | 2,3,4 | 6 | kick/snare/hat/acidScreaming |
+| pressure | bunker | 140 | 4:4:12:5 | 4/6/16/9 | 2,3,4 | 7 | kick/snare/hat/acidScreaming |
 | house | other | 125 | 4:2:4:8 | 4/2/4/8 | 2,3 | 8 | kick/clap/openhat/shaker |
 | dub | other | 78 | 2:1:4:2 | 3/1/4/2 | 2,3 | 2 | kick/snare/hat/bass |
 | afro | poly | 116 | 3:4:8:1 | 3/4/8/1 | none | 4 | tom/rim/shaker/bass |

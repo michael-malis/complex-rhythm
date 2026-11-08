@@ -94,7 +94,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 ## Pressure · Acid Underground (pressure)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 140 · **Common period:** 2 bars · **Shared phase groups:** 6.
+**Group:** original catalog · **Category:** bunker · **BPM:** 140 · **Common period:** 2 bars · **Shared phase groups:** 7.
 **Musical role:** Dark underground acid techno · unwavering four-quarter hard kick, dry backbeat snare, restless offbeat hats and a screaming resonant acid line with intentional call-and-response ghosts.
 **Mathematical design:** One-bar R₄(1) defines each kick quarter; independent two-bar R₄(−1) snare, R₁₂(−1) hats and R₅(i) acidScreaming phrase are extended by ten quiet first-degree phase roots. Distinct root families make the acid notes slide against the metrical kick without a separate beat sequencer.
 
@@ -102,14 +102,14 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
 | 2 | -1 + 0i | 180 | 4 | 2 | snare | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.33, 0.625@1, 0.875@1, 0.9375@0.38 |
-| 3 | -1 + 0i | 180 | 12 | 2 | hat | 0.041667, 0.125, 0.208333, 0.291667, 0.375, 0.458333, 0.541667, 0.625, 0.708333, 0.791667, 0.875, 0.958333 | 0.041667@1, 0.125@1, 0.208333@1, 0.291667@1, 0.3125@0.4, 0.375@1, 0.458333@1, 0.541667@1, 0.625@1, 0.708333@1, 0.791667@1, 0.875@1, 0.958333@1 |
+| 3 | -1 + 0i | 180 | 12 | 2 | hat | 0.041667, 0.125, 0.208333, 0.291667, 0.375, 0.458333, 0.541667, 0.625, 0.708333, 0.791667, 0.875, 0.958333 | 0.041667@1, 0.0625@0.37, 0.125@1, 0.208333@1, 0.291667@1, 0.3125@0.4, 0.375@1, 0.458333@1, 0.541667@1, 0.5625@0.35, 0.625@1, 0.708333@1, 0.791667@1, 0.8125@0.44, 0.875@1, 0.958333@1 |
 | 4 | 0 + 1i | 90 | 5 | 2 | acidScreaming | 0.05, 0.25, 0.45, 0.65, 0.85 | 0.05@1, 0.15625@0.44, 0.25@1, 0.34375@0.62, 0.45@1, 0.5625@0.48, 0.65@1, 0.75@0.66, 0.85@1 |
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.05 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.67 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.62
 
-**Nearest timing neighbors (Jaccard):** concrete (0.4167), shaft (0.3725), steel-rave (0.3455)
+**Nearest timing neighbors (Jaccard):** concrete (0.4792), shaft (0.4314), steel-rave (0.4)
 
-**Fingerprint:** 0:0;2:41667;3:50000;0:125000;1:125000;2:125000;3:156250;2:208333;0:250000;3:250000;2:291667;2:312500;3:343750;0:375000;1:375000;2:375000;1:437500;3:450000;2:458333;0:500000;2:541667;3:562500;0:625000;1:625000;2:625000;3:650000;2:708333;0:750000;3:750000;2:791667;3:850000;0:875000;1:875000;2:875000;1:937500;2:958333
+**Fingerprint:** 0:0;2:41667;3:50000;2:62500;0:125000;1:125000;2:125000;3:156250;2:208333;0:250000;3:250000;2:291667;2:312500;3:343750;0:375000;1:375000;2:375000;1:437500;3:450000;2:458333;0:500000;2:541667;2:562500;3:562500;0:625000;1:625000;2:625000;3:650000;2:708333;0:750000;3:750000;2:791667;2:812500;3:850000;0:875000;1:875000;2:875000;1:937500;2:958333
 
 ## Classic House · 4/4 (house)
 

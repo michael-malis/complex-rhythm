@@ -22,7 +22,7 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 | `shaft` | bunker | 143 | 4:2:8:3 | 4 | 1 | 1 | 4.00 | none |
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | none |
 | `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `peak-pressure:0.86` |
-| `pressure` | bunker | 140 | 4:6:13:9 | 6 | 7 | 10 | 3.25 | none |
+| `pressure` | bunker | 140 | 4:6:16:9 | 7 | 10 | 10 | 4.00 | none |
 | `house` | other | 125 | 4:2:4:8 | 8 | 0 | 0 | 4.00 | none |
 | `dub` | other | 78 | 3:1:4:2 | 2 | 1 | 1 | 4.00 | none |
 | `afro` | poly | 116 | 3:4:8:1 | 4 | 0 | 0 | 8.00 | none |

@@ -44,12 +44,15 @@ const audit=page=>page.evaluate(({dynamicIds,graphIds})=>{
 async function capture(baseURL,sha,width,height,theme){
  const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(baseURL,{waitUntil:'domcontentloaded'});
+ const response=await page.goto(baseURL,{waitUntil:'domcontentloaded'});
+ assert.ok(response?.ok(),'historical/current math server returned HTTP error at '+baseURL+' for '+sha);
  if(theme==='dark')await page.locator('#themeBtn').click();
  // Both versions expose the formula reference and the math inspector. The
  // historical baseline lacks later SVG infographic controls: that is an
  // observed feature difference, not an erroneous old version.
  for(const selector of ['.math-details','#compositionPanel']){
+  assert.equal(await page.locator(selector).count(),1,
+   'missing expected mathematical disclosure '+selector+' at '+baseURL+' for '+sha);
   await page.locator(selector).evaluate(el=>el.open=true);
  }
  if(await page.locator('#rootRuleInfoToggle').count()){

@@ -36,7 +36,18 @@ const PRESETS=[
    {...P(-1,0,8,'hat',[L32(4,.36),L32(12,.43),L32(20,.39),L32(28,.45)]),gain:.72},
    {...P(0,1,3,'reese',[L32(7,.48),L32(19,.56),L32(29,.43)]),gain:.70}
   ]},
- {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
+ // Industrial Bunker: quarter kick is the metrical anchor; two independent
+ // metallic/FM root families interlock at off-grid points, with restrained
+ // first-degree machine pickups instead of random noise or a step sequencer.
+ {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,bars:2,
+  character:'Industrial Techno · an immovable hard quarter kick and dry backbeat under seven-spoke metallic clangs and three-against-four low FM machinery. Quiet, intentional machine pickups alternate across two bars without drowning the pulse.',
+  mathNote:'The one-bar R₄(1) kick supplies every quarter-note. Independent two-bar R₄(−1) snare, R₇(−1) metallic and R₃(i) FM orbits interlock with nine individually sourced first-degree complex roots. The 7:3 cross-rhythm preserves its own circle and audio-clock hand.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1.06},
+   {...P(-1,0,4,'snare',[L32(14,.31),L32(30,.37)]),gain:.79},
+   {...P(-1,0,7,'metallic',[L32(5,.34),L32(13,.44),L32(21,.32),L32(29,.42)]),gain:.48},
+   {...P(0,1,3,'fmPerc',[L32(7,.38),L32(19,.46),L32(27,.33)]),gain:.46}
+  ]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
  {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
  // Acid Bunker: quarter-note hard kick against a two-bar, phase-shifted

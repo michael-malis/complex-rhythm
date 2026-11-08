@@ -18,6 +18,8 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 
 **Four-ring readability:** Every orbit keeps its own instrument color even when another lane is selected. The active ring has a stronger outline and color-matched event count. Keyboard and screen-reader users receive the selected lane, instrument, event count, loop length and mute state directly from the Canvas label, updated on edits. This does not add a beat-maker panel or alter event timing.
 
+**Linked mathematical inspection:** Open **Combine root points** and click or tap anywhere on the 48px result phase strip to inspect the nearest actual resulting event (Union or Intersection). The same phase is outlined in Base, Added, and Result wherever it exists, and highlighted on the matching colored orbit; excluded roots never become selectable result hits. Focus the result strip for Left/Right, Home/End, Enter/Space, and Escape navigation. On the focused Canvas, number keys **1–4** jump directly to the corresponding orbit without altering its root set, voice, or playback. This is inspection only; no steps or notes are added.
+
 ## Mathematical workbench and current interaction model
 
 The interface is a scientific workbench rather than a music sequencer.

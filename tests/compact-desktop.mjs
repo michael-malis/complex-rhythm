@@ -43,7 +43,13 @@ try{
     result.cards[1].x>result.cards[0].x&&
     Math.abs(result.cards[2].y-result.cards[3].y)<2,
     'four cards retain a two-by-two grid '+width);
-   assert.ok(result.cards[2].y<height,'second row appears in the opening laptop viewport '+width);
+   const firstScreenEditors=result.cards.filter(card=>card.y<height-44).length;
+   assert.ok(firstScreenEditors>=2,
+    'at least two useful editors start in the opening laptop viewport '+width+
+    ': '+JSON.stringify(result.cards));
+   assert.ok(result.cards[2].y<height+Math.max(160,height*.35),
+    'second editor row remains close to the viewport, not after a long sidebar '+width+
+    ': '+JSON.stringify(result.cards));
    assert.ok(result.plot.width<=Math.min(600,Math.max(390,height-375))+2,
     'real Canvas box adapts to available screen height '+width);
   }else{

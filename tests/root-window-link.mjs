@@ -36,6 +36,28 @@ async function clickAt(page,lane,fraction){
  await target.click({position:{x:Math.min(box.width-2,Math.max(2,box.width*fraction)),
   y:box.height/2}});
 }
+// Compare EVERY rendered coincidence against the actual absolute timeline
+// position across four lanes, including non-coincidences and mute changes.
+async function assertCrossLaneOutlines(page){
+ const audit=await page.evaluate(()=>{
+  const marks=[...document.querySelectorAll('.window-lane-events')].flatMap((row,lane)=>
+   [...row.querySelectorAll('.window-mark')].map(dot=>({
+    lane,at:parseFloat(dot.style.left),
+    outlined:dot.classList.contains('window-cross-lane'),title:dot.title
+   })));
+  return marks.map(mark=>{
+   const others=[...new Set(marks.filter(other=>other.lane!==mark.lane&&
+    Math.abs(other.at-mark.at)<1e-6).map(other=>other.lane))];
+   return {outlined:mark.outlined,shouldOutline:others.length>0,
+    tooltipCorrect:others.every(lane=>mark.title.includes('Lane '+(lane+1)))};
+  });
+ });
+ assert.ok(audit.length>0,'visible schedule contains events');
+ assert.ok(audit.some(item=>item.outlined),'fixture includes a real cross-lane coincidence');
+ assert.ok(audit.some(item=>!item.outlined),'single-lane moments stay unoutlined');
+ assert.ok(audit.every(item=>item.outlined===item.shouldOutline&&item.tooltipCorrect),
+  'every outline corresponds to equal absolute time on distinct lanes');
+}
 try{
  for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
@@ -47,6 +69,12 @@ try{
   await page.locator('#windowPanel').evaluate(el=>el.open=true);
   await page.waitForFunction(()=>document.querySelectorAll('.window-mark').length>=10);
   const original=await status(page);
+  await assertCrossLaneOutlines(page);
+  assert.match(await page.locator('#windowCounts').textContent(),/Dashed outlines mark cross-lane coincidences/);
+  const firstCoincidence=await page.locator('.window-lane-events').first().locator('.window-cross-lane').first().getAttribute('title');
+  assert.match(firstCoincidence,/simultaneous with Lane 2, Lane 3, Lane 4/);
+  await clickAt(page,0,0);
+  assert.match(await page.locator('#eventInspection').textContent(),/simultaneous with Lane 2, Lane 3, Lane 4/);
   assert.equal(original.source.tracks.length,4);
   assert.deepEqual(await page.locator('.window-axis span').allTextContents(),
    ['0','1','2','3','4 bars'],'the initial axis measures elapsed bars');
@@ -80,6 +108,7 @@ try{
    ['4','5','6','7','8 bars'],'grid labels show actual elapsed bars after scrolling');
   assert.deepEqual(data.marks.map(r=>r.selected.length),[4,0,0,0]);
   assert.match(data.timing,/Phase 25%/);
+  await assertCrossLaneOutlines(page);
 
   // Timeline -> complex-root inspector: a 2-bar lane with phase 1/2
   // appears exactly twice in bars 5–8, despite four 1-bar hits above it.
@@ -117,9 +146,11 @@ try{
   assert.match(data.label,/Lane 4 · Euclidean hit 1\/1/);
   assert.equal(data.marks[3].all.length,0);
   assert.equal(data.marks[3].selected.length,0);
+  await assertCrossLaneOutlines(page);
   await page.locator('#laneMute3').click();
   data=await status(page);
   assert.equal(data.marks[3].selected.length,1);
+  await assertCrossLaneOutlines(page);
   await page.locator('#clearRootInspection').click();
   data=await status(page);
   assert.equal(data.panelHidden,true);
@@ -131,11 +162,11 @@ try{
    'root and timeline navigation never edits the four complex generators');
   assert.deepEqual(errors,[],'no browser errors');
   await page.screenshot({path:'artifacts/root-window-link/'+viewport.width+'.png',fullPage:true});
-  cases.push({viewport,linkedRecurrences:true,linkedAddedAndEuclidean:true,mutedSafe:true,
+  cases.push({viewport,crossLaneOutlines:true,linkedRecurrences:true,linkedAddedAndEuclidean:true,mutedSafe:true,
    unchangedScheduler:true});
   await page.close();
  }
  fs.writeFileSync('artifacts/root-window-link/report.json',
   JSON.stringify({status:'PASS',cases,source:'real Chromium Canvas inspector and DOM event marks'},null,2));
- console.log('PASS circular root ↔ four-bar timeline linkage; 1-, 2-, 4-bar recurrences, added and Euclidean provenance, muted lanes and scheduler isolation at desktop and phone');
+ console.log('PASS linked four-bar time and exact cross-lane coincidence outlines, source provenance, mute and scheduler isolation on desktop and phone');
 }finally{await browser.close();}

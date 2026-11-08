@@ -714,10 +714,10 @@ function renderTracks() {
   pick.append(num,dot,name);pick.addEventListener('click',()=>chooseTrack(i,true));
   const sound=document.createElement('select');sound.className='lane-sound';sound.id='laneSound'+i;sound.setAttribute('aria-label','Instrument for lane '+(i+1));
   for(const [key,label] of Object.entries(SOUNDS)){const opt=document.createElement('option');opt.value=key;opt.textContent=label;sound.append(opt)}
-  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack)renderEditor();if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
+  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack){updateOrbitSummary();renderEditor()}if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
-  updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();markCustom()});
+  updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();if(i===selectedTrack)updateOrbitSummary();markCustom()});
   head.append(pick,sound,mute);row.append(head);
   // Always-visible instrument gain in each lane. The selected-lane advanced
   // editor keeps a synchronized secondary mirror for backward compatibility.

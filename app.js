@@ -1850,7 +1850,7 @@ function draw() {
   // never the semantic identity of the three unselected rings.
   ctx.save();
   ctx.strokeStyle=COLORS[i];
-  ctx.globalAlpha=chosen?1:(t.muted?.48:.72);
+  ctx.globalAlpha=chosen?1:(t.muted?.85:.88);
   ctx.lineWidth=chosen?2.5:1.6;
   ctx.stroke();
   ctx.restore();

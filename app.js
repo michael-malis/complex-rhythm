@@ -1344,7 +1344,9 @@ function renderWindowTimeline() {
  for(let first=0;first<scheduled.length;){
   let end=first+1;
   while(end<scheduled.length&&Math.abs(scheduled[end].time-scheduled[first].time)<1e-6)end++;
-  const lanesAtMoment=[...new Set(scheduled.slice(first,end).map(event=>event.lane))];
+  // Tiny floating-time differences can reorder simultaneous lanes. Keep the
+  // explanation stable in ascending lane order, like the circular inspector.
+  const lanesAtMoment=[...new Set(scheduled.slice(first,end).map(event=>event.lane))].sort((a,b)=>a-b);
   if(lanesAtMoment.length>1){
    for(let j=first;j<end;j++)
     simultaneousById.set(scheduled[j].id,lanesAtMoment.filter(lane=>lane!==scheduled[j].lane));

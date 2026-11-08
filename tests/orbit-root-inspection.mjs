@@ -213,6 +213,8 @@ try{
    tracks:fixture.tracks.map((t,i)=>i===0?{...t,operation:'intersection',
     layers:[{a:1,b:0,n:3,velocity:.65}]}:t)};
   await load(page,intersect);
+  // Import intentionally retains the chosen lane, so select lane 1 explicitly.
+  await page.locator('.lane[data-lane="0"] .lane-select').click();
   await page.locator('#orbitCanvas').focus();
   await page.keyboard.press('Home');
   assert.match((await read(page)).label,/root 1\/4 · shared: base \+ family 1/);

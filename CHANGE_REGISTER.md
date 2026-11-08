@@ -366,7 +366,7 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 
 ### 2026-11-08 — Keyboard navigation of canonical orbit events (M03/M06/M11)
 
-**User-facing enhancement, pending exact-commit CI acceptance.** While the four-ring Canvas has keyboard focus, `[` and `]` walk backward/forward through the current lane's actual **canonical audible event set**; Home/End select its first/last event and Escape clears inspection. Existing arrow-key lane switching and Shift+arrow mathematical rotation are preserved. Each selected event shows its exact angle/phase and loop bar/beat, and an unobtrusive live region announces the selection to assistive technology. Four short audio-locked playheads remain unchanged.
+**User-facing enhancement, pending exact-commit CI acceptance.** While the four-ring Canvas has keyboard focus, `[` and `]` walk backward/forward through the current lane's actual **canonical visible event set (including muted mathematical tracks)**; Home/End select its first/last event and Escape clears inspection. Existing arrow-key lane switching and Shift+arrow mathematical rotation are preserved. Each selected event shows its exact angle/phase and loop bar/beat, and an unobtrusive live region announces the selection to assistive technology. Four short audio-locked playheads remain unchanged.
 
 **Consistency fix:** Only events surviving the selected union/intersection operation are keyboard-browsable or pointer-inspectable. A base root excluded by true intersection is never presented as a sounding, visible root. Source provenance for base/added/Euclidean/shared phases, original project JSON, presets, sound settings and the AudioContext scheduler remain intact.
 

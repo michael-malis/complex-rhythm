@@ -5,20 +5,22 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 ## BERLIN BUNKER · Bass Wall (berlin-bass-wall)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 146 · **Common period:** 1 bars · **Shared phase groups:** 3.
+**Group:** original catalog · **Category:** bunker · **BPM:** 146 · **Common period:** 2 bars · **Shared phase groups:** 14.
+**Musical role:** Driving / Hypnotic · an unwavering four-on-the-floor hard kick against rolling offbeat sub-rumble, a 16th-grid hat motor and alternating low-level rim pickups.
+**Mathematical design:** The kick repeats R₄(1) every bar. The other three circles span two bars: R₈(−1) rumble, R₁₆(−1) hats, and R₄(−1) rim. Individual first-degree roots introduce controlled syncopations; no second step sequencer is used.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 4 | 1 | berlinrumble | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 3 | -1 + 0i | 180 | 8 | 1 | hat | 0.0625, 0.1875, 0.3125, 0.4375, 0.5625, 0.6875, 0.8125, 0.9375 | 0.0625@1, 0.1875@1, 0.3125@1, 0.4375@1, 0.5625@1, 0.6875@1, 0.8125@1, 0.9375@1 |
-| 4 | -1 + 0i | 180 | 2 | 1 | rim | 0.25, 0.75 | 0.25@1, 0.75@1, 0.9375@0.32 |
+| 2 | -1 + 0i | 180 | 8 | 2 | berlinrumble | 0.0625, 0.1875, 0.3125, 0.4375, 0.5625, 0.6875, 0.8125, 0.9375 | 0.0625@1, 0.1875@1, 0.3125@1, 0.34375@0.28, 0.4375@1, 0.5625@1, 0.6875@1, 0.8125@1, 0.84375@0.34, 0.9375@1 |
+| 3 | -1 + 0i | 180 | 16 | 2 | hat | 0.03125, 0.09375, 0.15625, 0.21875, 0.28125, 0.34375, 0.40625, 0.46875, 0.53125, 0.59375, 0.65625, 0.71875, 0.78125, 0.84375, 0.90625, 0.96875 | 0.03125@1, 0.0625@0.42, 0.09375@1, 0.15625@1, 0.21875@1, 0.28125@1, 0.3125@0.4, 0.34375@1, 0.40625@1, 0.46875@1, 0.53125@1, 0.5625@0.38, 0.59375@1, 0.65625@1, 0.71875@1, 0.78125@1, 0.8125@0.45, 0.84375@1, 0.90625@1, 0.96875@1 |
+| 4 | -1 + 0i | 180 | 4 | 2 | rim | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.21875@0.29, 0.375@1, 0.4375@0.36, 0.625@1, 0.71875@0.33, 0.875@1, 0.9375@0.4 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.72 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.68 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.65
 
-**Nearest timing neighbors (Jaccard):** samba-drive (0.2333), house (0.1935), batucada (0.1818)
+**Nearest timing neighbors (Jaccard):** house (0.2813), samba-drive (0.2813), batucada (0.2647)
 
-**Fingerprint:** 0:0;2:62500;1:125000;2:187500;0:250000;3:250000;2:312500;1:375000;2:437500;0:500000;2:562500;1:625000;2:687500;0:750000;3:750000;2:812500;1:875000;2:937500;3:937500
+**Fingerprint:** 0:0;2:31250;1:62500;2:62500;2:93750;0:125000;3:125000;2:156250;1:187500;2:218750;3:218750;0:250000;2:281250;1:312500;2:312500;1:343750;2:343750;0:375000;3:375000;2:406250;1:437500;3:437500;2:468750;0:500000;2:531250;1:562500;2:562500;2:593750;0:625000;3:625000;2:656250;1:687500;2:718750;3:718750;0:750000;2:781250;1:812500;2:812500;1:843750;2:843750;0:875000;3:875000;2:906250;1:937500;3:937500;2:968750
 
 ## Concrete · Drive (concrete)
 

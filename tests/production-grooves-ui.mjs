@@ -56,7 +56,9 @@ try{
    assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
     'an explicit Featured preset keeps the current category');
    const loaded=await page.evaluate(()=>window.RhythmResearch.current());
-   assert.equal(loaded.tracks[0].n,4,'Bass Wall must retain every-quarter kick');
+   assert.equal(loaded.tracks[0].n,4,'Bass Wall retains four quarter-note kicks per one-bar kick cycle');
+   assert.equal(loaded.tracks[0].cycleBars,1,'kick remains a one-bar mathematical orbit');
+   assert.equal(loaded.tracks[1].cycleBars,2,'rumble evolves over a separate two-bar orbit');
    assert.equal(loaded.tracks[1].sound,'berlinrumble','Bass Wall requires a separate rumble voice');
    const otherGain=loaded.tracks[1].gain;
    await page.locator('#laneGain0').evaluate(el=>{el.value='73';el.dispatchEvent(new Event('input',{bubbles:true}))});

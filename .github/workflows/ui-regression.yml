@@ -332,6 +332,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-musical-structure.log 2>&1 &
           node tests/preset-musical-structure.mjs
+      - name: Validate real two-bar Bunker groove onsets, preserved Dust and offline sample mix
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-driving.log 2>&1 &
+          node tests/bunker-driving-groove.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |

@@ -290,6 +290,11 @@ try{
   assert.equal((await read(page)).hidden,true,'Escape hides inspector from either keyboard surface');
   highlight=await matched();
   assert.deepEqual(highlight.result,[],'clearing inspection removes linked source highlights');
+  await page.keyboard.press('Enter');
+  assert.match((await read(page)).time,/Phase 0%/,'Enter activates the focusable result strip');
+  await page.keyboard.press(' ');
+  assert.match((await read(page)).time,/Phase 0%/,'Space also activates the result strip');
+  await page.keyboard.press('Escape');
 
   // True intersection leaves only the common phase. Tapping elsewhere must
   // inspect that result, never silently select an excluded base/additional root.

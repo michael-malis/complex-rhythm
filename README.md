@@ -20,6 +20,8 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 
 **Linked mathematical inspection:** Open **Combine root points** and click or tap anywhere on the 48px result phase strip to inspect the nearest actual resulting event (Union or Intersection). The same phase is outlined in Base, Added, and Result wherever it exists, and highlighted on the matching colored orbit; excluded roots never become selectable result hits. Focus the result strip for Left/Right, Home/End, Enter/Space, and Escape navigation. On the focused Canvas, number keys **1–4** jump directly to the corresponding orbit without altering its root set, voice, or playback. This is inspection only; no steps or notes are added.
 
+**Cross-lane time:** Select a mathematical root to see its first occurrence in seconds at the current BPM. Roots on other lanes are simultaneously highlighted **only when they hit at that same absolute bar time**, respecting their independent 1–16-bar cycle lengths. Muted lanes are still mathematical matches but are clearly labelled muted. Tempo, lane degree, cycle length and mute updates refresh the explanation live. The halos are static selection aids, not an audio playback pointer. Four separately synchronized playheads and canonical event scheduling remain unchanged.
+
 ## Mathematical workbench and current interaction model
 
 The interface is a scientific workbench rather than a music sequencer.

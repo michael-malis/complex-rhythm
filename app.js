@@ -1354,12 +1354,9 @@ function renderWindowTimeline() {
    markers.setAttribute('aria-label','Inspect lane '+(i+1)+', event '+(focusedEvent+1)+' of '+current.length+'. '+$('eventInspection').textContent);
    // The time-window and ring are two views of the SAME source event.
    // Selection is read-only; the AudioContext scheduler is untouched.
-   const source=event.sources.find(src=>src.kind==='base')||event.sources[0];
-   if(source){
+   if(event.sources.length){
     chooseTrack(i);
-    inspectedRoot={lane:i,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
-    if(source.kind==='base'){selectedRootIndex=source.index;updateSelectedRootMath();}
-    renderRootInspection();
+    inspectCanonicalEvent(event);
    }
   };
   markers.addEventListener('click',e=>{

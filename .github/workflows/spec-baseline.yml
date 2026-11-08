@@ -1,18 +1,23 @@
-name: Requirement registry and baseline
+name: Current visual reference and product guarantees
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
     paths:
-      - MASTER_IMPLEMENTATION_SPEC.md
       - TASKS.md
-      - TRACEABILITY.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
       - scripts/**
       - tests/spec-baseline.mjs
       - .github/workflows/spec-baseline.yml
-      - NEXT_EXECUTION_PLAN.md
-      - scripts/verify-execution-plan.mjs
+  push:
+    branches: [main]
+    paths:
+      - TASKS.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
+      - scripts/**
+      - tests/spec-baseline.mjs
+      - .github/workflows/spec-baseline.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -25,22 +30,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate requirement registry
-        run: node scripts/verify-traceability.mjs
-      - name: Validate 14-item execution coverage
-        run: node scripts/verify-execution-plan.mjs
+      - name: Validate outcome backlog and product guarantees
+        run: node scripts/verify-backlog.mjs
       - name: Install Chromium
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Capture baseline, do not modify application
+      - name: Measure current responsive appearance (not historical sign-off)
         run: |
-          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-baseline.log 2>&1 &
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-visual-evidence.log 2>&1 &
           node tests/spec-baseline.mjs
-      - name: Upload baseline evidence
+      - name: Upload real viewport evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: roots-rhythm-baseline-evidence
+          name: roots-rhythm-current-viewport-evidence
           path: qa/baseline/evidence/
           if-no-files-found: ignore

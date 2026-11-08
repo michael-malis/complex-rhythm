@@ -1,15 +1,11 @@
-name: Verify requirement evidence consistency (read-only)
+name: Verify active backlog and deployment safeguards
 on:
   pull_request:
     branches: [main]
     paths:
       - TASKS.md
-      - TRACEABILITY.md
-      - ACCEPTANCE_CRITERIA.md
-      - LEDGER_EVIDENCE_SUMMARY.json
-      - MASTER_IMPLEMENTATION_SPEC.md
-      - CHANGE_REGISTER.md
-      - NEXT_EXECUTION_PLAN.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
       - scripts/**
       - .github/workflows/reconcile-ledger.yml
       - .github/workflows/pages.yml
@@ -17,12 +13,8 @@ on:
     branches: [main]
     paths:
       - TASKS.md
-      - TRACEABILITY.md
-      - ACCEPTANCE_CRITERIA.md
-      - LEDGER_EVIDENCE_SUMMARY.json
-      - MASTER_IMPLEMENTATION_SPEC.md
-      - CHANGE_REGISTER.md
-      - NEXT_EXECUTION_PLAN.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
       - scripts/**
       - .github/workflows/reconcile-ledger.yml
       - .github/workflows/pages.yml
@@ -38,13 +30,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check three-way requirement registry
-        run: node scripts/verify-traceability.mjs
-      - name: Check active task coverage without changing historic states
-        run: node scripts/verify-execution-plan.mjs
-      - name: Verify summary counts agree with source ledger
-        run: node scripts/verify-ledger-summary.mjs
-      - name: Enforce full main-branch regression trigger and test coverage
+      - name: Validate one outcome backlog and product contract
+        run: node scripts/verify-backlog.mjs
+      - name: Enforce all main pushes trigger full regression
         run: node scripts/verify-main-regression-trigger.mjs
-      - name: Require tested commit before GitHub Pages publish
+      - name: Require tested commit before publishing Pages
         run: node scripts/verify-pages-regression-gate.mjs

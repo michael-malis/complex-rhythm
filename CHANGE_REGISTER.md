@@ -371,3 +371,11 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 **Consistency fix:** Only events surviving the selected union/intersection operation are keyboard-browsable or pointer-inspectable. A base root excluded by true intersection is never presented as a sounding, visible root. Source provenance for base/added/Euclidean/shared phases, original project JSON, presets, sound settings and the AudioContext scheduler remain intact.
 
 **Evidence gate:** `tests/orbit-root-inspection.mjs` adds browser keyboard traversal, first/last/wrap, accessible announcement, empty zero-complex lane, excluded intersection roots and nonmutating source/scheduler checks at desktop and phone viewport widths. Full UI/math/audio CI on the PR's exact commit is mandatory; this entry alone closes **zero** original ledger tasks and performs no human screen-reader/device acceptance.
+
+### 2026-11-08 — Four persistent lane colors and selected-source identification
+
+**User-visible product improvement (PR CI pending):** The four independent orbit rings no longer turn grey when their lane is unselected; their rings, root markers, arrowheads and instrument controls always share the same four distinctive palette colors. The selected lane gets a heavier ring stroke and the center event number uses its accent, without adding new toolbars or panels. Muted, unselected rings remain in the corresponding color at reduced opacity.
+
+**Accessibility:** The Canvas now reports the selected lane number, human-readable instrument, actual visible canonical event count, independent loop duration and mute status. This updates when selecting lanes, editing degree, changing instrument or importing rhythms. Existing keyboard navigation and four audio-synchronized arrows remain unchanged.
+
+**Evidence gate:** Real browser test `tests/four-ring-identity.mjs` inspects Canvas stroke colors/alpha/width and actual pixel colors in 390px and desktop viewports, both themes, an imported four-lane fixture, a muted lane, degree edits, source immutability and scheduler isolation. No source ledger status is changed without subsequent verified evidence; human screen-reader review remains blocked.

@@ -3,6 +3,8 @@
 **Latest source acceptance (8 November 2026):** R-QA-002 real computed CSS/contrast, DOM bounding, SVG marker diameter, touch-area and clipping/overlap evidence accepted after [PR #51](https://github.com/michael-malis/complex-rhythm/pull/51) and exact-head [full CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982): **459/652 tasks VERIFIED, 74/98 parent requirements VERIFIED**. Operational macros unchanged: **9 VERIFIED / 2 IN_PROGRESS (M01/M11) / 1 TODO (M14) / 2 BLOCKED (M12/M13)**. R-QA-004/005 are still unaccepted; no sound, screen-reader, physical-device or missing annotated screenshot claim. Pages now publishes only successfully tested main commits.
 
 
+**Approved post-baseline planning extension (8 November 2026):** `CR-BNK-001` adds **10 TODO rows** (one parent plus nine outcome tasks) to the authoritative [TASKS.md](TASKS.md) for the six existing Bunker Techno presets, protecting `dust` and targeting the other five. The frozen original-source registry remains **459/652 VERIFIED** and **74/98 original requirements VERIFIED**; combined task rows become **459/662 VERIFIED**. The 14 historical operational macros remain **9 VERIFIED / 2 IN_PROGRESS / 1 TODO / 2 BLOCKED**. M10's already verified historical source scope remains verified; its newly requested follow-up is explicitly pending, with listening acceptance under M13. No musical implementation is included in this planning change.
+
 **Baseline:** `main@454b7c4466851e82946034ce4a47019c716ee218`, after merged [PR #1](https://github.com/michael-malis/complex-rhythm/pull/1). Technical and Pages workflows passed on that SHA. **Published ≠ finally accepted.**
 
 **Current release checkpoint (7 November 2026):** The historical baseline above records the initial consolidation only, **not the current main HEAD**. The successful production cycles through [PR #17](https://github.com/michael-malis/complex-rhythm/pull/17) delivered a single `Category → Preset` toolbar, 50 unchanged canonical studies plus one user-supplied `Song Examples` rhythm (51 selectable), differentiated Acid synthesis and lane-local volume. The optional bottom Sound Lab was merged through [PR #18](https://github.com/michael-malis/complex-rhythm/pull/18) after its own four CI gates passed and is tracked as CR-UX-008 within M07/M08/M11; the live Pages deployment and ongoing production checks remain separately observable through GitHub Actions.
@@ -18,8 +20,8 @@
 
 - **Active operational backlog: 14 macro tasks (M01–M14), not 358 separate daily actions; the initial baseline had 1 VERIFIED, and the dated checkpoint above records 4 VERIFIED.** Each macro is a coherent, independently testable engineering/product result.
 - **Historical traceability register:** existing `TASKS.md` with 652 item IDs stays intact for audit; initial post-merge snapshot **294 VERIFIED / 60 IN_PROGRESS / 294 TODO / 4 BLOCKED / 0 FAILED**, **52/98 original requirements VERIFIED**. Its micro-rows are **not** assigned or reported as independent day-to-day tickets. They act as checklists/evidence only. Consolidation does **not** certify unfinished requirements.
-- **Fourteen macro tasks** are the only new operational units for planning, progress updates, and development PRs. On CI acceptance, report `Mxx` completed, linked source requirement IDs and supporting evidence. No multiplying tasks into another set of hundreds.
-- Product additions approved after this baseline go into `CHANGE_REGISTER.md` with a single macro and measurable acceptance. They do not silently change the 98 original criteria.
+- **Fourteen macro tasks** remain the historical work packages. Explicitly approved later work is attached to an existing macro as a single `CR-*` scope with a bounded set of outcome tasks in the same `TASKS.md` ledger; `CR-BNK-001` adds 10 such rows, not a fifteenth macro or a change to the original 652 rows. Report original historical tasks and newly approved tasks distinctly.
+- Product additions approved after this baseline receive a stable `CR-*` ID in `CHANGE_REGISTER.md`, map to the relevant existing macro and, where substantive delivery steps exist, receive unique post-baseline rows in `TASKS.md`. They do not silently change the 98 original criteria.
 - Tasks can run in parallel where safe, but **M14 is the last sign-off**. External blockers are tracked explicitly rather than disguised as developer tasks.
 
 ## Fourteen outcome-focused tasks
@@ -35,10 +37,10 @@
 | M07 | Distinct instrument synthesis | R-SND-001, R-SND-003, R-SND-004 | P0 | VERIFIED | All required voices and acid/industrial controls produce measurable, correctly routed distinct envelopes and spectra |
 | M08 | Unified beat triggering, transport and audio safety | R-SND-005, R-SND-006 | P0 | VERIFIED | One consistent per-event playback path, preserved phase/velocity/provenance, reliable Play/Pause/Resume/preset switching, synchronized visual hits, stable clock and safe audio output pass tests |
 | M09 | Genre evidence and implementation mapping | R-RES-001, R-RES-002, R-RES-003 | P1 | VERIFIED | Each mandatory genre/source maps to concrete mathematical events, preset IDs and synth decisions |
-| M10 | Consistent rhythm semantics and structure across all 50 presets | R-PST-006 | P1 | VERIFIED | A uniform root-to-phase-to-hit interpretation across 50 presets, distinct intra-lane/cross-lane overlaps, meaningful accents, lane roles, density and per-preset evidence |
+| M10 | Consistent rhythm semantics and structure across all 50 presets | R-PST-006 | P1 | VERIFIED | Original 50-preset source acceptance remains VERIFIED; the new, not-yet-implemented Bunker Techno quality follow-up is tracked separately as CR-BNK-001 in TASKS.md |
 | M11 | Independent measurement and full regression | R-QA-002, R-QA-004, R-QA-005 | P0 | IN_PROGRESS | Complete real computed/style/Canvas/touch/overlap/clip tests and full CI at final code SHA with artifacts |
 | M12 | Original annotated visual acceptance | R-AUD-002, R-UI-003 | BLOCKER | BLOCKED | Both original annotated screenshots available and every requested UI correction compared and documented |
-| M13 | Human sound, mobile and accessibility acceptance | R-SND-007, R-PST-004 | BLOCKER | BLOCKED | Human listens to 50 presets and all new voices; phone and screen reader checks recorded; defects re-tested |
+| M13 | Human sound, mobile and accessibility acceptance | R-SND-007, R-PST-004 | BLOCKER | BLOCKED | Human listens to 50 presets and all new voices, including a before/after Bunker Techno comparison against the preserved Dust reference under CR-BNK-001; phone and screen reader checks recorded; defects re-tested |
 | M14 | Final seven-gate acceptance and traceability | R-GOV-001, R-GOV-002, R-GOV-003, R-GOV-004, R-GOV-005, R-FIN-001, R-FIN-002, R-FIN-003, R-FIN-004 | LAST | TODO | 98/98 requirements & 652/652 historical checks verified, no blockers, all seven gates PASS |
 
 **Coverage invariant:** every one of the 46 originally unverified parent `R-*` IDs occurs in exactly one macro. `CR-UX-001` is the newly requested UX behavior and does not replace an original requirement. The historic 294 verified tasks remain verified. Verify through `node scripts/verify-execution-plan.mjs`.
@@ -58,19 +60,31 @@ Each macro has a dedicated GitHub issue except the already completed M02. Existi
 | M07 | [#10](https://github.com/michael-malis/complex-rhythm/issues/10) | VERIFIED: R-SND-001 full mandatory 14-voice inventory, R-SND-003 Acid control response, R-SND-004 aggressive signal graphs; CI 42359549057 |
 | M08 | [#11](https://github.com/michael-malis/complex-rhythm/issues/11) | VERIFIED: shared AudioContext scheduler, four audio-locked orbit hands, true production limiter and gain smoothing; full CI 42348284633 |
 | M09 | [#12](https://github.com/michael-malis/complex-rhythm/issues/12) | VERIFIED: 15 genre implementation rows and five source-to-code chains validated |
-| M10 | [#13](https://github.com/michael-malis/complex-rhythm/issues/13) | VERIFIED: 50 canonical root maps, 15 documented shared-phase/ghost-accent studies, independent 22nd CI report; full CI 42363730593 and diversity CI 42363730599 |
+| M10 | [#13](https://github.com/michael-malis/complex-rhythm/issues/13) | Original VERIFIED: 50 canonical maps, 15 documented accents, full CI 42363730593 and diversity CI 42363730599. New CR-BNK-001 follow-up remains TODO in TASKS.md, not retroactively accepted |
 | M11 | [#14](https://github.com/michael-malis/complex-rhythm/issues/14) | IN_PROGRESS: 26 real CI measurement reports; R-QA-002 now technically VERIFIED after PR #51, R-QA-004/005 still unaccepted |
 | M12 | [#2](https://github.com/michael-malis/complex-rhythm/issues/2) | BLOCKED: second annotated screenshot |
-| M13 | [#3](https://github.com/michael-malis/complex-rhythm/issues/3) | BLOCKED: human audio, physical device, screen reader |
+| M13 | [#3](https://github.com/michael-malis/complex-rhythm/issues/3) | BLOCKED: human audio, physical device, screen reader; add Bunker CR-BNK-001 listening comparisons when implementations are available |
 | M14 | [#15](https://github.com/michael-malis/complex-rhythm/issues/15) | TODO |
 
 **Initial issue-creation macro counter:** **1 VERIFIED / 4 IN_PROGRESS / 7 TODO / 2 BLOCKED = 14 total**. Original source counts do not change merely because this plan advances.
 
 ## Execution sequence
 
-**Now:** M02, then M01 and M03 (start M12/M13 evidence requests in parallel). **Next:** M04–M06 UI/math, M07–M08 sound, M09–M10 research/presets. **Then:** M11 independent regression. **Last:** M14 after M12/M13 evidence is supplied and all required checks truly pass.
+**Current new work (CR-BNK-001 within M10):** first `CR-BNK-001-01` existing-preset and engine audit, then `-02` five-style design, then `-03` scoped kick/bass/rumble foundation if analysis proves it necessary; only then implement `-04` through `-08` independently (these five have no mutual dependency). Finish with `-09` automated and listening handoff, then the existing M13 human acceptance. M11 regression remains mandatory before merge; M14 is still the final sign-off after M12/M13 and all outstanding scope. The existing source-accepted M07/M08/M10 are not reopened merely by this new request.
 
 **PR discipline:** develop in narrow branches from current `main`; do not merge unfinished features into the published Pages release. Every engineering PR needs its own tests, regression result and requirement mapping. Historical task statuses change **only** after evidence-backed verification, never because a macro was created or a file exists.
+
+## M10 continuation · CR-BNK-001 Bunker Techno work (one integrated task source)
+
+**Task source of truth:** [TASKS.md](TASKS.md), section `CR-BNK-001`; [CHANGE_REGISTER.md](CHANGE_REGISTER.md) contains the user-approved scope. This is **not a parallel backlog**. The master package plus its nine individually accepted tasks have stable IDs `CR-BNK-001`, `CR-BNK-001-01…09`, and statuses controlled only by that ledger.
+
+**Priority / sequencing:** `P0 audit (-01) → P0 design (-02) → P0 sound foundation (-03) → five independent P1 preset realizations (-04…08) → P0 objective QA and M13 listening handoff (-09)`. Every style implementation depends on the design and foundation. The existing M13 human gate then evaluates perceived energy, authenticity and separation; automated metrics alone cannot conclude that the groove is convincing.
+
+**Fixed existing six IDs:** `berlin-bass-wall` → Driving/Hypnotic; `concrete` → Raw Underground; `pressure` → Acid; `shaft` → Industrial; `iron` → Hard Groove; `dust` → protected **Dust · Half-light** reference, preserve nearly byte-for-byte. These are planned targets, not changes already made. No new category or extra beat-maker UI is requested.
+
+**Musical brief / testable guardrails:** a clearly audible regular four-quarter kick in each redesigned bar, deep but distinguishable bass / possible rumble, musically intentional syncopated percussion and economical acidic/industrial tones; avoid soft/empty loops, gratuitous noise, kick-masking distortion, house/trance/EDM drift and tempo-only differences. Tempo near 135–165 BPM is a **guide**, never a hard bound. References are 999999999 *Rave 4 Love / LOVE 4 RAVE*, DJ Dextro *Climax*, Chris Liberator *Soul Mantra* for character only, never transcription. Preserve four separate root rings and audio-clock hands, canonical root-source phases, JSON, all non-Bunker presets and publishing gates.
+
+**Bookkeeping:** Original `T-*` rows: 459 VERIFIED / 652 (no status changes). Approved `CR-BNK-001` rows: 0 VERIFIED / 10 (all TODO). Combined ledger rows: **459/662**. Original source requirements: 74/98 verified; 14 operational macros: 9 verified, both unchanged. Count new planned tasks but **zero new implemented features**. M10's original VERIFIED result is an historical fact, not acceptance of `CR-BNK-001`.
 
 ## Current concrete UX change: M02
 

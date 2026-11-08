@@ -1,5 +1,17 @@
 # Rhythm Studio — active change register
 
+## CR-BNK-001 · Bunker Techno: power, groove and distinct character
+
+**Priority:** P0 program; P0 groundwork and QA, P1 individually deliverable presets. **Status:** TODO (planning accepted, no musical implementation or listening acceptance). **Owner / existing work:** M10 post-acceptance scope, reuse M07 synthesis and M08 scheduling, objective tests in M11, human listening and device acceptance in M13. This is not a reopening of their original VERIFIED source requirements.
+
+**Single authoritative task list:** [TASKS.md](TASKS.md) contains parent `CR-BNK-001` and nine concrete child tasks `CR-BNK-001-01…09`; [NEXT_EXECUTION_PLAN.md](NEXT_EXECUTION_PLAN.md) records their dependency chain. All rows start TODO. The historical 652 original `T-*` IDs, 98 source requirements, and their states stay unchanged.
+
+**Scope and protected baseline:** Exactly six existing Bunker Techno preset IDs exist. Protect `dust` (*Dust · Half-light*) as the stable comparison and limit the redesign to `berlin-bass-wall`, `concrete`, `pressure`, `shaft`, `iron`; do not change other categories, mathematical event semantics, JSON or the four independent orbit rings / audio-locked arrows. The five target directions are Driving/Hypnotic, Raw Underground, Acid, Industrial, Hard Groove, respectively.
+
+**Character references (not copies):** 999999999 — *Rave 4 Love / LOVE 4 RAVE*; DJ Dextro — *Climax*; Chris Liberator — *Soul Mantra*. The user asks for a hard, deep, continuously dancing, hypnagogically repetitive underground 4/4 kick, low-frequency bass pressure and optional techno rumble, rhythmic hats/claps/industrial syncopation and minimal but functional dark/acid voices. A range near 135–165 BPM is descriptive, **never a 155–170 or any other fixed limit**. Preserve kick intelligibility; avoid pop/EDM/trance, unmusical noise, excessive distortion, empty/soft grooves and five BPM-renamings of the same beat.
+
+**Evidence / completion:** First record the actual six arrangements and synth capabilities; write five distinct root-phase/velocity/voice designs; reuse or only narrowly improve kick/bass tools as evidence requires; implement five individually testable preset results; finally validate real four-on-floor onset times, distinct groove/event signatures, relative dynamics, limiting, safe audio, no changed non-Bunker source and unchanged Dust. Provide before/after files and a human listening checklist to existing M13. Objective measures do not certify subjective underground authenticity; until M13 confirms it, the parent is not VERIFIED.
+
 This register records user-approved product changes independently from the legacy 651-row mechanical task ledger. It is not a declaration of acceptance or a replacement for the source specification.
 
 ## CR-ANG-001 · Angle-first root editor

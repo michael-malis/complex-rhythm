@@ -22,6 +22,8 @@ An interactive **mathematical visualization of rhythm**. Each of four instrument
 
 **Cross-lane time:** Select a mathematical root to see its first occurrence in seconds at the current BPM. Roots on other lanes are simultaneously highlighted **only when they hit at that same absolute bar time**, respecting their independent 1–16-bar cycle lengths. Muted lanes are still mathematical matches but are clearly labelled muted. Tempo, lane degree, cycle length and mute updates refresh the explanation live. The halos are static selection aids, not an audio playback pointer. Four separately synchronized playheads and canonical event scheduling remain unchanged.
 
+**Correct window coordinates:** The optional four-bar timeline labels show the actual elapsed-bar interval (for example, 4–8 bars when viewing from bar 5), not a permanently fixed 0–4 scale.
+
 **Linked circular and linear time:** Selecting a root on a circle (or in the root-set strips) highlights every corresponding scheduled occurrence on that lane in the expanded four-bar timeline. Selecting a timestamp on the timeline opens the matching mathematical root angle and source on its circle. Matching uses canonical lane and root phase, so polyrhythms with 1–16-bar independent cycles are never confused merely because positions overlap on screen. Muted lanes show mathematical roots without inventing audible timeline attacks.
 
 ## Mathematical workbench and current interaction model

@@ -227,6 +227,9 @@ jobs:
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-source-equation.log 2>&1 &
           node tests/composition-source-equation.mjs
       - name: Checkout reproducible historical math release for actual before and after comparison
+        # Earlier independent tests use !cancelled(), so the historical source
+        # must also be checked out even if one previous assertion fails.
+        if: ${{ !cancelled() }}
         uses: actions/checkout@v4
         with:
           ref: 454b7c4466851e82946034ce4a47019c716ee218

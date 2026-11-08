@@ -24,7 +24,18 @@ const PRESETS=[
    {...P(-1,0,16,'hat',[L32(2,.42),L32(10,.40),L32(18,.38),L32(26,.45)]),gain:.68},
    {...P(-1,0,4,'rim',[L32(7,.29),L32(14,.36),L32(23,.33),L32(30,.40)]),gain:.65}
   ]},
- {id:'concrete',category:'bunker',name:'Concrete · Drive',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(1,0,2,'bass',[L(7,.45)])]},
+ // Dry/raw club pressure: rigid quarter kick vs alternating two-bar claps,
+ // staggered metallic hats and a three-against-four gritty Reese bass orbit.
+ // Real groove differences are complex roots, never detached step sequencing.
+ {id:'concrete',category:'bunker',name:'Concrete · Raw Underground',bpm:138,bars:2,
+  character:'Raw Underground · dry hard quarter-note kick, clipped backbeat claps, coarse offbeat hats and short growling Reese bass stabs. Two-bar ghost variations maintain drive without a Berlin-style rumble wall.',
+  mathNote:'R₄(1) is a separate one-bar quarter-kick circle; over two bars R₄(−1) claps land on beats 2 and 4, R₈(−1) hats articulate eighth-note offbeats, and R₃(i) bass sets up a shifting 3:4 polymetric counter-rhythm. Nine degree-one roots add intentionally soft ghost pickups.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1.06},
+   {...P(-1,0,4,'clap',[L32(14,.30),L32(30,.37)]),gain:.85},
+   {...P(-1,0,8,'hat',[L32(4,.36),L32(12,.43),L32(20,.39),L32(28,.45)]),gain:.72},
+   {...P(0,1,3,'reese',[L32(7,.48),L32(19,.56),L32(29,.43)]),gain:.70}
+  ]},
  {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
  {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
@@ -153,7 +164,7 @@ const BROWSE_PRESETS=Object.freeze([...PRESETS,...SONG_EXAMPLES]);
 const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
 const GROOVE_LABELS=Object.freeze({
  'berlin-bass-wall':'01 · Bass Wall · relentless kick / deep rumble',
- 'concrete':'02 · Drive · clap and rolling bass',
+ 'concrete':'02 · Concrete · raw claps / Reese bass',
  'shaft':'03 · Machinery · snare, hats and toms',
  'dust':'04 · Half-light · sparse bass and open hats',
  'iron':'05 · Peak · relentless acid pressure',

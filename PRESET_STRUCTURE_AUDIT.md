@@ -17,7 +17,7 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 
 | Preset ID | Genre category | BPM | Lane events | Shared times | Accents | Added sets | Density ratio | Similarity ≥0.85 |
 |---|---|---:|---|---:|---:|---:|---:|---|
-| `berlin-bass-wall` | bunker | 146 | 4:4:8:3 | 3 | 1 | 1 | 2.67 | none |
+| `berlin-bass-wall` | bunker | 146 | 4:10:20:8 | 14 | 10 | 10 | 5.00 | none |
 | `concrete` | bunker | 138 | 4:2:4:3 | 4 | 1 | 1 | 2.00 | `dust:0.86` |
 | `shaft` | bunker | 143 | 4:2:8:3 | 4 | 1 | 1 | 4.00 | none |
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | `concrete:0.86` |

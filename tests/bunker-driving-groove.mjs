@@ -41,7 +41,7 @@ try{
   const secondsPerBar=240/berlin.bpm;
   const scheduled=math.planEvents(lanes,secondsPerBar,0,secondsPerBar*2);
   const atBars=ev=>ev.time/secondsPerBar;
-  const beatBars=scheduled.filter(e=>e.lane===0).map(atBars);
+  const beatBars=scheduled.filter(e=>e.lane===0).map(e=>Number(atBars(e).toFixed(10)));
   const rumbleBars=scheduled.filter(e=>e.lane===1).map(atBars);
   const metadata=lanes.map(t=>t.events);
   const velocityNotes=scheduled.filter(e=>e.sources.some(s=>s.kind==='additional'))

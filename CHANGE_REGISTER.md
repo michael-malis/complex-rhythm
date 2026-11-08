@@ -374,7 +374,7 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 
 ### 2026-11-08 — Four persistent lane colors and selected-source identification
 
-**User-visible product improvement (PR CI pending):** The four independent orbit rings no longer turn grey when their lane is unselected; their rings, root markers, arrowheads and instrument controls always share the same four distinctive palette colors. The selected lane gets a heavier ring stroke and the center event number uses its accent, without adding new toolbars or panels. Muted, unselected rings remain in the corresponding color at reduced opacity.
+**User-visible product improvement (PR CI pending):** The four independent orbit rings no longer turn grey when their lane is unselected; their rings, root markers, arrowheads and instrument controls always share the same four distinctive palette colors. The selected lane gets a heavier ring stroke and the center event number uses its accent, without adding new toolbars or panels. Muted, unselected rings remain in the corresponding color at slightly reduced opacity. The inactive ring stroke colors maintain ≥3:1 contrast to the plot background in both themes.
 
 **Accessibility:** The Canvas now reports the selected lane number, human-readable instrument, actual visible canonical event count, independent loop duration and mute status. This updates when selecting lanes, editing degree, changing instrument or importing rhythms. Existing keyboard navigation and four audio-synchronized arrows remain unchanged.
 

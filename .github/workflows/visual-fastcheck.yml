@@ -6,6 +6,7 @@ on:
       - 'index.html'
       - 'styles.css'
       - 'tests/four-ring-identity.mjs'
+      - 'tests/root-window-link.mjs'
       - '.github/workflows/visual-fastcheck.yml'
 permissions:
   contents: read
@@ -22,6 +23,7 @@ jobs:
         run: |
           node --check app.js
           node --check tests/four-ring-identity.mjs
+          node --check tests/root-window-link.mjs
       - name: Install minimal Chromium
         run: |
           npm install --no-save playwright@1.56.1
@@ -30,10 +32,16 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-quick-visual-http.log 2>&1 &
           node tests/four-ring-identity.mjs
+      - name: Validate link between ring and polymetric time window
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-link-visual-http.log 2>&1 &
+          node tests/root-window-link.mjs
       - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ring-visual-quick-evidence
-          path: artifacts/four-ring-identity/
+          path: |
+            artifacts/four-ring-identity/
+            artifacts/root-window-link/
           if-no-files-found: ignore

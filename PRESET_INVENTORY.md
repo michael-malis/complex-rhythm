@@ -37,7 +37,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.06 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.85 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.72 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.7
 
-**Nearest timing neighbors (Jaccard):** shaft (0.65), dust (0.5676), pressure (0.5556)
+**Nearest timing neighbors (Jaccard):** shaft (0.65), dust (0.5676), stomp-circuit (0.5385)
 
 **Fingerprint:** 0:0;2:62500;3:83333;0:125000;1:125000;2:125000;2:187500;3:218750;0:250000;2:312500;0:375000;1:375000;2:375000;3:416667;1:437500;2:437500;0:500000;2:562500;3:593750;0:625000;1:625000;2:625000;2:687500;0:750000;3:750000;2:812500;0:875000;1:875000;2:875000;3:906250;1:937500;2:937500
 
@@ -71,7 +71,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), pressure (0.7857), liquid-corrosion (0.7333)
+**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), liquid-corrosion (0.7333), house (0.7222)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;0:750000;1:750000;2:875000;3:875000
 
@@ -92,22 +92,24 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Fingerprint:** 0:0;2:0;2:125000;3:125000;0:250000;1:250000;2:250000;2:375000;3:375000;0:500000;2:500000;2:625000;3:625000;0:750000;1:750000;2:750000;0:875000;2:875000;3:875000
 
-## Pressure · Dub (pressure)
+## Pressure · Acid Underground (pressure)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 140 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Group:** original catalog · **Category:** bunker · **BPM:** 140 · **Common period:** 2 bars · **Shared phase groups:** 6.
+**Musical role:** Dark underground acid techno · unwavering four-quarter hard kick, dry backbeat snare, restless offbeat hats and a screaming resonant acid line with intentional call-and-response ghosts.
+**Mathematical design:** One-bar R₄(1) defines each kick quarter; independent two-bar R₄(−1) snare, R₁₂(−1) hats and R₅(i) acidScreaming phrase are extended by ten quiet first-degree phase roots. Distinct root families make the acid notes slide against the metrical kick without a separate beat sequencer.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1, 0.625@0.72 |
+| 2 | -1 + 0i | 180 | 4 | 2 | snare | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.33, 0.625@1, 0.875@1, 0.9375@0.38 |
+| 3 | -1 + 0i | 180 | 12 | 2 | hat | 0.041667, 0.125, 0.208333, 0.291667, 0.375, 0.458333, 0.541667, 0.625, 0.708333, 0.791667, 0.875, 0.958333 | 0.041667@1, 0.125@1, 0.208333@1, 0.291667@1, 0.3125@0.4, 0.375@1, 0.458333@1, 0.541667@1, 0.625@1, 0.708333@1, 0.791667@1, 0.875@1, 0.958333@1 |
+| 4 | 0 + 1i | 90 | 5 | 2 | acidScreaming | 0.05, 0.25, 0.45, 0.65, 0.85 | 0.05@1, 0.15625@0.44, 0.25@1, 0.34375@0.62, 0.45@1, 0.5625@0.48, 0.65@1, 0.75@0.66, 0.85@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.05 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.67 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.62
 
-**Nearest timing neighbors (Jaccard):** dust (0.7857), stomp-circuit (0.7333), warehouse-hammer (0.6875)
+**Nearest timing neighbors (Jaccard):** concrete (0.4167), shaft (0.3725), steel-rave (0.3455)
 
-**Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;2:625000;3:625000;0:750000;1:750000;2:875000
+**Fingerprint:** 0:0;2:41667;3:50000;0:125000;1:125000;2:125000;3:156250;2:208333;0:250000;3:250000;2:291667;2:312500;3:343750;0:375000;1:375000;2:375000;1:437500;3:450000;2:458333;0:500000;2:541667;3:562500;0:625000;1:625000;2:625000;3:650000;2:708333;0:750000;3:750000;2:791667;3:850000;0:875000;1:875000;2:875000;1:937500;2:958333
 
 ## Classic House · 4/4 (house)
 
@@ -396,7 +398,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** minimal (0.4167), poly-2-3 (0.25), pressure (0.25)
+**Nearest timing neighbors (Jaccard):** minimal (0.4167), poly-2-3 (0.25), shaft (0.25)
 
 **Fingerprint:** 0:0;1:0;2:0;3:0;1:142857;0:250000;1:285714;1:428571;0:500000;1:571429;1:714286;0:750000;1:857143
 
@@ -464,7 +466,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** pressure (0.6667), dust (0.625), liquid-corrosion (0.625)
+**Nearest timing neighbors (Jaccard):** dust (0.625), liquid-corrosion (0.625), stomp-circuit (0.5882)
 
 **Fingerprint:** 0:0;3:0;2:125000;1:250000;2:375000;1:437500;0:500000;3:500000;2:625000;3:625000;1:750000;0:812500;2:875000
 
@@ -515,7 +517,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** dust (0.8), liquid-corrosion (0.8), pressure (0.7333)
+**Nearest timing neighbors (Jaccard):** dust (0.8), liquid-corrosion (0.8), shaft (0.6316)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;0:875000;2:875000
 
@@ -589,7 +591,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), dust (0.7333), pressure (0.6667)
+**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), dust (0.7333), maracatu (0.625)
 
 **Fingerprint:** 0:0;3:0;2:125000;3:187500;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000
 

@@ -121,6 +121,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-inspector.log 2>&1 &
           node tests/orbit-root-inspection.mjs
+      - name: Prove exact cross-lane first-occurrence coincidences, time in seconds and colored static halos
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-cross-lane-inspect.log 2>&1 &
+          node tests/cross-lane-root-coincidence.mjs
       - name: Verify SVG and Canvas mathematical phase geometry and real shared-root MathML
         if: ${{ !cancelled() }}
         run: |

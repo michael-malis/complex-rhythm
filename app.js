@@ -1159,7 +1159,7 @@ function renderComposition() {
  plot($('baseStrip'),c.base,'base');plot($('addedStrip'),c.added,'added');plot($('unionStrip'),c.merged,'union');
  const resultStrip=$('unionStrip');
  resultStrip.setAttribute('aria-label',(t.operation==='intersection'?'Intersection':'Union')+
-  ' of lane '+(i+1)+': '+c.merged.length+' distinct phases. Click a phase or use Left and Right arrow keys to inspect; Home and End jump to the first and last.');
+  ' of lane '+(i+1)+': '+c.merged.length+' distinct phases. Click a phase, use Left and Right arrows, or press Enter to inspect; Home and End jump to the first and last.');
  syncInspectedPhaseMarks(inspectedRoot?.lane===i?inspectionPhase(t,inspectedRoot):NaN);
 }
 
@@ -2042,11 +2042,18 @@ function setupEvents() {
   inspectResultPhase(phase);
  });
  resultStrip.addEventListener('keydown',e=>{
-  if(!['ArrowLeft','ArrowRight','Home','End','Escape'].includes(e.key))return;
+  if(!['ArrowLeft','ArrowRight','Home','End','Escape','Enter',' '].includes(e.key))return;
   e.preventDefault();
   if(e.key==='Escape'){
    inspectedRoot=null;renderRootInspection();
    $('rootInspectionAnnouncement').textContent='Root inspection cleared';
+  }else if(e.key==='Enter'||e.key===' '){
+   const all=events(tracks[selectedTrack]);
+   const phase=inspectedRoot?.lane===selectedTrack?inspectionPhase(tracks[selectedTrack],inspectedRoot):undefined;
+   const current=Number.isFinite(phase)?all.find(item=>{
+    const d=Math.abs(item.phase-phase);return Math.min(d,1-d)<1e-6;
+   }):null;
+   inspectCanonicalEvent(current||all[0]);
   }else inspectNeighborEvent(e.key==='ArrowLeft'?-1:1,
    e.key==='Home'?'first':e.key==='End'?'last':null);
  });

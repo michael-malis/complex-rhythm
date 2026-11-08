@@ -377,6 +377,23 @@ function syncInspectedPhaseMarks(phase){
   mark.classList.toggle('is-inspected',selected);
  }
 }
+// A mathematical coincidence must occur at the SAME absolute bar position,
+// not merely at the same normalized angle on rings with different lengths.
+// We inspect the selected root's first occurrence after the common start.
+function coincidentLaneEvents(absoluteBars,sourceLane){
+ const result=[];
+ for(let lane=0;lane<tracks.length;lane++){
+  if(lane===sourceLane)continue;
+  const t=tracks[lane],length=t.cycleBars||1;
+  const target=((absoluteBars/length)%1+1)%1;
+  const event=events(t).find(e=>{
+   const delta=Math.abs(e.phase-target);
+   return Math.min(delta,1-delta)<1e-6;
+  });
+  if(event)result.push({lane,phase:event.phase,muted:t.muted});
+ }
+ return result;
+}
 function renderRootInspection(){
  const panel=$('rootInspection'),selection=inspectedRoot;
  if(!panel)return;
@@ -398,6 +415,12 @@ function renderRootInspection(){
  const bars=t.cycleBars||1,elapsedBars=phase*bars;
  const bar=Math.floor(elapsedBars)+1;
  const beat=1+4*(elapsedBars-Math.floor(elapsedBars));
+ const firstSeconds=elapsedBars*240/bpm;
+ const simultaneous=coincidentLaneEvents(elapsedBars,selection.lane);
+ const simultaneousText=simultaneous.length
+  ?'Same-time mathematical events: '+simultaneous.map(v=>
+     'Lane '+(v.lane+1)+(v.muted?' (muted)':'')).join(' · ')
+  :'No other lane has a hit at this first occurrence.';
  const kinds=[...new Set((match?.sources||[]).map(s=>s.kind==='base'?'base':
   s.kind==='additional'?'family '+(s.sourceIndex+1):'Euclidean'))];
  let description='root '+(selection.index+1)+'/'+t.n;
@@ -407,11 +430,14 @@ function renderRootInspection(){
  $('rootInspectionLane').textContent='Lane '+(selection.lane+1)+' · '+description;
  renderTeX('rootInspectionAngle','\\theta_{'+selection.index+'}='+window.RootAngleInfo.piTeX(phase*TAU));
  $('rootInspectionTime').textContent='Phase '+Number((phase*100).toFixed(3))+
-  '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+'/4';
+  '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+
+  '/4 · first occurrence '+firstSeconds.toFixed(3)+' s after start';
+ $('rootInspectionCoincidences').textContent=simultaneousText;
  panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
  panel.hidden=false;
  $('rootInspectionAnnouncement').textContent=$('rootInspectionLane').textContent+
-  '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent;
+  '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent+
+  '. '+simultaneousText;
  syncInspectedPhaseMarks(phase);
 }
 // Keyboard inspection walks the canonical visible set, including muted lanes.
@@ -744,7 +770,7 @@ function renderTracks() {
   sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack){updateOrbitSummary();renderEditor()}if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
-  updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();if(i===selectedTrack)updateOrbitSummary();markCustom()});
+  updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();if(i===selectedTrack)updateOrbitSummary();if(inspectedRoot)renderRootInspection();markCustom()});
   head.append(pick,sound,mute);row.append(head);
   // Always-visible instrument gain in each lane. The selected-lane advanced
   // editor keeps a synchronized secondary mirror for backward compatibility.
@@ -806,6 +832,7 @@ function updateLaneStatus(i) {
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
  if(i===selectedTrack){updateOrbitSummary();renderRootRule();renderRootInspection()}
+ else if(inspectedRoot?.lane===selectedTrack)renderRootInspection();
 }
 function chooseTrack(i,fromTrackList=false) {
  if(i!==selectedTrack)inspectedRoot=null;
@@ -1935,6 +1962,17 @@ function draw() {
    ctx.arc(Math.cos(angle)*r,Math.sin(angle)*r,Math.max(19,ringSpacing*.32),0,TAU);
    ctx.strokeStyle=COLORS[inspectedRoot.lane];ctx.lineWidth=2.5;
    ctx.setLineDash([4,3]);ctx.stroke();ctx.restore();
+   // A separate static dashed outline shows genuinely simultaneous phases
+   // on other independently timed rings. Never draw a radial playback hand.
+   const linked=coincidentLaneEvents(phase*(t.cycleBars||1),inspectedRoot.lane);
+   for(const match of linked){
+    const angle=-Math.PI/2+TAU*match.phase,otherR=radii[match.lane];
+    ctx.save();ctx.beginPath();
+    ctx.arc(Math.cos(angle)*otherR,Math.sin(angle)*otherR,
+     Math.max(16,Math.min(20,ringSpacing*.3)),0,TAU);
+    ctx.strokeStyle=COLORS[match.lane];ctx.globalAlpha=match.muted?.72:1;
+    ctx.lineWidth=2;ctx.setLineDash([3,5]);ctx.stroke();ctx.restore();
+   }
   }
  }
  // Four short, tangential playheads travel ON their own root ring.
@@ -2092,6 +2130,7 @@ function setupEvents() {
   const phase=transportPhase(),cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/cycleSeconds()):0;
   bpm=Number(e.target.value);$('bpmText').textContent=String(bpm);
   if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime-(cycle+phase)*cycleSeconds();scheduledUntil=audio.currentTime+.006}
+  if(inspectedRoot)renderRootInspection();
   markCustom(false);
  });
  enableFocusedWheel($('volume'));

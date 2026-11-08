@@ -461,8 +461,8 @@ function renderRootInspection(){
  $('rootInspectionTime').textContent='Phase '+Number((phase*100).toFixed(3))+
   '% · loop bar '+loopBar+'/'+bars+' · beat '+Number(beat.toFixed(3))+
   '/4 · '+(occurrence.selected?
-   'selected occurrence · absolute bar '+(elapsedBars+1).toFixed(3):
-   'first occurrence')+' · '+seconds.toFixed(3)+' s after start';
+   'selected occurrence · absolute bar '+(elapsedBars+1).toFixed(3)+' · ':
+   'first occurrence ')+seconds.toFixed(3)+' s after start';
  $('rootInspectionCoincidences').textContent=simultaneousText;
  panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
  panel.hidden=false;

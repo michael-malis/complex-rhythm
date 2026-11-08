@@ -31,4 +31,4 @@ All six are canonical `PRESETS` in `app.js`, each with four independent instrume
 | `shaft` | Industrial Techno | Quarter kick plus patterned metallic/FM or acoustic mechanical layers; avoid unrelated random noise. |
 | `iron` | Hard Groove | Strict quarter kick with syncopated percussion and accent changes rather than a louder/faster copy of Bass Wall. |
 
-Only `berlin-bass-wall` is implemented in the current step. The other four descriptions are design targets and remain TODO. Reference tracks guide *character*, not copied phrases or samples. No claims of music quality without real listening.
+`berlin-bass-wall` and `concrete` are now implemented and covered by focused source/audio checks. The other three designs remain TODO. Reference tracks guide *character*, not copied phrases or samples. No claims of music quality without real listening.

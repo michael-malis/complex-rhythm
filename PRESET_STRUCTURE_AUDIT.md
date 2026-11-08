@@ -11,27 +11,27 @@
 - The 15 experimental studies each contain three new genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study retains its previous five separately sourced accents as well.
 - High phase similarity (≥0.85) remains a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
 
-All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The original 35 mathematical configurations, all 15 experimental base roots, degree quartets, tempos, voices and original complex arguments are preserved.
+All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall and Concrete; the other 48 canonical preset arrangements remain unchanged.
 
 ## Quantitative per-preset evidence
 
 | Preset ID | Genre category | BPM | Lane events | Shared times | Accents | Added sets | Density ratio | Similarity ≥0.85 |
 |---|---|---:|---|---:|---:|---:|---:|---|
 | `berlin-bass-wall` | bunker | 146 | 4:10:20:8 | 14 | 10 | 10 | 5.00 | none |
-| `concrete` | bunker | 138 | 4:2:4:3 | 4 | 1 | 1 | 2.00 | `dust:0.86` |
+| `concrete` | bunker | 138 | 4:6:12:6 | 7 | 9 | 9 | 3.00 | none |
 | `shaft` | bunker | 143 | 4:2:8:3 | 4 | 1 | 1 | 4.00 | none |
-| `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | `concrete:0.86` |
-| `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `peak-pressure:0.86` |
+| `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | none |
+| `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | steel-rave:0.90, 303-pressure:0.86, peak-pressure:0.86 |
 | `pressure` | bunker | 140 | 4:2:4:2 | 4 | 1 | 1 | 2.00 | none |
 | `house` | other | 125 | 4:2:4:8 | 8 | 0 | 0 | 4.00 | none |
 | `dub` | other | 78 | 3:1:4:2 | 2 | 1 | 1 | 4.00 | none |
 | `afro` | poly | 116 | 3:4:8:1 | 4 | 0 | 0 | 8.00 | none |
 | `minimal` | poly | 124 | 5:7:8:1 | 1 | 0 | 0 | 8.00 | none |
 | `ambient` | other | 70 | 1:3:4:2 | 1 | 0 | 0 | 4.00 | none |
-| `neuro-burst` | dnb | 174 | 2:3:10:2 | 5 | 4 | 4 | 5.00 | `velocity-grid:0.89` |
+| `neuro-burst` | dnb | 174 | 2:3:10:2 | 5 | 4 | 4 | 5.00 | velocity-grid:0.89 |
 | `double-drop` | dnb | 176 | 3:4:8:3 | 5 | 5 | 5 | 2.67 | none |
 | `subpressure` | dnb | 172 | 2:2:8:2 | 3 | 2 | 2 | 4.00 | none |
-| `velocity-grid` | dnb | 178 | 3:4:10:2 | 6 | 6 | 6 | 5.00 | `neuro-burst:0.89` |
+| `velocity-grid` | dnb | 178 | 3:4:10:2 | 6 | 6 | 6 | 5.00 | neuro-burst:0.89 |
 | `ragga-spiral` | jungle | 164 | 3:4:10:2 | 6 | 6 | 6 | 5.00 | none |
 | `break-torrent` | jungle | 169 | 4:4:10:2 | 8 | 7 | 7 | 5.00 | none |
 | `ghostline` | jungle | 160 | 2:4:8:2 | 4 | 4 | 4 | 4.00 | none |
@@ -45,13 +45,13 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 | `batucada` | brazil | 118 | 3:6:8:3 | 6 | 4 | 4 | 2.67 | none |
 | `maracatu` | brazil | 104 | 3:3:4:3 | 3 | 3 | 3 | 1.33 | none |
 | `warehouse-hammer` | hardhouse | 146 | 4:2:4:5 | 6 | 1 | 1 | 2.50 | none |
-| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95`, `iron:0.90` |
-| `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | none |
-| `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `steel-rave:0.95`, `iron:0.86` |
+| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | peak-pressure:0.95, iron:0.90, 303-pressure:0.86 |
+| `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | liquid-corrosion:0.87 |
+| `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | steel-rave:0.95, iron:0.86 |
 | `acid-303` | acid | 128 | 4:2:4:6 | 6 | 2 | 2 | 3.00 | none |
-| `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | none |
-| `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | none |
-| `303-pressure` | acid | 140 | 5:2:9:9 | 5 | 4 | 4 | 4.50 | none |
+| `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | iron:0.86, steel-rave:0.86 |
+| `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | stomp-circuit:0.87 |
+| `303-pressure` | acid | 140 | 5:2:9:9 | 5 | 4 | 4 | 4.50 | iron:0.86, steel-rave:0.86 |
 | `industrial-fracture` | experimental | 155 | 6:9:11:9 | 3 | 3 | 3 | 1.83 | none |
 | `acid-reactor` | experimental | 148 | 4:7:7:11 | 3 | 3 | 3 | 2.75 | none |
 | `rotterdam-collision` | hardcore | 180 | 5:9:11:3 | 3 | 3 | 3 | 3.67 | none |

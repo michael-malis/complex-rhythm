@@ -22,22 +22,24 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Fingerprint:** 0:0;2:31250;1:62500;2:62500;2:93750;0:125000;3:125000;2:156250;1:187500;2:218750;3:218750;0:250000;2:281250;1:312500;2:312500;1:343750;2:343750;0:375000;3:375000;2:406250;1:437500;3:437500;2:468750;0:500000;2:531250;1:562500;2:562500;2:593750;0:625000;3:625000;2:656250;1:687500;2:718750;3:718750;0:750000;2:781250;1:812500;2:812500;1:843750;2:843750;0:875000;3:875000;2:906250;1:937500;3:937500;2:968750
 
-## Concrete · Drive (concrete)
+## Concrete · Raw Underground (concrete)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 138 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Group:** original catalog · **Category:** bunker · **BPM:** 138 · **Common period:** 2 bars · **Shared phase groups:** 7.
+**Musical role:** Raw Underground · dry hard quarter-note kick, clipped backbeat claps, coarse offbeat hats and short growling Reese bass stabs. Two-bar ghost variations maintain drive without a Berlin-style rumble wall.
+**Mathematical design:** R₄(1) is a separate one-bar quarter-kick circle; over two bars R₄(−1) claps land on beats 2 and 4, R₈(−1) hats articulate eighth-note offbeats, and R₃(i) bass sets up a shifting 3:4 polymetric counter-rhythm. Nine degree-one roots add intentionally soft ghost pickups.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.4375@0.45, 0.5@1 |
+| 2 | -1 + 0i | 180 | 4 | 2 | clap | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.3, 0.625@1, 0.875@1, 0.9375@0.37 |
+| 3 | -1 + 0i | 180 | 8 | 2 | hat | 0.0625, 0.1875, 0.3125, 0.4375, 0.5625, 0.6875, 0.8125, 0.9375 | 0.0625@1, 0.125@0.36, 0.1875@1, 0.3125@1, 0.375@0.43, 0.4375@1, 0.5625@1, 0.625@0.39, 0.6875@1, 0.8125@1, 0.875@0.45, 0.9375@1 |
+| 4 | 0 + 1i | 90 | 3 | 2 | reese | 0.083333, 0.416667, 0.75 | 0.083333@1, 0.21875@0.48, 0.416667@1, 0.59375@0.56, 0.75@1, 0.90625@0.43 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.06 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.85 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.72 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.7
 
-**Nearest timing neighbors (Jaccard):** dust (0.8571), liquid-corrosion (0.8), stomp-circuit (0.8)
+**Nearest timing neighbors (Jaccard):** shaft (0.65), liquid-corrosion (0.5789), dust (0.5676)
 
-**Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;3:437500;0:500000;3:500000;2:625000;0:750000;1:750000;2:875000
+**Fingerprint:** 0:0;2:62500;3:83333;0:125000;1:125000;2:125000;2:187500;3:218750;0:250000;2:312500;0:375000;1:375000;2:375000;3:416667;1:437500;2:437500;0:500000;2:562500;3:593750;0:625000;1:625000;2:625000;2:687500;0:750000;3:750000;2:812500;0:875000;1:875000;2:875000;3:906250;1:937500;2:937500
 
 ## Ventilation · Industrial (shaft)
 
@@ -52,7 +54,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** baile-funk (0.6667), concrete (0.6667), dust (0.6667)
+**Nearest timing neighbors (Jaccard):** baile-funk (0.6667), dust (0.6667), concrete (0.65)
 
 **Fingerprint:** 0:0;2:0;3:0;2:125000;0:250000;1:250000;2:250000;2:375000;0:500000;2:500000;3:500000;2:625000;0:750000;1:750000;2:750000;3:812500;2:875000
 
@@ -69,7 +71,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** concrete (0.8571), liquid-corrosion (0.8), stomp-circuit (0.8)
+**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.8), stomp-circuit (0.8), pressure (0.7857)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;0:750000;1:750000;2:875000;3:875000
 
@@ -103,7 +105,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** concrete (0.7857), dust (0.7857), liquid-corrosion (0.7333)
+**Nearest timing neighbors (Jaccard):** dust (0.7857), liquid-corrosion (0.7333), stomp-circuit (0.7333)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;2:625000;3:625000;0:750000;1:750000;2:875000
 
@@ -137,7 +139,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** ambient (0.5385), concrete (0.5333), dust (0.5333)
+**Nearest timing neighbors (Jaccard):** ambient (0.5385), dust (0.5333), maracatu (0.5333)
 
 **Fingerprint:** 0:0;3:0;2:125000;2:375000;0:500000;1:500000;3:500000;2:625000;0:687500;2:875000
 
@@ -190,7 +192,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** dub (0.5385), concrete (0.5333), dust (0.5333)
+**Nearest timing neighbors (Jaccard):** dub (0.5385), dust (0.5333), maracatu (0.5333)
 
 **Fingerprint:** 0:0;3:0;1:83333;2:125000;2:375000;1:416667;3:500000;2:625000;1:750000;2:875000
 
@@ -462,7 +464,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** pressure (0.6667), concrete (0.625), dust (0.625)
+**Nearest timing neighbors (Jaccard):** pressure (0.6667), dust (0.625), liquid-corrosion (0.5882)
 
 **Fingerprint:** 0:0;3:0;2:125000;1:250000;2:375000;1:437500;0:500000;3:500000;2:625000;3:625000;1:750000;0:812500;2:875000
 
@@ -513,7 +515,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.8667), concrete (0.8), dust (0.8)
+**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.8667), dust (0.8), pressure (0.7333)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;0:875000;2:875000
 
@@ -581,7 +583,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8667), concrete (0.8), dust (0.8)
+**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8667), dust (0.8), pressure (0.7333)
 
 **Fingerprint:** 0:0;3:0;2:125000;3:187500;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000
 
@@ -712,7 +714,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.58 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.27 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.3 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.15
 
-**Nearest timing neighbors (Jaccard):** rotterdam-collision (0.2683), terror-geometry (0.2245), shaft (0.1579)
+**Nearest timing neighbors (Jaccard):** rotterdam-collision (0.2683), terror-geometry (0.2245), concrete (0.1622)
 
 **Fingerprint:** 0:0;1:35714;3:36364;2:50000;3:127273;1:178571;3:218182;0:250000;2:250000;3:309091;1:321429;3:400000;2:450000;1:464286;3:490909;0:500000;3:581818;1:607143;2:650000;3:672727;0:750000;1:750000;3:763636;2:850000;3:854545;1:892857;3:945455
 

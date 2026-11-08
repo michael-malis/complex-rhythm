@@ -400,32 +400,32 @@
     },
     {
       "id": "concrete",
-      "name": "Concrete · Drive",
+      "name": "Concrete · Raw Underground",
       "category": "bunker",
       "origin": "original catalog",
       "bpm": 138,
-      "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
-      "eventFingerprint": "0:0;3:0;2:125000;0:250000;1:250000;2:375000;3:437500;0:500000;3:500000;2:625000;0:750000;1:750000;2:875000",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:125000;0:250000;3:250000;2:375000;0:500000;1:500000;2:625000;3:687500;0:750000;3:750000;2:875000",
-      "sharedPhaseGroups": 4,
-      "totalScheduledEvents": 13,
+      "commonCycleBars": 2,
+      "character": "Raw Underground · dry hard quarter-note kick, clipped backbeat claps, coarse offbeat hats and short growling Reese bass stabs. Two-bar ghost variations maintain drive without a Berlin-style rumble wall.",
+      "mathNote": "R₄(1) is a separate one-bar quarter-kick circle; over two bars R₄(−1) claps land on beats 2 and 4, R₈(−1) hats articulate eighth-note offbeats, and R₃(i) bass sets up a shifting 3:4 polymetric counter-rhythm. Nine degree-one roots add intentionally soft ghost pickups.",
+      "eventFingerprint": "0:0;2:62500;3:83333;0:125000;1:125000;2:125000;2:187500;3:218750;0:250000;2:312500;0:375000;1:375000;2:375000;3:416667;1:437500;2:437500;0:500000;2:562500;3:593750;0:625000;1:625000;2:625000;2:687500;0:750000;3:750000;2:812500;0:875000;1:875000;2:875000;3:906250;1:937500;2:937500",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:0;2:62500;0:125000;3:125000;2:187500;0:250000;1:250000;2:250000;3:281250;1:312500;2:312500;0:375000;2:437500;3:458333;0:500000;1:500000;2:500000;2:562500;3:593750;0:625000;2:687500;0:750000;1:750000;2:750000;3:791667;1:812500;2:812500;0:875000;2:937500;3:968750",
+      "sharedPhaseGroups": 7,
+      "totalScheduledEvents": 28,
       "nearestMathematicalNeighbors": [
         {
-          "id": "dust",
-          "similarity": 0.8571,
-          "bpm": 134
+          "id": "shaft",
+          "similarity": 0.65,
+          "bpm": 143
         },
         {
           "id": "liquid-corrosion",
-          "similarity": 0.8,
+          "similarity": 0.5789,
           "bpm": 124
         },
         {
-          "id": "stomp-circuit",
-          "similarity": 0.8,
-          "bpm": 148
+          "id": "dust",
+          "similarity": 0.5676,
+          "bpm": 134
         }
       ],
       "lanes": [
@@ -442,7 +442,7 @@
           "rootDegree": 4,
           "cycleBars": 1,
           "operation": "union",
-          "gain": 1,
+          "gain": 1.06,
           "synthPatch": null,
           "euclidean": null,
           "additionalRootSets": [],
@@ -482,46 +482,26 @@
           "modulus": 1,
           "argumentRadians": 3.141592653589793,
           "argumentDegrees": 180,
-          "rootDegree": 2,
-          "cycleBars": 1,
+          "rootDegree": 4,
+          "cycleBars": 2,
           "operation": "union",
-          "gain": 1,
+          "gain": 0.85,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
-          "baseRootPhases": [
-            0.25,
-            0.75
-          ],
-          "actualEventPhases": [
+          "additionalRootSets": [
             {
-              "phase": 0.25,
-              "velocity": 1
+              "a": -0.9238795325112867,
+              "b": 0.3826834323650899,
+              "n": 1,
+              "velocity": 0.3
             },
             {
-              "phase": 0.75,
-              "velocity": 1
+              "a": 0.9238795325112865,
+              "b": -0.3826834323650904,
+              "n": 1,
+              "velocity": 0.37
             }
           ],
-          "rhythmicEventCount": 2
-        },
-        {
-          "lane": 3,
-          "sound": "hat",
-          "complex": {
-            "a": -1,
-            "b": 0
-          },
-          "modulus": 1,
-          "argumentRadians": 3.141592653589793,
-          "argumentDegrees": 180,
-          "rootDegree": 4,
-          "cycleBars": 1,
-          "operation": "union",
-          "gain": 1,
-          "synthPatch": null,
-          "euclidean": null,
-          "additionalRootSets": [],
           "baseRootPhases": [
             0.125,
             0.375,
@@ -538,59 +518,196 @@
               "velocity": 1
             },
             {
+              "phase": 0.4375,
+              "velocity": 0.3
+            },
+            {
               "phase": 0.625,
               "velocity": 1
             },
             {
               "phase": 0.875,
               "velocity": 1
+            },
+            {
+              "phase": 0.9375,
+              "velocity": 0.37
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 6
         },
         {
-          "lane": 4,
-          "sound": "bass",
+          "lane": 3,
+          "sound": "hat",
           "complex": {
-            "a": 1,
+            "a": -1,
             "b": 0
           },
           "modulus": 1,
-          "argumentRadians": 0,
-          "argumentDegrees": 0,
-          "rootDegree": 2,
-          "cycleBars": 1,
+          "argumentRadians": 3.141592653589793,
+          "argumentDegrees": 180,
+          "rootDegree": 8,
+          "cycleBars": 2,
           "operation": "union",
-          "gain": 1,
+          "gain": 0.72,
           "synthPatch": null,
           "euclidean": null,
           "additionalRootSets": [
             {
-              "a": -0.9238795325112867,
-              "b": 0.3826834323650899,
+              "a": 0.7071067811865476,
+              "b": 0.7071067811865475,
+              "n": 1,
+              "velocity": 0.36
+            },
+            {
+              "a": -0.7071067811865475,
+              "b": 0.7071067811865476,
+              "n": 1,
+              "velocity": 0.43
+            },
+            {
+              "a": -0.7071067811865477,
+              "b": -0.7071067811865475,
+              "n": 1,
+              "velocity": 0.39
+            },
+            {
+              "a": 0.7071067811865474,
+              "b": -0.7071067811865477,
               "n": 1,
               "velocity": 0.45
             }
           ],
           "baseRootPhases": [
-            0,
-            0.5
+            0.0625,
+            0.1875,
+            0.3125,
+            0.4375,
+            0.5625,
+            0.6875,
+            0.8125,
+            0.9375
           ],
           "actualEventPhases": [
             {
-              "phase": 0,
+              "phase": 0.0625,
               "velocity": 1
+            },
+            {
+              "phase": 0.125,
+              "velocity": 0.36
+            },
+            {
+              "phase": 0.1875,
+              "velocity": 1
+            },
+            {
+              "phase": 0.3125,
+              "velocity": 1
+            },
+            {
+              "phase": 0.375,
+              "velocity": 0.43
             },
             {
               "phase": 0.4375,
+              "velocity": 1
+            },
+            {
+              "phase": 0.5625,
+              "velocity": 1
+            },
+            {
+              "phase": 0.625,
+              "velocity": 0.39
+            },
+            {
+              "phase": 0.6875,
+              "velocity": 1
+            },
+            {
+              "phase": 0.8125,
+              "velocity": 1
+            },
+            {
+              "phase": 0.875,
               "velocity": 0.45
             },
             {
-              "phase": 0.5,
+              "phase": 0.9375,
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 3
+          "rhythmicEventCount": 12
+        },
+        {
+          "lane": 4,
+          "sound": "reese",
+          "complex": {
+            "a": 0,
+            "b": 1
+          },
+          "modulus": 1,
+          "argumentRadians": 1.5707963267948966,
+          "argumentDegrees": 90,
+          "rootDegree": 3,
+          "cycleBars": 2,
+          "operation": "union",
+          "gain": 0.7,
+          "synthPatch": null,
+          "euclidean": null,
+          "additionalRootSets": [
+            {
+              "a": 0.19509032201612833,
+              "b": 0.9807852804032304,
+              "n": 1,
+              "velocity": 0.48
+            },
+            {
+              "a": -0.8314696123025455,
+              "b": -0.555570233019602,
+              "n": 1,
+              "velocity": 0.56
+            },
+            {
+              "a": 0.8314696123025452,
+              "b": -0.5555702330196022,
+              "n": 1,
+              "velocity": 0.43
+            }
+          ],
+          "baseRootPhases": [
+            0.0833333333,
+            0.4166666667,
+            0.75
+          ],
+          "actualEventPhases": [
+            {
+              "phase": 0.0833333333,
+              "velocity": 1
+            },
+            {
+              "phase": 0.21875,
+              "velocity": 0.48
+            },
+            {
+              "phase": 0.4166666667,
+              "velocity": 1
+            },
+            {
+              "phase": 0.59375,
+              "velocity": 0.56
+            },
+            {
+              "phase": 0.75,
+              "velocity": 1
+            },
+            {
+              "phase": 0.90625,
+              "velocity": 0.43
+            }
+          ],
+          "rhythmicEventCount": 6
         }
       ]
     },
@@ -614,14 +731,14 @@
           "bpm": 132
         },
         {
-          "id": "concrete",
-          "similarity": 0.6667,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.6667,
           "bpm": 134
+        },
+        {
+          "id": "concrete",
+          "similarity": 0.65,
+          "bpm": 138
         }
       ],
       "lanes": [
@@ -825,11 +942,6 @@
       "totalScheduledEvents": 13,
       "nearestMathematicalNeighbors": [
         {
-          "id": "concrete",
-          "similarity": 0.8571,
-          "bpm": 138
-        },
-        {
           "id": "liquid-corrosion",
           "similarity": 0.8,
           "bpm": 124
@@ -838,6 +950,11 @@
           "id": "stomp-circuit",
           "similarity": 0.8,
           "bpm": 148
+        },
+        {
+          "id": "pressure",
+          "similarity": 0.7857,
+          "bpm": 140
         }
       ],
       "lanes": [
@@ -1247,11 +1364,6 @@
       "totalScheduledEvents": 12,
       "nearestMathematicalNeighbors": [
         {
-          "id": "concrete",
-          "similarity": 0.7857,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.7857,
           "bpm": 134
@@ -1260,6 +1372,11 @@
           "id": "liquid-corrosion",
           "similarity": 0.7333,
           "bpm": 124
+        },
+        {
+          "id": "stomp-circuit",
+          "similarity": 0.7333,
+          "bpm": 148
         }
       ],
       "lanes": [
@@ -1658,14 +1775,14 @@
           "bpm": 70
         },
         {
-          "id": "concrete",
-          "similarity": 0.5333,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.5333,
           "bpm": 134
+        },
+        {
+          "id": "maracatu",
+          "similarity": 0.5333,
+          "bpm": 104
         }
       ],
       "lanes": [
@@ -2274,14 +2391,14 @@
           "bpm": 78
         },
         {
-          "id": "concrete",
-          "similarity": 0.5333,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.5333,
           "bpm": 134
+        },
+        {
+          "id": "maracatu",
+          "similarity": 0.5333,
+          "bpm": 104
         }
       ],
       "lanes": [
@@ -5990,14 +6107,14 @@
           "bpm": 140
         },
         {
-          "id": "concrete",
-          "similarity": 0.625,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.625,
           "bpm": 134
+        },
+        {
+          "id": "liquid-corrosion",
+          "similarity": 0.5882,
+          "bpm": 124
         }
       ],
       "lanes": [
@@ -6630,14 +6747,14 @@
           "bpm": 124
         },
         {
-          "id": "concrete",
-          "similarity": 0.8,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.8,
           "bpm": 134
+        },
+        {
+          "id": "pressure",
+          "similarity": 0.7333,
+          "bpm": 140
         }
       ],
       "lanes": [
@@ -7525,14 +7642,14 @@
           "bpm": 148
         },
         {
-          "id": "concrete",
-          "similarity": 0.8,
-          "bpm": 138
-        },
-        {
           "id": "dust",
           "similarity": 0.8,
           "bpm": 134
+        },
+        {
+          "id": "pressure",
+          "similarity": 0.7333,
+          "bpm": 140
         }
       ],
       "lanes": [
@@ -9392,9 +9509,9 @@
           "bpm": 220
         },
         {
-          "id": "shaft",
-          "similarity": 0.1579,
-          "bpm": 143
+          "id": "concrete",
+          "similarity": 0.1622,
+          "bpm": 138
         }
       ],
       "lanes": [

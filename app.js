@@ -49,7 +49,17 @@ const PRESETS=[
    {...P(0,1,3,'fmPerc',[L32(7,.38),L32(19,.46),L32(27,.33)]),gain:.46}
   ]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
- {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
+ // Hard Groove uses interlocking, unequal complex-root attacks rather than
+ // racing the BPM or adding unauthorized off-quarter kick duplicates.
+ {id:'iron',category:'bunker',name:'Iron · Hard Groove',bpm:151,bars:2,
+  character:'Hard Groove Techno · strict hard four-quarter kick, rolling clipped claps, driving coarse hats and syncopated low toms. Two-bar response accents create tension without burying the kick or cloning the industrial/acid patterns.',
+  mathNote:'One-bar R₄(1) holds eight unwavering kicks over two bars. Independent two-bar R₄(−1) claps, R₁₂(−1) hats and R₅(i) toms interweave with twelve separate first-degree pickup roots; every syncopation retains complex-root phase and velocity provenance.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1.07},
+   {...P(-1,0,4,'clap',[L32(6,.35),L32(14,.42),L32(22,.32),L32(30,.46)]),gain:.87},
+   {...P(-1,0,12,'hat',[L32(2,.38),L32(10,.47),L32(18,.37),L32(26,.44)]),gain:.72},
+   {...P(0,1,5,'tom',[L32(7,.54),L32(13,.44),L32(23,.58),L32(29,.48)]),gain:.78}
+  ]},
  // Acid Bunker: quarter-note hard kick against a two-bar, phase-shifted
  // resonant 303 phrase. Ghosts remain degree-one complex roots sharing
  // exactly the same scheduling clock and colored orbit math as the kick.

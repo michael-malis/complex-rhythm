@@ -11,7 +11,7 @@
 - The 15 experimental studies each contain three new genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study retains its previous five separately sourced accents as well.
 - High phase similarity (≥0.85) remains a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
 
-All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall, Concrete, Pressure and Shaft; the other 46 canonical preset arrangements remain unchanged.
+All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall, Concrete, Pressure, Shaft and Iron; the other 45 canonical preset arrangements remain unchanged.
 
 ## Quantitative per-preset evidence
 
@@ -21,7 +21,7 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 | `concrete` | bunker | 138 | 4:6:12:6 | 7 | 9 | 9 | 3.00 | none |
 | `shaft` | bunker | 143 | 4:6:11:6 | 6 | 9 | 9 | 2.75 | none |
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | none |
-| `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `peak-pressure:0.86` |
+| `iron` | bunker | 151 | 4:8:16:9 | 5 | 12 | 12 | 4.00 | none |
 | `pressure` | bunker | 140 | 4:6:16:9 | 7 | 10 | 10 | 4.00 | none |
 | `house` | other | 125 | 4:2:4:8 | 8 | 0 | 0 | 4.00 | none |
 | `dub` | other | 78 | 3:1:4:2 | 2 | 1 | 1 | 4.00 | none |
@@ -45,9 +45,9 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 | `batucada` | brazil | 118 | 3:6:8:3 | 6 | 4 | 4 | 2.67 | none |
 | `maracatu` | brazil | 104 | 3:3:4:3 | 3 | 3 | 3 | 1.33 | none |
 | `warehouse-hammer` | hardhouse | 146 | 4:2:4:5 | 6 | 1 | 1 | 2.50 | none |
-| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95`, `iron:0.90` |
+| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95` |
 | `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | none |
-| `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `steel-rave:0.95`, `iron:0.86` |
+| `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `steel-rave:0.95` |
 | `acid-303` | acid | 128 | 4:2:4:6 | 6 | 2 | 2 | 3.00 | none |
 | `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | none |
 | `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | none |

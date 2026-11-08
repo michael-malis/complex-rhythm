@@ -352,6 +352,16 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-shaft.log 2>&1 &
           node tests/bunker-industrial-shaft.mjs
+      - name: Prove Iron hard groove retains eight hard kicks with real claps hats toms and root-sourced syncopation
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-iron.log 2>&1 &
+          node tests/bunker-hard-groove-iron.mjs
+      - name: Integrate five distinct Bunker grooves with protected Dust and 44 unchanged canonical patterns
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-integration.log 2>&1 &
+          node tests/bunker-five-integration.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |

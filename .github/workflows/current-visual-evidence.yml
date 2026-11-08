@@ -8,7 +8,7 @@ on:
       - README.md
       - scripts/**
       - tests/spec-baseline.mjs
-      - .github/workflows/spec-baseline.yml
+      - .github/workflows/current-visual-evidence.yml
   push:
     branches: [main]
     paths:
@@ -17,7 +17,7 @@ on:
       - README.md
       - scripts/**
       - tests/spec-baseline.mjs
-      - .github/workflows/spec-baseline.yml
+      - .github/workflows/current-visual-evidence.yml
   workflow_dispatch:
 permissions:
   contents: read

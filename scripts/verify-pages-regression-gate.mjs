@@ -28,7 +28,7 @@ assert.equal((pages.match(/gh api "repos\/\$\{GITHUB_REPOSITORY\}\/git\/ref\/hea
  'Require main-HEAD checks before and after packaging Pages artifact');
 for(const action of ['actions/configure-pages@v5','actions/upload-pages-artifact@v4'])
  assert.ok(pages.includes(action),'Missing required Pages action '+action);
-const registry=fs.readFileSync('.github/workflows/reconcile-ledger.yml','utf8');
+const registry=fs.readFileSync('.github/workflows/outcome-quality.yml','utf8');
 assert.ok(registry.includes('node scripts/verify-pages-regression-gate.mjs'),
  'Independent registry CI must enforce the release invariant');
 assert.equal((registry.match(/- \.github\/workflows\/pages.yml/g)||[]).length,2,

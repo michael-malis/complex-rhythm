@@ -57,7 +57,8 @@ for(const path of [
  'FINAL_REPORT.md','CHANGE_REGISTER.md','QA_REPORT.md','AUDIT.md',
  'scripts/reconcile-ledger.mjs','scripts/sync-report-progress.mjs',
  'scripts/verify-traceability.mjs','scripts/verify-execution-plan.mjs',
- 'scripts/verify-ledger-summary.mjs'
+ 'scripts/verify-ledger-summary.mjs',
+ '.github/workflows/spec-baseline.yml', '.github/workflows/reconcile-ledger.yml'
 ])assert.ok(!fs.existsSync(path),'Legacy active governance survived: '+path);
 const readme=read('README.md');
 for(const obsolete of ['NEXT_EXECUTION_PLAN.md','LEDGER_EVIDENCE_SUMMARY.json','TRACEABILITY.md','MASTER_IMPLEMENTATION_SPEC.md'])
@@ -65,7 +66,7 @@ for(const obsolete of ['NEXT_EXECUTION_PLAN.md','LEDGER_EVIDENCE_SUMMARY.json','
 const workflow=read('.github/workflows/ui-regression.yml');
 assert.ok(workflow.includes('node scripts/verify-backlog.mjs'),
  'Full regression must require valid product guarantees and live backlog');
-for(const p of ['.github/workflows/spec-baseline.yml','.github/workflows/reconcile-ledger.yml']){
+for(const p of ['.github/workflows/current-visual-evidence.yml','.github/workflows/outcome-quality.yml']){
  const text=read(p);assert.ok(text.includes('node scripts/verify-backlog.mjs'),'CI must check the single backlog: '+p);
  assert.ok(!text.includes('verify-traceability.mjs')&&!text.includes('verify-execution-plan.mjs'),
   'Old registry validator still controlling CI: '+p);

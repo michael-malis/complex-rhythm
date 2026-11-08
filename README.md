@@ -3,7 +3,7 @@
 An interactive **mathematical visualization of rhythm** through complex roots, four independently colored orbit rings and four audio-clock-aligned playheads. Sound supports mathematical exploration; it is not intended as a full beat maker.
 
 **Live site:** https://michael-malis.github.io/complex-rhythm/  
-**Active work:** [TASKS.md](TASKS.md) (ten outcome-level items, including independent external reviews).  
+**Active work:** [TASKS.md](TASKS.md) (one evolving outcome-based backlog, with external reviews separated from engineering).  
 **Product guarantees:** [PRODUCT_GUARANTEES.md](PRODUCT_GUARANTEES.md).  
 **CI / release evidence:** [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions).
 

@@ -7,7 +7,7 @@ on:
       - PRODUCT_GUARANTEES.md
       - README.md
       - scripts/**
-      - .github/workflows/reconcile-ledger.yml
+      - .github/workflows/outcome-quality.yml
       - .github/workflows/pages.yml
   push:
     branches: [main]
@@ -16,7 +16,7 @@ on:
       - PRODUCT_GUARANTEES.md
       - README.md
       - scripts/**
-      - .github/workflows/reconcile-ledger.yml
+      - .github/workflows/outcome-quality.yml
       - .github/workflows/pages.yml
   workflow_dispatch:
 permissions:

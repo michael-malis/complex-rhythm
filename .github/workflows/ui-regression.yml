@@ -347,6 +347,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-pressure.log 2>&1 &
           node tests/bunker-acid-pressure.mjs
+      - name: Prove Industrial Shaft has real metallic and FM root scheduling with hard quarter kicks and safe audio
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-shaft.log 2>&1 &
+          node tests/bunker-industrial-shaft.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |

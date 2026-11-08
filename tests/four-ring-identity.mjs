@@ -43,14 +43,21 @@ function checkRings(state,theme,selected){
  assert.equal(state.calls.length,4,'four real circle strokes per frame');
  for(let i=0;i<4;i++){
   const c=state.calls[i],expected=colors[theme][i];
-  assert.equal(c.color.toLowerCase(),expected,'lane '+(i+1)+' keeps its own circle color');
+  assert.equal(c.color.toLowerCase(),expected,'lane '+(i+1)+' keeps its own circle color: '+JSON.stringify(state.calls));
   assert.ok(Math.abs(c.width-(i===selected?2.5:1.6))<1e-6,
    'selected lane has a visually heavier ring, never a different hue');
-  const alpha=i===selected?1:state.tracks[i].muted?.48:.72;
+  const alpha=i===selected?1:state.tracks[i].muted?.85:.88;
   assert.ok(Math.abs(c.alpha-alpha)<1e-6,'muted and selected ring visibility is explicit');
   const palette=expected.match(/[a-f\d]{2}/gi).slice(0,3).map(h=>parseInt(h,16));
   const bg=theme==='dark'?[32,34,29]:[250,248,243];
   const mixed=palette.map((v,j)=>Math.round(alpha*v+(1-alpha)*bg[j]));
+  const luminance=rgb=>{
+   const v=rgb.map(k=>{const x=k/255;return x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4)});
+   return .2126*v[0]+.7152*v[1]+.0722*v[2];
+  };
+  const foreground=luminance(mixed),background=luminance(bg);
+  const contrast=(Math.max(foreground,background)+.05)/(Math.min(foreground,background)+.05);
+  assert.ok(contrast>=3,'visible ring has at least 3:1 contrast on plot background: '+contrast);
   const dist=state.pixels[i].samples.reduce((best,p)=>Math.min(best,
    Math.max(...p.map((v,j)=>Math.abs(v-mixed[j])))),Infinity);
   assert.ok(dist<45,'actual ring pixels reflect lane '+(i+1)+' colored strokes: distance '+dist);
@@ -62,16 +69,19 @@ try{
   const page=await browser.newPage({viewport});
   await page.addInitScript(()=>{
    const arc=CanvasRenderingContext2D.prototype.arc,stroke=CanvasRenderingContext2D.prototype.stroke;
-   CanvasRenderingContext2D.prototype.arc=function(x,y,r,...args){
-    this.__lastTestArc={x,y,r};
-    return arc.call(this,x,y,r,...args);
+   CanvasRenderingContext2D.prototype.arc=function(x,y,r,start,end,...args){
+    this.__lastTestArc={x,y,r,start,end};
+    return arc.call(this,x,y,r,start,end,...args);
    };
    CanvasRenderingContext2D.prototype.stroke=function(...args){
     const a=this.__lastTestArc;
-    if(a&&a.x===0&&a.y===0&&a.r>25&&(this.lineWidth===1.6||this.lineWidth===2.5)){
+    if(this.canvas?.id==='orbitCanvas'&&a&&a.x===0&&a.y===0&&a.r>25&&
+       a.start===0&&Math.abs(a.end-2*Math.PI)<1e-8&&
+       (this.lineWidth===1.6||this.lineWidth===2.5)){
      const list=window.__ringCalls||(window.__ringCalls=[]);
      list.push({color:String(this.strokeStyle),alpha:this.globalAlpha,width:this.lineWidth,r:a.r});
      if(list.length>32)list.splice(0,list.length-32);
+     this.__lastTestArc=null; // a later stroke must not count this same ring twice
     }
     return stroke.apply(this,args);
    };

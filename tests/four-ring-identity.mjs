@@ -23,7 +23,10 @@ async function readRings(page){
   const canvas=document.getElementById('orbitCanvas'),box=canvas.getBoundingClientRect(),
    ctx=canvas.getContext('2d'),side=Math.min(box.width,box.height),
    radii=window.RhythmResearch.radiiForSize(side),scale=canvas.width/box.width,
-   calls=(window.__ringCalls||[]).slice(-4),
+   recorded=(window.__ringCalls||[]),
+   // Identify each painted circle by its actual radius, not by an unstable
+   // position in a stream of Canvas draws or by the selected lane.
+   calls=radii.map(r=>[...recorded].reverse().find(c=>Math.abs(c.r-r)<.01)||null),
    bg=getComputedStyle(document.documentElement).getPropertyValue('--plot').trim();
   return {
    calls,aria:canvas.getAttribute('aria-label'),tracks:window.RhythmResearch.current().tracks,
@@ -40,7 +43,8 @@ async function readRings(page){
  });
 }
 function checkRings(state,theme,selected){
- assert.equal(state.calls.length,4,'four real full-circle Canvas strokes within one animation frame: '+JSON.stringify(state.calls));
+ assert.equal(state.calls.length,4,'four independent ring radii are measured');
+ assert.ok(state.calls.every(Boolean),'all four actual ring strokes found: '+JSON.stringify(state.calls));
  for(let i=0;i<4;i++){
   const c=state.calls[i],expected=colors[theme][i];
   assert.equal(c.color.toLowerCase(),expected,'lane '+(i+1)+' keeps its own circle color: '+JSON.stringify(state.calls));

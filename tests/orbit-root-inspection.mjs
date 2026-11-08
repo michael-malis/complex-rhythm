@@ -159,7 +159,7 @@ try{
  // Every keyboard navigation step traverses visible canonical set events.
  // No fake roots, silent extra notes, duplicate overlaps, or audio rescheduling.
  for(const viewport of screens){
-  const page=await browser.newPage({viewport});
+  const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
   const augmented={...fixture,name:'Keyboard mathematical inspection QA',

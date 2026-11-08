@@ -395,3 +395,11 @@ After [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) exact-he
 **Live correctness:** Changes to BPM, degrees, complex angles, other lanes' cycle lengths and mute status update the selection explanation. The calculation uses the SAME canonical per-lane event union/intersection as the rest of the app. Its scope is intentionally the root's **first occurrence** after the common start, not an unproven assertion about every future repetition.
 
 **Automated evidence gate:** `tests/cross-lane-root-coincidence.mjs` measures Chromium desktop/mobile, light/dark, 1/2/4-bar alignment, real colored Canvas halo coordinates, 120→60 BPM timing, mute distinction, unrelated lane-degree and period changes, the zero-time shared phase, clearance, horizontal overflow and untouched scheduler. Added to mandatory full UI/audio/math workflow. This feature does not automatically promote historical ledger items or satisfy human device/screen-reader acceptance.
+
+### 2026-11-08 — Link circular root selection to four-bar event timeline
+
+**Product improvement (CI-pending):** The root inspection halo and three root-set phase strips now stay in sync with the optional four-bar timeline. Selecting a root highlights every actual scheduled occurrence within that lane's visible time window, not just the first hit. Selecting a timeline event (mouse, touch, or keyboard) selects its corresponding canonical base/added/Euclidean source on the circle and shows the same exact-angle inspector. This reuses the original small panels, with no new beat-maker controls.
+
+**Mathematical invariant:** Matching is by lane and normalized source phase, never by close x-position or coincident phase across lanes; recurrence is governed by independent cycleBars. Muted lanes remain absent from the audible timeline while their mathematical roots remain inspectable. This is read-only and never changes preset content, phase mathematics, instruments, transport, or scheduler.
+
+**Evidence gate:** Dedicated Chromium desktop/phone source-link test, 1/2/3/4-bar cyclic recurrence checks, keyboard navigation, phase equality, source provenance, and scheduler/JSON immutability; full UI/math/audio CI mandatory before merge. No legacy task or requirement automatically marked verified.

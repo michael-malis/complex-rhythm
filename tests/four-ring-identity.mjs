@@ -40,7 +40,7 @@ async function readRings(page){
  });
 }
 function checkRings(state,theme,selected){
- assert.equal(state.calls.length,4,'four real circle strokes per frame');
+ assert.equal(state.calls.length,4,'four real full-circle Canvas strokes within one animation frame: '+JSON.stringify(state.calls));
  for(let i=0;i<4;i++){
   const c=state.calls[i],expected=colors[theme][i];
   assert.equal(c.color.toLowerCase(),expected,'lane '+(i+1)+' keeps its own circle color: '+JSON.stringify(state.calls));
@@ -69,6 +69,12 @@ try{
   const page=await browser.newPage({viewport});
   await page.addInitScript(()=>{
    const arc=CanvasRenderingContext2D.prototype.arc,stroke=CanvasRenderingContext2D.prototype.stroke;
+   const clear=CanvasRenderingContext2D.prototype.clearRect;
+   CanvasRenderingContext2D.prototype.clearRect=function(...args){
+    if(this.canvas?.id==='orbitCanvas')window.__ringCalls=[];
+    this.__lastTestArc=null;
+    return clear.apply(this,args);
+   };
    CanvasRenderingContext2D.prototype.arc=function(x,y,r,start,end,...args){
     this.__lastTestArc={x,y,r,start,end};
     return arc.call(this,x,y,r,start,end,...args);

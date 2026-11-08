@@ -258,6 +258,10 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .window-lane-events{cursor:crosshair;outline-offset:3px;touch-action:pan-y}
 .window-lane-events:focus-visible{outline:3px solid var(--accent)}
 .window-mark.window-selected{outline:3px solid var(--ink);outline-offset:3px;z-index:2}
+/* All occurrences of a selected circular root remain visible in four-bar time.
+   Use an outline, never a second hit marker or a change to event geometry. */
+.window-mark.window-inspected{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px var(--panel);z-index:2}
+.window-mark.window-selected.window-inspected{outline-width:3px;z-index:3}
 .event-inspection{font-size:17px;line-height:1.5;color:var(--ink);padding:8px 11px;
   border:1px solid var(--line);border-radius:5px;background:var(--panel);min-height:44px}
 

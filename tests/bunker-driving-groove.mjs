@@ -15,12 +15,10 @@ try{
   const research=window.RhythmResearch,math=window.RhythmMath;
   const catalog=research.presets(),bunker=catalog.filter(p=>p.category==='bunker');
   const expected={
-   shaft:{bpm:143,n:[4,2,8,2],sounds:['kick','snare','hat','tom'],events:[4,2,8,3]},
    dust:{bpm:134,n:[4,2,4,2],sounds:['kick','rim','openhat','bass'],events:[4,2,4,3]},
-   iron:{bpm:151,n:[4,2,8,4],sounds:['kick','clap','hat','acid'],events:[5,2,8,4]},
   };
-  // Only presets that have NOT been redesigned belong to the frozen baseline.
-  // `concrete` and `pressure` are verified by their own dedicated Bunker audio tests.
+  // The only protected unmodified Bunker reference is Dust. All five other
+  // Bunker arrangements have independent BUNK-02…07 engineering acceptance.
   const baseline={};
   for(const [id,exp] of Object.entries(expected)){
    const p=bunker.find(p=>p.id===id);
@@ -124,9 +122,7 @@ try{
  assert.equal(report.bunkerCount,6,'exactly six original Bunker IDs');
  for(const [id,actual] of Object.entries(report.baseline)){
   const expectations={
-   shaft:[143,[4,2,8,2],['kick','snare','hat','tom'],[4,2,8,3]],
    dust:[134,[4,2,4,2],['kick','rim','openhat','bass'],[4,2,4,3]],
-   iron:[151,[4,2,8,4],['kick','clap','hat','acid'],[5,2,8,4]],
   }[id];
   assert.equal(actual.bpm,expectations[0],id+' tempo changed');
   assert.equal(actual.bars,1,id+' default bar count changed');

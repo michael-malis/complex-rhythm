@@ -68,7 +68,7 @@ try{
    };
    CanvasRenderingContext2D.prototype.stroke=function(...args){
     const a=this.__lastTestArc;
-    if(a&&a.x===0&&a.y===0&&a.r>35&&(this.lineWidth===1.6||this.lineWidth===2.5)){
+    if(a&&a.x===0&&a.y===0&&a.r>25&&(this.lineWidth===1.6||this.lineWidth===2.5)){
      const list=window.__ringCalls||(window.__ringCalls=[]);
      list.push({color:String(this.strokeStyle),alpha:this.globalAlpha,width:this.lineWidth,r:a.r});
      if(list.length>32)list.splice(0,list.length-32);

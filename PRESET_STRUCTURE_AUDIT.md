@@ -11,7 +11,7 @@
 - The 15 experimental studies each contain three new genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study retains its previous five separately sourced accents as well.
 - High phase similarity (≥0.85) remains a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
 
-All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall, Concrete and Pressure; the other 47 canonical preset arrangements remain unchanged.
+All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall, Concrete, Pressure and Shaft; the other 46 canonical preset arrangements remain unchanged.
 
 ## Quantitative per-preset evidence
 
@@ -19,7 +19,7 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 |---|---|---:|---|---:|---:|---:|---:|---|
 | `berlin-bass-wall` | bunker | 146 | 4:10:20:8 | 14 | 10 | 10 | 5.00 | none |
 | `concrete` | bunker | 138 | 4:6:12:6 | 7 | 9 | 9 | 3.00 | none |
-| `shaft` | bunker | 143 | 4:2:8:3 | 4 | 1 | 1 | 4.00 | none |
+| `shaft` | bunker | 143 | 4:6:11:6 | 6 | 9 | 9 | 2.75 | none |
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | none |
 | `iron` | bunker | 151 | 5:2:8:4 | 8 | 1 | 1 | 4.00 | `steel-rave:0.90`, `peak-pressure:0.86` |
 | `pressure` | bunker | 140 | 4:6:16:9 | 7 | 10 | 10 | 4.00 | none |

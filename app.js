@@ -12,9 +12,18 @@ const L=(step,velocity=.58)=>({a:Math.cos(TAU*step/16),b:Math.sin(TAU*step/16),n
 // A two-bar cycle contains 32 equal 16th-note positions. Every accent is still a 1st complex root.
 const L32=(step,velocity=.58)=>({a:Math.cos(TAU*step/32),b:Math.sin(TAU*step/32),n:1,velocity});
 const PRESETS=[
-// Bunker techno: stable four-on-the-floor foundations; less bass/hats clutter.
-// Berlin industrial: dry four-to-the-floor kick + offbeat sub-rumble. Rumble is sampled, not four more kicks.
- {id:'berlin-bass-wall',category:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,4,'berlinrumble'),P(-1,0,8,'hat'),P(-1,0,2,'rim',[L(15,.32)])]},
+// Bunker techno: stable quarter-note kick, independent root-driven percussion.
+// Bass Wall alternates two-bar percussion cycles against a ONE-bar kick orbit;
+// every extra attack is still the phase of a degree-one complex root.
+ {id:'berlin-bass-wall',category:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,bars:2,
+  character:'Driving / Hypnotic · an unwavering four-on-the-floor hard kick against rolling offbeat sub-rumble, a 16th-grid hat motor and alternating low-level rim pickups.',
+  mathNote:'The kick repeats R₄(1) every bar. The other three circles span two bars: R₈(−1) rumble, R₁₆(−1) hats, and R₄(−1) rim. Individual first-degree roots introduce controlled syncopations; no second step sequencer is used.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1},
+   {...P(-1,0,8,'berlinrumble',[L32(11,.28),L32(27,.34)]),gain:.72},
+   {...P(-1,0,16,'hat',[L32(2,.42),L32(10,.40),L32(18,.38),L32(26,.45)]),gain:.68},
+   {...P(-1,0,4,'rim',[L32(7,.29),L32(14,.36),L32(23,.33),L32(30,.40)]),gain:.65}
+  ]},
  {id:'concrete',category:'bunker',name:'Concrete · Drive',bpm:138,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),P(1,0,2,'bass',[L(7,.45)])]},
  {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},

@@ -418,14 +418,14 @@
           "bpm": 143
         },
         {
-          "id": "liquid-corrosion",
-          "similarity": 0.5789,
-          "bpm": 124
-        },
-        {
           "id": "dust",
           "similarity": 0.5676,
           "bpm": 134
+        },
+        {
+          "id": "pressure",
+          "similarity": 0.5556,
+          "bpm": 140
         }
       ],
       "lanes": [
@@ -942,11 +942,6 @@
       "totalScheduledEvents": 13,
       "nearestMathematicalNeighbors": [
         {
-          "id": "liquid-corrosion",
-          "similarity": 0.8,
-          "bpm": 124
-        },
-        {
           "id": "stomp-circuit",
           "similarity": 0.8,
           "bpm": 148
@@ -955,6 +950,11 @@
           "id": "pressure",
           "similarity": 0.7857,
           "bpm": 140
+        },
+        {
+          "id": "liquid-corrosion",
+          "similarity": 0.7333,
+          "bpm": 124
         }
       ],
       "lanes": [
@@ -1143,14 +1143,14 @@
           "bpm": 152
         },
         {
-          "id": "303-pressure",
-          "similarity": 0.8571,
-          "bpm": 140
-        },
-        {
           "id": "peak-pressure",
           "similarity": 0.8571,
           "bpm": 156
+        },
+        {
+          "id": "warehouse-hammer",
+          "similarity": 0.7,
+          "bpm": 146
         }
       ],
       "lanes": [
@@ -1369,14 +1369,14 @@
           "bpm": 134
         },
         {
-          "id": "liquid-corrosion",
-          "similarity": 0.7333,
-          "bpm": 124
-        },
-        {
           "id": "stomp-circuit",
           "similarity": 0.7333,
           "bpm": 148
+        },
+        {
+          "id": "warehouse-hammer",
+          "similarity": 0.6875,
+          "bpm": 146
         }
       ],
       "lanes": [
@@ -1780,9 +1780,9 @@
           "bpm": 134
         },
         {
-          "id": "maracatu",
+          "id": "liquid-corrosion",
           "similarity": 0.5333,
-          "bpm": 104
+          "bpm": 124
         }
       ],
       "lanes": [
@@ -2396,9 +2396,9 @@
           "bpm": 134
         },
         {
-          "id": "maracatu",
+          "id": "liquid-corrosion",
           "similarity": 0.5333,
-          "bpm": 104
+          "bpm": 124
         }
       ],
       "lanes": [
@@ -6113,7 +6113,7 @@
         },
         {
           "id": "liquid-corrosion",
-          "similarity": 0.5882,
+          "similarity": 0.625,
           "bpm": 124
         }
       ],
@@ -6526,9 +6526,9 @@
           "bpm": 151
         },
         {
-          "id": "303-pressure",
-          "similarity": 0.8571,
-          "bpm": 140
+          "id": "acid-303",
+          "similarity": 0.75,
+          "bpm": 128
         }
       ],
       "lanes": [
@@ -6742,14 +6742,14 @@
       "totalScheduledEvents": 14,
       "nearestMathematicalNeighbors": [
         {
-          "id": "liquid-corrosion",
-          "similarity": 0.8667,
-          "bpm": 124
-        },
-        {
           "id": "dust",
           "similarity": 0.8,
           "bpm": 134
+        },
+        {
+          "id": "liquid-corrosion",
+          "similarity": 0.8,
+          "bpm": 124
         },
         {
           "id": "pressure",
@@ -6959,9 +6959,9 @@
           "bpm": 151
         },
         {
-          "id": "303-pressure",
-          "similarity": 0.8182,
-          "bpm": 140
+          "id": "acid-303",
+          "similarity": 0.8,
+          "bpm": 128
         }
       ],
       "lanes": [
@@ -7177,8 +7177,8 @@
       "origin": "original catalog",
       "bpm": 128,
       "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
+      "character": "Sparse classic sawtooth 303 steps against a four-to-the-floor kick and restrained offbeat hats.",
+      "mathNote": "Six lead phases from the union of R4(-1) and two single-root accents.",
       "eventFingerprint": "0:0;2:125000;3:125000;3:187500;0:250000;1:250000;2:375000;3:375000;0:500000;2:625000;3:625000;3:687500;0:750000;1:750000;2:875000;3:875000",
       "rotationCanonicalFingerprint": "0:0;1:0;2:125000;3:125000;0:250000;2:375000;3:375000;3:437500;0:500000;1:500000;2:625000;3:625000;0:750000;2:875000;3:875000;3:937500",
       "sharedPhaseGroups": 6,
@@ -7322,7 +7322,7 @@
         },
         {
           "lane": 4,
-          "sound": "acid",
+          "sound": "acidClassic",
           "complex": {
             "a": -1,
             "b": 0
@@ -7393,27 +7393,27 @@
       "origin": "original catalog",
       "bpm": 134,
       "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
-      "eventFingerprint": "0:0;2:0;2:125000;3:125000;0:250000;1:250000;2:250000;2:375000;3:375000;3:437500;0:500000;2:500000;2:625000;3:625000;0:750000;1:750000;2:750000;2:875000;3:875000;3:937500",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:0;2:125000;3:125000;3:187500;0:250000;2:250000;2:375000;3:375000;0:500000;1:500000;2:500000;2:625000;3:625000;3:687500;0:750000;2:750000;2:875000;3:875000",
-      "sharedPhaseGroups": 8,
-      "totalScheduledEvents": 20,
+      "character": "Fast, animated psychedelic squelch over an eighth-note hi-hat roll and extra kick pickup.",
+      "mathNote": "Five rotated lead roots from R5(i), with two independently phased single-root syncopations.",
+      "eventFingerprint": "0:0;2:0;3:50000;2:125000;2:187500;0:250000;1:250000;2:250000;3:250000;2:375000;3:437500;3:450000;0:500000;2:500000;2:625000;3:650000;0:750000;1:750000;2:750000;3:812500;3:850000;0:875000;2:875000",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:0;3:0;2:125000;3:187500;3:200000;0:250000;2:250000;2:375000;3:400000;0:500000;1:500000;2:500000;3:562500;3:600000;0:625000;2:625000;0:750000;2:750000;3:800000;2:875000;2:937500",
+      "sharedPhaseGroups": 5,
+      "totalScheduledEvents": 23,
       "nearestMathematicalNeighbors": [
         {
+          "id": "shaft",
+          "similarity": 0.6,
+          "bpm": 143
+        },
+        {
           "id": "iron",
-          "similarity": 0.8571,
+          "similarity": 0.5556,
           "bpm": 151
         },
         {
-          "id": "steel-rave",
-          "similarity": 0.8571,
-          "bpm": 152
-        },
-        {
-          "id": "303-pressure",
-          "similarity": 0.8182,
-          "bpm": 140
+          "id": "concrete",
+          "similarity": 0.5,
+          "bpm": 138
         }
       ],
       "lanes": [
@@ -7433,7 +7433,14 @@
           "gain": 1,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.7071067811865474,
+              "b": -0.7071067811865477,
+              "n": 1,
+              "velocity": 0.45
+            }
+          ],
           "baseRootPhases": [
             0,
             0.25,
@@ -7456,9 +7463,13 @@
             {
               "phase": 0.75,
               "velocity": 1
+            },
+            {
+              "phase": 0.875,
+              "velocity": 0.45
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 5
         },
         {
           "lane": 2,
@@ -7509,7 +7520,14 @@
           "gain": 1,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.38268343236508984,
+              "b": 0.9238795325112867,
+              "n": 1,
+              "velocity": 0.4
+            }
+          ],
           "baseRootPhases": [
             0,
             0.125,
@@ -7530,6 +7548,10 @@
               "velocity": 1
             },
             {
+              "phase": 0.1875,
+              "velocity": 0.4
+            },
+            {
               "phase": 0.25,
               "velocity": 1
             },
@@ -7554,19 +7576,19 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 8
+          "rhythmicEventCount": 9
         },
         {
           "lane": 4,
-          "sound": "acid",
+          "sound": "acidPsychedelic",
           "complex": {
-            "a": -1,
-            "b": 0
+            "a": 0,
+            "b": 1
           },
           "modulus": 1,
-          "argumentRadians": 3.141592653589793,
-          "argumentDegrees": 180,
-          "rootDegree": 4,
+          "argumentRadians": 1.5707963267948966,
+          "argumentDegrees": 90,
+          "rootDegree": 5,
           "cycleBars": 1,
           "operation": "union",
           "gain": 1,
@@ -7580,25 +7602,26 @@
               "velocity": 0.55
             },
             {
-              "a": 0.9238795325112865,
-              "b": -0.3826834323650904,
+              "a": 0.38268343236509,
+              "b": -0.9238795325112866,
               "n": 1,
-              "velocity": 0.55
+              "velocity": 0.42
             }
           ],
           "baseRootPhases": [
-            0.125,
-            0.375,
-            0.625,
-            0.875
+            0.05,
+            0.25,
+            0.45,
+            0.65,
+            0.85
           ],
           "actualEventPhases": [
             {
-              "phase": 0.125,
+              "phase": 0.05,
               "velocity": 1
             },
             {
-              "phase": 0.375,
+              "phase": 0.25,
               "velocity": 1
             },
             {
@@ -7606,19 +7629,23 @@
               "velocity": 0.55
             },
             {
-              "phase": 0.625,
+              "phase": 0.45,
               "velocity": 1
             },
             {
-              "phase": 0.875,
+              "phase": 0.65,
               "velocity": 1
             },
             {
-              "phase": 0.9375,
-              "velocity": 0.55
+              "phase": 0.8125,
+              "velocity": 0.42
+            },
+            {
+              "phase": 0.85,
+              "velocity": 1
             }
           ],
-          "rhythmicEventCount": 6
+          "rhythmicEventCount": 7
         }
       ]
     },
@@ -7629,26 +7656,26 @@
       "origin": "original catalog",
       "bpm": 124,
       "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
-      "eventFingerprint": "0:0;3:0;2:125000;3:187500;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:125000;0:250000;3:250000;2:375000;3:437500;0:500000;1:500000;2:625000;0:750000;3:750000;2:875000;3:937500",
-      "sharedPhaseGroups": 4,
-      "totalScheduledEvents": 14,
+      "character": "Space between low, dark square-wave acid phrases, broken half-time kick and long open hats.",
+      "mathNote": "A deliberately sparse two-root bass family with two soft displaced accents.",
+      "eventFingerprint": "0:0;3:0;2:125000;3:187500;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:125000;0:250000;3:250000;2:375000;3:437500;1:500000;2:625000;0:750000;3:750000;2:875000;3:937500",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 13,
       "nearestMathematicalNeighbors": [
         {
           "id": "stomp-circuit",
-          "similarity": 0.8667,
+          "similarity": 0.8,
           "bpm": 148
         },
         {
           "id": "dust",
-          "similarity": 0.8,
+          "similarity": 0.7333,
           "bpm": 134
         },
         {
           "id": "pressure",
-          "similarity": 0.7333,
+          "similarity": 0.6667,
           "bpm": 140
         }
       ],
@@ -7663,26 +7690,27 @@
           "modulus": 1,
           "argumentRadians": 0,
           "argumentDegrees": 0,
-          "rootDegree": 4,
+          "rootDegree": 2,
           "cycleBars": 1,
           "operation": "union",
           "gain": 1,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": -1.8369701987210297e-16,
+              "b": -1,
+              "n": 1,
+              "velocity": 0.54
+            }
+          ],
           "baseRootPhases": [
             0,
-            0.25,
-            0.5,
-            0.75
+            0.5
           ],
           "actualEventPhases": [
             {
               "phase": 0,
-              "velocity": 1
-            },
-            {
-              "phase": 0.25,
               "velocity": 1
             },
             {
@@ -7691,10 +7719,10 @@
             },
             {
               "phase": 0.75,
-              "velocity": 1
+              "velocity": 0.54
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 3
         },
         {
           "lane": 2,
@@ -7774,7 +7802,7 @@
         },
         {
           "lane": 4,
-          "sound": "acid",
+          "sound": "acidDark",
           "complex": {
             "a": 1,
             "b": 0
@@ -7793,13 +7821,13 @@
               "a": 0.38268343236508984,
               "b": 0.9238795325112867,
               "n": 1,
-              "velocity": 0.62
+              "velocity": 0.42
             },
             {
               "a": -0.38268343236509034,
               "b": -0.9238795325112865,
               "n": 1,
-              "velocity": 0.57
+              "velocity": 0.52
             }
           ],
           "baseRootPhases": [
@@ -7813,7 +7841,7 @@
             },
             {
               "phase": 0.1875,
-              "velocity": 0.62
+              "velocity": 0.42
             },
             {
               "phase": 0.5,
@@ -7821,7 +7849,7 @@
             },
             {
               "phase": 0.6875,
-              "velocity": 0.57
+              "velocity": 0.52
             }
           ],
           "rhythmicEventCount": 4
@@ -7835,27 +7863,27 @@
       "origin": "original catalog",
       "bpm": 140,
       "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
-      "eventFingerprint": "0:0;2:0;3:62500;2:125000;3:125000;0:250000;1:250000;2:250000;2:375000;3:375000;0:500000;2:500000;3:562500;2:625000;3:625000;0:750000;1:750000;2:750000;2:875000;3:875000",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:0;2:125000;3:125000;0:250000;2:250000;3:312500;2:375000;3:375000;0:500000;1:500000;2:500000;2:625000;3:625000;0:750000;2:750000;3:812500;2:875000;3:875000",
-      "sharedPhaseGroups": 8,
-      "totalScheduledEvents": 20,
+      "character": "Dense distorted hard-acid stabs fight two snare backbeats and a rapid hi-hat line.",
+      "mathNote": "Seven equally spaced off-axis lead roots, plus two sixteenth-grid high-pressure accents.",
+      "eventFingerprint": "0:0;2:0;3:62500;3:71429;2:125000;3:214286;0:250000;1:250000;2:250000;2:312500;3:357143;2:375000;0:500000;2:500000;3:500000;3:562500;2:625000;3:642857;0:750000;1:750000;2:750000;3:785714;0:875000;2:875000;3:928571",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:0;2:62500;3:107143;2:125000;0:250000;2:250000;3:250000;3:312500;2:375000;3:392857;0:500000;1:500000;2:500000;3:535714;0:625000;2:625000;3:678571;0:750000;2:750000;3:812500;3:821429;2:875000;3:964286",
+      "sharedPhaseGroups": 5,
+      "totalScheduledEvents": 25,
       "nearestMathematicalNeighbors": [
         {
+          "id": "shaft",
+          "similarity": 0.5556,
+          "bpm": 143
+        },
+        {
           "id": "iron",
-          "similarity": 0.8571,
+          "similarity": 0.5172,
           "bpm": 151
         },
         {
-          "id": "steel-rave",
-          "similarity": 0.8571,
-          "bpm": 152
-        },
-        {
-          "id": "peak-pressure",
-          "similarity": 0.8182,
-          "bpm": 156
+          "id": "baile-funk",
+          "similarity": 0.4828,
+          "bpm": 132
         }
       ],
       "lanes": [
@@ -7875,7 +7903,14 @@
           "gain": 1,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.7071067811865474,
+              "b": -0.7071067811865477,
+              "n": 1,
+              "velocity": 0.54
+            }
+          ],
           "baseRootPhases": [
             0,
             0.25,
@@ -7898,9 +7933,13 @@
             {
               "phase": 0.75,
               "velocity": 1
+            },
+            {
+              "phase": 0.875,
+              "velocity": 0.54
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 5
         },
         {
           "lane": 2,
@@ -7951,7 +7990,14 @@
           "gain": 1,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": -0.3826834323650897,
+              "b": 0.9238795325112867,
+              "n": 1,
+              "velocity": 0.33
+            }
+          ],
           "baseRootPhases": [
             0,
             0.125,
@@ -7976,6 +8022,10 @@
               "velocity": 1
             },
             {
+              "phase": 0.3125,
+              "velocity": 0.33
+            },
+            {
               "phase": 0.375,
               "velocity": 1
             },
@@ -7996,11 +8046,11 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 8
+          "rhythmicEventCount": 9
         },
         {
           "lane": 4,
-          "sound": "acid",
+          "sound": "acidHard",
           "complex": {
             "a": -1,
             "b": 0
@@ -8008,7 +8058,7 @@
           "modulus": 1,
           "argumentRadians": 3.141592653589793,
           "argumentDegrees": 180,
-          "rootDegree": 4,
+          "rootDegree": 7,
           "cycleBars": 1,
           "operation": "union",
           "gain": 1,
@@ -8025,14 +8075,17 @@
               "a": -0.9238795325112868,
               "b": -0.38268343236508967,
               "n": 1,
-              "velocity": 0.58
+              "velocity": 0.7
             }
           ],
           "baseRootPhases": [
-            0.125,
-            0.375,
-            0.625,
-            0.875
+            0.0714285714,
+            0.2142857143,
+            0.3571428571,
+            0.5,
+            0.6428571429,
+            0.7857142857,
+            0.9285714286
           ],
           "actualEventPhases": [
             {
@@ -8040,27 +8093,39 @@
               "velocity": 0.56
             },
             {
-              "phase": 0.125,
+              "phase": 0.0714285714,
               "velocity": 1
             },
             {
-              "phase": 0.375,
+              "phase": 0.2142857143,
+              "velocity": 1
+            },
+            {
+              "phase": 0.3571428571,
+              "velocity": 1
+            },
+            {
+              "phase": 0.5,
               "velocity": 1
             },
             {
               "phase": 0.5625,
-              "velocity": 0.58
+              "velocity": 0.7
             },
             {
-              "phase": 0.625,
+              "phase": 0.6428571429,
               "velocity": 1
             },
             {
-              "phase": 0.875,
+              "phase": 0.7857142857,
+              "velocity": 1
+            },
+            {
+              "phase": 0.9285714286,
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 6
+          "rhythmicEventCount": 9
         }
       ]
     },
@@ -8072,25 +8137,25 @@
       "bpm": 155,
       "commonCycleBars": 1,
       "character": "Dry broken-pressure impacts against metal clicks and a slow detuned bass contour.",
-      "mathNote": "5:7:11 polyrhythm in the first three lanes, supported by a shifted nine-root bass contour.",
-      "eventFingerprint": "0:0;2:25974;1:28571;3:49383;2:116883;3:160494;1:171429;0:200000;2:207792;3:271605;2:298701;1:314286;3:382716;2:389610;0:400000;1:457143;2:480519;3:493827;2:571429;0:600000;1:600000;3:604938;2:662338;3:716049;1:742857;2:753247;0:800000;3:827160;2:844156;1:885714;2:935065;3:938272",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:4938;2:62338;3:116049;1:142857;2:153247;0:200000;3:227160;2:244156;1:285714;2:335065;3:338272;0:400000;2:425974;1:428571;3:449383;2:516883;3:560494;1:571429;0:600000;2:607792;3:671605;2:698701;1:714286;3:782716;2:789610;0:800000;1:857143;2:880519;3:893827;2:971429",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 32,
+      "mathNote": "5:7:11 polyrhythm in the first three lanes, supported by a shifted nine-root bass contour. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;2:25974;1:28571;3:49383;0:100000;1:100000;2:116883;3:160494;1:171429;0:200000;2:207792;3:271605;2:298701;1:314286;3:382716;2:389610;0:400000;1:457143;2:480519;3:493827;2:571429;0:600000;1:600000;3:604938;2:662338;3:716049;1:742857;2:753247;0:800000;3:827160;2:844156;1:885714;2:935065;3:938272",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:16883;3:60494;1:71429;0:100000;2:107792;3:171605;2:198701;1:214286;3:282716;2:289610;0:300000;1:357143;2:380519;3:393827;2:471429;0:500000;1:500000;3:504938;2:562338;3:616049;1:642857;2:653247;0:700000;3:727160;2:744156;1:785714;2:835065;3:838272;0:900000;1:900000;2:925974;1:928571;3:949383",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 35,
       "nearestMathematicalNeighbors": [
         {
           "id": "hardtek-mobius",
-          "similarity": 0.2667,
+          "similarity": 0.3125,
           "bpm": 178
         },
         {
           "id": "minimal",
-          "similarity": 0.1042,
+          "similarity": 0.12,
           "bpm": 124
         },
         {
           "id": "poly-3-5",
-          "similarity": 0.05,
+          "similarity": 0.0714,
           "bpm": 112
         }
       ],
@@ -8111,7 +8176,14 @@
           "gain": 0.75,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.809016994375,
+              "b": 0.587785252292,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.2,
@@ -8123,6 +8195,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.1,
+              "velocity": 0.46
             },
             {
               "phase": 0.2,
@@ -8141,7 +8217,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 6
         },
         {
           "lane": 2,
@@ -8159,7 +8235,20 @@
           "gain": 0.5,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.809016994375,
+              "b": 0.587785252292,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0285714286,
             0.1714285714,
@@ -8171,8 +8260,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0285714286,
               "velocity": 1
+            },
+            {
+              "phase": 0.1,
+              "velocity": 0.38
             },
             {
               "phase": 0.1714285714,
@@ -8199,7 +8296,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 9
         },
         {
           "lane": 3,
@@ -8357,25 +8454,25 @@
       "bpm": 148,
       "commonCycleBars": 1,
       "character": "Three anchor kicks, agitated hard-acid response and scattered metallic shrapnel.",
-      "mathNote": "Relatively prime 3:5:7:11 periodicities with displaced phases.",
-      "eventFingerprint": "0:0;3:51948;1:66667;2:85714;3:142857;2:228571;3:233766;1:266667;3:324675;0:333333;2:371429;3:415584;1:466667;3:506494;2:514286;3:597403;2:657143;0:666667;1:666667;3:688312;3:779221;2:800000;1:866667;3:870130;2:942857;3:961039",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:21645;3:112554;2:133333;1:200000;3:203463;2:276190;3:294372;0:333333;3:385281;1:400000;2:419047;3:476190;2:561904;3:567099;1:600000;3:658008;0:666666;2:704762;3:748917;1:800000;3:839827;2:847619;3:930736;2:990476",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 26,
+      "mathNote": "Relatively prime 3:5:7:11 periodicities with displaced phases. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;3:51948;1:66667;2:85714;3:142857;0:166667;1:166667;2:228571;3:233766;1:266667;3:324675;0:333333;2:371429;3:415584;1:466667;3:506494;2:514286;3:597403;2:657143;0:666667;1:666667;3:688312;3:779221;2:800000;1:866667;3:870130;2:942857;3:961039",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:61904;3:67099;1:100000;3:158008;0:166666;2:204762;3:248917;1:300000;3:339827;2:347619;3:430736;2:490476;0:500000;1:500000;3:521645;3:612554;2:633333;1:700000;3:703463;2:776190;3:794372;0:833333;1:833333;3:885281;1:900000;2:919047;3:976190",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 29,
       "nearestMathematicalNeighbors": [
         {
           "id": "prime-number-riot",
-          "similarity": 0.1818,
+          "similarity": 0.234,
           "bpm": 175
         },
         {
           "id": "poly-3-5",
-          "similarity": 0.0909,
+          "similarity": 0.1143,
           "bpm": 112
         },
         {
           "id": "afro",
-          "similarity": 0.0769,
+          "similarity": 0.0976,
           "bpm": 116
         }
       ],
@@ -8396,7 +8493,14 @@
           "gain": 0.82,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.5,
+              "b": 0.866025403784,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.3333333333,
@@ -8408,6 +8512,10 @@
               "velocity": 1
             },
             {
+              "phase": 0.1666666667,
+              "velocity": 0.46
+            },
+            {
               "phase": 0.3333333333,
               "velocity": 1
             },
@@ -8416,7 +8524,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 3
+          "rhythmicEventCount": 4
         },
         {
           "lane": 2,
@@ -8434,7 +8542,20 @@
           "gain": 0.45,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.5,
+              "b": 0.866025403784,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0666666667,
             0.2666666667,
@@ -8444,8 +8565,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0666666667,
               "velocity": 1
+            },
+            {
+              "phase": 0.1666666667,
+              "velocity": 0.38
             },
             {
               "phase": 0.2666666667,
@@ -8464,7 +8593,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 7
         },
         {
           "lane": 3,
@@ -8612,25 +8741,25 @@
       "bpm": 180,
       "commonCycleBars": 1,
       "character": "Four relentless gabber pulses clash with seven metallic spikes and eleven noisy accents.",
-      "mathNote": "4:7:11:3 exact-root collision study, with offset root families.",
-      "eventFingerprint": "0:0;1:35714;2:45455;3:111111;2:136364;1:178571;2:227273;0:250000;2:318182;1:321429;2:409091;3:444444;1:464286;0:500000;2:500000;2:590909;1:607143;2:681818;0:750000;1:750000;2:772727;3:777778;2:863636;1:892857;2:954545",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:22727;3:27778;2:113636;1:142857;2:204545;0:250000;1:285714;2:295455;3:361111;2:386364;1:428571;2:477273;0:500000;2:568182;1:571429;2:659091;3:694444;1:714286;0:750000;2:750000;2:840909;1:857143;2:931818",
-      "sharedPhaseGroups": 2,
-      "totalScheduledEvents": 25,
+      "mathNote": "4:7:11:3 exact-root collision study, with offset root families. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;1:35714;2:45455;1:107143;3:111111;0:125000;2:136364;1:178571;2:227273;0:250000;2:318182;1:321429;2:409091;3:444444;1:464286;0:500000;2:500000;2:590909;1:607143;2:681818;0:750000;1:750000;2:772727;3:777778;2:863636;1:892857;2:954545",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:35714;2:45455;1:107143;3:111111;0:125000;2:136364;1:178571;2:227273;0:250000;2:318182;1:321429;2:409091;3:444444;1:464286;0:500000;2:500000;2:590909;1:607143;2:681818;0:750000;1:750000;2:772727;3:777778;2:863636;1:892857;2:954545",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 28,
       "nearestMathematicalNeighbors": [
         {
           "id": "frenchcore-spiral",
-          "similarity": 0.2683,
+          "similarity": 0.3182,
           "bpm": 205
         },
         {
           "id": "terror-geometry",
-          "similarity": 0.234,
+          "similarity": 0.28,
           "bpm": 220
         },
         {
           "id": "shaft",
-          "similarity": 0.1667,
+          "similarity": 0.1538,
           "bpm": 143
         }
       ],
@@ -8651,7 +8780,14 @@
           "gain": 0.62,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.707106781187,
+              "b": 0.707106781187,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.25,
@@ -8662,6 +8798,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.125,
+              "velocity": 0.46
             },
             {
               "phase": 0.25,
@@ -8676,7 +8816,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 5
         },
         {
           "lane": 2,
@@ -8694,7 +8834,20 @@
           "gain": 0.26,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.781831482468,
+              "b": 0.623489801859,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0357142857,
             0.1785714286,
@@ -8706,8 +8859,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0357142857,
               "velocity": 1
+            },
+            {
+              "phase": 0.1071428571,
+              "velocity": 0.38
             },
             {
               "phase": 0.1785714286,
@@ -8734,7 +8895,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 9
         },
         {
           "lane": 3,
@@ -8862,25 +9023,25 @@
       "bpm": 158,
       "commonCycleBars": 1,
       "character": "Mechanistic distorted kick punctuated by inharmonic percussive metallic events.",
-      "mathNote": "Odd-meter 7:9:11:13 layers, with substantial drift between collisions.",
-      "eventFingerprint": "0:0;2:18182;1:31746;3:32967;2:109091;3:109890;0:142857;1:142857;3:186813;2:200000;1:253968;3:263736;0:285714;2:290909;3:340659;1:365079;2:381818;3:417582;0:428571;2:472727;1:476190;3:494505;2:563636;0:571429;3:571429;1:587302;3:648352;2:654545;1:698413;0:714286;3:725275;2:745455;3:802198;1:809524;2:836364;0:857143;3:879121;1:920635;2:927273;3:956044",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:43956;2:57143;1:111111;3:120879;0:142857;2:148052;3:197802;1:222222;2:238961;3:274725;0:285714;2:329870;1:333333;3:351648;2:420779;0:428572;3:428572;1:444445;3:505495;2:511688;1:555556;0:571429;3:582418;2:602598;3:659341;1:666667;2:693507;0:714286;3:736264;1:777778;2:784416;3:813187;0:857143;2:875325;1:888889;3:890110;2:966234;3:967033",
-      "sharedPhaseGroups": 2,
-      "totalScheduledEvents": 40,
+      "mathNote": "Odd-meter 7:9:11:13 layers, with substantial drift between collisions. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;2:18182;1:31746;3:32967;0:71429;1:87302;2:109091;3:109890;0:142857;1:142857;3:186813;2:200000;1:253968;3:263736;0:285714;2:290909;3:340659;1:365079;2:381818;3:417582;0:428571;2:472727;1:476190;3:494505;2:563636;0:571429;3:571429;1:587302;3:648352;2:654545;1:698413;0:714286;3:725275;2:745455;3:802198;1:809524;2:836364;0:857143;3:879121;1:920635;2:927273;3:956044",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:18182;1:31746;3:32967;0:71429;1:87302;2:109091;3:109890;0:142857;1:142857;3:186813;2:200000;1:253968;3:263736;0:285714;2:290909;3:340659;1:365079;2:381818;3:417582;0:428571;2:472727;1:476190;3:494505;2:563636;0:571429;3:571429;1:587302;3:648352;2:654545;1:698413;0:714286;3:725275;2:745455;3:802198;1:809524;2:836364;0:857143;3:879121;1:920635;2:927273;3:956044",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 43,
       "nearestMathematicalNeighbors": [
         {
           "id": "eleven-against-seven",
-          "similarity": 0.1014,
+          "similarity": 0.1233,
           "bpm": 146
         },
         {
           "id": "euclidean-fragments",
-          "similarity": 0.0946,
+          "similarity": 0.1154,
           "bpm": 170
         },
         {
           "id": "poly-4-7",
-          "similarity": 0.0392,
+          "similarity": 0.0566,
           "bpm": 118
         }
       ],
@@ -8901,7 +9062,14 @@
           "gain": 0.42,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.900968867902,
+              "b": 0.433883739118,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.1428571429,
@@ -8915,6 +9083,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.0714285714,
+              "velocity": 0.46
             },
             {
               "phase": 0.1428571429,
@@ -8941,7 +9113,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -8959,7 +9131,20 @@
           "gain": 0.22,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.853290881632,
+              "b": 0.521435203379,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0317460317,
             0.1428571429,
@@ -8973,8 +9158,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0317460317,
               "velocity": 1
+            },
+            {
+              "phase": 0.0873015873,
+              "velocity": 0.38
             },
             {
               "phase": 0.1428571429,
@@ -9009,7 +9202,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 9
+          "rhythmicEventCount": 11
         },
         {
           "lane": 3,
@@ -9187,25 +9380,25 @@
       "bpm": 172,
       "commonCycleBars": 1,
       "character": "Five-beat broken low-end structure under thin snare splinters and screaming acid.",
-      "mathNote": "Five against eleven against seven against thirteen, with asymmetrical offsets.",
-      "eventFingerprint": "3:21978;1:36364;0:40000;2:47619;3:98901;1:127273;3:175824;2:190476;1:218182;0:240000;3:252747;1:309091;3:329670;2:333333;1:400000;3:406593;0:440000;2:476190;3:483516;1:490909;3:560440;1:581818;2:619048;3:637363;0:640000;1:672727;3:714286;2:761905;1:763636;3:791209;0:840000;1:854545;3:868132;2:904762;3:945055;1:945455",
-      "rotationCanonicalFingerprint": "0:0;1:14545;3:28132;2:64762;3:105055;1:105455;3:181978;1:196364;0:200000;2:207619;3:258901;1:287273;3:335824;2:350476;1:378182;0:400000;3:412747;1:469091;3:489670;2:493333;1:560000;3:566593;0:600000;2:636190;3:643516;1:650909;3:720440;1:741818;2:779048;3:797363;0:800000;1:832727;3:874286;2:921905;1:923636;3:951209",
-      "sharedPhaseGroups": 0,
-      "totalScheduledEvents": 36,
+      "mathNote": "Five against eleven against seven against thirteen, with asymmetrical offsets. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "3:21978;1:36364;0:40000;1:40000;2:47619;1:81818;3:98901;1:127273;0:140000;3:175824;2:190476;1:218182;0:240000;3:252747;1:309091;3:329670;2:333333;1:400000;3:406593;0:440000;2:476190;3:483516;1:490909;3:560440;1:581818;2:619048;3:637363;0:640000;1:672727;3:714286;2:761905;1:763636;3:791209;0:840000;1:854545;3:868132;2:904762;3:945055;1:945455",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:7619;1:41818;3:58901;1:87273;0:100000;3:135824;2:150476;1:178182;0:200000;3:212747;1:269091;3:289670;2:293333;1:360000;3:366593;0:400000;2:436190;3:443516;1:450909;3:520440;1:541818;2:579048;3:597363;0:600000;1:632727;3:674286;2:721905;1:723636;3:751209;0:800000;1:814545;3:828132;2:864762;3:905055;1:905455;3:981978;1:996364",
+      "sharedPhaseGroups": 1,
+      "totalScheduledEvents": 39,
       "nearestMathematicalNeighbors": [
         {
           "id": "terror-geometry",
-          "similarity": 0.2321,
+          "similarity": 0.2097,
           "bpm": 220
         },
         {
           "id": "mechanical-paradox",
-          "similarity": 0.1014,
+          "similarity": 0.0933,
           "bpm": 168
         },
         {
           "id": "poly-3-5",
-          "similarity": 0.0222,
+          "similarity": 0.0208,
           "bpm": 112
         }
       ],
@@ -9226,7 +9419,14 @@
           "gain": 0.65,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.637423989749,
+              "b": 0.770513242776,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0.04,
             0.24,
@@ -9238,6 +9438,10 @@
             {
               "phase": 0.04,
               "velocity": 1
+            },
+            {
+              "phase": 0.14,
+              "velocity": 0.46
             },
             {
               "phase": 0.24,
@@ -9256,7 +9460,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 6
         },
         {
           "lane": 2,
@@ -9274,7 +9478,20 @@
           "gain": 0.31,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.968583161129,
+              "b": 0.248689887165,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.87074607712,
+              "b": 0.491732924646,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0363636364,
             0.1272727273,
@@ -9292,6 +9509,14 @@
             {
               "phase": 0.0363636364,
               "velocity": 1
+            },
+            {
+              "phase": 0.04,
+              "velocity": 0.7
+            },
+            {
+              "phase": 0.0818181818,
+              "velocity": 0.38
             },
             {
               "phase": 0.1272727273,
@@ -9334,7 +9559,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 13
         },
         {
           "lane": 3,
@@ -9492,25 +9717,25 @@
       "bpm": 205,
       "commonCycleBars": 1,
       "character": "Pitched frenchcore kick with seven hard-acid notes and metallic syncopation.",
-      "mathNote": "4:7:5:11 with pitched root families and near-aligned source cycles.",
-      "eventFingerprint": "0:0;1:35714;3:36364;2:50000;3:127273;1:178571;3:218182;0:250000;2:250000;3:309091;1:321429;3:400000;2:450000;1:464286;3:490909;0:500000;3:581818;1:607143;2:650000;3:672727;0:750000;1:750000;3:763636;2:850000;3:854545;1:892857;3:945455",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:13636;2:100000;3:104545;1:142857;3:195455;0:250000;1:285714;3:286364;2:300000;3:377273;1:428571;3:468182;0:500000;2:500000;3:559091;1:571429;3:650000;2:700000;1:714286;3:740909;0:750000;3:831818;1:857143;2:900000;3:922727",
-      "sharedPhaseGroups": 2,
-      "totalScheduledEvents": 27,
+      "mathNote": "4:7:5:11 with pitched root families and near-aligned source cycles. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;1:35714;3:36364;2:50000;1:107143;0:125000;3:127273;1:178571;3:218182;0:250000;2:250000;3:309091;1:321429;3:400000;2:450000;1:464286;3:490909;0:500000;3:581818;1:607143;2:650000;3:672727;0:750000;1:750000;3:763636;2:850000;3:854545;1:892857;3:945455",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:35714;3:36364;2:50000;1:107143;0:125000;3:127273;1:178571;3:218182;0:250000;2:250000;3:309091;1:321429;3:400000;2:450000;1:464286;3:490909;0:500000;3:581818;1:607143;2:650000;3:672727;0:750000;1:750000;3:763636;2:850000;3:854545;1:892857;3:945455",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 30,
       "nearestMathematicalNeighbors": [
         {
           "id": "rotterdam-collision",
-          "similarity": 0.2683,
+          "similarity": 0.3182,
           "bpm": 180
         },
         {
           "id": "terror-geometry",
-          "similarity": 0.2245,
+          "similarity": 0.2692,
           "bpm": 220
         },
         {
           "id": "concrete",
-          "similarity": 0.1622,
+          "similarity": 0.15,
           "bpm": 138
         }
       ],
@@ -9531,7 +9756,14 @@
           "gain": 0.58,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.707106781187,
+              "b": 0.707106781187,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.25,
@@ -9542,6 +9774,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.125,
+              "velocity": 0.46
             },
             {
               "phase": 0.25,
@@ -9556,7 +9792,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 5
         },
         {
           "lane": 2,
@@ -9574,7 +9810,20 @@
           "gain": 0.27,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.781831482468,
+              "b": 0.623489801859,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0357142857,
             0.1785714286,
@@ -9586,8 +9835,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0357142857,
               "velocity": 1
+            },
+            {
+              "phase": 0.1071428571,
+              "velocity": 0.38
             },
             {
               "phase": 0.1785714286,
@@ -9614,7 +9871,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 9
         },
         {
           "lane": 3,
@@ -9752,26 +10009,26 @@
       "bpm": 162,
       "commonCycleBars": 1,
       "character": "Narrow techno foundation against two contrasting resonant acid patches.",
-      "mathNote": "Prime periods 7:11:13:5 with separately shifted arguments.",
-      "eventFingerprint": "1:25974;0:28571;2:32967;3:40000;2:109890;1:116883;0:171429;2:186813;1:207792;3:240000;2:263736;1:298701;0:314286;2:340659;1:389610;2:417582;3:440000;0:457143;1:480519;2:494505;1:571429;2:571429;0:600000;3:640000;2:648352;1:662338;2:725275;0:742857;1:753247;2:802198;3:840000;1:844156;2:879121;0:885714;1:935065;2:956044",
-      "rotationCanonicalFingerprint": "0:0;1:10390;2:59341;3:97143;1:101299;2:136264;0:142857;1:192208;2:213187;1:283117;0:285714;2:290110;3:297143;2:367033;1:374026;0:428572;2:443956;1:464935;3:497143;2:520879;1:555844;0:571429;2:597802;1:646753;2:674725;3:697143;0:714286;1:737662;2:751648;1:828572;2:828572;0:857143;3:897143;2:905495;1:919481;2:982418",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 36,
+      "mathNote": "Prime periods 7:11:13:5 with separately shifted arguments. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "1:25974;0:28571;1:28571;2:32967;3:40000;1:71429;0:100000;2:109890;1:116883;0:171429;2:186813;1:207792;3:240000;2:263736;1:298701;0:314286;2:340659;1:389610;2:417582;3:440000;0:457143;1:480519;2:494505;1:571429;2:571429;0:600000;3:640000;2:648352;1:662338;2:725275;0:742857;1:753247;2:802198;3:840000;1:844156;2:879121;0:885714;1:935065;2:956044",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:4396;3:11429;1:42858;0:71429;2:81319;1:88312;0:142858;2:158242;1:179221;3:211429;2:235165;1:270130;0:285715;2:312088;1:361039;2:389011;3:411429;0:428572;1:451948;2:465934;1:542858;2:542858;0:571429;3:611429;2:619781;1:633767;2:696704;0:714286;1:724676;2:773627;3:811429;1:815585;2:850550;0:857143;1:906494;2:927473;1:997403",
+      "sharedPhaseGroups": 2,
+      "totalScheduledEvents": 39,
       "nearestMathematicalNeighbors": [
         {
           "id": "euclidean-fragments",
-          "similarity": 0.0694,
+          "similarity": 0.0641,
           "bpm": 170
         },
         {
-          "id": "minimal",
-          "similarity": 0.0364,
-          "bpm": 124
+          "id": "industrial-fracture",
+          "similarity": 0.0571,
+          "bpm": 155
         },
         {
-          "id": "industrial-fracture",
-          "similarity": 0.0303,
-          "bpm": 155
+          "id": "hardtek-mobius",
+          "similarity": 0.0469,
+          "bpm": 178
         }
       ],
       "lanes": [
@@ -9791,7 +10048,14 @@
           "gain": 0.44,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.809016994375,
+              "b": 0.587785252292,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0.0285714286,
             0.1714285714,
@@ -9805,6 +10069,10 @@
             {
               "phase": 0.0285714286,
               "velocity": 1
+            },
+            {
+              "phase": 0.1,
+              "velocity": 0.46
             },
             {
               "phase": 0.1714285714,
@@ -9831,7 +10099,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -9849,7 +10117,20 @@
           "gain": 0.22,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.983929588599,
+              "b": 0.178556894799,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.900968867902,
+              "b": 0.433883739118,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.025974026,
             0.1168831169,
@@ -9867,6 +10148,14 @@
             {
               "phase": 0.025974026,
               "velocity": 1
+            },
+            {
+              "phase": 0.0285714286,
+              "velocity": 0.7
+            },
+            {
+              "phase": 0.0714285714,
+              "velocity": 0.38
             },
             {
               "phase": 0.1168831169,
@@ -9909,7 +10198,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 13
         },
         {
           "lane": 3,
@@ -10057,25 +10346,25 @@
       "bpm": 175,
       "commonCycleBars": 1,
       "character": "Three robust gabber accents chase five metal beats and a terse melodic rave stab.",
-      "mathNote": "3:5:7:11 — all prime root degrees, unlike the related Acid Reactor arrangement.",
-      "eventFingerprint": "0:0;3:12987;2:57143;1:66667;3:103896;3:194805;2:200000;1:266667;3:285714;0:333333;2:342857;3:376623;1:466667;3:467532;2:485714;3:558442;2:628571;3:649351;0:666667;1:666667;3:740260;2:771429;3:831169;1:866667;2:914286;3:922078",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:73593;2:104762;3:164502;1:200000;2:247619;3:255411;0:333333;3:346320;2:390476;1:400000;3:437229;3:528138;2:533333;1:600000;3:619047;0:666666;2:676190;3:709956;1:800000;3:800865;2:819047;3:891775;2:961904;3:982684",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 26,
+      "mathNote": "3:5:7:11 — all prime root degrees, unlike the related Acid Reactor arrangement. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;3:12987;2:57143;1:66667;3:103896;0:166667;1:166667;3:194805;2:200000;1:266667;3:285714;0:333333;2:342857;3:376623;1:466667;3:467532;2:485714;3:558442;2:628571;3:649351;0:666667;1:666667;3:740260;2:771429;3:831169;1:866667;2:914286;3:922078",
+      "rotationCanonicalFingerprint": "0:0;1:0;3:12987;2:57143;1:66667;3:103896;0:166667;1:166667;3:194805;2:200000;1:266667;3:285714;0:333333;2:342857;3:376623;1:466667;3:467532;2:485714;3:558442;2:628571;3:649351;0:666667;1:666667;3:740260;2:771429;3:831169;1:866667;2:914286;3:922078",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 29,
       "nearestMathematicalNeighbors": [
         {
           "id": "acid-reactor",
-          "similarity": 0.1818,
+          "similarity": 0.234,
           "bpm": 148
         },
         {
           "id": "poly-3-5",
-          "similarity": 0.0909,
+          "similarity": 0.1143,
           "bpm": 112
         },
         {
           "id": "afro",
-          "similarity": 0.0769,
+          "similarity": 0.0976,
           "bpm": 116
         }
       ],
@@ -10096,7 +10385,14 @@
           "gain": 0.7,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.5,
+              "b": 0.866025403784,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.3333333333,
@@ -10108,6 +10404,10 @@
               "velocity": 1
             },
             {
+              "phase": 0.1666666667,
+              "velocity": 0.46
+            },
+            {
               "phase": 0.3333333333,
               "velocity": 1
             },
@@ -10116,7 +10416,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 3
+          "rhythmicEventCount": 4
         },
         {
           "lane": 2,
@@ -10134,7 +10434,20 @@
           "gain": 0.35,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.5,
+              "b": 0.866025403784,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0666666667,
             0.2666666667,
@@ -10144,8 +10457,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0666666667,
               "velocity": 1
+            },
+            {
+              "phase": 0.1666666667,
+              "velocity": 0.38
             },
             {
               "phase": 0.2666666667,
@@ -10164,7 +10485,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 7
         },
         {
           "lane": 3,
@@ -10312,25 +10633,25 @@
       "bpm": 146,
       "commonCycleBars": 1,
       "character": "Sparse heavy low-frequency events and rapidly shifting light FM patterns.",
-      "mathNote": "Seven against eleven is the foreground relation; five and thirteen form a subdued counter-layer.",
-      "eventFingerprint": "0:0;1:38961;2:40000;3:43956;3:120879;1:129870;0:142857;3:197802;1:220779;2:240000;3:274725;0:285714;1:311688;3:351648;1:402597;0:428571;3:428571;2:440000;1:493506;3:505495;0:571429;3:582418;1:584416;2:640000;3:659341;1:675325;0:714286;3:736264;1:766234;3:813187;2:840000;0:857143;1:857143;3:890110;1:948052;3:967033",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:32967;1:90909;3:109890;0:142857;1:181818;2:182857;3:186813;3:263736;1:272727;0:285714;3:340659;1:363636;2:382857;3:417582;0:428571;1:454545;3:494505;1:545454;0:571428;3:571428;2:582857;1:636363;3:648352;0:714286;3:725275;1:727273;2:782857;3:802198;1:818182;0:857143;3:879121;1:909091;3:956044;2:982857",
-      "sharedPhaseGroups": 2,
-      "totalScheduledEvents": 36,
+      "mathNote": "Seven against eleven is the foreground relation; five and thirteen form a subdued counter-layer. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;1:38961;2:40000;3:43956;0:71429;1:84416;3:120879;1:129870;0:142857;3:197802;1:220779;2:240000;3:274725;0:285714;1:311688;3:351648;1:402597;0:428571;3:428571;2:440000;1:493506;3:505495;0:571429;3:582418;1:584416;2:640000;3:659341;1:675325;0:714286;3:736264;1:766234;3:813187;2:840000;0:857143;1:857143;3:890110;1:948052;3:967033",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:38961;2:40000;3:43956;0:71429;1:84416;3:120879;1:129870;0:142857;3:197802;1:220779;2:240000;3:274725;0:285714;1:311688;3:351648;1:402597;0:428571;3:428571;2:440000;1:493506;3:505495;0:571429;3:582418;1:584416;2:640000;3:659341;1:675325;0:714286;3:736264;1:766234;3:813187;2:840000;0:857143;1:857143;3:890110;1:948052;3:967033",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 39,
       "nearestMathematicalNeighbors": [
         {
           "id": "schranz-machinery",
-          "similarity": 0.1014,
+          "similarity": 0.1233,
           "bpm": 158
         },
         {
           "id": "euclidean-fragments",
-          "similarity": 0.1,
+          "similarity": 0.1216,
           "bpm": 170
         },
         {
           "id": "poly-4-7",
-          "similarity": 0.0426,
+          "similarity": 0.0612,
           "bpm": 118
         }
       ],
@@ -10351,7 +10672,14 @@
           "gain": 0.42,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.900968867902,
+              "b": 0.433883739118,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.1428571429,
@@ -10365,6 +10693,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.0714285714,
+              "velocity": 0.46
             },
             {
               "phase": 0.1428571429,
@@ -10391,7 +10723,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -10409,7 +10741,20 @@
           "gain": 0.25,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.862605415601,
+              "b": 0.505877353689,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.038961039,
             0.1298701299,
@@ -10425,8 +10770,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.038961039,
               "velocity": 1
+            },
+            {
+              "phase": 0.0844155844,
+              "velocity": 0.38
             },
             {
               "phase": 0.1298701299,
@@ -10469,7 +10822,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 13
         },
         {
           "lane": 3,
@@ -10617,25 +10970,25 @@
       "bpm": 168,
       "commonCycleBars": 1,
       "character": "Rotating machinery pulses and destabilized metallic accents.",
-      "mathNote": "9:13:7:11, with nonzero phases to avoid universal downbeat collisions.",
-      "eventFingerprint": "1:21978;0:37037;3:41322;2:47619;1:98901;3:132231;0:148148;1:175824;2:190476;3:223140;1:252747;0:259259;3:314050;1:329670;2:333333;0:370370;3:404959;1:406593;2:476190;0:481481;1:483516;3:495868;1:560440;3:586777;0:592593;2:619048;1:637363;3:677686;0:703704;1:714286;2:761905;3:768595;1:791209;0:814815;3:859504;1:868132;2:904762;0:925926;1:945055;3:950413",
-      "rotationCanonicalFingerprint": "0:0;1:10582;2:58201;3:64891;1:87505;0:111111;3:155800;1:164428;2:201058;0:222222;1:241351;3:246709;1:318274;0:333333;3:337618;2:343915;1:395197;3:428527;0:444444;1:472120;2:486772;3:519436;1:549043;0:555555;3:610346;1:625966;2:629629;0:666666;3:701255;1:702889;2:772486;0:777777;1:779812;3:792164;1:856736;3:883073;0:888889;2:915344;1:933659;3:973982",
-      "sharedPhaseGroups": 0,
-      "totalScheduledEvents": 40,
+      "mathNote": "9:13:7:11, with nonzero phases to avoid universal downbeat collisions. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "1:21978;0:37037;1:37037;3:41322;2:47619;1:60440;0:92593;1:98901;3:132231;0:148148;1:175824;2:190476;3:223140;1:252747;0:259259;3:314050;1:329670;2:333333;0:370370;3:404959;1:406593;2:476190;0:481481;1:483516;3:495868;1:560440;3:586777;0:592593;2:619048;1:637363;3:677686;0:703704;1:714286;2:761905;3:768595;1:791209;0:814815;3:859504;1:868132;2:904762;0:925926;1:945055;3:950413",
+      "rotationCanonicalFingerprint": "0:0;1:0;3:4285;2:10582;1:23403;0:55556;1:61864;3:95194;0:111111;1:138787;2:153439;3:186103;1:215710;0:222222;3:277013;1:292633;2:296296;0:333333;3:367922;1:369556;2:439153;0:444444;1:446479;3:458831;1:523403;3:549740;0:555556;2:582011;1:600326;3:640649;0:666667;1:677249;2:724868;3:731558;1:754172;0:777778;3:822467;1:831095;2:867725;0:888889;1:908018;3:913376;1:984941",
+      "sharedPhaseGroups": 1,
+      "totalScheduledEvents": 43,
       "nearestMathematicalNeighbors": [
         {
           "id": "broken-reactor",
-          "similarity": 0.1014,
+          "similarity": 0.0933,
           "bpm": 172
         },
         {
           "id": "poly-2-3",
-          "similarity": 0.0196,
+          "similarity": 0.0185,
           "bpm": 108
         },
         {
           "id": "poly-4-7",
-          "similarity": 0.0192,
+          "similarity": 0.0182,
           "bpm": 118
         }
       ],
@@ -10656,7 +11009,14 @@
           "gain": 0.48,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.835487811413,
+              "b": 0.549508978071,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0.037037037,
             0.1481481481,
@@ -10672,6 +11032,10 @@
             {
               "phase": 0.037037037,
               "velocity": 1
+            },
+            {
+              "phase": 0.0925925926,
+              "velocity": 0.46
             },
             {
               "phase": 0.1481481481,
@@ -10706,7 +11070,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 9
+          "rhythmicEventCount": 10
         },
         {
           "lane": 2,
@@ -10724,7 +11088,20 @@
           "gain": 0.23,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.97304487058,
+              "b": 0.230615870742,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.928756240125,
+              "b": 0.370691039045,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.021978022,
             0.0989010989,
@@ -10744,6 +11121,14 @@
             {
               "phase": 0.021978022,
               "velocity": 1
+            },
+            {
+              "phase": 0.037037037,
+              "velocity": 0.7
+            },
+            {
+              "phase": 0.0604395604,
+              "velocity": 0.38
             },
             {
               "phase": 0.0989010989,
@@ -10794,7 +11179,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 13
+          "rhythmicEventCount": 15
         },
         {
           "lane": 3,
@@ -10942,26 +11327,26 @@
       "bpm": 220,
       "commonCycleBars": 1,
       "character": "Fast low-end impacts and densely shifting high-frequency shards, peak-controlled.",
-      "mathNote": "4:7:9:13 four-lane polyrhythm: a fixed four-root kick against independently offset seven, nine and thirteen-root layers.",
-      "eventFingerprint": "0:0;3:21978;1:35714;2:44444;3:98901;2:155556;3:175824;1:178571;0:250000;3:252747;2:266667;1:321429;3:329670;2:377778;3:406593;1:464286;3:483516;2:488889;0:500000;3:560440;2:600000;1:607143;3:637363;2:711111;3:714286;0:750000;1:750000;3:791209;2:822222;3:868132;1:892857;2:933333;3:945055",
-      "rotationCanonicalFingerprint": "0:0;1:0;3:41209;2:72222;3:118132;1:142857;2:183333;3:195055;0:250000;3:271978;1:285714;2:294444;3:348901;2:405556;3:425824;1:428571;0:500000;3:502747;2:516667;1:571429;3:579670;2:627778;3:656593;1:714286;3:733516;2:738889;0:750000;3:810440;2:850000;1:857143;3:887363;2:961111;3:964286",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 33,
+      "mathNote": "4:7:9:13 four-lane polyrhythm: a fixed four-root kick against independently offset seven, nine and thirteen-root layers. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;3:21978;1:35714;2:44444;3:98901;1:107143;0:125000;2:155556;3:175824;1:178571;0:250000;3:252747;2:266667;1:321429;3:329670;2:377778;3:406593;1:464286;3:483516;2:488889;0:500000;3:560440;2:600000;1:607143;3:637363;2:711111;3:714286;0:750000;1:750000;3:791209;2:822222;3:868132;1:892857;2:933333;3:945055",
+      "rotationCanonicalFingerprint": "0:0;1:0;3:21978;1:35714;2:44444;3:98901;1:107143;0:125000;2:155556;3:175824;1:178571;0:250000;3:252747;2:266667;1:321429;3:329670;2:377778;3:406593;1:464286;3:483516;2:488889;0:500000;3:560440;2:600000;1:607143;3:637363;2:711111;3:714286;0:750000;1:750000;3:791209;2:822222;3:868132;1:892857;2:933333;3:945055",
+      "sharedPhaseGroups": 2,
+      "totalScheduledEvents": 36,
       "nearestMathematicalNeighbors": [
         {
           "id": "rotterdam-collision",
-          "similarity": 0.234,
+          "similarity": 0.28,
           "bpm": 180
         },
         {
-          "id": "broken-reactor",
-          "similarity": 0.2321,
-          "bpm": 172
+          "id": "frenchcore-spiral",
+          "similarity": 0.2692,
+          "bpm": 205
         },
         {
-          "id": "frenchcore-spiral",
-          "similarity": 0.2245,
-          "bpm": 205
+          "id": "broken-reactor",
+          "similarity": 0.2097,
+          "bpm": 172
         }
       ],
       "lanes": [
@@ -10981,7 +11366,14 @@
           "gain": 0.55,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.707106781187,
+              "b": 0.707106781187,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.25,
@@ -10992,6 +11384,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.125,
+              "velocity": 0.46
             },
             {
               "phase": 0.25,
@@ -11006,7 +11402,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 5
         },
         {
           "lane": 2,
@@ -11024,7 +11420,20 @@
           "gain": 0.23,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.781831482468,
+              "b": 0.623489801859,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0357142857,
             0.1785714286,
@@ -11036,8 +11445,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0357142857,
               "velocity": 1
+            },
+            {
+              "phase": 0.1071428571,
+              "velocity": 0.38
             },
             {
               "phase": 0.1785714286,
@@ -11064,7 +11481,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 9
         },
         {
           "lane": 3,
@@ -11232,15 +11649,15 @@
       "bpm": 186,
       "commonCycleBars": 1,
       "character": "Intentionally dense prime-degree texture, with reduced per-lane gain for clarity.",
-      "mathNote": "7:11:13:17 – four individually uniform but collectively intricate time sets.",
-      "eventFingerprint": "1:16529;3:17301;2:17751;0:20408;3:76125;2:94675;1:107438;3:134948;0:163265;2:171598;3:193772;1:198347;2:248521;3:252595;1:289256;0:306122;3:311419;2:325444;3:370242;1:380165;2:402367;3:429066;0:448980;1:471074;2:479290;3:487889;3:546713;2:556213;1:561983;0:591837;3:605536;2:633136;1:652893;3:664360;2:710059;3:723183;0:734694;1:743802;3:782007;2:786982;1:834711;3:840830;2:863905;0:877551;3:899654;1:925620;2:940828;3:958478",
-      "rotationCanonicalFingerprint": "0:0;1:22094;2:30310;3:38909;3:97733;2:107233;1:113003;0:142857;3:156556;2:184156;1:203913;3:215380;2:261079;3:274203;0:285714;1:294822;3:333027;2:338002;1:385731;3:391850;2:414925;0:428571;3:450674;1:476640;2:491848;3:509498;1:567549;3:568321;2:568771;0:571428;3:627145;2:645695;1:658458;3:685968;0:714285;2:722618;3:744792;1:749367;2:799541;3:803615;1:840276;0:857142;3:862439;2:876464;3:921262;1:931185;2:953387;3:980086",
-      "sharedPhaseGroups": 0,
-      "totalScheduledEvents": 48,
+      "mathNote": "7:11:13:17 – four individually uniform but collectively intricate time sets. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "1:16529;3:17301;2:17751;0:20408;1:20408;1:61983;3:76125;0:91837;2:94675;1:107438;3:134948;0:163265;2:171598;3:193772;1:198347;2:248521;3:252595;1:289256;0:306122;3:311419;2:325444;3:370242;1:380165;2:402367;3:429066;0:448980;1:471074;2:479290;3:487889;3:546713;2:556213;1:561983;0:591837;3:605536;2:633136;1:652893;3:664360;2:710059;3:723183;0:734694;1:743802;3:782007;2:786982;1:834711;3:840830;2:863905;0:877551;3:899654;1:925620;2:940828;3:958478",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:41575;3:55717;0:71429;2:74267;1:87030;3:114540;0:142857;2:151190;3:173364;1:177939;2:228113;3:232187;1:268848;0:285714;3:291011;2:305036;3:349834;1:359757;2:381959;3:408658;0:428572;1:450666;2:458882;3:467481;3:526305;2:535805;1:541575;0:571429;3:585128;2:612728;1:632485;3:643952;2:689651;3:702775;0:714286;1:723394;3:761599;2:766574;1:814303;3:820422;2:843497;0:857143;3:879246;1:905212;2:920420;3:938070;1:996121;3:996893;2:997343",
+      "sharedPhaseGroups": 1,
+      "totalScheduledEvents": 51,
       "nearestMathematicalNeighbors": [
         {
           "id": "breakcore-prime-shards",
-          "similarity": 0.1045,
+          "similarity": 0.1268,
           "bpm": 190
         },
         {
@@ -11271,7 +11688,14 @@
           "gain": 0.34,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.838088104892,
+              "b": 0.545534901211,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0.0204081633,
             0.1632653061,
@@ -11285,6 +11709,10 @@
             {
               "phase": 0.0204081633,
               "velocity": 1
+            },
+            {
+              "phase": 0.0918367347,
+              "velocity": 0.46
             },
             {
               "phase": 0.1632653061,
@@ -11311,7 +11739,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -11329,7 +11757,20 @@
           "gain": 0.18,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.991790013823,
+              "b": 0.127877161685,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.925116643539,
+              "b": 0.379683020226,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0165289256,
             0.1074380165,
@@ -11347,6 +11788,14 @@
             {
               "phase": 0.0165289256,
               "velocity": 1
+            },
+            {
+              "phase": 0.0204081633,
+              "velocity": 0.7
+            },
+            {
+              "phase": 0.0619834711,
+              "velocity": 0.38
             },
             {
               "phase": 0.1074380165,
@@ -11389,7 +11838,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 13
         },
         {
           "lane": 3,
@@ -11597,26 +12046,26 @@
       "bpm": 178,
       "commonCycleBars": 1,
       "character": "Hardtek bounce, pitched kick contour and short saturated acid responses.",
-      "mathNote": "5:7:9:4, with a four-root accompaniment countering the odd cycles.",
-      "eventFingerprint": "0:0;1:28571;2:37037;3:62500;2:148148;1:171429;0:200000;2:259259;3:312500;1:314286;2:370370;0:400000;1:457143;2:481481;3:562500;2:592593;0:600000;1:600000;2:703704;1:742857;0:800000;3:812500;2:814815;1:885714;2:925926",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:103704;1:142857;0:200000;3:212500;2:214815;1:285714;2:325926;0:400000;1:428571;2:437037;3:462500;2:548148;1:571429;0:600000;2:659259;3:712500;1:714286;2:770370;0:800000;1:857143;2:881481;3:962500;2:992593",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 25,
+      "mathNote": "5:7:9:4, with a four-root accompaniment countering the odd cycles. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;1:28571;2:37037;3:62500;0:100000;1:100000;2:148148;1:171429;0:200000;2:259259;3:312500;1:314286;2:370370;0:400000;1:457143;2:481481;3:562500;2:592593;0:600000;1:600000;2:703704;1:742857;0:800000;3:812500;2:814815;1:885714;2:925926",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:28571;2:37037;3:62500;0:100000;1:100000;2:148148;1:171429;0:200000;2:259259;3:312500;1:314286;2:370370;0:400000;1:457143;2:481481;3:562500;2:592593;0:600000;1:600000;2:703704;1:742857;0:800000;3:812500;2:814815;1:885714;2:925926",
+      "sharedPhaseGroups": 3,
+      "totalScheduledEvents": 28,
       "nearestMathematicalNeighbors": [
         {
           "id": "industrial-fracture",
-          "similarity": 0.2667,
+          "similarity": 0.3125,
           "bpm": 155
         },
         {
           "id": "minimal",
-          "similarity": 0.122,
+          "similarity": 0.1395,
           "bpm": 124
         },
         {
-          "id": "303-pressure",
-          "similarity": 0.0714,
-          "bpm": 140
+          "id": "poly-3-5",
+          "similarity": 0.0857,
+          "bpm": 112
         }
       ],
       "lanes": [
@@ -11636,7 +12085,14 @@
           "gain": 0.5,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.809016994375,
+              "b": 0.587785252292,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.2,
@@ -11648,6 +12104,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.1,
+              "velocity": 0.46
             },
             {
               "phase": 0.2,
@@ -11666,7 +12126,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 6
         },
         {
           "lane": 2,
@@ -11684,7 +12144,20 @@
           "gain": 0.33,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.809016994375,
+              "b": 0.587785252292,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.0285714286,
             0.1714285714,
@@ -11696,8 +12169,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.0285714286,
               "velocity": 1
+            },
+            {
+              "phase": 0.1,
+              "velocity": 0.38
             },
             {
               "phase": 0.1714285714,
@@ -11724,7 +12205,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 9
         },
         {
           "lane": 3,
@@ -11847,26 +12328,26 @@
       "bpm": 190,
       "commonCycleBars": 1,
       "character": "Dislocated kick and snare accents interleave with high-rate percussive noise.",
-      "mathNote": "7:5:11:3 and independent cyclic offsets, not a conventional 16-step break.",
-      "eventFingerprint": "2:8264;0:20408;1:40000;2:99174;3:111111;0:163265;2:190083;1:240000;2:280992;0:306122;2:371901;1:440000;3:444444;0:448980;2:462810;2:553719;0:591837;1:640000;2:644628;0:734694;2:735537;3:777778;2:826446;1:840000;0:877551;2:917355",
-      "rotationCanonicalFingerprint": "0:0;1:19592;2:78766;3:90703;0:142857;2:169675;1:219592;2:260584;0:285714;2:351493;1:419592;3:424036;0:428572;2:442402;2:533311;0:571429;1:619592;2:624220;0:714286;2:715129;3:757370;2:806038;1:819592;0:857143;2:896947;2:987856",
-      "sharedPhaseGroups": 0,
-      "totalScheduledEvents": 26,
+      "mathNote": "7:5:11:3 and independent cyclic offsets, not a conventional 16-step break. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "2:8264;0:20408;1:20408;1:40000;0:91837;2:99174;3:111111;1:140000;0:163265;2:190083;1:240000;2:280992;0:306122;2:371901;1:440000;3:444444;0:448980;2:462810;2:553719;0:591837;1:640000;2:644628;0:734694;2:735537;3:777778;2:826446;1:840000;0:877551;2:917355",
+      "rotationCanonicalFingerprint": "0:0;1:0;1:19592;0:71429;2:78766;3:90703;1:119592;0:142857;2:169675;1:219592;2:260584;0:285714;2:351493;1:419592;3:424036;0:428572;2:442402;2:533311;0:571429;1:619592;2:624220;0:714286;2:715129;3:757370;2:806038;1:819592;0:857143;2:896947;2:987856",
+      "sharedPhaseGroups": 1,
+      "totalScheduledEvents": 29,
       "nearestMathematicalNeighbors": [
         {
           "id": "complex-roots-overload",
-          "similarity": 0.1045,
+          "similarity": 0.1268,
           "bpm": 186
         },
         {
           "id": "rotterdam-collision",
-          "similarity": 0.0625,
+          "similarity": 0.0556,
           "bpm": 180
         },
         {
-          "id": "303-pressure",
-          "similarity": 0,
-          "bpm": 140
+          "id": "broken-reactor",
+          "similarity": 0.0149,
+          "bpm": 172
         }
       ],
       "lanes": [
@@ -11886,7 +12367,14 @@
           "gain": 0.44,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.838088104892,
+              "b": 0.545534901211,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0.0204081633,
             0.1632653061,
@@ -11900,6 +12388,10 @@
             {
               "phase": 0.0204081633,
               "velocity": 1
+            },
+            {
+              "phase": 0.0918367347,
+              "velocity": 0.46
             },
             {
               "phase": 0.1632653061,
@@ -11926,7 +12418,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -11944,7 +12436,20 @@
           "gain": 0.42,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.991790013823,
+              "b": 0.127877161685,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.637423989749,
+              "b": 0.770513242776,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.04,
             0.24,
@@ -11954,8 +12459,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0.0204081633,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.04,
               "velocity": 1
+            },
+            {
+              "phase": 0.14,
+              "velocity": 0.38
             },
             {
               "phase": 0.24,
@@ -11974,7 +12487,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 5
+          "rhythmicEventCount": 7
         },
         {
           "lane": 3,
@@ -12102,25 +12615,25 @@
       "bpm": 170,
       "commonCycleBars": 1,
       "character": "Prime pulse layers with a distinct five-out-of-sixteen Euclidean accent line.",
-      "mathNote": "7:11:13:5 nth-root base sets plus explicit E(5,16) on the last instrument.",
-      "eventFingerprint": "0:0;2:11834;1:12987;3:40000;2:88757;1:103896;3:125000;0:142857;2:165680;1:194805;3:240000;2:242604;0:285714;1:285714;2:319527;3:375000;1:376623;2:396450;0:428571;3:440000;1:467532;2:473373;2:550296;1:558442;3:562500;0:571429;2:627219;3:640000;1:649351;2:704142;0:714286;1:740260;3:750000;2:781065;1:831169;3:840000;0:857143;2:857988;1:922078;2:934911;3:937500",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:33813;3:89286;1:90909;2:110736;0:142857;3:154286;1:181818;2:187659;2:264582;1:272728;3:276786;0:285715;2:341505;3:354286;1:363637;2:418428;0:428572;1:454546;3:464286;2:495351;1:545455;3:554286;0:571429;2:572274;1:636364;2:649197;3:651786;0:714286;2:726120;1:727273;3:754286;2:803043;1:818182;3:839286;0:857143;2:879966;1:909091;3:954286;2:956890",
-      "sharedPhaseGroups": 1,
-      "totalScheduledEvents": 41,
+      "mathNote": "7:11:13:5 nth-root base sets plus explicit E(5,16) on the last instrument. A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.",
+      "eventFingerprint": "0:0;1:0;2:11834;1:12987;3:40000;1:58442;0:71429;2:88757;1:103896;3:125000;0:142857;2:165680;1:194805;3:240000;2:242604;0:285714;1:285714;2:319527;3:375000;1:376623;2:396450;0:428571;3:440000;1:467532;2:473373;2:550296;1:558442;3:562500;0:571429;2:627219;3:640000;1:649351;2:704142;0:714286;1:740260;3:750000;2:781065;1:831169;3:840000;0:857143;2:857988;1:922078;2:934911;3:937500",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:11834;1:12987;3:40000;1:58442;0:71429;2:88757;1:103896;3:125000;0:142857;2:165680;1:194805;3:240000;2:242604;0:285714;1:285714;2:319527;3:375000;1:376623;2:396450;0:428571;3:440000;1:467532;2:473373;2:550296;1:558442;3:562500;0:571429;2:627219;3:640000;1:649351;2:704142;0:714286;1:740260;3:750000;2:781065;1:831169;3:840000;0:857143;2:857988;1:922078;2:934911;3:937500",
+      "sharedPhaseGroups": 2,
+      "totalScheduledEvents": 44,
       "nearestMathematicalNeighbors": [
         {
           "id": "eleven-against-seven",
-          "similarity": 0.1,
+          "similarity": 0.1216,
           "bpm": 146
         },
         {
           "id": "schranz-machinery",
-          "similarity": 0.0946,
+          "similarity": 0.1154,
           "bpm": 158
         },
         {
           "id": "house",
-          "similarity": 0.0727,
+          "similarity": 0.069,
           "bpm": 125
         }
       ],
@@ -12141,7 +12654,14 @@
           "gain": 0.52,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 0.900968867902,
+              "b": 0.433883739118,
+              "n": 1,
+              "velocity": 0.46
+            }
+          ],
           "baseRootPhases": [
             0,
             0.1428571429,
@@ -12155,6 +12675,10 @@
             {
               "phase": 0,
               "velocity": 1
+            },
+            {
+              "phase": 0.0714285714,
+              "velocity": 0.46
             },
             {
               "phase": 0.1428571429,
@@ -12181,7 +12705,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 7
+          "rhythmicEventCount": 8
         },
         {
           "lane": 2,
@@ -12199,7 +12723,20 @@
           "gain": 0.25,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
+          "additionalRootSets": [
+            {
+              "a": 1,
+              "b": 0,
+              "n": 1,
+              "velocity": 0.7
+            },
+            {
+              "a": 0.933336521037,
+              "b": 0.359002699848,
+              "n": 1,
+              "velocity": 0.38
+            }
+          ],
           "baseRootPhases": [
             0.012987013,
             0.1038961039,
@@ -12215,8 +12752,16 @@
           ],
           "actualEventPhases": [
             {
+              "phase": 0,
+              "velocity": 0.7
+            },
+            {
               "phase": 0.012987013,
               "velocity": 1
+            },
+            {
+              "phase": 0.0584415584,
+              "velocity": 0.38
             },
             {
               "phase": 0.1038961039,
@@ -12259,7 +12804,7 @@
               "velocity": 1
             }
           ],
-          "rhythmicEventCount": 11
+          "rhythmicEventCount": 13
         },
         {
           "lane": 3,

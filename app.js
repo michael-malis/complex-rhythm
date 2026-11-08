@@ -352,13 +352,34 @@ function updateSelectedRootMath() {
  renderTeX('selectedRootFormula',String.raw`w_{${k}}\approx\sqrt[${t.n}]{${fmtMath(r)}}\,e^{i\frac{${fmtMath(theta)}+2\pi\cdot ${k}}{${t.n}}}`);
  renderTeX('rootPhaseFormula',String.raw`\operatorname{phase}(w_{${k}})=\frac{\theta+2\pi\cdot${k}}{2\pi\cdot${t.n}}\bmod 1\approx${fmtMath(p)}`);
 }
-// An inspected hit is a canonical root phase, not an arbitrary beat-grid note.
+// Root inspection follows its actual generator when n, angle or layer geometry
+// changes. A compound event keeps distinct provenance, not a fake base root.
+function inspectionPhase(t,selection){
+ if(!t||!selection||!Number.isInteger(selection.index))return undefined;
+ if(selection.kind==='additional'){
+  const layer=t.layers[selection.sourceIndex];
+  return layer?rootPhases(layer)[selection.index]:undefined;
+ }
+ if(selection.kind==='euclidean'){
+  const e=t.euclidean;
+  return e?RhythmMath.euclidean(e.k,e.n,e.rotation)[selection.index]:undefined;
+ }
+ return rootPhases(t)[selection.index];
+}
 function renderRootInspection(){
  const panel=$('rootInspection'),selection=inspectedRoot;
  if(!panel)return;
  const t=selection&&tracks[selection.lane];
- const phase=t&&Number.isInteger(selection.index)?rootPhases(t)[selection.index]:undefined;
- if(!Number.isFinite(phase)||selection.lane!==selectedTrack){
+ const phase=inspectionPhase(t,selection);
+ const match=Number.isFinite(phase)?events(t).find(ev=>{
+  const gap=Math.abs(ev.phase-phase);
+  return Math.min(gap,1-gap)<1e-6;
+ }):null;
+ const sourceValid=selection?.kind==='additional'||selection?.kind==='euclidean'
+  ? match?.sources.some(s=>s.kind===selection.kind&&s.index===selection.index&&
+     (selection.kind!=='additional'||s.sourceIndex===selection.sourceIndex))
+  : true;
+ if(!Number.isFinite(phase)||selection.lane!==selectedTrack||!sourceValid){
   panel.hidden=true;
   if(selection)inspectedRoot=null;
   return;
@@ -366,8 +387,14 @@ function renderRootInspection(){
  const bars=t.cycleBars||1,elapsedBars=phase*bars;
  const bar=Math.floor(elapsedBars)+1;
  const beat=1+4*(elapsedBars-Math.floor(elapsedBars));
- $('rootInspectionLane').textContent='Lane '+(selection.lane+1)+' · root '+(selection.index+1)+'/'+t.n;
- renderTeX('rootInspectionAngle',String.raw`\theta_{${selection.index}}=${window.RootAngleInfo.piTeX(phase*TAU)}`);
+ const kinds=[...new Set((match?.sources||[]).map(s=>s.kind==='base'?'base':
+  s.kind==='additional'?'family '+(s.sourceIndex+1):'Euclidean'))];
+ let description='root '+(selection.index+1)+'/'+t.n;
+ if(selection.kind==='additional')description='added root '+(selection.index+1)+'/'+t.layers[selection.sourceIndex].n+' · family '+(selection.sourceIndex+1);
+ if(selection.kind==='euclidean')description='Euclidean hit '+(selection.index+1)+'/'+RhythmMath.euclidean(t.euclidean.k,t.euclidean.n,t.euclidean.rotation).length;
+ if(kinds.length>1)description+=' · shared: '+kinds.join(' + ');
+ $('rootInspectionLane').textContent='Lane '+(selection.lane+1)+' · '+description;
+ renderTeX('rootInspectionAngle','\\theta_{'+selection.index+'}='+window.RootAngleInfo.piTeX(phase*TAU));
  $('rootInspectionTime').textContent='Phase '+Number((phase*100).toFixed(3))+
   '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+'/4';
  panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
@@ -1834,7 +1861,7 @@ function draw() {
  // A static selection halo marks the user's inspected root. It never
  // acts as the retired radial playback pointer, nor changes event timing.
  if(inspectedRoot&&inspectedRoot.lane===selectedTrack){
-  const t=tracks[inspectedRoot.lane],phase=rootPhases(t)[inspectedRoot.index];
+  const t=tracks[inspectedRoot.lane],phase=inspectionPhase(t,inspectedRoot);
   if(Number.isFinite(phase)){
    const angle=-Math.PI/2+TAU*phase,r=radii[inspectedRoot.lane];
    ctx.save();ctx.beginPath();
@@ -2012,12 +2039,32 @@ function setupEvents() {
   const p=canvasPoint(e),dist=Math.hypot(p.x,p.y);
   const near=getRadii(p.side).map((r,i)=>({r,i,gap:Math.abs(r-dist)})).sort((a,b)=>a.gap-b.gap)[0];
   if(near.gap>Math.max(22,p.side*.06))return;
-  chooseTrack(near.i);const t=tracks[near.i];const k=selectRootIndexAtPoint(p,t,near.r);if(k<0)return;
-  selectedRootIndex=k;inspectedRoot={lane:near.i,index:k};
-  updateSelectedRootMath();renderRootInspection();
-  rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
-    centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false};
-  canvas.setPointerCapture(e.pointerId);
+  chooseTrack(near.i);const t=tracks[near.i],k=selectRootIndexAtPoint(p,t,near.r);
+  const pointDistance=phase=>{
+   const a=-Math.PI/2+TAU*phase;
+   return Math.hypot(p.x-Math.cos(a)*near.r,p.y-Math.sin(a)*near.r);
+  };
+  const baseDistance=k>=0?pointDistance(rootPhases(t)[k]):Infinity;
+  // Only canonical visible events can be inspected. The nearest marker wins,
+  // while a shared base marker remains draggable on a geometric tie.
+  let extra=null;
+  for(const ev of events(t)){
+   const source=ev.sources.find(s=>s.kind==='additional'||s.kind==='euclidean');
+   if(!source)continue;
+   const distance=pointDistance(ev.phase);
+   if(distance<=Math.max(22,p.side*.03)&&(!extra||distance<extra.distance))
+    extra={distance,source};
+  }
+  if(k>=0&&(!extra||baseDistance<=extra.distance+1)){
+   selectedRootIndex=k;inspectedRoot={lane:near.i,kind:'base',index:k};
+   updateSelectedRootMath();renderRootInspection();
+   rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
+     centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false};
+   canvas.setPointerCapture(e.pointerId);
+  }else if(extra){
+   inspectedRoot={lane:near.i,kind:extra.source.kind,index:extra.source.index,sourceIndex:extra.source.sourceIndex};
+   renderRootInspection();
+  }
  });
  function updateRootDrag(e){
   if(!rootDrag||rootDrag.id!==e.pointerId)return;

@@ -109,6 +109,53 @@ try{
   await page.close();
  }
 
+ // Added and Euclidean roots are first-class mathematical events, not silent
+ // decorations. Clicking a shared root reports its two source families.
+ for(const viewport of screens){
+  const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  const enriched={...fixture,name:'Additional orbit root sources',
+   tracks:fixture.tracks.map((t,i)=>i===0?{...t,
+    layers:[{a:1,b:0,n:3,velocity:.65}],
+    euclidean:{k:1,n:8,rotation:1,velocity:.58}}:t)};
+  await load(page,enriched);
+  const tapPhase=async phase=>{
+   await page.locator('#orbitCanvas').scrollIntoViewIfNeeded();
+   const target=await page.evaluate(phase=>{
+    const c=document.querySelector('#orbitCanvas'),rect=c.getBoundingClientRect();
+    const r=window.RhythmResearch.radiiForSize(Math.min(rect.width,rect.height))[0];
+    const a=-Math.PI/2+Math.PI*2*phase;
+    return {x:rect.left+rect.width/2+Math.cos(a)*r,
+     y:rect.top+rect.height/2+Math.sin(a)*r};
+   },phase);
+   if(viewport.width===390)await page.touchscreen.tap(target.x,target.y);
+   else await page.mouse.click(target.x,target.y);
+  };
+  await tapPhase(1/3);
+  let inspected=await read(page);
+  assert.equal(inspected.hidden,false,'additional root is directly clickable');
+  assert.match(inspected.label,/added root 2\/3 · family 1/);
+  assert.match(inspected.time,/Phase 33\.333%/);
+  assert.ok(inspected.mathml&&inspected.latex.includes('\\frac{2\\pi}{3}'),
+   'added root is explained by its real angle and accessible mathematics');
+  const phases=await page.evaluate(()=>{
+   const e=window.RhythmResearch.current().tracks[0].euclidean;
+   return window.RhythmMath.euclidean(e.k,e.n,e.rotation);
+  });
+  assert.equal(phases.length,1);
+  await tapPhase(phases[0]);
+  inspected=await read(page);
+  assert.match(inspected.label,/Euclidean hit 1\/1/);
+  assert.ok(inspected.mathml,'Euclidean root phase renders actual MathML');
+  await tapPhase(0);
+  inspected=await read(page);
+  assert.match(inspected.label,/root 1\/4/);
+  assert.match(inspected.label,/shared: base \+ family 1/);
+  assert.deepEqual(errors,[]);
+  await page.close();
+ }
+ 
  // When audio is playing, an inspection must not alter the root scheduler.
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
@@ -131,5 +178,5 @@ try{
  await page.close();
  fs.writeFileSync('artifacts/orbit-root-inspection/report.json',
   JSON.stringify({status:'PASS',states:report.length,report,realBrowser:true,audioSchedulerUnchanged:true}));
- console.log('PASS: exact clicked Canvas root -> compact math/loop beat inspector, four responsive states, edits, audio, import and clear');
+ console.log('PASS: inspect base, added, shared and Euclidean orbit events with exact math, responsive touch and audio invariants');
 }finally{await browser.close();}

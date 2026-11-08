@@ -15,12 +15,13 @@ try{
   const research=window.RhythmResearch,math=window.RhythmMath;
   const catalog=research.presets(),bunker=catalog.filter(p=>p.category==='bunker');
   const expected={
-   concrete:{bpm:138,n:[4,2,4,2],sounds:['kick','clap','hat','bass'],events:[4,2,4,3]},
    shaft:{bpm:143,n:[4,2,8,2],sounds:['kick','snare','hat','tom'],events:[4,2,8,3]},
    dust:{bpm:134,n:[4,2,4,2],sounds:['kick','rim','openhat','bass'],events:[4,2,4,3]},
    iron:{bpm:151,n:[4,2,8,4],sounds:['kick','clap','hat','acid'],events:[5,2,8,4]},
    pressure:{bpm:140,n:[4,2,4,1],sounds:['kick','snare','hat','bass'],events:[4,2,4,2]}
   };
+  // Only presets that have NOT been redesigned belong to the frozen baseline.
+  // `concrete` is now verified separately by tests/bunker-raw-concrete.mjs.
   const baseline={};
   for(const [id,exp] of Object.entries(expected)){
    const p=bunker.find(p=>p.id===id);
@@ -124,7 +125,6 @@ try{
  assert.equal(report.bunkerCount,6,'exactly six original Bunker IDs');
  for(const [id,actual] of Object.entries(report.baseline)){
   const expectations={
-   concrete:[138,[4,2,4,2],['kick','clap','hat','bass'],[4,2,4,3]],
    shaft:[143,[4,2,8,2],['kick','snare','hat','tom'],[4,2,8,3]],
    dust:[134,[4,2,4,2],['kick','rim','openhat','bass'],[4,2,4,3]],
    iron:[151,[4,2,8,4],['kick','clap','hat','acid'],[5,2,8,4]],

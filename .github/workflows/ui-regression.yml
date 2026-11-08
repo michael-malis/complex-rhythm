@@ -337,6 +337,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-driving.log 2>&1 &
           node tests/bunker-driving-groove.mjs
+      - name: Prove dry Raw Underground Concrete root sync and rendered production audio
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-concrete.log 2>&1 &
+          node tests/bunker-raw-concrete.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |

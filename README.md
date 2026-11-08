@@ -16,6 +16,8 @@ Technical acceptance against reproducible browser/math/audio evidence: **459/652
 
 An interactive **mathematical visualization of rhythm**. Each of four instrument lanes uses the arguments of the `n`th roots of `z=a+bi` to place evenly spaced events on a circular timeline. Additional complex-root sets allow layered periodic patterns. Sound supports exploration of the geometry; this is not a DAW or general-purpose beat maker.
 
+**Four-ring readability:** Every orbit keeps its own instrument color even when another lane is selected. The active ring has a stronger outline and color-matched event count. Keyboard and screen-reader users receive the selected lane, instrument, event count, loop length and mute state directly from the Canvas label, updated on edits. This does not add a beat-maker panel or alter event timing.
+
 ## Mathematical workbench and current interaction model
 
 The interface is a scientific workbench rather than a music sequencer.

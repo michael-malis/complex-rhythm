@@ -86,8 +86,7 @@ try{
    CanvasRenderingContext2D.prototype.stroke=function(...args){
     const a=this.__lastTestArc;
     if(this.canvas?.id==='orbitCanvas'&&a&&a.x===0&&a.y===0&&a.r>25&&
-       a.start===0&&Math.abs(a.end-2*Math.PI)<1e-8&&
-       (this.lineWidth===1.6||this.lineWidth===2.5)){
+       a.start===0&&Math.abs(a.end-2*Math.PI)<1e-8){
      const list=window.__ringCalls||(window.__ringCalls=[]);
      list.push({color:String(this.strokeStyle),alpha:this.globalAlpha,width:this.lineWidth,r:a.r});
      if(list.length>32)list.splice(0,list.length-32);

@@ -1307,6 +1307,12 @@ function renderWindowTimeline() {
  windowStartBar=Math.max(0,Math.min(windowStartBar,Number(slider.max)));
  slider.value=String(windowStartBar);
  $('windowStartText').textContent=String(windowStartBar+1);
+ // The horizontal grid shows absolute elapsed bars. Its numbers must advance
+ // with the four-bar viewport, rather than forever labelling it 0–4.
+ const axis=$('windowPanel').querySelector('.window-axis');
+ if(axis)[...axis.children].forEach((label,i)=>{
+  label.textContent=String(windowStartBar+i)+(i===4?' bars':'');
+ });
  const start=windowStartBar,span=4,secPerBar=barSeconds();
  const lanes=currentSchedulerLanes();
  const scheduled=RhythmMath.planEvents(lanes,secPerBar,start*secPerBar,(start+span)*secPerBar);

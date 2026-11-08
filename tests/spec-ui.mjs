@@ -26,13 +26,20 @@ try{
   });
   ok(data.scroll<=data.width+2,'no whole-page overflow '+width+'/'+theme);
   ok(data.sizes.every(x=>x.font>=16), 'font min 16px '+width+'/'+theme+': '+JSON.stringify(data.sizes.filter(x=>x.font<16)));
-  ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===30,'primary heading exactly 30px');
-  ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===26,'section heading 26px');
+  const compact=width>=760;
+  ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===(compact?28:30),
+   'primary heading retains a clear mobile scale and compact desktop scale');
+  ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===(compact?24:26),
+   'secondary heading remains hierarchically smaller at every viewport');
   ok(data.renderer==='0.16.22'&&data.parts>=10&&data.root,'KaTeX rendered with local package');
   ok(await page.locator('#rootRuleEquation .katex').count()===1,'root angle infographic has valid KaTeX '+width+'/'+theme);
-  const minScale={'.composition-info h3':22,'.lane-select':20,'.lane-fields label':18,'.lane-fields input':18,
-   '.lane-sound':18,'.lane-count':20,'.lane-length label':18,'.figure-legend':17,'.stage-hint':17,
-   '.small-explain':17,'.circle-labels':20,'.stage-meta':18,'.panel-heading h2':26,'.stage-heading h1':30};
+  const minScale=compact?
+   {'.composition-info h3':20,'.lane-select':18,'.lane-fields label':16,'.lane-fields input':17,
+    '.lane-sound':17,'.lane-count':18,'.lane-length label':16,'.figure-legend':16,'.stage-hint':16,
+    '.small-explain':16,'.circle-labels':20,'.stage-meta':16,'.panel-heading h2':24,'.stage-heading h1':28}:
+   {'.composition-info h3':22,'.lane-select':20,'.lane-fields label':18,'.lane-fields input':18,
+    '.lane-sound':18,'.lane-count':20,'.lane-length label':18,'.figure-legend':17,'.stage-hint':17,
+    '.small-explain':17,'.circle-labels':20,'.stage-meta':18,'.panel-heading h2':26,'.stage-heading h1':30};
   for(const item of data.scale)ok(item.font>=minScale[item.selector],
     'mandatory math/controls typography '+item.selector+' '+width+'/'+theme+
     ': '+item.font+' < '+minScale[item.selector]);

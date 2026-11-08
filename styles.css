@@ -466,3 +466,93 @@ input[type=range]{accent-color:var(--control-color,var(--ui-control))}
  .lane .lane-bottom{margin-top:2px;gap:2px}
  .lane .lane-length{margin-top:2px}
 }
+
+/* Compact workbench density on tablets and monitors.
+   Keep the 16px type floor, 44px interactive targets, 18px math and
+   full-size root hit zones. No global zoom or transform scaling. */
+@media (min-width:760px){
+ .app{padding-top:8px;padding-bottom:18px}
+ .topbar{gap:8px;padding-bottom:8px}
+ .wordmark{font-size:28px}
+ .strapline{margin-top:3px}
+ .top-actions{gap:5px}
+ .file-actions summary{padding:8px 10px}
+ .preset-strip{margin:7px 0 9px}
+ .preset-strip>summary{padding:6px 10px;min-height:44px;font-size:17px}
+ .preset-controls{gap:7px;padding:0 10px 8px}
+ .preset-controls label{font-size:16px;gap:3px}
+ .stage-heading{padding:10px 12px 6px;gap:6px}
+ .panel-heading{padding:10px 2px 8px;gap:6px}
+ .stage-heading h1{font-size:28px;line-height:1.18;margin-top:3px}
+ .panel-heading h2{font-size:24px;line-height:1.18;margin-top:3px}
+ .stage-meta{font-size:16px}
+ .figure-legend{gap:10px;padding:2px 6px;font-size:16px}
+ .figure-legend>span{gap:5px}
+ .stage-hint{font-size:16px;line-height:1.35;min-height:0;padding:4px 9px 7px}
+ .figure-tools{gap:8px;padding:5px 8px}
+ .stage-events{font-size:16px;margin:4px 12px 7px}
+ .transport{padding:8px 12px;gap:10px}
+ .range-field label{font-size:16px}
+ .range-field output{font-size:18px}
+ .statusbar{gap:8px;padding:4px 12px 8px}
+ .statusbar p{font-size:16px}
+ .control-panel{padding:0 9px 10px}
+ .track-list{gap:8px}
+ .lane{padding:7px 8px 8px}
+ .lane-head{gap:4px}
+ .lane-select{font-size:18px}
+ .lane-sound{font-size:17px}
+ .lane-fields{gap:5px;margin-top:5px}
+ .lane-fields label{gap:2px;font-size:16px}
+ .lane-fields input{font-size:17px}
+ .lane-modes{gap:5px;margin:4px 0 2px}
+ .mode-button,.unit-button{padding:6px 8px;font-size:16px}
+ .angle-fields{margin-top:5px;gap:5px 7px}
+ .angle-fields label{font-size:16px;gap:2px}
+ .angle-fields .angle-title{font-size:16px}
+ .lane-alternate-math{margin-top:2px;padding:3px 0;line-height:1.35}
+ .advanced-coordinates{margin-top:3px}
+ .advanced-coordinates>summary{min-height:44px}
+ .lane-volume{margin-top:3px;gap:0 6px}
+ .lane-length{margin-top:3px;gap:5px}
+ .lane-length label{font-size:16px}
+ .lane-bottom{margin-top:2px;gap:2px}
+ .lane-count{font-size:18px}
+ .root-rule{padding:9px 11px;margin-top:7px}
+ .root-rule-equation{font-size:21px;margin:4px 0}
+ .root-rule-key{gap:4px 10px;padding-top:5px}
+ .root-rule-caption{margin-top:4px;line-height:1.4}
+ .composition-panel,.math-details{margin-top:7px}
+ .composition-panel>summary,.math-details>summary{padding:6px 2px;min-height:44px;font-size:17px}
+ .composition-info h3{font-size:20px}
+ .small-explain{font-size:16px;margin:4px 0}
+ .selected-root-math{margin-top:8px;padding:6px 0}
+ .composition-strips{margin:8px 0;gap:6px}
+ .composition-tools{gap:8px;padding:5px 0}
+ .sound-lab-section{margin-top:10px}
+ .sound-lab>summary{padding:8px 12px;min-height:44px;font-size:18px}
+ .sound-lab-body{padding:6px 12px 12px}
+ footer{margin-top:9px;padding-top:10px;font-size:16px}
+}
+/* Shorter monitor heights should reduce the actual plot box, not
+   visually scale its Canvas and leave the original space reserved. */
+@media (min-width:1080px){
+ .workspace{display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:12px;align-items:start}
+ .visual-stage{order:0;position:sticky;top:8px}
+ .control-panel{order:1}
+ .track-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .canvas-shell{width:min(100%,max(390px,calc(100svh - 375px)),600px)}
+}
+@media (min-width:1080px) and (max-width:1279px){
+ .lane-head{grid-template-columns:minmax(0,1fr) 44px;gap:3px 6px}
+ .lane-select{grid-column:1;grid-row:1}
+ .lane-mute{grid-column:2;grid-row:1}
+ .lane-sound{grid-column:1/-1;grid-row:2}
+}
+@media (min-width:760px) and (max-width:1079px){
+ .workspace{display:flex;flex-direction:column;gap:10px}
+ .visual-stage{order:0;width:100%;position:static}
+ .control-panel{order:1;width:100%}
+ .canvas-shell{width:min(100%,max(340px,calc(100svh - 365px)),530px)}
+ .track-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

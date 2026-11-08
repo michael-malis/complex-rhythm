@@ -141,6 +141,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-formula-geometry.log 2>&1 &
           node tests/formula-geometry-complete.mjs
+      - name: Verify compact laptop and monitor layout without global scaling
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-compact-desktop.log 2>&1 &
+          node tests/compact-desktop.mjs
       - name: Prevent clipped content, tiny controls and horizontal overflow on responsive layouts
         if: ${{ !cancelled() }}
         run: |

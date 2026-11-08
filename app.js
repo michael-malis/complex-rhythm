@@ -375,13 +375,12 @@ function renderRootInspection(){
   const gap=Math.abs(ev.phase-phase);
   return Math.min(gap,1-gap)<1e-6;
  }):null;
- const sourceValid=selection?.kind==='additional'||selection?.kind==='euclidean'
-  ? match?.sources.some(s=>s.kind===selection.kind&&s.index===selection.index&&
-     (selection.kind!=='additional'||s.sourceIndex===selection.sourceIndex))
-  : true;
+ const sourceKind=selection?.kind||'base';
+ const sourceValid=!!match?.sources.some(s=>s.kind===sourceKind&&s.index===selection.index&&
+  (sourceKind!=='additional'||s.sourceIndex===selection.sourceIndex));
  if(!Number.isFinite(phase)||selection.lane!==selectedTrack||!sourceValid){
   panel.hidden=true;
-  if(selection)inspectedRoot=null;
+  if(selection){inspectedRoot=null;$('rootInspectionAnnouncement').textContent='Root inspection cleared';}
   return;
  }
  const bars=t.cycleBars||1,elapsedBars=phase*bars;
@@ -399,6 +398,24 @@ function renderRootInspection(){
   '% · loop bar '+bar+'/'+bars+' · beat '+Number(beat.toFixed(3))+'/4';
  panel.style.setProperty('--root-inspection-color',COLORS[selection.lane]);
  panel.hidden=false;
+ $('rootInspectionAnnouncement').textContent=$('rootInspectionLane').textContent+
+  '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent;
+}
+// Keyboard inspection walks only actually scheduled, visible canonical events.
+// It never edits the root generator, the audio clock, or the preset identity.
+function inspectNeighborEvent(direction,edge=null){
+ const lane=selectedTrack,t=tracks[lane],all=events(t);
+ if(!all.length){inspectedRoot=null;renderRootInspection();return;}
+ const phase=inspectedRoot?.lane===lane?inspectionPhase(t,inspectedRoot):undefined;
+ const at=Number.isFinite(phase)?all.findIndex(ev=>{
+  const d=Math.abs(ev.phase-phase);return Math.min(d,1-d)<1e-6;
+ }): -1;
+ const next=edge==='first'?0:edge==='last'?all.length-1:
+  at<0?(direction<0?all.length-1:0):(at+direction+all.length)%all.length;
+ const source=all[next].sources.find(s=>s.kind==='base')||all[next].sources[0];
+ inspectedRoot={lane,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
+ if(source.kind==='base'){selectedRootIndex=source.index;updateSelectedRootMath();}
+ renderRootInspection();
 }
 function principalArg(b,a){return RhythmMath.principalArg(b,a)}
 function fmt(n){
@@ -2044,18 +2061,20 @@ function setupEvents() {
    const a=-Math.PI/2+TAU*phase;
    return Math.hypot(p.x-Math.cos(a)*near.r,p.y-Math.sin(a)*near.r);
   };
-  const baseDistance=k>=0?pointDistance(rootPhases(t)[k]):Infinity;
+  const visibleEvents=events(t);
+  const baseDistance=k>=0&&visibleEvents.some(ev=>ev.sources.some(s=>s.kind==='base'&&s.index===k))
+   ?pointDistance(rootPhases(t)[k]):Infinity;
   // Only canonical visible events can be inspected. The nearest marker wins,
   // while a shared base marker remains draggable on a geometric tie.
   let extra=null;
-  for(const ev of events(t)){
+  for(const ev of visibleEvents){
    const source=ev.sources.find(s=>s.kind==='additional'||s.kind==='euclidean');
    if(!source)continue;
    const distance=pointDistance(ev.phase);
    if(distance<=Math.max(22,p.side*.03)&&(!extra||distance<extra.distance))
     extra={distance,source};
   }
-  if(k>=0&&(!extra||baseDistance<=extra.distance+1)){
+  if(Number.isFinite(baseDistance)&&(!extra||baseDistance<=extra.distance+1)){
    selectedRootIndex=k;inspectedRoot={lane:near.i,kind:'base',index:k};
    updateSelectedRootMath();renderRootInspection();
    rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
@@ -2092,6 +2111,14 @@ function setupEvents() {
  canvas.addEventListener('pointercancel',cancelRootDrag);
  canvas.addEventListener('lostpointercapture',cancelRootDrag);
  canvas.addEventListener('keydown',e=>{
+  if(['[',']','Home','End','Escape'].includes(e.key)){
+   e.preventDefault();
+   if(e.key==='Escape'){
+    inspectedRoot=null;renderRootInspection();
+    $('rootInspectionAnnouncement').textContent='Root inspection cleared';
+   }else inspectNeighborEvent(e.key==='['?-1:1,e.key==='Home'?'first':e.key==='End'?'last':null);
+   return;
+  }
   if(e.shiftKey&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){
    e.preventDefault();const t=tracks[selectedTrack];
    if(applyRotation(t,Math.atan2(t.b,t.a)+(e.key==='ArrowRight'?1:-1)*t.n*5*Math.PI/180)){

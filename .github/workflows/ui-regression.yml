@@ -121,6 +121,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-root-inspector.log 2>&1 &
           node tests/orbit-root-inspection.mjs
+      - name: Link selected complex roots to real four-bar recurrence and timeline event inspection
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-link-window.log 2>&1 &
+          node tests/root-window-link.mjs
       - name: Prove exact cross-lane first-occurrence coincidences, time in seconds and colored static halos
         if: ${{ !cancelled() }}
         run: |

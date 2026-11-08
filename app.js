@@ -394,6 +394,16 @@ function coincidentLaneEvents(absoluteBars,sourceLane){
  }
  return result;
 }
+// A selected angular root may appear several times in the visible four-bar
+// window. Match the lane AND canonical phase, not screen position or color.
+function syncInspectedWindowMarks(phase=NaN,lane=-1){
+ for(const dot of document.querySelectorAll('#windowTimeline .window-mark')){
+  const current=Number(dot.dataset.phase),delta=Math.abs(current-phase);
+  const selected=Number.isFinite(phase)&&Number(dot.dataset.lane)===lane&&
+   Math.min(delta,1-delta)<1e-6;
+  dot.classList.toggle('window-inspected',selected);
+ }
+}
 function renderRootInspection(){
  const panel=$('rootInspection'),selection=inspectedRoot;
  if(!panel)return;
@@ -409,6 +419,7 @@ function renderRootInspection(){
  if(!Number.isFinite(phase)||selection.lane!==selectedTrack||!sourceValid){
   panel.hidden=true;
   syncInspectedPhaseMarks(NaN);
+  syncInspectedWindowMarks();
   if(selection){inspectedRoot=null;$('rootInspectionAnnouncement').textContent='Root inspection cleared';}
   return;
  }
@@ -439,6 +450,7 @@ function renderRootInspection(){
   '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent+
   '. '+simultaneousText;
  syncInspectedPhaseMarks(phase);
+ syncInspectedWindowMarks(phase,selection.lane);
 }
 // Keyboard inspection walks the canonical visible set, including muted lanes.
 // It never edits the root generator, the audio clock, or the preset identity.
@@ -1317,6 +1329,8 @@ function renderWindowTimeline() {
   const fragment=document.createDocumentFragment();
   for(const event of current){
    const dot=document.createElement('span');dot.className='window-mark';
+   dot.dataset.lane=String(i);
+   dot.dataset.phase=String(event.phase);
    dot.style.left=(100*(event.time/secPerBar-start)/span)+'%';
    const sourceDescription=event.sources.map(src=>src.kind==='base'?'base root '+(src.index+1):
      src.kind==='additional'?'extra root set '+(src.sourceIndex+1)+', root '+(src.index+1):
@@ -1338,6 +1352,15 @@ function renderWindowTimeline() {
    const bar=event.time/secPerBar+1;
    $('eventInspection').textContent=`Lane ${i+1} · bar ${bar.toFixed(3)} · ${SOUNDS[tracks[i].sound]} · velocity ${event.velocity.toFixed(2)} · ${event.sources.map(describeSource).join(' + ')}`;
    markers.setAttribute('aria-label','Inspect lane '+(i+1)+', event '+(focusedEvent+1)+' of '+current.length+'. '+$('eventInspection').textContent);
+   // The time-window and ring are two views of the SAME source event.
+   // Selection is read-only; the AudioContext scheduler is untouched.
+   const source=event.sources.find(src=>src.kind==='base')||event.sources[0];
+   if(source){
+    chooseTrack(i);
+    inspectedRoot={lane:i,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
+    if(source.kind==='base'){selectedRootIndex=source.index;updateSelectedRootMath();}
+    renderRootInspection();
+   }
   };
   markers.addEventListener('click',e=>{
    if(!current.length){inspect(0);return}
@@ -1360,6 +1383,11 @@ function renderWindowTimeline() {
   row.append(label,markers,count);container.append(row);
  }
  $('windowCounts').textContent=`${scheduled.length} scheduled lane events · ${simultaneous} simultaneous cross-lane ${simultaneous===1?'moment':'moments'} in this four-bar window.`;
+ // Reapply the selection after a timeline redraw (window scroll, BPM edit,
+ // mathematical source edit). Muted lanes have no scheduled audio marks.
+ const selection=inspectedRoot;
+ const phase=selection?.lane===selectedTrack?inspectionPhase(tracks[selectedTrack],selection):NaN;
+ syncInspectedWindowMarks(phase,selection?.lane??-1);
 }
 let pendingEditReschedule=false;
 function markCustom(reschedule=true){

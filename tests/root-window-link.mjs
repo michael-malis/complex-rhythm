@@ -48,6 +48,8 @@ try{
   await page.waitForFunction(()=>document.querySelectorAll('.window-mark').length>=10);
   const original=await status(page);
   assert.equal(original.source.tracks.length,4);
+  assert.deepEqual(await page.locator('.window-axis span').allTextContents(),
+   ['0','1','2','3','4 bars'],'the initial axis measures elapsed bars');
   assert.equal(original.transport.playing,false);
   const intervals=original.transport.schedulerIntervalsCreated;
 
@@ -74,6 +76,8 @@ try{
   });
   data=await status(page);
   assert.equal(await page.locator('#windowStartText').textContent(),'5');
+  assert.deepEqual(await page.locator('.window-axis span').allTextContents(),
+   ['4','5','6','7','8 bars'],'grid labels show actual elapsed bars after scrolling');
   assert.deepEqual(data.marks.map(r=>r.selected.length),[4,0,0,0]);
   assert.match(data.timing,/Phase 25%/);
 

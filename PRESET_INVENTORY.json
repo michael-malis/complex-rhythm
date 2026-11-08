@@ -423,9 +423,9 @@
           "bpm": 134
         },
         {
-          "id": "pressure",
-          "similarity": 0.5556,
-          "bpm": 140
+          "id": "stomp-circuit",
+          "similarity": 0.5385,
+          "bpm": 148
         }
       ],
       "lanes": [
@@ -947,14 +947,14 @@
           "bpm": 148
         },
         {
-          "id": "pressure",
-          "similarity": 0.7857,
-          "bpm": 140
-        },
-        {
           "id": "liquid-corrosion",
           "similarity": 0.7333,
           "bpm": 124
+        },
+        {
+          "id": "house",
+          "similarity": 0.7222,
+          "bpm": 125
         }
       ],
       "lanes": [
@@ -1351,32 +1351,32 @@
     },
     {
       "id": "pressure",
-      "name": "Pressure · Dub",
+      "name": "Pressure · Acid Underground",
       "category": "bunker",
       "origin": "original catalog",
       "bpm": 140,
-      "commonCycleBars": 1,
-      "character": null,
-      "mathNote": null,
-      "eventFingerprint": "0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;2:625000;3:625000;0:750000;1:750000;2:875000",
-      "rotationCanonicalFingerprint": "0:0;1:0;2:125000;0:250000;2:375000;3:375000;0:500000;1:500000;2:625000;0:750000;3:750000;2:875000",
-      "sharedPhaseGroups": 4,
-      "totalScheduledEvents": 12,
+      "commonCycleBars": 2,
+      "character": "Dark underground acid techno · unwavering four-quarter hard kick, dry backbeat snare, restless offbeat hats and a screaming resonant acid line with intentional call-and-response ghosts.",
+      "mathNote": "One-bar R₄(1) defines each kick quarter; independent two-bar R₄(−1) snare, R₁₂(−1) hats and R₅(i) acidScreaming phrase are extended by ten quiet first-degree phase roots. Distinct root families make the acid notes slide against the metrical kick without a separate beat sequencer.",
+      "eventFingerprint": "0:0;2:41667;3:50000;2:62500;0:125000;1:125000;2:125000;3:156250;2:208333;0:250000;3:250000;2:291667;2:312500;3:343750;0:375000;1:375000;2:375000;1:437500;3:450000;2:458333;0:500000;2:541667;2:562500;3:562500;0:625000;1:625000;2:625000;3:650000;2:708333;0:750000;3:750000;2:791667;2:812500;3:850000;0:875000;1:875000;2:875000;1:937500;2:958333",
+      "rotationCanonicalFingerprint": "0:0;1:0;2:0;1:62500;2:83333;0:125000;2:166667;3:175000;2:187500;0:250000;1:250000;2:250000;3:281250;2:333333;0:375000;3:375000;2:416667;2:437500;3:468750;0:500000;1:500000;2:500000;1:562500;3:575000;2:583333;0:625000;2:666667;2:687500;3:687500;0:750000;1:750000;2:750000;3:775000;2:833333;0:875000;3:875000;2:916667;2:937500;3:975000",
+      "sharedPhaseGroups": 7,
+      "totalScheduledEvents": 35,
       "nearestMathematicalNeighbors": [
         {
-          "id": "dust",
-          "similarity": 0.7857,
-          "bpm": 134
+          "id": "concrete",
+          "similarity": 0.4792,
+          "bpm": 138
         },
         {
-          "id": "stomp-circuit",
-          "similarity": 0.7333,
-          "bpm": 148
+          "id": "shaft",
+          "similarity": 0.4314,
+          "bpm": 143
         },
         {
-          "id": "warehouse-hammer",
-          "similarity": 0.6875,
-          "bpm": 146
+          "id": "steel-rave",
+          "similarity": 0.4,
+          "bpm": 152
         }
       ],
       "lanes": [
@@ -1393,7 +1393,7 @@
           "rootDegree": 4,
           "cycleBars": 1,
           "operation": "union",
-          "gain": 1,
+          "gain": 1.05,
           "synthPatch": null,
           "euclidean": null,
           "additionalRootSets": [],
@@ -1433,46 +1433,26 @@
           "modulus": 1,
           "argumentRadians": 3.141592653589793,
           "argumentDegrees": 180,
-          "rootDegree": 2,
-          "cycleBars": 1,
+          "rootDegree": 4,
+          "cycleBars": 2,
           "operation": "union",
-          "gain": 1,
+          "gain": 0.84,
           "synthPatch": null,
           "euclidean": null,
-          "additionalRootSets": [],
-          "baseRootPhases": [
-            0.25,
-            0.75
-          ],
-          "actualEventPhases": [
+          "additionalRootSets": [
             {
-              "phase": 0.25,
-              "velocity": 1
+              "a": -0.9238795325112867,
+              "b": 0.3826834323650899,
+              "n": 1,
+              "velocity": 0.33
             },
             {
-              "phase": 0.75,
-              "velocity": 1
+              "a": 0.9238795325112865,
+              "b": -0.3826834323650904,
+              "n": 1,
+              "velocity": 0.38
             }
           ],
-          "rhythmicEventCount": 2
-        },
-        {
-          "lane": 3,
-          "sound": "hat",
-          "complex": {
-            "a": -1,
-            "b": 0
-          },
-          "modulus": 1,
-          "argumentRadians": 3.141592653589793,
-          "argumentDegrees": 180,
-          "rootDegree": 4,
-          "cycleBars": 1,
-          "operation": "union",
-          "gain": 1,
-          "synthPatch": null,
-          "euclidean": null,
-          "additionalRootSets": [],
           "baseRootPhases": [
             0.125,
             0.375,
@@ -1489,54 +1469,236 @@
               "velocity": 1
             },
             {
+              "phase": 0.4375,
+              "velocity": 0.33
+            },
+            {
               "phase": 0.625,
               "velocity": 1
             },
             {
               "phase": 0.875,
               "velocity": 1
+            },
+            {
+              "phase": 0.9375,
+              "velocity": 0.38
             }
           ],
-          "rhythmicEventCount": 4
+          "rhythmicEventCount": 6
         },
         {
-          "lane": 4,
-          "sound": "bass",
+          "lane": 3,
+          "sound": "hat",
           "complex": {
-            "a": 1,
+            "a": -1,
             "b": 0
           },
           "modulus": 1,
-          "argumentRadians": 0,
-          "argumentDegrees": 0,
-          "rootDegree": 1,
-          "cycleBars": 1,
+          "argumentRadians": 3.141592653589793,
+          "argumentDegrees": 180,
+          "rootDegree": 12,
+          "cycleBars": 2,
           "operation": "union",
-          "gain": 1,
+          "gain": 0.67,
           "synthPatch": null,
           "euclidean": null,
           "additionalRootSets": [
             {
-              "a": -0.7071067811865477,
-              "b": -0.7071067811865475,
+              "a": 0.9238795325112867,
+              "b": 0.3826834323650898,
               "n": 1,
-              "velocity": 0.72
+              "velocity": 0.37
+            },
+            {
+              "a": -0.3826834323650897,
+              "b": 0.9238795325112867,
+              "n": 1,
+              "velocity": 0.4
+            },
+            {
+              "a": -0.9238795325112868,
+              "b": -0.38268343236508967,
+              "n": 1,
+              "velocity": 0.35
+            },
+            {
+              "a": 0.38268343236509,
+              "b": -0.9238795325112866,
+              "n": 1,
+              "velocity": 0.44
             }
           ],
           "baseRootPhases": [
-            0
+            0.0416666667,
+            0.125,
+            0.2083333333,
+            0.2916666667,
+            0.375,
+            0.4583333333,
+            0.5416666667,
+            0.625,
+            0.7083333333,
+            0.7916666667,
+            0.875,
+            0.9583333333
           ],
           "actualEventPhases": [
             {
-              "phase": 0,
+              "phase": 0.0416666667,
               "velocity": 1
             },
             {
+              "phase": 0.0625,
+              "velocity": 0.37
+            },
+            {
+              "phase": 0.125,
+              "velocity": 1
+            },
+            {
+              "phase": 0.2083333333,
+              "velocity": 1
+            },
+            {
+              "phase": 0.2916666667,
+              "velocity": 1
+            },
+            {
+              "phase": 0.3125,
+              "velocity": 0.4
+            },
+            {
+              "phase": 0.375,
+              "velocity": 1
+            },
+            {
+              "phase": 0.4583333333,
+              "velocity": 1
+            },
+            {
+              "phase": 0.5416666667,
+              "velocity": 1
+            },
+            {
+              "phase": 0.5625,
+              "velocity": 0.35
+            },
+            {
               "phase": 0.625,
-              "velocity": 0.72
+              "velocity": 1
+            },
+            {
+              "phase": 0.7083333333,
+              "velocity": 1
+            },
+            {
+              "phase": 0.7916666667,
+              "velocity": 1
+            },
+            {
+              "phase": 0.8125,
+              "velocity": 0.44
+            },
+            {
+              "phase": 0.875,
+              "velocity": 1
+            },
+            {
+              "phase": 0.9583333333,
+              "velocity": 1
             }
           ],
-          "rhythmicEventCount": 2
+          "rhythmicEventCount": 16
+        },
+        {
+          "lane": 4,
+          "sound": "acidScreaming",
+          "complex": {
+            "a": 0,
+            "b": 1
+          },
+          "modulus": 1,
+          "argumentRadians": 1.5707963267948966,
+          "argumentDegrees": 90,
+          "rootDegree": 5,
+          "cycleBars": 2,
+          "operation": "union",
+          "gain": 0.62,
+          "synthPatch": null,
+          "euclidean": null,
+          "additionalRootSets": [
+            {
+              "a": 0.5555702330196023,
+              "b": 0.8314696123025452,
+              "n": 1,
+              "velocity": 0.44
+            },
+            {
+              "a": -0.555570233019602,
+              "b": 0.8314696123025455,
+              "n": 1,
+              "velocity": 0.62
+            },
+            {
+              "a": -0.9238795325112868,
+              "b": -0.38268343236508967,
+              "n": 1,
+              "velocity": 0.48
+            },
+            {
+              "a": -1.8369701987210297e-16,
+              "b": -1,
+              "n": 1,
+              "velocity": 0.66
+            }
+          ],
+          "baseRootPhases": [
+            0.05,
+            0.25,
+            0.45,
+            0.65,
+            0.85
+          ],
+          "actualEventPhases": [
+            {
+              "phase": 0.05,
+              "velocity": 1
+            },
+            {
+              "phase": 0.15625,
+              "velocity": 0.44
+            },
+            {
+              "phase": 0.25,
+              "velocity": 1
+            },
+            {
+              "phase": 0.34375,
+              "velocity": 0.62
+            },
+            {
+              "phase": 0.45,
+              "velocity": 1
+            },
+            {
+              "phase": 0.5625,
+              "velocity": 0.48
+            },
+            {
+              "phase": 0.65,
+              "velocity": 1
+            },
+            {
+              "phase": 0.75,
+              "velocity": 0.66
+            },
+            {
+              "phase": 0.85,
+              "velocity": 1
+            }
+          ],
+          "rhythmicEventCount": 9
         }
       ]
     },
@@ -5196,9 +5358,9 @@
           "bpm": 108
         },
         {
-          "id": "pressure",
+          "id": "shaft",
           "similarity": 0.25,
-          "bpm": 140
+          "bpm": 143
         }
       ],
       "lanes": [
@@ -6102,11 +6264,6 @@
       "totalScheduledEvents": 13,
       "nearestMathematicalNeighbors": [
         {
-          "id": "pressure",
-          "similarity": 0.6667,
-          "bpm": 140
-        },
-        {
           "id": "dust",
           "similarity": 0.625,
           "bpm": 134
@@ -6115,6 +6272,11 @@
           "id": "liquid-corrosion",
           "similarity": 0.625,
           "bpm": 124
+        },
+        {
+          "id": "stomp-circuit",
+          "similarity": 0.5882,
+          "bpm": 148
         }
       ],
       "lanes": [
@@ -6752,9 +6914,9 @@
           "bpm": 124
         },
         {
-          "id": "pressure",
-          "similarity": 0.7333,
-          "bpm": 140
+          "id": "shaft",
+          "similarity": 0.6316,
+          "bpm": 143
         }
       ],
       "lanes": [
@@ -7674,9 +7836,9 @@
           "bpm": 134
         },
         {
-          "id": "pressure",
-          "similarity": 0.6667,
-          "bpm": 140
+          "id": "maracatu",
+          "similarity": 0.625,
+          "bpm": 104
         }
       ],
       "lanes": [

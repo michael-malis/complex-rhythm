@@ -39,7 +39,18 @@ const PRESETS=[
  {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(1,0,2,'tom',[L(13,.45)])]},
  {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
  {id:'iron',category:'bunker',name:'Iron · Peak',bpm:151,tracks:[P(1,0,4,'kick',[L(14,.58)]),P(-1,0,2,'clap'),P(1,0,8,'hat'),P(-1,0,4,'acid')]},
- {id:'pressure',category:'bunker',name:'Pressure · Dub',bpm:140,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(-1,0,4,'hat'),P(1,0,1,'bass',[L(10,.72)])]},
+ // Acid Bunker: quarter-note hard kick against a two-bar, phase-shifted
+ // resonant 303 phrase. Ghosts remain degree-one complex roots sharing
+ // exactly the same scheduling clock and colored orbit math as the kick.
+ {id:'pressure',category:'bunker',name:'Pressure · Acid Underground',bpm:140,bars:2,
+  character:'Dark underground acid techno · unwavering four-quarter hard kick, dry backbeat snare, restless offbeat hats and a screaming resonant acid line with intentional call-and-response ghosts.',
+  mathNote:'One-bar R₄(1) defines each kick quarter; independent two-bar R₄(−1) snare, R₁₂(−1) hats and R₅(i) acidScreaming phrase are extended by ten quiet first-degree phase roots. Distinct root families make the acid notes slide against the metrical kick without a separate beat sequencer.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1.05},
+   {...P(-1,0,4,'snare',[L32(14,.33),L32(30,.38)]),gain:.84},
+   {...P(-1,0,12,'hat',[L32(2,.37),L32(10,.40),L32(18,.35),L32(26,.44)]),gain:.67},
+   {...P(0,1,5,'acidScreaming',[L32(5,.44),L32(11,.62),L32(18,.48),L32(24,.66)]),gain:.62}
+  ]},
 // Essential rhythmic studies.
  {id:'house',category:'other',name:'Classic House · 4/4',bpm:125,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,8,'shaker')]},
  {id:'dub',category:'other',name:'Dub · Half-time',bpm:78,tracks:[P(1,0,2,'kick',[L(11,.68)]),P(-1,0,1,'snare'),P(-1,0,4,'hat'),P(1,0,2,'bass')]},

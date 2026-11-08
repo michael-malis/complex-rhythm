@@ -1,0 +1,38 @@
+name: Verify active backlog and deployment safeguards
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - TASKS.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
+      - scripts/**
+      - .github/workflows/outcome-quality.yml
+      - .github/workflows/pages.yml
+  push:
+    branches: [main]
+    paths:
+      - TASKS.md
+      - PRODUCT_GUARANTEES.md
+      - README.md
+      - scripts/**
+      - .github/workflows/outcome-quality.yml
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ledger:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate one outcome backlog and product contract
+        run: node scripts/verify-backlog.mjs
+      - name: Enforce all main pushes trigger full regression
+        run: node scripts/verify-main-regression-trigger.mjs
+      - name: Require tested commit before publishing Pages
+        run: node scripts/verify-pages-regression-gate.mjs

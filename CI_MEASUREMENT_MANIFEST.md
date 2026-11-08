@@ -1,6 +1,6 @@
-# Independent CI measurement manifest — M11
+# Independent CI measurement manifest
 
-**Scope:** R-QA-002, R-QA-004 and R-QA-005. Green CI alone is
+**Scope:** current objective responsive, mathematical, voice and scheduler safeguards in [PRODUCT_GUARANTEES.md](PRODUCT_GUARANTEES.md). Green CI alone is
 not sufficient evidence of a real measurement. The production workflow must
 actually run the measurement scripts, preserve the machine-readable results,
 and verify that reports contain the requested instrument/viewport coverage.
@@ -51,16 +51,7 @@ are calculated from audio buffers, not guessed from an oscillator name.
 The generated manifest contains the measured case count and reference to
 each source report, not invented numbers.
 
-**Non-goals and blockers:** No screenshot alone substitutes for the
-underlying computed metrics. Automated output does not establish human
-sound quality, physically measured device audio, screen-reader quality,
-the missing original annotated screenshot, or a subjective production
-acceptance rating. M12/M13 and M14 remain blocked/open as recorded.
-Do **not** promote any historical status merely because this script passed. The
-source-specific R-SND-006 acceptance is separately documented from completed
-[CI 42331875353](https://github.com/michael-malis/complex-rhythm/actions/runs/42331875353).
-Original source ledger now records **459/652** tasks VERIFIED and **74/98**
-requirements VERIFIED after exact [full CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982) proved R-QA-002 with computed visual measurements and physical SVG marker diameters. M05/M06 are technically VERIFIED and all 26 real measurement outputs are required by the manifest; M11 remains IN_PROGRESS for R-QA-004/005. M12 missing original annotation, M13 human audio/physical-device/screen-reader validation, and M14 final release remain unaccepted. No automated graph or audio metric substitutes for manual acceptance.
+**Scope boundary:** Automated screenshots and audio metrics are genuine technical measurements, not human listening, actual-phone usability or screen-reader validation. Missing markings in the unavailable historical screenshot are never claimed to have been verified and **do not block current objective acceptance**. Live external evidence is tracked solely as AUDIO-01 / ACCESS-01 in [TASKS.md](TASKS.md). This manifest neither creates tasks nor changes their statuses. The original historical evidence run remains available at [CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982); all 26 measured reports remain mandatory on the final tested commit.
 
 **Failure handling:** An absent or failed measurement is a failing
 CI gate, not silently skipped and not a green placeholder. The

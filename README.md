@@ -1,7 +1,13 @@
 # ROOTS / RHYTHM
 
-**Current source acceptance (8 November 2026):** [PR #51](https://github.com/michael-malis/complex-rhythm/pull/51) and [full browser/audio CI 42419790982](https://github.com/michael-malis/complex-rhythm/actions/runs/42419790982) independently measure SVG marker CSS-pixel diameters across 48 lane/viewport/theme states alongside real CSS font/color/contrast, bounding-box, touch, overlap and clipping reports. Original R-QA-002 is now technically accepted in the task ledger: **459/652 tasks VERIFIED**, **74/98 parent requirements VERIFIED**. Operational status stays **9/14 VERIFIED**, M01/M11 IN_PROGRESS, M12/M13 BLOCKED, M14 TODO. GitHub Pages publishing now follows successful main regression; manual audio/device/annotation approval is not implied.
+An interactive **mathematical visualization of rhythm** through complex roots, four independently colored orbit rings and four audio-clock-aligned playheads. Sound supports mathematical exploration; it is not intended as a full beat maker.
 
+**Live site:** https://michael-malis.github.io/complex-rhythm/  
+**Active work:** [TASKS.md](TASKS.md) (one evolving outcome-based backlog, with external reviews separated from engineering).  
+**Product guarantees:** [PRODUCT_GUARANTEES.md](PRODUCT_GUARANTEES.md).  
+**CI / release evidence:** [GitHub Actions](https://github.com/michael-malis/complex-rhythm/actions).
+
+The previous historical item ledger and artificial completion ratios have been retired from project governance. The full browser/math/audio regression still runs on every PR and main commit. GitHub Pages publishes only an exact successfully tested main SHA. Real listening and physical screen-reader/device review remain unverified until performed.
 
 ## Current mathematical workbench update — November 2026
 
@@ -9,7 +15,7 @@ The graph comes first on phones and tablets; on wide screens, all four editable 
 
 **Earlier M06 checkpoint:** [PR #46](https://github.com/michael-malis/complex-rhythm/pull/46) merged reproducible side-by-side *real historical Git release* mathematical screenshot evidence against the current app. [Full CI 42402890258](https://github.com/michael-malis/complex-rhythm/actions/runs/42402890258) passed 12 responsive light/dark before/after cases and 24 real Chromium PNG screenshots, validating all 10 contractual formulas and 26 mandatory independent reports. Original R-TEX-008 technically accepted: **450/652 historical tasks VERIFIED** and **73/98 requirements VERIFIED**; **M06 mathematically audited and technically complete**. The missing second original user-annotated screenshot is still a separate M12 BLOCKER. Deployed main and final status tracked in [Actions](https://github.com/michael-malis/complex-rhythm/actions).
 
-Technical acceptance against reproducible browser/math/audio evidence: **459/652 historical tasks VERIFIED**, **38 IN_PROGRESS**, **151 TODO**, **4 BLOCKED**, **0 FAILED**, **74/98 original parent requirements**. Nine of 14 operational macros technically complete, including M05 and M06. Remaining engineering macros M01/M11 and manual M12/M13 plus final release M14 have not been signed off. The historical code baseline is not the unavailable second annotated original or screen-reader/real-device approval. See [NEXT_EXECUTION_PLAN.md](NEXT_EXECUTION_PLAN.md) and [LEDGER_EVIDENCE_SUMMARY.json](LEDGER_EVIDENCE_SUMMARY.json).
+Technical acceptance against reproducible browser/math/audio evidence: **459/652 historical tasks VERIFIED**, **38 IN_PROGRESS**, **151 TODO**, **4 BLOCKED**, **0 FAILED**, **74/98 original parent requirements**. Nine of 14 operational macros technically complete, including M05 and M06. Remaining engineering macros M01/M11 and manual M12/M13 plus final release M14 have not been signed off. The historical code baseline is not the unavailable second annotated original or screen-reader/real-device approval. See [TASKS.md](TASKS.md) and [PRODUCT_GUARANTEES.md](PRODUCT_GUARANTEES.md).
 
 
 **Website:** https://michael-malis.github.io/complex-rhythm/

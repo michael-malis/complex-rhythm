@@ -23,7 +23,7 @@ for(const id of [...ids,...labels])
 for(const name of names)
  assert.ok(doc.includes(name),'audit is missing mandatory standard formula '+name);
 assert.match(doc,/missing second|second.*missing|second.*unavailable/i,
- 'the missing annotated source image must remain explicit');
+ 'the unavailable historical source annotation must be acknowledged without becoming a current release blocker');
 assert.ok(doc.includes('formula-acceptance/{width}-{theme}.png'),
  'audited screenshot bundle path must be specified');
 const signatures=new Set();
@@ -81,6 +81,6 @@ fs.mkdirSync('artifacts/math-typography-audit',{recursive:true});
 fs.writeFileSync('artifacts/math-typography-audit/summary.json',JSON.stringify({
  status:'AUTOMATED_PASS',screens:12,referenceFormulas:10,liveLocations:16,phaseLabels:4,
  screenshotFileCount:12,liveUpdates:true,
- caveat:'Automated browser proof only; missing historical annotated reference and human screen review remain unresolved'
+ caveat:'Automated browser proof only; unavailable historical annotations are not a current release gate; physical accessibility review remains unverified'
 },null,2)+'\n');
 console.log('PASS mathematical audit: 10 references, 16 live locations, 4 phase labels, 12 PNG screenshots, live updates');

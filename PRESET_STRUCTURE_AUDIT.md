@@ -1,6 +1,6 @@
 # Structure and diversity of 50 rhythm examples
 
-**Scope:** objective event-density, overlap, accent and similarity evidence for M10, derived from [PRESET_INVENTORY.json](PRESET_INVENTORY.json). This is not human listening or proof that any genre sounds authentic.
+**Scope:** objective event-density, overlap, accent and similarity evidence, derived from [PRESET_INVENTORY.json](PRESET_INVENTORY.json). This is not human listening or proof that any genre sounds authentic.
 
 ## Observations
 
@@ -74,4 +74,4 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 - Contrast compares max/min event counts across four lanes, not decibels or perceived tempo.
 - Some highly similar rhythmic grids use different sound families or BPM. Do not change a mathematically meaningful example simply to improve a similarity score.
 - Source tests: [preset diversity](tests/preset-diversity.mjs), [cross-lane coincidence](tests/cross-lane-coincidence.mjs), [sound headroom](tests/audio-mix-stress.mjs).
-- Human listening of all 50 presets, especially high-similarity pairs and flat-velocity genre examples, remains blocked under M13. M10 is not complete based on this table alone.
+- Human musical review is separate from structural metrics. AUDIO-01 requires all five revised Bunker variants, protected Dust, affected voices and a risk-based sample; no unaudited musical authenticity is claimed here.

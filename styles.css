@@ -248,6 +248,7 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 .root-inspection-label{font-weight:700;color:var(--root-inspection-color)}
 .root-inspection-angle{display:inline-flex;align-items:center;min-width:0}
 .root-inspection-time{color:var(--sub);min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.root-inspection-coincidences{flex-basis:100%;font-size:16px;line-height:1.4;color:var(--sub);overflow-wrap:anywhere}
 .root-inspection-clear{min-width:44px;min-height:44px;margin-left:auto;border:0;font-size:23px;line-height:1;color:var(--sub);padding:5px 10px}
 @media(max-width:519px){.root-inspection{margin:4px 9px 9px;gap:4px 8px}.root-inspection-time{font-size:16px}}
 

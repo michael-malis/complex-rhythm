@@ -281,7 +281,7 @@ check('featured grooves and instrument gain','artifacts/production-grooves/repor
 },'Live on-lane gain, bongo routing and six featured grooves');
 assert.equal(tests.length,26,'the independent release-evidence file inventory must remain exhaustive');
 const output={status:'AUTOMATED_MEASUREMENTS_PASS',evidenceFiles:tests.length,
- note:'Every row was read from a test-generated local CI artifact. This is not a manual visual, auditory, phone-device or screen-reader acceptance and does not advance any historical requirement automatically.',
+ note:'Every row was read from a test-generated CI artifact. This proves automated measurements only, not human auditory, physical-device or screen-reader acceptance, and does not change live task statuses.',
  tests};
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/release-evidence-manifest.json',JSON.stringify(output,null,2)+'\n');

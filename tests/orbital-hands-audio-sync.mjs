@@ -50,7 +50,13 @@ try{
   await configure(1,1);
   await configure(2,2);
   await configure(3,4);
-  await page.waitForFunction(()=>window.RhythmResearch.orbitalHands().hands.length===4);
+  // The DOM input changes synchronously, but the read-only pointer snapshot
+  // updates on the NEXT animation frame. Read exactly the freshly drawn
+  // [1,1,2,4]-bar configuration, never a stale [1,1,2,1] frame.
+  await page.waitForFunction(()=>{
+   const h=window.RhythmResearch.orbitalHands().hands;
+   return h.length===4&&h.every((hand,i)=>hand.cycleBars===[1,1,2,4][i]);
+  },null,{timeout:10000});
   const capture=()=>page.evaluate(()=>({
    frame:window.RhythmResearch.orbitalHands(),
    canvas:window.__orbitCanvas.arcs.slice(),

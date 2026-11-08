@@ -367,6 +367,16 @@ function inspectionPhase(t,selection){
  }
  return rootPhases(t)[selection.index];
 }
+// Draw one mathematical selection consistently on the three composition
+// strips. These dots are read-only representations of the canonical events.
+function syncInspectedPhaseMarks(phase){
+ const valid=Number.isFinite(phase);
+ for(const mark of document.querySelectorAll('.composition-strips .phase-mark')){
+  const p=Number(mark.dataset.phase),d=Math.abs(p-phase);
+  const selected=valid&&Math.min(d,1-d)<1e-6;
+  mark.classList.toggle('is-inspected',selected);
+ }
+}
 function renderRootInspection(){
  const panel=$('rootInspection'),selection=inspectedRoot;
  if(!panel)return;
@@ -381,6 +391,7 @@ function renderRootInspection(){
   (sourceKind!=='additional'||s.sourceIndex===selection.sourceIndex));
  if(!Number.isFinite(phase)||selection.lane!==selectedTrack||!sourceValid){
   panel.hidden=true;
+  syncInspectedPhaseMarks(NaN);
   if(selection){inspectedRoot=null;$('rootInspectionAnnouncement').textContent='Root inspection cleared';}
   return;
  }
@@ -401,6 +412,7 @@ function renderRootInspection(){
  panel.hidden=false;
  $('rootInspectionAnnouncement').textContent=$('rootInspectionLane').textContent+
   '. Angle '+Number((phase*360).toFixed(3))+' degrees. '+$('rootInspectionTime').textContent;
+ syncInspectedPhaseMarks(phase);
 }
 // Keyboard inspection walks the canonical visible set, including muted lanes.
 // It never edits the root generator, the audio clock, or the preset identity.
@@ -413,10 +425,25 @@ function inspectNeighborEvent(direction,edge=null){
  }): -1;
  const next=edge==='first'?0:edge==='last'?all.length-1:
   at<0?(direction<0?all.length-1:0):(at+direction+all.length)%all.length;
- const source=all[next].sources.find(s=>s.kind==='base')||all[next].sources[0];
- inspectedRoot={lane,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
+ inspectCanonicalEvent(all[next]);
+}
+// The result strip has one large 48px interaction target rather than tiny
+// per-marker buttons. It uses the same events and provenance as the audio clock.
+function inspectCanonicalEvent(event){
+ if(!event)return;
+ const source=event.sources.find(s=>s.kind==='base')||event.sources[0];
+ inspectedRoot={lane:selectedTrack,kind:source.kind,index:source.index,sourceIndex:source.sourceIndex};
  if(source.kind==='base'){selectedRootIndex=source.index;updateSelectedRootMath();}
  renderRootInspection();
+}
+function inspectResultPhase(phase){
+ const all=events(tracks[selectedTrack]);
+ if(!all.length)return;
+ const nearest=all.reduce((best,event)=>{
+  const delta=Math.abs(event.phase-phase),distance=Math.min(delta,1-delta);
+  return distance<best.distance?{event,distance}:best;
+ },{event:null,distance:Infinity});
+ inspectCanonicalEvent(nearest.event);
 }
 function principalArg(b,a){return RhythmMath.principalArg(b,a)}
 function fmt(n){
@@ -1123,12 +1150,17 @@ function renderComposition() {
    const marker=document.createElement('span'),overlap=mode==='union'&&item.shared,added=mode==='added'||(mode==='union'&&item.added&&!item.base);
    marker.className='phase-mark '+(overlap?'overlap':added?'added':'base');
    marker.style.left=(2+phase*96)+'%';marker.style.borderColor=COLORS[i];
+   marker.dataset.phase=String(phase);marker.setAttribute('aria-hidden','true');
    if(!added&&!overlap)marker.style.backgroundColor=COLORS[i];
    if(overlap)marker.style.setProperty('--mark-color',COLORS[i]);
    marker.title=`${Math.round(phase*3600)/10}°${overlap?' (shared)':''}`;target.append(marker);
   }
  };
  plot($('baseStrip'),c.base,'base');plot($('addedStrip'),c.added,'added');plot($('unionStrip'),c.merged,'union');
+ const resultStrip=$('unionStrip');
+ resultStrip.setAttribute('aria-label',(t.operation==='intersection'?'Intersection':'Union')+
+  ' of lane '+(i+1)+': '+c.merged.length+' distinct phases. Click a phase, use Left and Right arrows, or press Enter to inspect; Home and End jump to the first and last.');
+ syncInspectedPhaseMarks(inspectedRoot?.lane===i?inspectionPhase(t,inspectedRoot):NaN);
 }
 
 function renderLayers(){
@@ -2001,6 +2033,30 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  if(magnified)refreshPlotZoom();
  showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
+ const resultStrip=$('unionStrip');
+ resultStrip.addEventListener('click',e=>{
+  const box=resultStrip.getBoundingClientRect();
+  if(!box.width)return;
+  // The displayed line occupies the inner 96% of the strip.
+  const phase=Math.max(0,Math.min(1,((e.clientX-box.left)/box.width-.02)/.96));
+  inspectResultPhase(phase);
+ });
+ resultStrip.addEventListener('keydown',e=>{
+  if(!['ArrowLeft','ArrowRight','Home','End','Escape','Enter',' '].includes(e.key))return;
+  e.preventDefault();
+  if(e.key==='Escape'){
+   inspectedRoot=null;renderRootInspection();
+   $('rootInspectionAnnouncement').textContent='Root inspection cleared';
+  }else if(e.key==='Enter'||e.key===' '){
+   const all=events(tracks[selectedTrack]);
+   const phase=inspectedRoot?.lane===selectedTrack?inspectionPhase(tracks[selectedTrack],inspectedRoot):undefined;
+   const current=Number.isFinite(phase)?all.find(item=>{
+    const d=Math.abs(item.phase-phase);return Math.min(d,1-d)<1e-6;
+   }):null;
+   inspectCanonicalEvent(current||all[0]);
+  }else inspectNeighborEvent(e.key==='ArrowLeft'?-1:1,
+   e.key==='Home'?'first':e.key==='End'?'last':null);
+ });
  $('clearRootInspection').addEventListener('click',()=>{inspectedRoot=null;renderRootInspection()});
  $('rootRuleInfoToggle').addEventListener('click',()=>{
   const panel=$('rootRuleInfoPanel'),button=$('rootRuleInfoToggle');
@@ -2130,6 +2186,10 @@ function setupEvents() {
  canvas.addEventListener('pointercancel',cancelRootDrag);
  canvas.addEventListener('lostpointercapture',cancelRootDrag);
  canvas.addEventListener('keydown',e=>{
+  // Digit shortcuts are scoped to the focused Canvas, never number editors.
+  if(!e.altKey&&!e.ctrlKey&&!e.metaKey&&['1','2','3','4'].includes(e.key)){
+   e.preventDefault();chooseTrack(Number(e.key)-1);return;
+  }
   if(['[',']','Home','End','Escape'].includes(e.key)){
    e.preventDefault();
    if(e.key==='Escape'){

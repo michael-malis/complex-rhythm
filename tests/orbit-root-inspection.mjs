@@ -228,6 +228,108 @@ try{
   await page.close();
  }
  
+ // The result set is a full-width touch target. Selecting it highlights the
+ // same canonical phase in the base/added/result strips and on the orbit.
+ for(const viewport of screens){
+  const page=await browser.newPage({viewport,hasTouch:viewport.width===390,
+   reducedMotion:viewport.width===390?'reduce':'no-preference'});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  const linked={...fixture,name:'Linked strip provenance',
+   tracks:fixture.tracks.map((t,i)=>i===0?{...t,
+    layers:[{a:1,b:0,n:3,velocity:.65}]}:t)};
+  await load(page,linked);
+  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
+  await page.locator('.lane[data-lane="0"] .lane-select').click();
+  const result=page.locator('#unionStrip');
+  const tapResult=async phase=>{
+   await result.scrollIntoViewIfNeeded();
+   const box=await result.boundingBox();
+   assert.ok(box&&box.height>=44,'entire result strip is a touch-sized interaction target');
+   const x=box.x+box.width*(.02+.96*phase),y=box.y+box.height/2;
+   if(viewport.width===390)await page.touchscreen.tap(x,y);
+   else await page.mouse.click(x,y);
+  };
+  const matched=()=>page.evaluate(()=>{
+   const phases=id=>[...document.querySelectorAll('#'+id+' .phase-mark.is-inspected')]
+    .map(mark=>Number(mark.dataset.phase));
+   return {base:phases('baseStrip'),added:phases('addedStrip'),
+    result:phases('unionStrip'),aria:document.getElementById('unionStrip').getAttribute('aria-label'),
+    pageOverflow:document.documentElement.scrollWidth>innerWidth+1};
+  });
+  const original=await read(page);
+  await tapResult(1/3);
+  let selected=await read(page),highlight=await matched();
+  assert.match(selected.label,/Lane 1 · added root 2\/3 · family 1/);
+  assert.match(selected.time,/Phase 33\.333%/);
+  assert.ok(selected.mathml,'result strip reports the same accessible math as Canvas');
+  assert.equal(highlight.base.length,0,'additional-only phase does not fabricate a base root');
+  assert.equal(highlight.added.length,1);
+  assert.equal(highlight.result.length,1);
+  assert.ok(Math.abs(highlight.result[0]-1/3)<1e-8);
+  assert.deepEqual(selected.source.tracks,original.source.tracks,
+   'inspecting a phase does not change any complex-number generator');
+
+  // Keyboard progression is in actual event phase order, not step-sequencer grid order.
+  await result.focus();
+  await page.keyboard.press('ArrowLeft');
+  selected=await read(page);
+  assert.match(selected.label,/Lane 1 · root 2\/4/);
+  assert.match(selected.time,/Phase 25%/);
+  await page.keyboard.press('Home');
+  assert.match((await read(page)).label,/root 1\/4 · shared: base \+ family 1/);
+  highlight=await matched();
+  assert.deepEqual(highlight.base,[0]);
+  assert.deepEqual(highlight.added,[0]);
+  assert.deepEqual(highlight.result,[0]);
+  await page.keyboard.press('End');
+  assert.match((await read(page)).time,/Phase 75%/);
+  await page.keyboard.press('ArrowRight');
+  assert.match((await read(page)).time,/Phase 0%/);
+  await page.keyboard.press('Escape');
+  assert.equal((await read(page)).hidden,true,'Escape hides inspector from either keyboard surface');
+  highlight=await matched();
+  assert.deepEqual(highlight.result,[],'clearing inspection removes linked source highlights');
+  await page.keyboard.press('Enter');
+  assert.match((await read(page)).time,/Phase 0%/,'Enter activates the focusable result strip');
+  await page.keyboard.press(' ');
+  assert.match((await read(page)).time,/Phase 0%/,'Space also activates the result strip');
+  await page.keyboard.press('Escape');
+
+  // True intersection leaves only the common phase. Tapping elsewhere must
+  // inspect that result, never silently select an excluded base/additional root.
+  await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
+  await page.locator('#setOperation').selectOption('intersection');
+  assert.equal(await page.locator('#unionCount').textContent(),'1');
+  await tapResult(.7);
+  selected=await read(page);highlight=await matched();
+  assert.match(selected.label,/shared: base \+ family 1/);
+  assert.match(highlight.aria,/Intersection of lane 1: 1 distinct phases/);
+  assert.deepEqual(highlight.result,[0]);
+  assert.equal(highlight.pageOverflow,false);
+
+  // Zero complex source contains no result points. An empty strip never
+  // manufactures an event or alters the playing clock.
+  await page.locator('.lane[data-lane="2"] .lane-select').click();
+  await tapResult(.5);
+  assert.equal((await read(page)).hidden,true);
+  assert.match((await matched()).aria,/0 distinct phases/);
+
+  // Digit shortcuts act only when Canvas is focused; no setting or
+  // sound clock changes as the user switches between the four colored rings.
+  await page.locator('#orbitCanvas').focus();
+  const beforeDigits=await read(page);
+  await page.keyboard.press('4');
+  assert.match(await page.locator('#orbitCanvas').getAttribute('aria-label'),/Selected lane 4 of 4/);
+  await page.keyboard.press('1');
+  assert.match(await page.locator('#orbitCanvas').getAttribute('aria-label'),/Selected lane 1 of 4/);
+  const afterDigits=await read(page);
+  assert.deepEqual(afterDigits.source.tracks,beforeDigits.source.tracks);
+  assert.equal(afterDigits.transport.schedulerIntervalsCreated,beforeDigits.transport.schedulerIntervalsCreated);
+  assert.deepEqual(errors,[]);
+  await page.close();
+ }
+
  // When audio is playing, an inspection must not alter the root scheduler.
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
@@ -250,5 +352,5 @@ try{
  await page.close();
  fs.writeFileSync('artifacts/orbit-root-inspection/report.json',
   JSON.stringify({status:'PASS',states:report.length,report,realBrowser:true,audioSchedulerUnchanged:true}));
- console.log('PASS: inspect base, added, shared and Euclidean orbit events by touch and keyboard, source-safe intersection, MathML and unchanged audio');
+ console.log('PASS: inspect base, added, shared and Euclidean orbit events by Canvas, linked result strips and keyboard; MathML, true intersection and unchanged audio');
 }finally{await browser.close();}

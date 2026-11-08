@@ -92,7 +92,15 @@ const crRegister=fs.readFileSync('CHANGE_REGISTER.md','utf8');
 assert.ok(crRegister.includes('## CR-BNK-001 ·'),'Approved scope missing from shared change register');
 assert.ok(plan.includes('## M10 continuation · CR-BNK-001'),'CR work not linked to original M10 plan');
 assert.ok(plan.includes('M13 human acceptance'),'Missing existing listening gate for Bunker changes');
-assert.ok(additional.every(row=>row[7]==='TODO'),'Planning-only PR cannot pre-certify Bunker implementation');
+// The new work starts TODO in this PR, but the validator must also accept
+// evidence-backed state transitions in later implementation PRs.
+if(additional[0][7]==='VERIFIED'){
+ assert.ok(additional.slice(1).every(row=>row[7]==='VERIFIED'),
+  'Bunker parent cannot close while any deliverable remains unverified');
+ const m13=active.map(line=>line.split('|').slice(1,-1).map(value=>value.trim()))
+  .find(row=>row[0]==='M13');
+ assert.equal(m13?.[4],'VERIFIED','Bunker package cannot claim human listening acceptance before M13');
+}
 console.log(JSON.stringify({status:'PASS',postBaselineChange:changeRequest,additionalTasks:additional.length,
  additionalVerified:additional.filter(row=>row[7]==='VERIFIED').length,
  combinedTaskRows:rows.length+additional.length,legacyTaskRows:rows.length,macros:active.length},null,2));

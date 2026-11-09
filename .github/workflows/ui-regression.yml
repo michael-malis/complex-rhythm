@@ -41,6 +41,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-union-first-http.log 2>&1 &
           node tests/union-first-ui.mjs
+      - name: Prevent Space on root controls from accidentally starting playback at desktop and phone widths
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-accessible-space.log 2>&1 &
+          node tests/accessible-space-root-inspection.mjs
       - name: Verify four real Canvas orbit hands reach root phases on the AudioContext clock at 1 2 and 4 bar lengths
         if: ${{ !cancelled() }}
         run: |

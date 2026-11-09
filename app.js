@@ -2377,7 +2377,16 @@ function setupEvents() {
   if(['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'].includes(e.key)){e.preventDefault();chooseTrack((selectedTrack+(e.key==='ArrowDown'||e.key==='ArrowRight'?1:3))%4)}
   else if(e.key==='Enter'){e.preventDefault();previewSound()}
  });
- document.addEventListener('keydown',e=>{const tag=e.target?.tagName;if(e.code==='Space'&&!['INPUT','SELECT','BUTTON','TEXTAREA','SUMMARY'].includes(tag)&&e.target!==canvas){e.preventDefault();togglePlay()}});
+ // Space controls global Play/Pause only when no interactive element owns it.
+ // Focused canvas, timeline row, union strip and other keyboard controls must
+ // not accidentally start/stop sound while inspecting mathematical events.
+ document.addEventListener('keydown',e=>{
+  if(e.defaultPrevented||e.code!=='Space'||e.repeat||e.altKey||e.ctrlKey||e.metaKey)return;
+  if(e.target===canvas||e.target?.closest?.(
+   'input,select,button,textarea,summary,a[href],[tabindex],[contenteditable],[role="button"]'
+  ))return;
+  e.preventDefault();togglePlay();
+ });
  document.addEventListener('pointerdown',e=>{const m=$('fileMenu');if(m.open&&!m.contains(e.target))m.open=false});
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }

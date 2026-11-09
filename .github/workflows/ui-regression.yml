@@ -362,6 +362,11 @@ jobs:
         run: |
           python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-integration.log 2>&1 &
           node tests/bunker-five-integration.mjs
+      - name: Render six actual Bunker playback mixes as unnormalized WAV audition references
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-bunker-audition.log 2>&1 &
+          node tests/bunker-audition-export.mjs
       - name: Compare explicit selection and JSON event semantics for every catalog preset
         if: ${{ !cancelled() }}
         run: |
@@ -415,6 +420,13 @@ jobs:
       - name: Independently validate measured CI outputs and write release evidence manifest
         if: ${{ !cancelled() }}
         run: node scripts/verify-ci-measurement-manifest.mjs
+      - name: Upload technical Bunker WAV audition reference (not human acceptance)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bunker-audition-wavs
+          path: artifacts/bunker-audition/
+          if-no-files-found: ignore
       - name: Upload viewport screenshots
         if: always()
         uses: actions/upload-artifact@v4

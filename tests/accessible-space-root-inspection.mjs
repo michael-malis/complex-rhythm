@@ -24,7 +24,7 @@ try{
   await page.keyboard.press('Space');
   assert.equal(await transport(),'false',
    'Space on focused Canvas must not toggle the transport');
-  await page.locator('#compositionPanel summary').click();
+  await page.locator('#compositionPanel > summary').click();
   const union=page.locator('#unionStrip');
   await union.focus();
   assert.equal(await union.getAttribute('role'),'button');

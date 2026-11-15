@@ -46,7 +46,7 @@ try{
  for(const [width,height] of screens)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await importFixture(page,fixture);
   assert.equal(await page.locator('#rootRuleInfoToggle').getAttribute('aria-expanded'),'false');
@@ -78,7 +78,7 @@ try{
  }
 
  const phone=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
- await phone.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await phone.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await importFixture(phone,fixture);
  await phone.locator('#rootRuleInfoToggle').tap();
  await phone.locator('#rootRuleAngleList li[data-index="2"]').tap();
@@ -98,7 +98,7 @@ try{
 
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await importFixture(page,fixture);
  const info=page.locator('#rootRuleInfoToggle');
  await info.focus();await page.keyboard.press('Enter');

@@ -36,6 +36,11 @@ jobs:
       - name: Test pure mathematical utilities
         if: ${{ !cancelled() }}
         run: node tests/math-io.test.mjs
+      - name: Open the default Play surface as a visitor and play, drag roots, step hits, browse and switch to the Lab
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 >/tmp/rhythm-play-surface.log 2>&1 &
+          node tests/play-surface.mjs
       - name: Check union-first root composition, conditional magnification and advanced sound disclosure
         if: ${{ !cancelled() }}
         run: |

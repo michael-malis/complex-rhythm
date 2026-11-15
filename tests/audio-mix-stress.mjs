@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox','--autop
 let result;
 try {
  const page=await browser.newPage({viewport:{width:1280,height:800}});
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  result=await page.evaluate(async()=>{
   const full=window.RhythmResearch.presets();
   const catalog=[];

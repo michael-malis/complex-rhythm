@@ -15,7 +15,7 @@ function wav(data,sampleRate){
 try{
  const page=await browser.newPage();
  const pageErrors=[];page.on('pageerror',e=>pageErrors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const voices=await page.evaluate(async()=>{
   const names=Object.keys(window.RhythmVoices?.definitions||{});
   const results=[];

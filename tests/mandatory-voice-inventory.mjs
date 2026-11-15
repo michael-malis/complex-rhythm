@@ -29,7 +29,7 @@ try {
  for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   const runtimeErrors=[];page.on('pageerror',e=>runtimeErrors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const initial=await page.evaluate(()=>({
    phases:window.RhythmResearch.events(window.RhythmResearch.current().tracks[0]).map(x=>x.phase),
    preset:window.RhythmResearch.transport().activePresetId,

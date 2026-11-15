@@ -10,7 +10,7 @@ try{
  for(const [width,height] of screenSizes)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   const presets=await page.evaluate(()=>window.RhythmResearch.presets().map(p=>({id:p.id,category:p.category})));
   assert.equal(presets.length,50,'all 50 presets tested');

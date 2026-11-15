@@ -17,7 +17,7 @@ const fixture=(withExtra)=>({
 try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',err=>errors.push(err.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const importProject=async p=>{
   await page.locator('#jsonFile').setInputFiles({
    name:'magnification-test.json',mimeType:'application/json',

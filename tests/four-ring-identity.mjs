@@ -96,7 +96,7 @@ try{
    };
   });
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   await page.locator('#jsonFile').setInputFiles({
    name:'ring-identity.json',mimeType:'application/json',
    buffer:Buffer.from(JSON.stringify(fixture))

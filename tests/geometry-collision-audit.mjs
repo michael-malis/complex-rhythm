@@ -14,7 +14,7 @@ fs.mkdirSync('artifacts/geometry-collision-audit',{recursive:true});
 try{
  for(const [width,height] of sizes)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await page.locator('#jsonFile').setInputFiles({
    name:'aligned.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))

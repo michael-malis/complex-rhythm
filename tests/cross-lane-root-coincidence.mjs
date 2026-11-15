@@ -73,7 +73,7 @@ try{
    };
   });
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(viewport.width===390)await page.locator('#themeBtn').click();
   await page.locator('#jsonFile').setInputFiles({name:'cross-lane.json',
    mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});

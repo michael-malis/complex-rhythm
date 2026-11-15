@@ -9,7 +9,7 @@ try {
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];
  page.on('pageerror',err=>errors.push(err.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const presets=await page.evaluate(()=>window.RhythmResearch.presets());
  const bunker=presets.find(p=>p.category==='bunker'&&p.tracks.some(t=>t.sound==='kick'));
  const jungle=presets.find(p=>p.category==='jungle'&&p.tracks.some(t=>t.sound==='kick'));

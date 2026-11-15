@@ -55,7 +55,7 @@ try{
  for(const viewport of screens)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390,reducedMotion:theme==='dark'?'reduce':'no-preference'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await load(page,fixture);
   assert.equal((await read(page)).hidden,true,'inspector starts hidden and adds no default UI noise');
@@ -114,7 +114,7 @@ try{
  for(const viewport of screens){
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const enriched={...fixture,name:'Additional orbit root sources',
    tracks:fixture.tracks.map((t,i)=>i===0?{...t,
     layers:[{a:1,b:0,n:3,velocity:.65}],
@@ -161,7 +161,7 @@ try{
  for(const viewport of screens){
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const augmented={...fixture,name:'Keyboard mathematical inspection QA',
    tracks:fixture.tracks.map((t,i)=>i===0?{...t,
     layers:[{a:1,b:0,n:3,velocity:.65}],
@@ -234,7 +234,7 @@ try{
   const page=await browser.newPage({viewport,hasTouch:viewport.width===390,
    reducedMotion:viewport.width===390?'reduce':'no-preference'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const linked={...fixture,name:'Linked strip provenance',
    tracks:fixture.tracks.map((t,i)=>i===0?{...t,
     layers:[{a:1,b:0,n:3,velocity:.65}]}:t)};
@@ -332,7 +332,7 @@ try{
 
  // When audio is playing, an inspection must not alter the root scheduler.
  const page=await browser.newPage({viewport:{width:1280,height:800}});
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await load(page,fixture);
  await page.locator('#playBtn').click();
  await page.waitForFunction(()=>window.RhythmResearch.transport().playing,{timeout:15000});

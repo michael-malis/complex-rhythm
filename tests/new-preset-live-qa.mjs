@@ -15,7 +15,7 @@ const browser=await chromium.launch({
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900},acceptDownloads:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const studies=await page.evaluate(ids=>window.RhythmResearch.presets().filter(p=>ids.includes(p.id)),studyIds);
  assert.equal(studies.length,15,'all fifteen new rhythm studies are in the application');
  assert.equal(new Set(studies.map(p=>p.id)).size,15,'new study IDs are unique');

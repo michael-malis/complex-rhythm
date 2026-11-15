@@ -85,7 +85,7 @@ try{
    };
   });
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   await page.locator('#jsonFile').setInputFiles({name:'linked.json',mimeType:'application/json',
    buffer:Buffer.from(JSON.stringify(fixture))});
   await page.waitForFunction(()=>document.querySelector('#toast').textContent.includes('Imported rhythm: Linked root windows'));

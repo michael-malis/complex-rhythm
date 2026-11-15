@@ -10,7 +10,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
  const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const cases=await page.evaluate(()=>window.RhythmResearch.presets()
   .filter((p,i)=>i%2===0).slice(0,24).map(p=>({id:p.id,category:p.category,bpm:p.bpm,
     counts:p.tracks.map(t=>window.RhythmResearch.events(t).length)})));

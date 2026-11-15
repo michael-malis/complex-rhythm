@@ -7,7 +7,7 @@ fs.mkdirSync('artifacts',{recursive:true});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const fixture={format:'roots-rhythm/1',name:'Live degree input stability',bpm:120,bars:1,
   tracks:['kick','snare','hat','bass'].map(sound=>({
    a:1,b:0,n:3,sound,cycleBars:1,muted:false,operation:'union',layers:[]

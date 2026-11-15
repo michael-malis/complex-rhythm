@@ -9,6 +9,10 @@ An interactive **mathematical visualization of rhythm** through complex roots, f
 
 The previous historical item ledger and artificial completion ratios have been retired from project governance. The full browser/math/audio regression still runs on every PR and main commit. GitHub Pages publishes only an exact successfully tested main SHA. Real listening and physical screen-reader/device review remain unverified until performed.
 
+## Play and Lab
+
+The site opens in **Play**: the four rings fill the screen, one round button starts the sound, and three gestures change the rhythm — drag a point (or its whole ring) to rotate a lane, tap − / + to change how many evenly spaced hits it plays, and step through the examples with ‹ › or **Surprise me**. **Lab** (top bar, or the `#lab` link) is the full mathematical workbench described below, with every number, formula, union editor and sound parameter. Both views edit the same rhythm, so switching never changes what is playing or what is exported.
+
 ## Current mathematical workbench update — November 2026
 
 The graph comes first on phones and tablets; on wide screens, all four editable lane cards are arranged 2×2 next to it. Each track has an independent 1–16-bar cycle; the least common multiple determines the full repeat period. The public preset browser contains 51 examples: 50 original/experimental mathematical rhythms plus one user-supplied Song Examples study. These remain mathematical root-event models with a separate Euclidean generator, real root-set union/intersection and distinct instrument voices.

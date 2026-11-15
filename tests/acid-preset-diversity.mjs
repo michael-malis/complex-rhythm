@@ -13,7 +13,7 @@ try{
  for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   assert.equal(await page.locator('.preset-controls select').count(),2,
    'exactly two rhythm-selection controls');

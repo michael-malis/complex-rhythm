@@ -10,7 +10,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox','--autop
 try{
  const page=await browser.newPage({viewport:{width:1366,height:768},reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const report=await page.evaluate(async()=>{
   const research=window.RhythmResearch,math=window.RhythmMath,voices=window.RhythmVoices;
   const catalog=research.presets(),iron=catalog.find(p=>p.id==='iron');

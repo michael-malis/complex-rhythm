@@ -4,6 +4,12 @@
 
 The product is an interactive mathematical visualization, not a DAW. Complex root angles map to repeating phase events. All four parameter sets should be visible at once. Sound is a perceptual aid.
 
+## Two views, one model
+
+- **Play** (default, `html[data-view="play"]`): the instrument. A lit circular plate with the four rings, a round Play button, a rhythm picker and four lane strips (rotation dial, sound, − n +, mute). No numeric forms. An underlay Canvas (`#orbitBack`) adds lane polygons, bar ticks, playhead trails and hit ripples; it is decoration only and never draws roots, rings or playheads.
+- **Lab** (`#lab`): the workbench described in the rest of this document. The 16px type floor, 44px targets, lane colors and measured Canvas geometry apply to both views.
+- Both views share one DOM and one state; switching is a CSS change and never touches rhythm, audio or JSON.
+
 ## Architecture
 
 - One persistent circular visualization with four concentric instrument lanes.

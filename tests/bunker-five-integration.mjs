@@ -33,7 +33,7 @@ fs.mkdirSync('artifacts/bunker-integration',{recursive:true});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const data=await page.evaluate(()=>{
   const research=window.RhythmResearch,math=window.RhythmMath,catalog=research.presets();
   return catalog.map(p=>{

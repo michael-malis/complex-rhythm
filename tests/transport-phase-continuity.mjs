@@ -13,7 +13,7 @@ try{
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(viewport.width<500)await page.locator('#themeBtn').click();
   const transport=()=>page.evaluate(()=>window.RhythmResearch.transport());
   const button=page.locator('#playBtn');

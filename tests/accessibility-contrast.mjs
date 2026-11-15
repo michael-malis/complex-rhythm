@@ -15,7 +15,7 @@ fs.mkdirSync('artifacts',{recursive:true});
 try{
  for(const [width,height] of configs)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   for(const selector of ['#presetDetails','#compositionPanel','.math-details','#windowPanel'])
     await page.locator(selector).evaluate(el=>{el.open=true});

@@ -14,7 +14,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900}});
  const failures=[];page.on('pageerror',e=>failures.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('#presetDetails').evaluate(el=>{el.open=true});
  for(const [ratio,id,degrees] of expected){
   const category=await page.evaluate(id=>window.RhythmResearch.presets().find(p=>p.id===id)?.category,id);

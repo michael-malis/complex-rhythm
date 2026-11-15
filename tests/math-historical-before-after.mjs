@@ -81,7 +81,7 @@ async function capture(baseURL,sha,width,height,theme){
 try{
  for(const [width,height] of screens)for(const theme of ['light','dark']){
   const before=await capture('http://127.0.0.1:8768/',BEFORE,width,height,theme);
-  const after=await capture('http://127.0.0.1:8767/','current',width,height,theme);
+  const after=await capture('http://127.0.0.1:8767/#lab','current',width,height,theme);
   assert.ok(after.totalMathml>=before.totalMathml,
    'the current mathematical interface cannot lose semantic formulas');
   assert.ok(after.hasSvg,'present release has actual root SVG geometry');

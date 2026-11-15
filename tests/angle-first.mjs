@@ -6,7 +6,7 @@ const close=(a,b,tol=1e-8)=>Math.abs(a-b)<tol;
 try{
  const page=await browser.newPage({viewport:{width:1440,height:900},acceptDownloads:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('#compositionPanel').evaluate(el=>{el.open=true});
  const fixture={format:'roots-rhythm/1',name:'Angle test fixture',bpm:120,bars:1,tracks:[
   {a:2.5,b:0,n:4,sound:'technoKick',cycleBars:1,muted:false,layers:[]},

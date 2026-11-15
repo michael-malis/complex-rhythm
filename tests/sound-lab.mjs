@@ -12,7 +12,7 @@ try{
  for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   const panel=page.locator('#advancedSoundDetails');
   assert.equal(await panel.evaluate(el=>el.open),false,'Sound Lab must start collapsed');

@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 const cases=[[1600,1000],[1440,900],[1280,800],[1024,768],[768,1024],[390,844]];
-const base='http://127.0.0.1:8767/';
+const base='http://127.0.0.1:8767/#lab';
 fs.mkdirSync('qa/baseline/evidence',{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const reports=[];

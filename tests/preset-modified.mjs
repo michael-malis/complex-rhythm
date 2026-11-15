@@ -5,7 +5,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try{
  const page=await browser.newPage({viewport:{width:1280,height:800},acceptDownloads:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('#presetDetails').evaluate(el=>{el.open=true});
  await page.locator('#categorySelect').selectOption('poly');
  await page.locator('#presetSelect').selectOption('afro');

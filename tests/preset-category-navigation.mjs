@@ -11,7 +11,7 @@ try {
  for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   assert.equal(await page.locator('#presetDetails').evaluate(el=>el.open),true,
    'rhythm examples must be expanded by default on every viewport');
   assert.equal(await page.locator('#presetSelect').inputValue(),'afro','initial study remains selected');

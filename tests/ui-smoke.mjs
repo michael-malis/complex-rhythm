@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const base='http://127.0.0.1:8767/';
+const base='http://127.0.0.1:8767/#lab';
 const sizes=[[360,640],[390,844],[768,1024],[1024,768],[1280,800],[1440,900],[1520,982]];
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--autoplay-policy=no-user-gesture-required']});
 const context=await browser.newContext({acceptDownloads:true,reducedMotion:'reduce'});

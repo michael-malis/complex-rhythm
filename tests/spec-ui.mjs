@@ -9,7 +9,7 @@ try{
  for(const [width,height] of viewports)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   for(const id of ['#presetDetails','#compositionPanel','.math-details'])await page.locator(id).evaluate(el=>el.open=true);
   const data=await page.evaluate(()=>{
@@ -53,7 +53,7 @@ try{
  }
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
  const finalErrors=[];page.on('pageerror',e=>finalErrors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();
  ok(await page.locator('#trackR0').count()===1&&await page.locator('#trackTheta0').count()===1,'polar edit fields');

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try{
  const page=await browser.newPage();
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const result=await page.evaluate(()=>{
   let seed=0x1928341;
   const random=()=>((seed=(1664525*seed+1013904223)>>>0)/4294967296);

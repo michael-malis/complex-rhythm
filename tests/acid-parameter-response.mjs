@@ -7,7 +7,7 @@ fs.mkdirSync('artifacts/audio-parameter-response',{recursive:true});
 try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const evidence=await page.evaluate(async()=>{
   const definitions=window.RhythmVoices.definitions;
   const acidNames=Object.keys(definitions).filter(n=>definitions[n].family==='acid');

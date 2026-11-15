@@ -7,7 +7,7 @@ const report=[];
 try{
  for(const [width,height] of cases){
   const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:width<700});
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   for(const selector of ['#presetDetails','#compositionPanel','.math-details','#windowPanel'])
    await page.locator(selector).evaluate(el=>{el.open=true});
   await page.locator('#loadRootExample').click();

@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 let presets;
 try {
  const page=await browser.newPage();
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  presets=await page.evaluate(()=>{
   if(!window.RhythmResearch)throw Error('Read-only preset research interface unavailable');
   return window.RhythmResearch.presets().map(p=>({

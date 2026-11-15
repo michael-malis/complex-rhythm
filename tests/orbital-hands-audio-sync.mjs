@@ -39,7 +39,7 @@ try{
     return stroke.apply(this,args);
    };
   });
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   assert.match(await page.locator('#orbitHeading').textContent(),/Four rings/);
   assert.match(await page.locator('#orbitCanvas').getAttribute('aria-label'),/one small colored playhead on each ring/i);

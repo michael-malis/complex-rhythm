@@ -10,7 +10,7 @@ try{
  for(const [width,height] of screens)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   for(const selector of ['#compositionPanel','.math-details'])
    await page.locator(selector).evaluate(el=>{el.open=true});

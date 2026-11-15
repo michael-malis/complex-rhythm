@@ -13,7 +13,7 @@ try{
   const page=await browser.newPage({viewport:{width,height:width===390?844:900},
    hasTouch:width===390,reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const transport=()=>page.locator('#playBtn').getAttribute('aria-pressed');
   assert.equal(await transport(),'false');
   const canvas=page.locator('#orbitCanvas');

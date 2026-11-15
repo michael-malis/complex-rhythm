@@ -32,7 +32,7 @@ try{
    return origArc.call(this,x,y,r,...rest);
   };
  });
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const theory=await page.evaluate(()=>{
   const research=window.RhythmResearch,math=window.RhythmMath;
   const presets=research.presets(),sizes=[390,430,480,520,700,900];

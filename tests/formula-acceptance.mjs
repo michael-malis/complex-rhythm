@@ -21,7 +21,7 @@ try{
  for(const [width,height] of screens)for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await page.locator('#compositionPanel').evaluate(el=>el.open=true);
   await page.locator('.math-details').evaluate(el=>el.open=true);
@@ -108,7 +108,7 @@ try{
   await page.close();
  }
  const page=await browser.newPage({viewport:{width:1280,height:800}});
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
  await page.locator('.advanced-coordinates').first().evaluate(el=>{el.open=true});
  const annotation=async id=>await page.locator('#'+id+' annotation').first().textContent();

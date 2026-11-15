@@ -6,7 +6,7 @@ fs.mkdirSync('artifacts',{recursive:true});
 try{
  const page=await browser.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+ await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const originals=await page.evaluate(()=>window.RhythmResearch.presets().slice(0,35).map(p=>({
   id:p.id,bpm:p.bpm,bars:p.bars,
   tracks:p.tracks.map(t=>({

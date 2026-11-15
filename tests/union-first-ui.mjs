@@ -9,7 +9,7 @@ try {
  for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
   const page=await browser.newPage({viewport});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const composition=page.locator('#compositionPanel');
   await composition.evaluate(el=>el.open=true);
   assert.match(await composition.locator(':scope > summary').textContent(),/Combine root points/);

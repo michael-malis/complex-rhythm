@@ -24,7 +24,7 @@ try {
     return original.call(this,when,...args);
    };
   });
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   // Use an entirely native voice: no sample decoding or waveform mock.
   // Keep only the first lane audible, with an evenly spaced 8th-root family.
   const sound=page.locator('#laneSound0');

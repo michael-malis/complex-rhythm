@@ -34,7 +34,7 @@ try {
     return originalArc.apply(this,arguments);
    };
   });
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   await page.locator('#jsonFile').setInputFiles({
    name:'beat-visual.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))
   });

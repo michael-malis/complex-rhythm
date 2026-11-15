@@ -246,6 +246,9 @@ function enableFocusedWheel(input,onStep=null){
 }
 
 const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
+// Decorative underlay: light, polygons, trails and hit ripples. It never
+// carries the measured root/ring/playhead geometry of the main Canvas.
+const backCanvas=$('orbitBack'), back=backCanvas.getContext('2d');
 const orbitInstructions=canvas.getAttribute('aria-label');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='poly';
 let presetModified=false,importedProjectName=null;
@@ -257,6 +260,10 @@ let audio=null,master=null,compressor=null,limiter=null,subFilter=null,noiseBuff
 const sampleBuffers=new Map();const samplePromises=new Map();
 let cvWidth=0,cvHeight=0,pixelRatio=1,lastCycleText='';
 let toastTimeout=null,rootDrag=null;
+let view='play',hoverLane=-1;
+const onboard={play:false,rotate:false,step:false};
+const laneEnergy=[0,0,0,0],lanePrevPhase=[null,null,null,null],laneLastFlash=[0,0,0,0];
+let ripples=[],lastBackFrame=0;
 const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
 function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
 function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
@@ -307,7 +314,7 @@ function composePhases(track) {
  const near=(a,b)=>Math.min(Math.abs(a-b),1-Math.abs(a-b))<1e-6;
  const added=RhythmMath.unique(extra);
  const merged=events(track).map(ev=>({
-  phase:ev.phase,base:ev.sources.some(s=>s.kind==='base'),added:ev.sources.some(s=>s.kind!=='base'),
+  phase:ev.phase,velocity:ev.velocity,base:ev.sources.some(s=>s.kind==='base'),added:ev.sources.some(s=>s.kind!=='base'),
   euclidean:ev.sources.some(s=>s.kind==='euclidean'),
   shared:ev.sources.length>1
  }));
@@ -840,6 +847,106 @@ function buildLaneFields(row,t,i) {
  }
  refresh();
 }
+// Play-surface controls: a draggable miniature of the lane's own ring and a
+// one-tap degree stepper. Both write through the same canonical state and
+// editors as the numeric Lab fields, so math, audio and JSON never fork.
+function rotateLane(i,arg){
+ const t=tracks[i];if(!t||!applyRotation(t,arg))return false;
+ syncVisibleInputs(i);updateLaneStatus(i);if(i===selectedTrack)renderReadout();markCustom();
+ noteOnboard('rotate');
+ return true;
+}
+function buildLaneQuick(t,i){
+ const quick=document.createElement('div');quick.className='lane-quick';
+ const dial=document.createElement('div');dial.className='lane-dial';dial.id='laneDial'+i;
+ dial.setAttribute('role','slider');dial.tabIndex=0;
+ dial.setAttribute('aria-label','Rotate the rhythm of lane '+(i+1));
+ dial.setAttribute('aria-valuemin','-180');dial.setAttribute('aria-valuemax','180');
+ dial.title='Drag around to rotate this rhythm · arrow keys also work';
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+ svg.setAttribute('viewBox','-28 -28 56 56');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');
+ dial.append(svg);
+ let drag=null;
+ const pointerAngle=e=>{const b=dial.getBoundingClientRect();return Math.atan2(e.clientY-(b.top+b.height/2),e.clientX-(b.left+b.width/2))};
+ dial.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  chooseTrack(i);
+  if(t.a===0&&t.b===0)return;
+  drag={id:e.pointerId,startArg:Math.atan2(t.b,t.a),startPointer:pointerAngle(e),moved:false};
+  dial.setPointerCapture(e.pointerId);dial.classList.add('is-dragging');
+ });
+ dial.addEventListener('pointermove',e=>{
+  if(!drag||drag.id!==e.pointerId)return;
+  const raw=pointerAngle(e)-drag.startPointer,delta=Math.atan2(Math.sin(raw),Math.cos(raw));
+  if(!drag.moved&&Math.abs(delta)<.03)return;
+  drag.moved=true;rotateLane(i,drag.startArg+t.n*delta);
+ });
+ const endDrag=e=>{if(drag&&drag.id===e.pointerId){drag=null;dial.classList.remove('is-dragging')}};
+ dial.addEventListener('pointerup',endDrag);dial.addEventListener('pointercancel',endDrag);
+ dial.addEventListener('lostpointercapture',endDrag);
+ dial.addEventListener('keydown',e=>{
+  const step=(e.shiftKey?1:15)*Math.PI/180,now=Math.atan2(t.b,t.a);
+  if(e.key==='ArrowRight'||e.key==='ArrowUp'){e.preventDefault();chooseTrack(i);rotateLane(i,now+step)}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowDown'){e.preventDefault();chooseTrack(i);rotateLane(i,now-step)}
+  else if(e.key==='Home'){e.preventDefault();chooseTrack(i);rotateLane(i,0)}
+ });
+ const stepper=document.createElement('div');stepper.className='lane-stepper';
+ stepper.setAttribute('role','group');stepper.setAttribute('aria-label','Number of evenly spaced hits on lane '+(i+1));
+ const bump=direction=>{
+  chooseTrack(i);
+  const next=Math.max(1,Math.min(64,t.n+direction)),input=$('trackN'+i);
+  if(next===t.n||!input)return;
+  // One editor for the root degree: the stepper drives the numeric field.
+  input.value=String(next);input.dispatchEvent(new Event('input',{bubbles:true}));
+  noteOnboard('step');
+ };
+ const makeStep=(id,text,label,direction)=>{
+  const b=document.createElement('button');b.type='button';b.id=id+i;b.className='step-btn';
+  b.textContent=text;b.setAttribute('aria-label',label+' on lane '+(i+1));b.title=label;
+  b.addEventListener('click',()=>bump(direction));return b;
+ };
+ const value=document.createElement('output');value.className='lane-n';value.id='laneN'+i;
+ value.setAttribute('aria-label','Root degree n of lane '+(i+1));
+ const symbol=document.createElement('span');symbol.className='lane-n-var';symbol.textContent='n';
+ symbol.setAttribute('aria-hidden','true');
+ const number=document.createElement('span');number.className='lane-n-value';number.textContent=String(t.n);
+ value.append(symbol,number);
+ stepper.append(makeStep('laneLess','−','Fewer hits',-1),value,makeStep('laneMore','+','More hits',1));
+ quick.append(dial,stepper);
+ return quick;
+}
+// The miniature repeats the lane's canonical events at the same clockwise
+// angles as the large ring; it is a control, never a second rhythm model.
+function updateLaneQuick(i){
+ const t=tracks[i],dial=$('laneDial'+i);if(!t||!dial)return;
+ const number=$('laneN'+i)?.querySelector('.lane-n-value');
+ if(number)number.textContent=String(t.n);
+ const less=$('laneLess'+i),more=$('laneMore'+i);
+ if(less)less.disabled=t.n<=1;
+ if(more)more.disabled=t.n>=64;
+ const zero=t.a===0&&t.b===0,theta=zero?0:Math.atan2(t.b,t.a)*180/Math.PI;
+ dial.setAttribute('aria-valuenow',String(Math.round(theta)));
+ dial.setAttribute('aria-valuetext',zero?'No base roots: z is zero':Math.round(theta)+' degrees');
+ dial.setAttribute('aria-disabled',String(zero));
+ const all=composePhases(t).merged,R=20,parts=[];
+ const point=phase=>{const a=-Math.PI/2+TAU*phase;return [(Math.cos(a)*R).toFixed(2),(Math.sin(a)*R).toFixed(2)]};
+ parts.push('<circle class="dial-ring" r="'+R+'"/>');
+ if(all.length>=2&&all.length<=16)
+  parts.push('<polygon class="dial-shape" points="'+all.map(e=>point(e.phase).join(',')).join(' ')+'"/>');
+ if(!zero){
+  const [x,y]=point(rootPhases(t)[0]);
+  parts.push('<line class="dial-hand" x1="0" y1="0" x2="'+(x*.62).toFixed(2)+'" y2="'+(y*.62).toFixed(2)+'"/>');
+ }
+ if(all.length<=32){
+  const size=all.length<=6?4:all.length<=12?3.1:all.length<=20?2.3:1.7;
+  for(const e of all){
+   const [x,y]=point(e.phase);
+   parts.push('<circle class="dial-dot'+(e.added&&!e.base?' added':'')+'" cx="'+x+'" cy="'+y+'" r="'+size+'"/>');
+  }
+ }else parts.push('<circle class="dial-dense" r="'+R+'"/>');
+ parts.push('<circle class="dial-hub" r="2.2"/>');
+ dial.querySelector('svg').innerHTML=parts.join('');
+}
 function renderTracks() {
  const wrap=$('tracks');wrap.replaceChildren();
  tracks.forEach((t,i)=>{
@@ -852,11 +959,17 @@ function renderTracks() {
   pick.append(num,dot,name);pick.addEventListener('click',()=>chooseTrack(i,true));
   const sound=document.createElement('select');sound.className='lane-sound';sound.id='laneSound'+i;sound.setAttribute('aria-label','Instrument for lane '+(i+1));
   for(const [key,label] of Object.entries(SOUNDS)){const opt=document.createElement('option');opt.value=key;opt.textContent=label;sound.append(opt)}
-  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack){updateOrbitSummary();renderEditor()}if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
+  sound.value=t.sound;sound.addEventListener('change',e=>{t.sound=e.target.value;if(audio)loadSamples(prioritySampleKeys());if(i===selectedTrack){updateOrbitSummary();renderEditor();updatePlayHint()}if($('advancedSoundDetails').open&&soundLabLane===i)refreshSoundLab(true);markCustom()});
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();if(i===selectedTrack)updateOrbitSummary();if(inspectedRoot)renderRootInspection();markCustom()});
   head.append(pick,sound,mute);row.append(head);
+  row.append(buildLaneQuick(t,i));
+  // A lane card is one large selection target; real controls keep their own behavior.
+  row.addEventListener('click',e=>{
+   if(i===selectedTrack||e.target.closest('button,select,input,summary,label,a,[role="slider"]'))return;
+   chooseTrack(i);
+  });
   // Always-visible instrument gain in each lane. The selected-lane advanced
   // editor keeps a synchronized secondary mirror for backward compatibility.
   const gainRow=document.createElement('label');gainRow.className='lane-volume';
@@ -916,7 +1029,8 @@ function updateLaneStatus(i) {
  if(eq)renderLaneEquation(eq,t);
  if(count)count.textContent=hitLabel(events(t).length)+' / '+(t.cycleBars===1?'bar':t.cycleBars+' bars');
  updateLaneAlt(i);
- if(i===selectedTrack){updateOrbitSummary();renderRootRule();renderRootInspection()}
+ updateLaneQuick(i);
+ if(i===selectedTrack){updateOrbitSummary();renderRootRule();renderRootInspection();updatePlayHint()}
  else if(inspectedRoot?.lane===selectedTrack)renderRootInspection();
 }
 function chooseTrack(i,fromTrackList=false) {
@@ -928,6 +1042,7 @@ function chooseTrack(i,fromTrackList=false) {
  });
  renderEditor();
  updateOrbitSummary();
+ updatePlayHint();
  if(magnified)refreshPlotZoom();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
@@ -1532,6 +1647,7 @@ function applyPreset(p){
  activateLoadedRhythm(phase,cycle);
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
  if(magnified)refreshPlotZoom();
+ updatePlayHint();
 }
 function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('visible'),3300)}
       // Independently licensed samples, CC0. The brazil/jazz bank is acoustic, not a synth simulation.
@@ -1792,7 +1908,10 @@ function scheduleAhead(){
 }
 function updateTransportText(){
  const button=$('playBtn');
- button.textContent=playing?'Ⅱ Pause':transportWanted?'Cancel start':'▶ Play';
+ $('playLabel').textContent=playing?'Ⅱ Pause':transportWanted?'Cancel start':'▶ Play';
+ button.title=playing?'Pause (Space)':'Play (Space)';
+ document.documentElement.dataset.playing=String(playing);
+ if(playing)noteOnboard('play');
  button.setAttribute('aria-pressed',String(playing||transportWanted));
  const ready=prioritySampleKeys().filter(k=>sampleBuffers.has(k)).length,all=prioritySampleKeys().length;
  $('audioState').textContent=playing?('Playing · samples '+ready+'/'+all):
@@ -1854,6 +1973,7 @@ async function previewTrack(index){if(!initAudio())return;try{await audio.resume
 async function previewSound(){return previewTrack(selectedTrack)}
 function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+ backCanvas.width=canvas.width;backCanvas.height=canvas.height;back.setTransform(pixelRatio,0,0,pixelRatio,0,0);
  requestAnimationFrame(positionPhaseLabels);updateMagnifyControl()}
 // Only offer enlargement when the real combined root phases are closer
 // than the required 34 CSS-pixel inspection spacing at the current fit size.
@@ -1910,6 +2030,7 @@ function refreshPlotZoom(){
   const focusX=previous.width>0?(plot.scrollLeft+plot.clientWidth/2)/previous.width:.5;
   const focusY=previous.height>0?(plot.scrollTop+plot.clientHeight/2)/previous.height:.5;
   canvas.style.width=size+'px';canvas.style.height=size+'px';
+  backCanvas.style.width=size+'px';backCanvas.style.height=size+'px';
   requestAnimationFrame(()=>{
    const scrollX=Math.max(0,Math.min(plot.scrollWidth-plot.clientWidth,
     size*focusX-plot.clientWidth/2));
@@ -1920,6 +2041,7 @@ function refreshPlotZoom(){
   });
  }else{
   canvas.style.width='';canvas.style.height='';
+  backCanvas.style.width='';backCanvas.style.height='';
   requestAnimationFrame(resizeCanvas);
  }
 }
@@ -2016,19 +2138,138 @@ function positionPhaseLabels(){
   if(item.axis==='y'&&el.style.top!==value)el.style.top=value;
  }
 }
+// ---------------------------------------------------------------------
+// Decorative underlay. Everything here is feedback and atmosphere: bar
+// ticks, each lane's inscribed polygon, hover/selection light, playhead
+// trails and hit ripples. The measured geometry (rings, 28px roots and four
+// playheads) is painted only by draw() on the main Canvas, so this layer can
+// never change a root's size, position or timing.
+function backCircle(x,y,r,from=0,to=TAU){back.beginPath();back.ellipse(x,y,r,r,0,from,to)}
+function spawnHit(lane,event,now){
+ laneEnergy[lane]=Math.min(1,laneEnergy[lane]*.4+.45+.55*(event.velocity??1));
+ if(reducedMotion)return;
+ ripples.push({lane,phase:event.phase,velocity:event.velocity??1,born:now});
+ if(ripples.length>96)ripples.splice(0,ripples.length-96);
+ // The lane's own strip answers every audible hit of that lane.
+ if(view==='play'&&now-laneLastFlash[lane]>70){
+  laneLastFlash[lane]=now;
+  $('laneDial'+lane)?.animate?.([{transform:'scale(1.13)'},{transform:'scale(1)'}],{duration:200,easing:'cubic-bezier(.2,.7,.2,1)'});
+ }
+}
+// Uses the same phase clock as the playheads: an event is "hit" in the frame
+// in which its lane's hand passes its phase.
+function detectHits(lane,track,phase,marks,now){
+ const previous=lanePrevPhase[lane];
+ const live=playing&&audio&&audio.currentTime>=beatEpoch;
+ lanePrevPhase[lane]=live?phase:null;
+ if(!live||previous===null||track.muted)return;
+ const advance=((phase-previous)%1+1)%1;
+ if(advance<=0||advance>.3)return;
+ for(const mark of marks){
+  const offset=((mark.phase-previous)%1+1)%1;
+  if(offset<advance)spawnHit(lane,mark,now);
+ }
+}
+function drawBack(w,h,radii,laneData,phases,now){
+ const c=back,dark=theme==='dark',outer=radii[0];
+ const dt=Math.min(.1,Math.max(0,(now-lastBackFrame)/1000));lastBackFrame=now;
+ c.clearRect(0,0,w,h);
+ c.save();c.translate(w/2,h/2);c.lineCap='round';c.lineJoin='round';
+ const ink=dark?'244,240,226':'52,50,42';
+ const spacing=Math.min(radii[0]-radii[1],radii[1]-radii[2],radii[2]-radii[3]);
+ // Sixteenth ticks: one revolution is one loop; quarters are heavier.
+ for(let q=0;q<16;q++){
+  const a=-Math.PI/2+TAU*q/16,quarter=q%4===0,from=outer+spacing*.36,to=from+(quarter?9:5);
+  c.beginPath();c.moveTo(Math.cos(a)*from,Math.sin(a)*from);c.lineTo(Math.cos(a)*to,Math.sin(a)*to);
+  c.strokeStyle='rgba('+ink+','+(quarter?.5:.26)+')';c.lineWidth=quarter?1.6:1;c.stroke();
+ }
+ // Quiet cross hairs tie the four rings to the same quarter grid.
+ c.strokeStyle='rgba('+ink+',.07)';c.lineWidth=1;
+ for(let q=0;q<4;q++){
+  const a=TAU*q/4;c.beginPath();
+  c.moveTo(Math.cos(a)*(radii[3]-spacing*.42),Math.sin(a)*(radii[3]-spacing*.42));
+  c.lineTo(Math.cos(a)*(outer+spacing*.3),Math.sin(a)*(outer+spacing*.3));c.stroke();
+ }
+ tracks.forEach((t,i)=>{
+  const r=radii[i],marks=laneData[i].merged,chosen=i===selectedTrack,quiet=t.muted?.4:1;
+  laneEnergy[i]*=Math.exp(-dt*6.5);
+  const energy=reducedMotion?0:laneEnergy[i];
+  // A soft lit track under the selected / hovered ring.
+  const lit=(chosen?.075:0)+(i===hoverLane?.07:0)+energy*.05;
+  if(lit>0){
+   backCircle(0,0,r);c.strokeStyle=rgba(i,lit*quiet);c.lineWidth=Math.min(34,spacing-8);c.stroke();
+  }
+  // The inscribed polygon makes each lane's structure readable at a glance:
+  // n evenly spaced roots form a regular n-gon; unions bend it.
+  if(marks.length>=2&&marks.length<=32){
+   c.beginPath();
+   marks.forEach((mark,k)=>{
+    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
+    if(k)c.lineTo(x,y);else c.moveTo(x,y);
+   });
+   c.closePath();
+   if(marks.length>=3){c.fillStyle=rgba(i,((chosen?.07:.035)+energy*.09)*quiet);c.fill()}
+   c.strokeStyle=rgba(i,((chosen?.6:.34)+energy*.3)*quiet);c.lineWidth=chosen?1.5:1.1;c.stroke();
+  }
+  // Playhead trail: where the hand has just been.
+  if(playing&&!reducedMotion){
+   const head=-Math.PI/2+TAU*phases[i],tail=Math.min(1.15,96/r),steps=12;
+   for(let k=0;k<steps;k++){
+    const f0=k/steps,f1=(k+1)/steps;
+    backCircle(0,0,r,head-tail*(1-f0),head-tail*(1-f1)+.004);
+    c.strokeStyle=rgba(i,f1*f1*.55*quiet);c.lineWidth=1.5+4*f1;c.stroke();
+   }
+  }
+ });
+ // Hit ripples and glow, lane-colored, strength follows event velocity.
+ if(ripples.length){
+  const life=620;
+  ripples=ripples.filter(p=>now-p.born<life);
+  if(dark)c.globalCompositeOperation='lighter';
+  for(const p of ripples){
+   const age=(now-p.born)/life,ease=1-Math.pow(1-age,3),fade=Math.pow(1-age,1.7);
+   const a=-Math.PI/2+TAU*p.phase,r=radii[p.lane],x=Math.cos(a)*r,y=Math.sin(a)*r;
+   const reach=Math.max(22,spacing*.62)*(.75+.5*p.velocity);
+   const glow=c.createRadialGradient(x,y,6,x,y,16+reach);
+   glow.addColorStop(0,rgba(p.lane,(dark?.34:.17)*fade*p.velocity));glow.addColorStop(1,rgba(p.lane,0));
+   backCircle(x,y,16+reach);c.fillStyle=glow;c.fill();
+   backCircle(x,y,15+ease*reach);
+   c.strokeStyle=rgba(p.lane,.62*fade*p.velocity);c.lineWidth=.6+2.2*(1-age);c.stroke();
+  }
+  c.globalCompositeOperation='source-over';
+ }
+ // First-use cue: two small arcs show that a point can be pushed along its ring.
+ if(view==='play'&&!onboard.rotate&&!rootDrag&&!reducedMotion){
+  const t=tracks[selectedTrack];
+  if(t&&!(t.a===0&&t.b===0)){
+   const r=radii[selectedTrack],a=-Math.PI/2+TAU*rootPhases(t)[0],gap=24/r,span=Math.min(.42,34/r);
+   const beat=.5+.5*Math.sin(now/420),alpha=.35+.5*beat,push=beat*5/r;
+   c.strokeStyle=rgba(selectedTrack,alpha);c.fillStyle=rgba(selectedTrack,alpha);c.lineWidth=2.2;
+   for(const side of [1,-1]){
+    const from=a+side*(gap+push),to=a+side*(gap+push+span);
+    backCircle(0,0,r,Math.min(from,to),Math.max(from,to));c.stroke();
+    const tipX=Math.cos(to)*r,tipY=Math.sin(to)*r,tx=-Math.sin(to)*side,ty=Math.cos(to)*side;
+    c.beginPath();c.moveTo(tipX+tx*7,tipY+ty*7);
+    c.lineTo(tipX+Math.cos(to)*5,tipY+Math.sin(to)*5);c.lineTo(tipX-Math.cos(to)*5,tipY-Math.sin(to)*5);
+    c.closePath();c.fill();
+   }
+  }
+ }
+ c.restore();
+}
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
+ const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),elapsed=playbackElapsed();
+ const now=performance.now(),plot=dark?'#20221d':'#faf8f3';
+ const laneData=tracks.map(composePhases);
+ const phases=tracks.map(t=>RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()));
+ tracks.forEach((t,i)=>detectHits(i,t,phases[i],laneData[i].merged,now));
+ // The underlay is painted first; the main Canvas stays transparent so the
+ // lit plate, polygons and ripples show through beneath roots and rings.
+ drawBack(w,h,radii,laneData,phases,now);
  ctx.clearRect(0,0,w,h);
- const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),outer=radii[0],elapsed=playbackElapsed();
- ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fillRect(0,0,w,h);
  ctx.save();ctx.translate(cx,cy);ctx.textAlign='center';ctx.textBaseline='middle';
- const guide=dark?'#4d5046':'#d8d5cd',baseInk=dark?'#dcded3':'#55584f';
- for(let q=0;q<16;q++){
-  const a=-Math.PI/2+TAU*q/16;
-  ctx.beginPath();ctx.moveTo(Math.cos(a)*(outer+6),Math.sin(a)*(outer+6));
-  ctx.lineTo(Math.cos(a)*(outer+(q%4===0?15:10)),Math.sin(a)*(outer+(q%4===0?15:10)));
-  ctx.strokeStyle=guide;ctx.lineWidth=q%4===0?1.35:.7;ctx.stroke();
- }
+ const baseInk=dark?'#dcded3':'#55584f';
  // The quarter-cycle fractions are separate live KaTeX DOM labels, not Canvas text.
  tracks.forEach((t,i)=>{
   const r=radii[i],chosen=i===selectedTrack;
@@ -2051,8 +2292,8 @@ function draw() {
  }
  const ringSpacing=Math.min(radii[0]-radii[1],radii[1]-radii[2],radii[2]-radii[3]);
  tracks.forEach((t,i)=>{
-  const r=radii[i],c=composePhases(t);
-  const phase=RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()),duration=laneSeconds(t);
+  const r=radii[i],c=laneData[i];
+  const phase=phases[i],duration=laneSeconds(t);
   for(const mark of c.merged){
    const a=-Math.PI/2+TAU*mark.phase,x=Math.cos(a)*r,y=Math.sin(a)*r;
    const proximity=((phase-mark.phase)%1+1)%1*duration;
@@ -2067,9 +2308,9 @@ function draw() {
     ctx.strokeStyle=COLORS[i];ctx.globalAlpha=Math.min(.6,.24+pulse*.035);ctx.lineWidth=2.6;ctx.stroke();ctx.restore();
    }
    ctx.beginPath();ctx.arc(x,y,radius,0,TAU);
-   ctx.fillStyle=mark.added&&!mark.base?(dark?'#20221d':'#faf8f3'):COLORS[i];
+   ctx.fillStyle=mark.added&&!mark.base?plot:COLORS[i];
    ctx.fill();ctx.lineWidth=marker.strokeWidth;ctx.strokeStyle=COLORS[i];ctx.stroke();
-   if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=dark?'#20221d':'#faf8f3';ctx.fill()}
+   if(mark.base&&mark.added){ctx.beginPath();ctx.arc(x,y,Math.max(1.5,radius*.4),0,TAU);ctx.fillStyle=plot;ctx.fill()}
    if(pulse>0){ctx.save();ctx.beginPath();ctx.arc(x,y,Math.max(2,radius*.32),0,TAU);ctx.fillStyle=dark?'rgba(255,255,255,.62)':'rgba(255,248,217,.65)';ctx.fill();ctx.restore()}
    // Reduced-motion users still see the audio-clock beat as a stationary
    // brightness change, without expanding or moving the 28px root.
@@ -2135,7 +2376,7 @@ function draw() {
   // root's mathematical center pixel (all cardinal-marker QA samples).
   // On playback, a contrasting arrowhead outline remains visible over hits.
   if(playing){
-   ctx.strokeStyle=dark?'#20221d':'#faf8f3';
+   ctx.strokeStyle=plot;
    ctx.lineWidth=1.4;ctx.stroke();
   }
   ctx.restore();
@@ -2143,10 +2384,23 @@ function draw() {
  lastOrbitalHandFrame={elapsed,beatEpoch,audioTime:audio?.currentTime??null,
   bpm,barSeconds:barSeconds(),playing,selectedLane:selectedTrack,
   hands:pointerEvidence};
- const count=events(tracks[selectedTrack]).length;
- ctx.font=`650 ${Math.max(14,Math.min(24,side*.044))}px system-ui`;
- ctx.fillStyle=COLORS[selectedTrack];ctx.fillText(String(count),0,-3);
- ctx.font='18px system-ui';ctx.fillStyle=baseInk;ctx.fillText('events',0,29);
+ // Center readout: the selected lane's event count and voice.
+ const selected=tracks[selectedTrack],count=laneData[selectedTrack].merged.length;
+ const room=radii[3]-18;
+ if(room>=30){
+  const numberSize=Math.max(20,Math.min(44,room*.62));
+  ctx.font='700 '+numberSize+'px KaTeX_Main,"Iowan Old Style",Georgia,serif';
+  ctx.fillStyle=COLORS[selectedTrack];ctx.fillText(String(count),0,-numberSize*.16);
+  const label=(count===1?'hit':'hits')+' · '+SOUNDS[selected.sound];
+  let labelSize=Math.max(11,Math.min(14,room*.2));
+  ctx.font='600 '+labelSize+'px system-ui,-apple-system,"Segoe UI",sans-serif';
+  const fits=ctx.measureText(label).width<=room*1.75;
+  ctx.fillStyle=baseInk;
+  ctx.fillText(fits?label:(count===1?'hit':'hits'),0,numberSize*.52);
+ }else{
+  ctx.font='700 18px KaTeX_Main,Georgia,serif';
+  ctx.fillStyle=COLORS[selectedTrack];ctx.fillText(String(count),0,0);
+ }
  ctx.restore();
  if(playing&&audio){cycles=Math.floor(elapsed/cycleSeconds())+1}
  const common=RhythmMath.commonCycle(tracks);
@@ -2235,6 +2489,12 @@ function setupEvents() {
  });
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
+ $('presetPrev').addEventListener('click',()=>stepPreset(-1));
+ $('presetNext').addEventListener('click',()=>stepPreset(1));
+ $('presetShuffle').addEventListener('click',surprisePreset);
+ $('viewPlay').addEventListener('click',()=>setView('play'));
+ $('viewLab').addEventListener('click',()=>setView('lab'));
+ window.addEventListener('hashchange',()=>setView(location.hash==='#lab'?'lab':'play',false));
  $('playBtn').addEventListener('click',togglePlay);
  $('resetBtn').addEventListener('click',reset);
  $('previewBtn').addEventListener('click',previewSound);
@@ -2324,21 +2584,41 @@ function setupEvents() {
    rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
      centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false};
    canvas.setPointerCapture(e.pointerId);
-  }else if(extra){
-   inspectedRoot={lane:near.i,kind:extra.source.kind,index:extra.source.index,sourceIndex:extra.source.sourceIndex};
-   renderRootInspection();
+  }else{
+   if(extra){
+    inspectedRoot={lane:near.i,kind:extra.source.kind,index:extra.source.index,sourceIndex:extra.source.sourceIndex};
+    renderRootInspection();
+   }
+   // The whole ring is a handle: dragging anywhere along it turns the
+   // lane's base roots together, exactly like dragging one of its points.
+   if(!(t.a===0&&t.b===0)){
+    rootDrag={id:e.pointerId,track:near.i,n:t.n,startArg:Math.atan2(t.b,t.a),startPointer:Math.atan2(p.y,p.x),
+      centerX:e.clientX-p.x,centerY:e.clientY-p.y,moved:false,ring:true,radius:near.r};
+    canvas.setPointerCapture(e.pointerId);
+   }
   }
  });
+ const nearestRing=p=>{
+  const dist=Math.hypot(p.x,p.y);
+  const near=getRadii(p.side).map((r,i)=>({i,gap:Math.abs(r-dist)})).sort((a,b)=>a.gap-b.gap)[0];
+  return near.gap<=Math.max(22,p.side*.06)?near.i:-1;
+ };
+ canvas.addEventListener('pointermove',e=>{
+  if(rootDrag||e.pointerType==='touch')return;
+  hoverLane=nearestRing(canvasPoint(e));
+  canvas.classList.toggle('is-hot',hoverLane>=0);
+ });
+ canvas.addEventListener('pointerleave',()=>{hoverLane=-1;canvas.classList.remove('is-hot')});
  function updateRootDrag(e){
   if(!rootDrag||rootDrag.id!==e.pointerId)return;
   // Preserve the pointerdown center: dynamic math labels can change layout/scroll anchoring.
   const delta=wrapAngle(Math.atan2(e.clientY-rootDrag.centerY,e.clientX-rootDrag.centerX)-rootDrag.startPointer);
-  if(!rootDrag.moved&&Math.abs(delta)<.004)return;
+  // A press on the empty ring needs a deliberate movement before it rotates;
+  // a press directly on a base root keeps its original fine threshold.
+  if(!rootDrag.moved&&Math.abs(delta)<(rootDrag.ring?Math.max(.03,8/rootDrag.radius):.004))return;
   rootDrag.moved=true;
   const t=tracks[rootDrag.track];
-  if(!applyRotation(t,rootDrag.startArg+t.n*delta))return;
-  syncVisibleInputs(rootDrag.track);
-  updateLaneStatus(rootDrag.track);renderReadout();markCustom();
+  if(!rotateLane(rootDrag.track,rootDrag.startArg+t.n*delta))return;
   canvas.classList.add('is-dragging');
  }
  canvas.addEventListener('pointermove',updateRootDrag);
@@ -2358,6 +2638,11 @@ function setupEvents() {
   // Digit shortcuts are scoped to the focused Canvas, never number editors.
   if(!e.altKey&&!e.ctrlKey&&!e.metaKey&&['1','2','3','4'].includes(e.key)){
    e.preventDefault();chooseTrack(Number(e.key)-1);return;
+  }
+  if(!e.altKey&&!e.ctrlKey&&!e.metaKey&&['+','=','-','_'].includes(e.key)){
+   e.preventDefault();
+   $(((e.key==='+'||e.key==='=')?'laneMore':'laneLess')+selectedTrack)?.click();
+   return;
   }
   if(['[',']','Home','End','Escape'].includes(e.key)){
    e.preventDefault();
@@ -2390,6 +2675,62 @@ function setupEvents() {
  document.addEventListener('pointerdown',e=>{const m=$('fileMenu');if(m.open&&!m.contains(e.target))m.open=false});
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }
+// Play / Lab: one document, two densities. Play is the instrument (rings,
+// transport and four quick lane strips); Lab keeps every number, formula
+// and sound parameter. Switching never touches rhythm, audio or JSON state.
+function refitVisibleMath(){
+ for(let i=0;i<tracks.length;i++){
+  const eq=$('laneEq'+i);if(eq)renderLaneEquation(eq,tracks[i]);
+ }
+ fitRootMath('rootRuleEquation',23,16);
+ fitRootMath('rootRuleValues',18,16);
+ fitRootMath('rootRuleSpacing',18,16);
+}
+function setView(next,updateUrl=true){
+ view=next==='lab'?'lab':'play';
+ document.documentElement.dataset.view=view;
+ $('viewPlay').setAttribute('aria-pressed',String(view==='play'));
+ $('viewLab').setAttribute('aria-pressed',String(view==='lab'));
+ if(view==='play')$('presetDetails').open=true;
+ if(updateUrl)try{history.replaceState(null,'',view==='lab'?'#lab':location.pathname+location.search)}catch(_){}
+ requestAnimationFrame(()=>{resizeCanvas();refitVisibleMath();positionPhaseLabels()});
+}
+// Three short first-use cues; afterwards the same line describes the lane.
+const PLAY_HINTS=Object.freeze({
+ play:'Press play, then drag any point around its ring.',
+ rotate:'Drag any point around its ring to rotate that rhythm.',
+ step:'Now try − and + on a lane to change how many hits it plays.'
+});
+function noteOnboard(key){
+ if(onboard[key])return;
+ onboard[key]=true;
+ if(onboard.play&&onboard.rotate&&onboard.step)try{localStorage.setItem('roots-rhythm-onboarded','1')}catch(_){}
+ updatePlayHint();
+}
+function updatePlayHint(){
+ const el=$('playHint'),t=tracks[selectedTrack];if(!el||!t)return;
+ const pending=['play','rotate','step'].find(key=>!onboard[key]);
+ const bars=t.cycleBars||1;
+ const text=pending?PLAY_HINTS[pending]:
+  'Lane '+(selectedTrack+1)+' · '+SOUNDS[t.sound]+' · '+hitLabel(events(t).length)+' every '+(bars===1?'bar':bars+' bars');
+ if(el.textContent!==text)el.textContent=text;
+ el.classList.toggle('is-cue',!!pending);
+ document.documentElement.dataset.cue=pending||'done';
+ el.style.setProperty('--hint-color',COLORS[selectedTrack]);
+}
+function stepPreset(direction){
+ const list=BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory));
+ if(!list.length)return;
+ const at=list.findIndex(p=>p.id===activePresetId);
+ applyPreset(list[at<0?(direction>0?0:list.length-1):(at+direction+list.length)%list.length]);
+}
+function surprisePreset(){
+ const pool=BROWSE_PRESETS.filter(p=>p.id!==activePresetId);
+ const pick=pool[Math.floor(Math.random()*pool.length)];
+ if(!pick)return;
+ browseCategory=categoryForPreset(pick);
+ applyPreset(pick);
+}
 function setTheme(next,save=false) {
  theme=next==='dark'?'dark':'light';
  document.documentElement.dataset.theme=theme;
@@ -2399,7 +2740,7 @@ function setTheme(next,save=false) {
  $('themeBtn').textContent=theme==='dark'?'Light mode':'Dark mode';
  $('themeBtn').setAttribute('aria-pressed',String(theme==='dark'));
  if(save)try{localStorage.setItem('roots-rhythm-theme',theme)}catch(_){}
- if(tracks.length){renderTracks();renderEditor();scheduleSoundWavePreview()}
+ if(tracks.length){renderTracks();renderEditor();scheduleSoundWavePreview();updatePlayHint()}
 }
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({
@@ -2435,8 +2776,15 @@ window.RhythmResearch=Object.freeze({
  eventMetadata:track=>events(cleanTrack(track,0)).map(e=>({phase:e.phase,velocity:e.velocity,sources:e.sources.map(x=>({...x}))})),
  rootPhases:track=>rootPhases(cleanTrack(track,0))
 });
-let savedTheme='light';
-try{savedTheme=localStorage.getItem('roots-rhythm-theme')||'light'}catch(_){}
+// A saved choice wins; otherwise follow the system color scheme.
+let savedTheme=null;
+try{
+ savedTheme=localStorage.getItem('roots-rhythm-theme');
+ if(localStorage.getItem('roots-rhythm-onboarded')==='1')onboard.play=onboard.rotate=onboard.step=true;
+}catch(_){}
+if(savedTheme!=='light'&&savedTheme!=='dark')
+ savedTheme=window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light';
+setView(location.hash==='#lab'?'lab':'play',false);
 initMath();setupEvents();applyPreset(PRESETS.find(p=>p.id==='afro')||PRESETS[0]);setTheme(savedTheme);
 // Keep the *visible* math fitted after window resizing; layout changes do
 // not modify any musical or mathematical source value.
@@ -2445,12 +2793,7 @@ window.addEventListener('resize',()=>{
  if(pendingMathResize)cancelAnimationFrame(pendingMathResize);
  pendingMathResize=requestAnimationFrame(()=>{
   pendingMathResize=0;
-  for(let i=0;i<tracks.length;i++){
-   const eq=$('laneEq'+i);if(eq)renderLaneEquation(eq,tracks[i]);
-  }
-  fitRootMath('rootRuleEquation',23,16);
-  fitRootMath('rootRuleValues',18,16);
-  fitRootMath('rootRuleSpacing',18,16);
+  refitVisibleMath();
  });
 });
 resizeCanvas();requestAnimationFrame(draw);

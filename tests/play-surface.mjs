@@ -60,6 +60,10 @@ try{
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
+  // Leave the pointer off every control and let the theme transition finish
+  // so the stored screenshots show the resting state.
+  await page.mouse.move(2,viewport.height-2);
+  await page.waitForTimeout(350);
   await settle(page);
 
   // ---- first screen ---------------------------------------------------
@@ -172,7 +176,8 @@ try{
    assert.ok(Math.abs(Math.atan2(now.current.tracks[2].b,now.current.tracks[2].a)-Math.PI/12)<1e-6,
     label+': an arrow key turns the dial by 15 degrees');
    assert.equal(await page.locator('#laneDial2').getAttribute('aria-valuenow'),'15');
-   await page.locator('#laneDial3').evaluate(e=>e.scrollIntoView({block:'center'}));
+   await page.locator('#laneDial3').evaluate(e=>e.scrollIntoView({block:'center',behavior:'instant'}));
+   await settle(page);
    const dial=await page.locator('#laneDial3').boundingBox();
    const dialAt=angle=>[dial.x+dial.width/2+Math.cos(angle)*dial.width*.3,dial.y+dial.height/2+Math.sin(angle)*dial.height*.3];
    await page.mouse.move(...dialAt(0));
@@ -184,7 +189,8 @@ try{
    assert.ok(Math.abs(Math.atan2(lane3.b,lane3.a)-lane3.n*Math.PI/2)<.02||
     circular(Math.atan2(lane3.b,lane3.a)/TAU,lane3.n/4)<.004,
     label+': dragging the dial a quarter turn rotates the lane a quarter turn');
-   await page.evaluate(()=>scrollTo(0,0));
+   await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+   await settle(page);
 
    // ---- browse rhythms without stopping ---------------------------------
    await page.locator('#presetNext').click();

@@ -2397,7 +2397,9 @@ function draw() {
   const fits=ctx.measureText(label).width<=room*1.75;
   ctx.fillStyle=baseInk;
   ctx.fillText(fits?label:(count===1?'hit':'hits'),0,numberSize*.52);
- }else{
+ }else if(room>=13){
+  // On the smallest phones the inner ring is filled by its own root; the
+  // lane strip already shows the count, so nothing is drawn over the ring.
   ctx.font='700 18px KaTeX_Main,Georgia,serif';
   ctx.fillStyle=COLORS[selectedTrack];ctx.fillText(String(count),0,0);
  }

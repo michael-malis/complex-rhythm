@@ -223,7 +223,34 @@ try{
    await page.locator('#playBtn').click();
    await page.waitForFunction(()=>!window.RhythmResearch.transport().playing,null,{timeout:10000});
    assert.equal((await state(page)).playingFlag,'false');
-   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, pause';
+
+   // ---- dense rings can be magnified without leaving Play ----------------
+   await page.evaluate(()=>{
+    const input=document.getElementById('trackN3');
+    input.value='48';input.dispatchEvent(new Event('input',{bubbles:true}));
+   });
+   await settle(page);
+   assert.equal((await state(page)).current.tracks[3].n,48);
+   assert.ok(await page.locator('#zoomBtn').isVisible(),label+': dense roots offer magnification');
+   await page.locator('#zoomBtn').click();
+   await settle(page);
+   const zoom=await page.evaluate(()=>{
+    const box=e=>{const b=e.getBoundingClientRect();return {left:b.left,top:b.top,width:b.width,height:b.height}};
+    const plot=document.getElementById('plotArea');
+    return {focused:plot.classList.contains('focused'),main:box(document.getElementById('orbitCanvas')),
+     back:box(document.getElementById('orbitBack')),plot:box(plot),
+     scrollWidth:document.documentElement.scrollWidth,innerWidth,innerHeight};
+   });
+   assert.ok(zoom.focused&&zoom.main.width>=900,label+': magnified Canvas '+JSON.stringify(zoom.main));
+   assert.ok(Math.abs(zoom.back.width-zoom.main.width)<1.5&&Math.abs(zoom.back.left-zoom.main.left)<1.5&&
+    Math.abs(zoom.back.top-zoom.main.top)<1.5,label+': the underlay follows magnification '+JSON.stringify(zoom));
+   assert.ok(zoom.scrollWidth<=zoom.innerWidth+1&&zoom.plot.width<=zoom.innerWidth+1&&zoom.plot.height<=zoom.innerHeight,
+    label+': the magnified plot scrolls inside its own frame '+JSON.stringify(zoom.plot));
+   await page.screenshot({path:directory+'/'+viewport.name+'-'+theme+'-zoom.png'});
+   await page.locator('#zoomBtn').click();
+   await settle(page);
+   assert.equal(await page.evaluate(()=>document.getElementById('plotArea').classList.contains('focused')),false);
+   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, pause, zoom';
   }
   assert.deepEqual(errors,[],label+': no runtime errors');
   report.push(entry);

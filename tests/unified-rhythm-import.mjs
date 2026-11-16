@@ -11,9 +11,11 @@ try {
  page.on('pageerror',err=>errors.push(err.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const presets=await page.evaluate(()=>window.RhythmResearch.presets());
- const bunker=presets.find(p=>p.category==='bunker'&&p.tracks.some(t=>t.sound==='kick'));
- const jungle=presets.find(p=>p.category==='jungle'&&p.tracks.some(t=>t.sound==='kick'));
- assert.ok(bunker&&jungle,'fixture must use real presets from two categories with different kick sample families');
+ // A preset's sample family (kit) is independent of the category it is listed in.
+ const bunker=presets.find(p=>p.kit==='bunker'&&p.tracks.some(t=>t.sound==='kick'));
+ const jungle=presets.find(p=>p.kit==='jungle'&&p.tracks.some(t=>t.sound==='kick'));
+ assert.ok(bunker&&jungle,'fixture must use real presets from two different kick sample families');
+ assert.notEqual(bunker.category,jungle.category,'the two fixtures are listed in different categories');
 
  const select=async p=>{
   await page.locator('#categorySelect').selectOption(p.category);
@@ -26,7 +28,7 @@ try {
  report.push({step:'bunker',plan});
 
  // User browsing is never a request to switch loaded audio family.
- await page.locator('#categorySelect').selectOption('jungle');
+ await page.locator('#categorySelect').selectOption(jungle.category);
  const whileBrowsing=await page.evaluate(()=>window.RhythmResearch.samplePlan());
  assert.deepEqual(whileBrowsing,plan,'filtering other examples preserves the loaded sample family');
 
@@ -44,7 +46,7 @@ try {
  plan=await page.evaluate(()=>window.RhythmResearch.samplePlan());
  assert.equal(plan.category,'jungle','JSON import updates the loaded sound category before sample planning');
  assert.ok(plan.keys.includes('kick-808'),'Jungle kick uses intended 808 sample, not the previous Bunker family');
- assert.equal(await page.locator('#categorySelect').inputValue(),'jungle','example browser follows imported named preset');
+ assert.equal(await page.locator('#categorySelect').inputValue(),jungle.category,'example browser follows imported named preset');
  const after=await page.evaluate(()=>window.RhythmResearch.transport());
  assert.equal(after.activePresetId,jungle.id,'recognize named imported project');
  assert.equal(after.playing,true,'JSON import keeps transport playing');

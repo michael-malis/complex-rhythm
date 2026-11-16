@@ -26,7 +26,8 @@ try{
    const initial=await page.evaluate(()=>window.RhythmResearch.current());
    const allIds=new Set();
    const categories=await page.locator('#categorySelect option').evaluateAll(items=>items.map(i=>i.value));
-   assert.equal(categories.length,12,'eleven direct source categories plus curated Featured Grooves');
+   assert.equal(categories.length,10,'nine source categories plus the curated Start Here tour');
+   assert.equal(categories[0],'grooves','the curated tour is the first choice');
    for(const category of categories.filter(c=>c!=='grooves')){
     await page.locator('#categorySelect').selectOption(category);
     const ids=await page.locator('#presetSelect option').evaluateAll(items=>
@@ -48,13 +49,19 @@ try{
    await page.locator('#categorySelect').selectOption('grooves');
    const options=await page.locator('#presetSelect option').evaluateAll(items=>
     items.filter(i=>i.value!=='__browse__').map(i=>({value:i.value,text:i.textContent})));
-   assert.equal(options.length,6,'Featured Grooves has six curated choices');
-   assert.ok(options.every(v=>/^0[1-6] · /.test(v.text)));
+   assert.equal(options.length,8,'Start Here has eight curated choices');
+   assert.ok(options.every(v=>allIds.has(v.value)&&v.text.trim().length>3),
+    'every curated choice is a real catalog rhythm shown under its own name');
+   const tourGroups=await page.evaluate(ids=>{
+    const byId=new Map(window.RhythmResearch.presets().map(p=>[p.id,p.category]));
+    return [...new Set(ids.map(id=>byId.get(id)))];
+   },options.map(v=>v.value));
+   assert.ok(tourGroups.length>=6,'the tour crosses at least six source categories: '+tourGroups.join(', '));
    assert.equal(await page.evaluate(()=>window.RhythmResearch.transport().activePresetId),identity,
-    'filtering Featured Grooves never loads music');
+    'filtering Start Here never loads music');
    await page.locator('#presetSelect').selectOption('berlin-bass-wall');
    assert.equal(await page.locator('#categorySelect').inputValue(),'grooves',
-    'an explicit Featured preset keeps the current category');
+    'an explicit Start Here preset keeps the current category');
    const loaded=await page.evaluate(()=>window.RhythmResearch.current());
    assert.equal(loaded.tracks[0].n,4,'Bass Wall retains four quarter-note kicks per one-bar kick cycle');
    assert.equal(loaded.tracks[0].cycleBars,1,'kick remains a one-bar mathematical orbit');
@@ -135,8 +142,8 @@ try{
   }
  }
  fs.writeFileSync('artifacts/production-grooves/report.json',JSON.stringify({
-  status:'PASS',description:'Four viewport/theme production checks for six browsing grooves, acoustic bongo sample aliases, visible independent gain, numeric roots and no math scrollbar; not human listening acceptance',
+  status:'PASS',description:'Four viewport/theme production checks for the eight-rhythm Start Here tour, acoustic bongo sample aliases, visible independent gain, numeric roots and no math scrollbar; not human listening acceptance',
   results
  },null,2));
- console.log('PASS production UI and six groove collection in '+results.length+' responsive/theme states');
+ console.log('PASS production UI and eight-rhythm Start Here tour in '+results.length+' responsive/theme states');
 }finally{await browser.close()}

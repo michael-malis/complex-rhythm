@@ -219,7 +219,7 @@ try {
  verify(total===51,'expected 35 original, 15 experimental, and one Song Examples study');
  await page.locator('#categorySelect').selectOption('poly');
  const poly=await page.locator('#presetSelect option').allTextContents();
- for(const ratio of ['2 : 3','3 : 4','3 : 5','4 : 7','5 : 7'])
+ for(const ratio of ['2:3','3:4','3:5','4:7','5:7'])
   verify(poly.some(t=>t.includes(ratio)),'polyrhythm ratio '+ratio);
  await page.locator('#categorySelect').selectOption('brazil');
  verify((await page.locator('#presetSelect option').allTextContents()).filter(t=>t.includes('Bossa Nova')).length===1,'one Bossa Nova preset');

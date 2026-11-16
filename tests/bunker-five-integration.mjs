@@ -94,12 +94,12 @@ try{
  'Dust · Half-light remains original');
  assert.ok(dust.hasSources);
  assert.deepEqual(errors,[],'integrated Bunker model produces no browser errors');
- const result={status:'PASS',scope:'BUNK-07 real 5-preset canonical math/audio event evidence and 44 untouched non-Bunker references; not human audition',
+ const result={status:'PASS',scope:'BUNK-07 real 5-preset canonical math/audio event evidence and 44 non-Bunker presets identical to the tracked inventory; not human audition',
   designed:bunkerIds.map(id=>({id,bpm:current.get(id).bpm,
    events:current.get(id).attackCount,roots:current.get(id).tracks.map(t=>t.n)})),
   productionMixEvidence:inspected,protectedOtherPresets:44,protectedDust:true,
   distinctScheduledEventMaps:signatures.size};
  fs.writeFileSync('artifacts/bunker-integration/report.json',JSON.stringify(result,null,2));
- console.log('PASS five distinct Bunker events, all 40 quarter kicks measured, 44 untouched catalog configurations, separate audible-mix evidence');
+ console.log('PASS five distinct Bunker events, all 40 quarter kicks measured, 44 catalog configurations identical to the tracked inventory, separate audible-mix evidence');
  await page.close();
 }finally{await browser.close()}

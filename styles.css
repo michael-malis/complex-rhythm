@@ -823,6 +823,10 @@ html[data-view="play"] .lane-math-term{font-size:16px!important}
  html[data-view="play"] .lane-equation{width:auto;flex:1 1 auto;color:var(--sub);overflow:hidden;flex-wrap:nowrap}
  html[data-view="play"] .lane-count{font-size:16px;font-weight:600;color:var(--muted);white-space:nowrap}
 }
+/* common laptop heights: a one-line description keeps all four lane cards on screen (click it to read on) */
+@media(min-width:980px) and (max-height:960px){
+ html[data-view="play"] .preset-info:not(.is-open){-webkit-line-clamp:1}
+}
 /* short laptop screens: single-row strips so all four lanes stay on screen */
 @media(min-width:980px) and (max-height:800px){
  html[data-view="play"] .lane{grid-template-columns:52px minmax(0,1fr) auto 44px;grid-template-areas:"dial sound step mute";padding:8px 12px}

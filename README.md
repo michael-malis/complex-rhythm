@@ -13,6 +13,8 @@ The previous historical item ledger and artificial completion ratios have been r
 
 The site opens in **Play**: the four rings fill the screen, one round button starts the sound, and three gestures change the rhythm — drag a point (or its whole ring) to rotate a lane, tap − / + to change how many evenly spaced hits it plays, and step through the examples with ‹ › or **Surprise me**. **Lab** (top bar, or the `#lab` link) is the full mathematical workbench described below, with every number, formula, union editor and sound parameter. Both views edit the same rhythm, so switching never changes what is playing or what is exported.
 
+**Weight.** No audio is downloaded until the visitor touches the page; after that only the loaded rhythm's own samples are fetched. A still picture is repainted a few times per second instead of on every animation frame, and any input restores full-rate drawing at once. `tests/play-surface.mjs` holds byte budgets for the first load and the sample library, so the page cannot grow heavier unnoticed.
+
 ## Current mathematical workbench update — November 2026
 
 The graph comes first on phones and tablets; on wide screens, all four editable lane cards are arranged 2×2 next to it. Each track has an independent 1–16-bar cycle; the least common multiple determines the full repeat period. The public preset browser contains 51 examples: 50 original/experimental mathematical rhythms plus one user-supplied Song Examples study. These remain mathematical root-event models with a separate Euclidean generator, real root-set union/intersection and distinct instrument voices.

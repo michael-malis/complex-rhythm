@@ -25,6 +25,12 @@ const viewports=[
  {name:'small-phone',width:360,height:640,touch:true,mobile:true,scale:2}
 ];
 const report=[];
+// Weight budgets, uncompressed bytes. They exist so the page cannot grow
+// heavier unnoticed; raise one only together with the reason in the PR.
+const CODE_BUDGET=680000,FIRST_LOAD_BUDGET=980000,SAMPLE_LIBRARY_BUDGET=3000000;
+const sampleLibrary=fs.readdirSync('samples').reduce((n,file)=>n+fs.statSync('samples/'+file).size,0);
+assert.ok(sampleLibrary<=SAMPLE_LIBRARY_BUDGET,
+ 'sample library is '+sampleLibrary+' bytes; budget '+SAMPLE_LIBRARY_BUDGET);
 const state=page=>page.evaluate(()=>{
  const R=window.RhythmResearch,root=document.documentElement;
  return {view:root.dataset.view,theme:root.dataset.theme,playingFlag:root.dataset.playing,cue:root.dataset.cue,
@@ -59,6 +65,21 @@ try{
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // ---- weight: what a visitor downloads before touching anything ---------
+  await page.waitForLoadState('load');
+  const weight=await page.evaluate(()=>document.fonts.ready.then(()=>{
+   const size=e=>e.decodedBodySize||e.encodedBodySize||e.transferSize||0;
+   const all=[...performance.getEntriesByType('navigation'),...performance.getEntriesByType('resource')];
+   const sum=list=>list.reduce((n,e)=>n+size(e),0);
+   return {total:sum(all),files:all.length,
+    code:sum(all.filter(e=>!/[.](woff2?|ttf)([?]|$)/.test(e.name)&&!e.name.includes('/samples/'))),
+    samples:all.filter(e=>e.name.includes('/samples/')).map(e=>e.name)};
+  }));
+  assert.deepEqual(weight.samples,[],label+': no audio is downloaded before the visitor touches the page');
+  assert.ok(weight.code>300000&&weight.code<=CODE_BUDGET,
+   label+': uncompressed page code '+weight.code+' bytes must stay within '+CODE_BUDGET);
+  assert.ok(weight.total<=FIRST_LOAD_BUDGET,
+   label+': uncompressed first load '+weight.total+' bytes must stay within '+FIRST_LOAD_BUDGET);
   if(theme==='dark')await page.locator('#themeBtn').click();
   // Leave the pointer off every control and let the theme transition finish
   // so the stored screenshots show the resting state.
@@ -131,7 +152,7 @@ try{
   await page.waitForTimeout(700);
   await page.screenshot({path:directory+'/'+viewport.name+'-'+theme+'-playing.png'});
 
-  const entry={viewport:viewport.name,theme,plotPx:Math.round(layout.plot.width),underlayPixels:layout.painted};
+  const entry={weight,viewport:viewport.name,theme,plotPx:Math.round(layout.plot.width),underlayPixels:layout.painted};
   if(viewport.interact&&theme==='light'){
    // ---- drag a point around its ring ----------------------------------
    const before=playing.current.tracks[0];
@@ -223,6 +244,22 @@ try{
    await page.locator('#playBtn').click();
    await page.waitForFunction(()=>!window.RhythmResearch.transport().playing,null,{timeout:10000});
    assert.equal((await state(page)).playingFlag,'false');
+
+   // ---- a still picture is cheap ----------------------------------------
+   await page.mouse.move(2,viewport.height-2);
+   await page.waitForTimeout(2400);
+   const still=await page.evaluate(()=>window.RhythmResearch.frames());
+   await page.waitForTimeout(1000);
+   const later=await page.evaluate(()=>window.RhythmResearch.frames());
+   assert.ok(later.painted-still.painted<=8,
+    label+': an idle page repaints a few times per second, got '+(later.painted-still.painted));
+   assert.ok(later.skipped-still.skipped>=10,label+': the animation loop itself keeps running');
+   await page.keyboard.press('Shift');
+   await page.waitForTimeout(400);
+   const awake=await page.evaluate(()=>window.RhythmResearch.frames());
+   assert.ok(awake.painted-later.painted>=8,
+    label+': any input restores full-rate drawing, got '+(awake.painted-later.painted));
+   entry.idleFramesPerSecond=later.painted-still.painted;
 
    // ---- dense rings can be magnified without leaving Play ----------------
    await page.evaluate(()=>{

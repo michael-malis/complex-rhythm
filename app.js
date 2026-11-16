@@ -2379,7 +2379,9 @@ function positionPhaseLabels(){
   const el=$(item.id);if(!el)continue;
   const label=el.getBoundingClientRect(),w=label.width,h=label.height;
   if(!w||!h)continue;
-  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4);
+  // In Play the corners of the plot square hold round controls; labels keep clear of them.
+  const corner=view==='play'?50:0;
+  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4-corner);
   const shifts=[55,68,82,96,110,125,140].filter(x=>x<=maxShift);
   if(!shifts.length)shifts.push(maxShift);
   let best=shifts[0],fewest=Infinity;

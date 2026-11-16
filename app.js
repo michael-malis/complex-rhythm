@@ -1886,7 +1886,7 @@ function applyPreset(p){
  activeCategory=p.kit||'other';
  if(!inBrowse(p,browseCategory))browseCategory=categoryForPreset(p);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
- activateLoadedRhythm(phase,cycle);
+ activateLoadedRhythm(phase,cycle);restartModes();
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
  if(magnified)refreshPlotZoom();
  updatePlayHint();
@@ -2155,14 +2155,34 @@ function scheduleAhead(){
  if(to<=from)return;
  const relFrom=Math.max(0,from-beatEpoch),relTo=Math.max(0,to-beatEpoch);
  if(relTo<=relFrom)return;
- const lanes=currentSchedulerLanes();
- const future=RhythmMath.planEvents(lanes,barSeconds(),relFrom,relTo);
+ let start=relFrom,lower=-Infinity;
+ if(driftOn){
+  const bar=barSeconds();
+  // (Re)anchor after a restart or a long pause in scheduling.
+  if(driftNextBar===null||driftNextBar*bar>relTo+4*bar)driftNextBar=2*Math.floor(relFrom/bar/2+1e-9)+2;
+  // The lane steps exactly on the bar line: events before it use the old
+  // phase, events from it on the new one. Nothing already sounding is cut.
+  while(driftNextBar*bar<relTo){
+   const edge=driftNextBar*bar;
+   if(edge>start){emitEvents(start,edge,from,to,lower,edge);start=edge;lower=edge}
+   driftStep();driftNextBar+=2;
+  }
+ }
+ emitEvents(start,relTo,from,to,lower,Infinity);
+ scheduledUntil=to;
+}
+function emitEvents(relFrom,relTo,from,to,lower,upper){
+ if(relTo<=relFrom)return;
+ const lanes=currentSchedulerLanes(),bar=barSeconds();
+ const future=RhythmMath.planEvents(lanes,bar,relFrom,relTo);
  for(const hitEvent of future){
   const at=beatEpoch+hitEvent.time;
-  if(at>=from&&at<to)hit(hitEvent.instrument,at,hitEvent.velocity*hitEvent.gain,
+  if(at<from||at>=to||hitEvent.time<lower||hitEvent.time>=upper)continue;
+  if(buildOn&&!buildAudible(hitEvent.lane,Math.floor(hitEvent.time/bar+1e-9)))continue;
+  emittedHits[hitEvent.lane]++;
+  hit(hitEvent.instrument,at,hitEvent.velocity*hitEvent.gain,
     hitEvent.cycle*lanes[hitEvent.lane].events.length+hitEvent.sourceEvent,hitEvent.patch);
  }
- scheduledUntil=to;
 }
 function updateTransportText(){
  const button=$('playBtn');
@@ -2421,7 +2441,7 @@ function detectHits(lane,track,phase,marks,now){
  const previous=lanePrevPhase[lane];
  const live=playing&&audio&&audio.currentTime>=beatEpoch;
  lanePrevPhase[lane]=live?phase:null;
- if(!live||previous===null||track.muted)return;
+ if(!live||previous===null||track.muted||!buildAudible(lane,currentBarIndex()))return;
  const advance=((phase-previous)%1+1)%1;
  if(advance<=0||advance>.3)return;
  for(const mark of marks){
@@ -2450,7 +2470,7 @@ function drawBack(w,h,radii,laneData,phases,now){
   c.lineTo(Math.cos(a)*(outer+spacing*.3),Math.sin(a)*(outer+spacing*.3));c.stroke();
  }
  tracks.forEach((t,i)=>{
-  const r=radii[i],marks=laneData[i].merged,chosen=i===selectedTrack,quiet=t.muted?.4:1;
+  const r=radii[i],marks=laneData[i].merged,chosen=i===selectedTrack,quiet=t.muted||(playing&&!buildAudible(i,currentBarIndex()))?.4:1;
   laneEnergy[i]*=Math.exp(-dt*6.5);
   const energy=reducedMotion?0:laneEnergy[i];
   // A soft lit track under the selected / hovered ring.
@@ -2561,7 +2581,7 @@ function draw() {
    const proximity=((phase-mark.phase)%1+1)%1*duration;
    // Hold the 1.4x+ beat accent for several animation frames. A one-frame
    // mathematical peak can be missed by 60 Hz displays between audio attacks.
-   const beatActive=playing&&audio&&audio.currentTime>=beatEpoch&&!t.muted&&proximity<.18;
+   const beatActive=playing&&audio&&audio.currentTime>=beatEpoch&&!t.muted&&proximity<.18&&buildAudible(i,currentBarIndex());
    const requestedPulse=beatActive&&!reducedMotion?(proximity<=.05?8:8*Math.pow((.18-proximity)/.13,2)):0;
    const marker=visualRootMarker(ringSpacing,requestedPulse,mark.base&&mark.added);
    const {radius,pulse}=marker;
@@ -2670,6 +2690,7 @@ function draw() {
  const common=RhythmMath.commonCycle(tracks);
  const currentBar=Math.floor(elapsed/barSeconds())%common;
  const label=`Bar ${currentBar+1} / ${common} · 4/4`;
+ if(buildOn&&playing){const bar=currentBarIndex();if(bar!==lastModeBar){lastModeBar=bar;updateModeButtons()}}
  if(label!==lastCycleText){$('timeDisplay').textContent=label;lastCycleText=label}
  requestAnimationFrame(draw);
 }
@@ -2755,7 +2776,10 @@ function setupEvents() {
  $('viewLab').addEventListener('click',()=>setView('lab'));
  window.addEventListener('hashchange',()=>setView(location.hash==='#lab'?'lab':'play',false));
  $('playBtn').addEventListener('click',togglePlay);
- $('resetBtn').addEventListener('click',reset);
+ $('resetBtn').addEventListener('click',()=>{reset();restartModes()});
+ $('driftBtn').addEventListener('click',()=>setDrift(!driftOn));
+ $('buildBtn').addEventListener('click',()=>setBuild(!buildOn));
+ updateModeButtons();
  $('previewBtn').addEventListener('click',previewSound);
  $('advancedSoundDetails').addEventListener('toggle',event=>{
   if(event.target.open)refreshSoundLab(true);
@@ -3045,7 +3069,7 @@ function loadProject(d,meta){
  activeCategory=meta.kit||'other';
  if(meta.browse)browseCategory=meta.browse;
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
- activateLoadedRhythm(phase,cycle);
+ activateLoadedRhythm(phase,cycle);restartModes();
  renderPresets();renderTracks();renderEditor();renderWindowTimeline();
  if(magnified)refreshPlotZoom();
  updatePlayHint();
@@ -3162,6 +3186,62 @@ function mutateRhythm(){
   name:importedProjectName,origin:projectOrigin,kit:activeCategory});
  showToast('Mutation · '+note);
 }
+// ---- Modes: a loop that changes while it plays -------------------------------
+// Drift is phase music: one lane steps a sixteenth later every two bars while
+// the others hold still, and comes home after a full circle. Build is a
+// 16-bar arrangement: lanes enter one by one, play together, break, return.
+// Both act where events are scheduled; neither edits mutes or saved data.
+let driftOn=false,driftLane=0,driftSteps=0,driftNextBar=null;
+let buildOn=false,buildOrigin=0,lastModeBar=-1;
+const emittedHits=[0,0,0,0];
+const BUILD_SCRIPT=Object.freeze([[0],[0],[0,2],[0,2],[0,1,2],[0,1,2],null,null,null,null,null,null,[1,2],[1,2],null,null]);
+function currentBarIndex(){return Math.floor(playbackElapsed()/barSeconds()+1e-9)}
+function buildPosition(bar=currentBarIndex()){return (((bar-buildOrigin)%16)+16)%16}
+function buildAudible(lane,bar){
+ if(!buildOn)return true;
+ const cast=BUILD_SCRIPT[buildPosition(bar)];
+ return !cast||cast.includes(lane);
+}
+function driftGrid(){return 16*(tracks[driftLane]?.cycleBars||1)}
+function restartModes(){driftSteps=0;driftNextBar=null;buildOrigin=currentBarIndex();updateModeButtons()}
+function updateModeButtons(){
+ const drift=$('driftBtn'),build=$('buildBtn');if(!drift||!build)return;
+ drift.setAttribute('aria-pressed',String(driftOn));
+ drift.style.setProperty('--mode-color',COLORS[driftLane]);
+ drift.title=driftOn?'Drift is on: lane '+(driftLane+1)+', step '+driftSteps+' of '+driftGrid()+' · click to stop'
+  :'Drift: the selected lane steps a sixteenth later every two bars';
+ build.setAttribute('aria-pressed',String(buildOn));
+ build.title=buildOn?'Build is on: bar '+(buildPosition()+1)+' of 16 · click to stop'
+  :'Build: lanes enter one by one, play together, break and return';
+}
+function setDrift(on){
+ driftOn=Boolean(on);
+ if(driftOn){driftLane=selectedTrack;driftSteps=0;driftNextBar=null}
+ updateModeButtons();wake();
+ showToast(driftOn?'Drift · lane '+(driftLane+1)+' steps a sixteenth later every two bars and comes home after '+
+  2*driftGrid()+' bars'+(playing?'':' · press Play'):'Drift off · the lane stays where it is');
+}
+function setBuild(on){
+ buildOn=Boolean(on);buildOrigin=currentBarIndex();lastModeBar=-1;
+ updateModeButtons();wake();
+ showToast(buildOn?'Build · lanes enter one by one over 16 bars'+(playing?'':' · press Play'):'Build off · all lanes play');
+}
+// Moves the lane's own data; the lane cards keep their references to it.
+function shiftLaneInPlace(t,delta){
+ const turned=shiftedLane(t,delta);
+ t.a=turned.a;t.b=turned.b;
+ (t.layers||[]).forEach((layer,k)=>{layer.a=turned.layers[k].a;layer.b=turned.layers[k].b});
+ if(t.euclidean&&turned.euclidean)t.euclidean.rotation=turned.euclidean.rotation;
+}
+function driftStep(){
+ const t=tracks[driftLane];if(!t)return;
+ shiftLaneInPlace(t,1/driftGrid());
+ driftSteps=(driftSteps+1)%driftGrid();
+ syncVisibleInputs(driftLane);updateLaneStatus(driftLane);
+ if(driftLane===selectedTrack){renderReadout();if(t.layers.length)renderLayers()}
+ // No reschedule: the scheduler itself split the window at the bar line.
+ markCustom(false);updateModeButtons();
+}
 // ---- Live play ---------------------------------------------------------------
 let soloLane=-1,soloRestore=null;
 function toggleSolo(i){
@@ -3186,6 +3266,7 @@ function tapTempo(){
  const input=$('bpm');
  input.value=String(Math.max(Number(input.min),Math.min(Number(input.max),Math.round(60000/beat))));
  input.dispatchEvent(new Event('input',{bubbles:true}));
+ showToast('Tempo '+input.value+' BPM');
 }
 // Stage: nothing but the rings and the transport, for a big screen or a party.
 function stageOn(){return document.documentElement.dataset.stage==='on'}
@@ -3230,6 +3311,9 @@ window.RhythmResearch=Object.freeze({
  markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  frames:()=>({painted:paintedFrames,skipped:skippedFrames,gap:frameGap(performance.now())}),
+ modes:()=>({drift:{on:driftOn,lane:driftLane,steps:driftSteps,grid:driftGrid()},
+  build:{on:buildOn,position:buildPosition(),audible:tracks.map((_,i)=>buildAudible(i,currentBarIndex()))},
+  emitted:[...emittedHits]}),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,kit:p.kit||'other',bpm:p.bpm,bars:p.bars||1,
   character:p.character||'',mathNote:p.mathNote||'',

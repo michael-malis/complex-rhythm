@@ -333,6 +333,49 @@ try{
    await page.keyboard.press('f');
    assert.equal(await page.evaluate(()=>document.documentElement.dataset.stage||'off'),'off');
 
+   // ---- modes: Build and Drift act in the scheduler, on the bar line -------
+   await page.locator('#categorySelect').selectOption('poly');
+   await page.locator('#presetSelect').selectOption('poly-2-3');
+   await page.locator('#presetSelect').selectOption('afro');
+   const modes=()=>page.evaluate(()=>({...window.RhythmResearch.modes(),transport:window.RhythmResearch.transport(),
+    phases:window.RhythmResearch.current().tracks.map(t=>window.RhythmResearch.events(t).map(e=>e.phase))}));
+   const idleModes=await modes();
+   assert.equal(idleModes.drift.on,false);assert.equal(idleModes.build.on,false);
+   assert.deepEqual(idleModes.build.audible,[true,true,true,true],label+': with Build off every lane is audible');
+   await page.locator('#buildBtn').click();
+   const building=await modes();
+   assert.equal(building.build.on,true);
+   assert.deepEqual(building.build.audible,[true,false,false,false],label+': Build starts with the first lane alone');
+   await page.waitForTimeout(1700);
+   const afterBuild=await modes();
+   assert.ok(afterBuild.emitted[0]>building.emitted[0],label+': the first lane keeps sounding during the build');
+   assert.deepEqual(afterBuild.emitted.slice(1),building.emitted.slice(1),
+    label+': lanes waiting for their entrance schedule nothing '+JSON.stringify([building.emitted,afterBuild.emitted]));
+   assert.deepEqual(afterBuild.phases,building.phases,label+': Build never edits the rhythm');
+   assert.deepEqual((await state(page)).current.tracks.map(t=>t.muted),[false,false,false,false],label+': Build never touches mutes');
+   await page.locator('#buildBtn').click();
+   await page.waitForTimeout(1300);
+   const afterBuildOff=await modes();
+   assert.ok(afterBuildOff.emitted[2]>afterBuild.emitted[2]&&afterBuildOff.emitted[1]>afterBuild.emitted[1],
+    label+': switching Build off brings every lane back');
+
+   await page.locator('#driftBtn').click();
+   const drifting=await modes();
+   assert.equal(drifting.drift.on,true);assert.equal(drifting.drift.steps,0);
+   await page.waitForFunction(()=>window.RhythmResearch.modes().drift.steps>=1,null,{timeout:20000});
+   const drifted=await modes();
+   const driftLaneIndex=drifted.drift.lane,driftTurn=drifted.drift.steps/drifted.drift.grid;
+   const near=(a,b)=>{const d=Math.abs(a-b)%1;return Math.min(d,1-d)<1e-6};
+   assert.ok(drifting.phases[driftLaneIndex].length>0&&drifting.phases[driftLaneIndex].every(p=>drifted.phases[driftLaneIndex].some(q=>near(q,p+driftTurn))),
+    label+': the drifting lane moved a whole sixteenth per step '+JSON.stringify([drifting.phases[driftLaneIndex],drifted.phases[driftLaneIndex],driftTurn]));
+   for(let other=0;other<4;other++)if(other!==driftLaneIndex)
+    assert.deepEqual(drifted.phases[other],drifting.phases[other],label+': Drift leaves lane '+(other+1)+' alone');
+   assert.equal(drifted.transport.voiceBusGenerations,drifting.transport.voiceBusGenerations,
+    label+': a drift step does not cut sounding voices');
+   assert.equal(drifted.transport.playing,true);
+   await page.locator('#driftBtn').click();
+   assert.equal((await modes()).drift.on,false);
+
    // ---- pause ------------------------------------------------------------
    await page.locator('#playBtn').click();
    await page.waitForFunction(()=>!window.RhythmResearch.transport().playing,null,{timeout:10000});
@@ -383,7 +426,7 @@ try{
    await page.locator('#zoomBtn').click();
    await settle(page);
    assert.equal(await page.evaluate(()=>document.getElementById('plotArea').classList.contains('focused')),false);
-   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, roll, mutate, undo, mute and solo keys, tap tempo, stage, pause, zoom';
+   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, roll, mutate, undo, mute and solo keys, tap tempo, stage, build, drift, pause, zoom';
   }
   assert.deepEqual(errors,[],label+': no runtime errors');
   report.push(entry);

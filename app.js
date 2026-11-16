@@ -3190,20 +3190,26 @@ const SOUND_ROLES=Object.freeze([
  ['bass','reese','acid','agogo','acidClassic','acidDark']
 ]);
 // One small change to one audible lane; everything else stays as it was.
+// Rounded phases and velocities of a lane, to tell whether a move changed it.
+function eventsOf(t){return events(t).map(e=>Math.round(e.phase*1e6)+':'+Math.round((e.velocity??1)*100))}
 function mutateRhythm(){
  const pick=list=>list[Math.floor(Math.random()*list.length)];
  const next=JSON.parse(JSON.stringify(tracks)),moves=[];
  next.forEach((t,i)=>{
   if(t.muted)return;
   const lane='Lane '+(i+1),grid=16*(t.cycleBars||1);
-  if(t.a||t.b)moves.push(()=>{
-   const direction=Math.random()<.5?-1:1;next[i]=shiftedLane(t,direction/grid);
+  // Offer only moves that change something: a lane whose hits already fall
+  // on every sixteenth is identical after a one-sixteenth shift.
+  const shifts=[-1,1].map(direction=>({direction,lane:shiftedLane(t,direction/grid)}))
+   .filter(x=>JSON.stringify(eventsOf(x.lane))!==JSON.stringify(eventsOf(t)));
+  if((t.a||t.b)&&shifts.length)moves.push(()=>{
+   const {direction,lane:moved}=pick(shifts);next[i]=moved;
    return lane+' moved one sixteenth '+(direction>0?'later':'earlier');
   });
   if(t.n<16)moves.push(()=>{t.n++;return lane+' now has '+t.n+' evenly spaced hits'});
   if(t.n>1)moves.push(()=>{t.n--;return lane+' now has '+t.n+' evenly spaced '+(t.n===1?'hit':'hits')});
   const role=SOUND_ROLES.find(sounds=>sounds.includes(t.sound));
-  if(role)moves.push(()=>{t.sound=pick(role.filter(sound=>sound!==t.sound));return lane+' now plays '+SOUNDS[t.sound]});
+  if(role&&role.some(sound=>sound!==t.sound))moves.push(()=>{t.sound=pick(role.filter(sound=>sound!==t.sound));return lane+' now plays '+SOUNDS[t.sound]});
   if(t.layers.length<5)moves.push(()=>{
    const step=Math.floor(Math.random()*grid);
    t.layers.push({a:Math.cos(TAU*step/grid),b:Math.sin(TAU*step/grid),n:1,velocity:Number((.3+Math.random()*.3).toFixed(2))});

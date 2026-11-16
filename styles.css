@@ -698,3 +698,8 @@ html[data-view="lab"] .lane-count{color:var(--ink);font-weight:700}
  html[data-view="lab"] .volume-control{flex:1 1 100%;width:auto;padding:0 0 0 8px}
  html[data-view="lab"] footer{flex-direction:column;align-items:center;gap:0}
 }
+/* tablets: the top bar keeps its words only where they fit */
+@media(min-width:600px) and (max-width:899px){
+ #themeBtn,.file-btn{width:44px;min-width:44px;padding:0;gap:0}
+ #themeBtn span,.file-btn span{display:none}
+}

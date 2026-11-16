@@ -67,6 +67,8 @@ try {
  const mobileHit=await context.newPage();
  await mobileHit.setViewportSize({width:390,height:844});
  await mobileHit.goto(base,{waitUntil:'domcontentloaded'});
+ // The check is about the hit radius, not about where the plot sits on the page.
+ await mobileHit.locator('#orbitCanvas').evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
  const hitInfo=await mobileHit.evaluate(()=>{
    const rect=document.querySelector('#orbitCanvas').getBoundingClientRect();
    return {x:rect.left+rect.width/2,y:rect.top+rect.height/2-rect.width*.427};

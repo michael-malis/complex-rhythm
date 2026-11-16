@@ -2717,6 +2717,8 @@ function setupEvents() {
   if(open)renderRootRule();
  });
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
+ $('presetInfo').title='Click to show or hide the full description';
+ $('presetInfo').addEventListener('click',e=>e.currentTarget.classList.toggle('is-open'));
  $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('presetPrev').addEventListener('click',()=>stepPreset(-1));
  $('presetNext').addEventListener('click',()=>stepPreset(1));

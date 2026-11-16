@@ -749,6 +749,8 @@ html[data-view="play"] .tap-btn.is-tapped{animation:tapflash .28s ease-out}
 html[data-view="play"] .transport .range-field output{text-decoration:underline dotted 1px;text-underline-offset:5px}
 /* stage: only the rings and the transport */
 html[data-view="play"] .stage-btn{display:grid;place-items:center;position:absolute;right:0;top:2px;z-index:3;width:44px;min-width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;border-color:var(--line);background:var(--card);color:var(--sub)}
+/* when the magnify pill is offered it owns the top-right corner; the stage button steps below it */
+html[data-view="play"] .visual-stage:has(.figure-tools:not([hidden])) .stage-btn{top:50px}
 html[data-view="play"] .stage-btn::before{content:"";width:15px;height:15px;border:2px solid currentColor;border-radius:4px;transition:width .15s,height .15s}
 html[data-view="play"] .stage-btn[aria-pressed="true"]::before{width:8px;height:8px}
 html[data-stage="on"] body{overflow:hidden}

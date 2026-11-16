@@ -488,7 +488,18 @@ let view='play',hoverLane=-1;
 const onboard={play:false,rotate:false,step:false};
 const laneEnergy=[0,0,0,0],lanePrevPhase=[null,null,null,null],laneLastFlash=[0,0,0,0];
 let ripples=[],lastBackFrame=0;
-const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches});
+// Frame budget. While something moves (playback, a drag, a ripple, a recent
+// input) every animation frame is painted. A still picture is repainted only
+// a few times per second, which is what keeps an open tab cool on a phone.
+let hotUntil=0,lastPaint=0,paintedFrames=0,skippedFrames=0;
+function wake(ms=1200){hotUntil=Math.max(hotUntil,performance.now()+ms)}
+function frameGap(now){
+ if(playing||rootDrag||now<hotUntil||ripples.length||laneEnergy.some(e=>e>.004))return 0;
+ // The first-use cue breathes slowly; twenty frames per second are plenty.
+ if(view==='play'&&!onboard.rotate&&!reducedMotion)return 48;
+ return 250;
+}
+const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');let reducedMotion=motionQuery?.matches??false;motionQuery?.addEventListener?.('change',e=>{reducedMotion=e.matches;wake()});
 function safeInt(v,lo,hi,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.round(n))):fallback}
 function safeReal(v,fallback){const n=Number(v);return Number.isFinite(n)&&Math.abs(n)<=10000?n:fallback}
 function sanitizeVoicePatch(raw) {
@@ -1834,6 +1845,7 @@ function renderWindowTimeline() {
 }
 let pendingEditReschedule=false;
 function markCustom(reschedule=true){
+ wake();
  if(activePresetId!==null&&!presetModified){presetModified=true;renderPresets()}
  // Invalidate any notes already planned under the old complex-number/patch
  // model. Batch rapid slider/drag inputs into one render-frame update.
@@ -1854,6 +1866,7 @@ function markCustom(reschedule=true){
 // audio transition after replacing tracks, tempo and loaded category.
 // Browse-only category changes never call this function.
 function activateLoadedRhythm(phase,cycle){
+ wake();
  if(audio)loadSamples(prioritySampleKeys());
  if(playing&&audio){
   cancelVoices();
@@ -1915,13 +1928,29 @@ function showToast(msg){$('toast').textContent=msg;$('toast').classList.add('vis
         }
         return [...keys].filter(key=>SAMPLE_FILES[key]);
       }
+      // Encoded sample bytes may be fetched before an AudioContext exists: the
+      // context needs a user gesture, the download does not. Decoding still
+      // happens exactly once, when audio is running.
+      const sampleBytes=new Map();
+      function fetchSampleBytes(key){
+        if(!sampleBytes.has(key))sampleBytes.set(key,fetch(SAMPLE_FILES[key])
+          .then(response=>{if(!response.ok)throw Error(`${response.status}: ${key}`);return response.arrayBuffer()})
+          .catch(error=>{sampleBytes.delete(key);throw error}));
+        return sampleBytes.get(key);
+      }
+      // Called on the first sign that the visitor is about to play, so the
+      // first Play does not wait for the network. Only the loaded rhythm's
+      // own sounds are requested, never the whole library.
+      function prewarmSamples(){
+        for(const key of prioritySampleKeys())
+          if(!sampleBuffers.has(key)&&!samplePromises.has(key))fetchSampleBytes(key).catch(()=>{});
+      }
       function loadSamples(keys=prioritySampleKeys()){
         if(!audio)return Promise.resolve(0);
         const jobs=keys.filter(k=>SAMPLE_FILES[k]).map(key=>{
           if(sampleBuffers.has(key))return Promise.resolve();
-          if(!samplePromises.has(key))samplePromises.set(key,fetch(SAMPLE_FILES[key])
-            .then(response=>{if(!response.ok)throw Error(`${response.status}: ${key}`);return response.arrayBuffer()})
-            .then(data=>audio.decodeAudioData(data))
+          if(!samplePromises.has(key))samplePromises.set(key,fetchSampleBytes(key)
+            .then(data=>{sampleBytes.delete(key);return audio.decodeAudioData(data)})
             .then(buffer=>sampleBuffers.set(key,buffer))
             .catch(err=>{console.warn('Sample unavailable; synthesizer fallback:',key,err.message)}));
           return samplePromises.get(key);
@@ -2145,6 +2174,7 @@ function updateTransportText(){
   transportWanted?'Preparing audio…':'Ready to play';
 }
 async function togglePlay(){
+ wake();
  // Intent changes synchronously, before the first await. Two quick Play clicks
  // must not create duplicate schedulers or start playback after cancellation.
  if(playing||transportWanted){
@@ -2198,7 +2228,7 @@ async function togglePlay(){
 function reset(){pausedPhase=0;cycles=1;if(playing&&audio){cancelVoices();beatEpoch=audio.currentTime+.06;scheduledUntil=audio.currentTime}}
 async function previewTrack(index){if(!initAudio())return;try{await audio.resume();const t=tracks[index];await Promise.race([loadSamples([sampleKey(t.sound),...(t.sound==='jazzshaker'?['jazzshaker-alt']:[])]),new Promise(resolve=>setTimeout(resolve,1600))]);hit(t.sound,audio.currentTime+.014,t.gain??1,0,t.patch)}catch(err){showToast('Preview failed: '+err.message)}}
 async function previewSound(){return previewTrack(selectedTrack)}
-function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
+function resizeCanvas(){const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;wake();cvWidth=width;cvHeight=height;pixelRatio=Math.min(2.5,devicePixelRatio||1);
  canvas.width=Math.max(1,Math.round(width*pixelRatio));canvas.height=Math.max(1,Math.round(height*pixelRatio));ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
  backCanvas.width=canvas.width;backCanvas.height=canvas.height;back.setTransform(pixelRatio,0,0,pixelRatio,0,0);
  requestAnimationFrame(positionPhaseLabels);updateMagnifyControl()}
@@ -2486,8 +2516,11 @@ function drawBack(w,h,radii,laneData,phases,now){
 }
 function draw() {
  const w=cvWidth,h=cvHeight;if(w<2||h<2){requestAnimationFrame(draw);return}
+ const now=performance.now(),gap=frameGap(now);
+ if(gap&&now-lastPaint<gap){skippedFrames++;requestAnimationFrame(draw);return}
+ lastPaint=now;paintedFrames++;
  const dark=theme==='dark',side=Math.min(w,h),cx=w/2,cy=h/2,radii=getRadii(side),elapsed=playbackElapsed();
- const now=performance.now(),plot=dark?'#20221d':'#faf8f3';
+ const plot=dark?'#20221d':'#faf8f3';
  const laneData=tracks.map(composePhases);
  const phases=tracks.map(t=>RhythmMath.phaseAt(elapsed,t.cycleBars||1,barSeconds()));
  tracks.forEach((t,i)=>detectHits(i,t,phases[i],laneData[i].merged,now));
@@ -2904,6 +2937,13 @@ function setupEvents() {
   e.preventDefault();togglePlay();
  });
  document.addEventListener('pointerdown',e=>{const m=$('fileMenu');if(m.open&&!m.contains(e.target))m.open=false});
+ for(const type of ['pointerdown','pointermove','pointerup','keydown','keyup','input','change','click','wheel','focusin','toggle'])
+  document.addEventListener(type,()=>wake(),{capture:true,passive:true});
+ document.addEventListener('visibilitychange',()=>wake());
+ // First touch anywhere, or reaching for Play: fetch this rhythm's sounds.
+ for(const type of ['pointerdown','keydown'])document.addEventListener(type,prewarmSamples,{capture:true,passive:true,once:true});
+ for(const type of ['pointerenter','focus','touchstart'])$('playBtn').addEventListener(type,prewarmSamples,{passive:true});
+ document.fonts?.ready?.then(()=>wake());
  if(window.ResizeObserver)new ResizeObserver(resizeCanvas).observe($('plotArea'));else window.addEventListener('resize',resizeCanvas);
 }
 // Play / Lab: one document, two densities. Play is the instrument (rings,
@@ -2918,6 +2958,7 @@ function refitVisibleMath(){
  fitRootMath('rootRuleSpacing',18,16);
 }
 function setView(next,updateUrl=true){
+ wake();
  view=next==='lab'?'lab':'play';
  document.documentElement.dataset.view=view;
  $('viewPlay').setAttribute('aria-pressed',String(view==='play'));
@@ -2963,6 +3004,7 @@ function surprisePreset(){
  applyPreset(pick);
 }
 function setTheme(next,save=false) {
+ wake();
  theme=next==='dark'?'dark':'light';
  document.documentElement.dataset.theme=theme;
  document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#181916':'#f2efe8';
@@ -2998,6 +3040,7 @@ window.RhythmResearch=Object.freeze({
  }),
  markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
+ frames:()=>({painted:paintedFrames,skipped:skippedFrames,gap:frameGap(performance.now())}),
  presets:()=>PRESETS.map(p=>({
   id:p.id,name:p.name,category:p.category,kit:p.kit||'other',bpm:p.bpm,bars:p.bars||1,
   character:p.character||'',mathNote:p.mathNote||'',

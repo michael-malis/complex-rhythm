@@ -67,6 +67,8 @@ try {
  const mobileHit=await context.newPage();
  await mobileHit.setViewportSize({width:390,height:844});
  await mobileHit.goto(base,{waitUntil:'domcontentloaded'});
+ // The check is about the hit radius, not about where the plot sits on the page.
+ await mobileHit.locator('#orbitCanvas').evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
  const hitInfo=await mobileHit.evaluate(()=>{
    const rect=document.querySelector('#orbitCanvas').getBoundingClientRect();
    return {x:rect.left+rect.width/2,y:rect.top+rect.height/2-rect.width*.427};
@@ -219,7 +221,7 @@ try {
  verify(total===51,'expected 35 original, 15 experimental, and one Song Examples study');
  await page.locator('#categorySelect').selectOption('poly');
  const poly=await page.locator('#presetSelect option').allTextContents();
- for(const ratio of ['2 : 3','3 : 4','3 : 5','4 : 7','5 : 7'])
+ for(const ratio of ['2:3','3:4','3:5','4:7','5:7'])
   verify(poly.some(t=>t.includes(ratio)),'polyrhythm ratio '+ratio);
  await page.locator('#categorySelect').selectOption('brazil');
  verify((await page.locator('#presetSelect option').allTextContents()).filter(t=>t.includes('Bossa Nova')).length===1,'one Bossa Nova preset');

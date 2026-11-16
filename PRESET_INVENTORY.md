@@ -18,7 +18,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.72 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.68 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.65
 
-**Nearest timing neighbors (Jaccard):** house (0.2813), samba-drive (0.2813), batucada (0.2647)
+**Nearest timing neighbors (Jaccard):** batucada (0.5135), steel-rave (0.4412), samba-drive (0.3571)
 
 **Fingerprint:** 0:0;2:31250;1:62500;2:62500;2:93750;0:125000;3:125000;2:156250;1:187500;2:218750;3:218750;0:250000;2:281250;1:312500;2:312500;1:343750;2:343750;0:375000;3:375000;2:406250;1:437500;3:437500;2:468750;0:500000;2:531250;1:562500;2:562500;2:593750;0:625000;3:625000;2:656250;1:687500;2:718750;3:718750;0:750000;2:781250;1:812500;2:812500;1:843750;2:843750;0:875000;3:875000;2:906250;1:937500;3:937500;2:968750
 
@@ -37,30 +37,34 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.06 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.85 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.72 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.7
 
-**Nearest timing neighbors (Jaccard):** shaft (0.65), dust (0.5676), stomp-circuit (0.5385)
+**Nearest timing neighbors (Jaccard):** dust (0.5676), house (0.5641), peak-pressure (0.54)
 
 **Fingerprint:** 0:0;2:62500;3:83333;0:125000;1:125000;2:125000;2:187500;3:218750;0:250000;2:312500;0:375000;1:375000;2:375000;3:416667;1:437500;2:437500;0:500000;2:562500;3:593750;0:625000;1:625000;2:625000;2:687500;0:750000;3:750000;2:812500;0:875000;1:875000;2:875000;3:906250;1:937500;2:937500
 
 ## Ventilation · Industrial (shaft)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 143 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Group:** original catalog · **Category:** bunker · **BPM:** 143 · **Common period:** 2 bars · **Shared phase groups:** 6.
+**Musical role:** Industrial Techno · an immovable hard quarter kick and dry backbeat under seven-spoke metallic clangs and three-against-four low FM machinery. Quiet, intentional machine pickups alternate across two bars without drowning the pulse.
+**Mathematical design:** The one-bar R₄(1) kick supplies every quarter-note. Independent two-bar R₄(−1) snare, R₇(−1) metallic and R₃(i) FM orbits interlock with nine individually sourced first-degree complex roots. The 7:3 cross-rhythm preserves its own circle and audio-clock hand.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | tom | 0, 0.5 | 0@1, 0.5@1, 0.8125@0.45 |
+| 2 | -1 + 0i | 180 | 4 | 2 | snare | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.31, 0.625@1, 0.875@1, 0.9375@0.37 |
+| 3 | -1 + 0i | 180 | 7 | 2 | metallic | 0.071429, 0.214286, 0.357143, 0.5, 0.642857, 0.785714, 0.928571 | 0.071429@1, 0.15625@0.34, 0.214286@1, 0.357143@1, 0.40625@0.44, 0.5@1, 0.642857@1, 0.65625@0.32, 0.785714@1, 0.90625@0.42, 0.928571@1 |
+| 4 | 0 + 1i | 90 | 3 | 2 | fmPerc | 0.083333, 0.416667, 0.75 | 0.083333@1, 0.21875@0.38, 0.416667@1, 0.59375@0.46, 0.75@1, 0.84375@0.33 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.06 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.79 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.48 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.46
 
-**Nearest timing neighbors (Jaccard):** baile-funk (0.6667), dust (0.6667), concrete (0.65)
+**Nearest timing neighbors (Jaccard):** concrete (0.4318), house (0.3333), steel-rave (0.2969)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;0:250000;1:250000;2:250000;2:375000;0:500000;2:500000;3:500000;2:625000;0:750000;1:750000;2:750000;3:812500;2:875000
+**Fingerprint:** 0:0;2:71429;3:83333;0:125000;1:125000;2:156250;2:214286;3:218750;0:250000;2:357143;0:375000;1:375000;2:406250;3:416667;1:437500;0:500000;2:500000;3:593750;0:625000;1:625000;2:642857;2:656250;0:750000;3:750000;2:785714;3:843750;0:875000;1:875000;2:906250;2:928571;1:937500
 
 ## Dust · Half-light (dust)
 
 **Group:** original catalog · **Category:** bunker · **BPM:** 134 · **Common period:** 1 bars · **Shared phase groups:** 5.
+**Musical role:** Sparse half-light techno, kept as the plain reference: quarter-note kick, rim on 2 and 4, open hats on the offbeats and a two-note sub with one late pickup.
+**Mathematical design:** R₄(1) kick against R₂(−1) rim and R₄(−1) hats; the bass is R₂(1) plus one first-degree root at step 14 of 16.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
@@ -71,26 +75,28 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), liquid-corrosion (0.7333), house (0.7222)
+**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.6875), house (0.6667), warehouse-hammer (0.6111)
 
 **Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;0:750000;1:750000;2:875000;3:875000
 
-## Iron · Peak (iron)
+## Iron · Hard Groove (iron)
 
-**Group:** original catalog · **Category:** bunker · **BPM:** 151 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Group:** original catalog · **Category:** bunker · **BPM:** 151 · **Common period:** 2 bars · **Shared phase groups:** 5.
+**Musical role:** Hard Groove Techno · strict hard four-quarter kick, rolling clipped claps, driving coarse hats and syncopated low toms. Two-bar response accents create tension without burying the kick or cloning the industrial/acid patterns.
+**Mathematical design:** One-bar R₄(1) holds eight unwavering kicks over two bars. Independent two-bar R₄(−1) claps, R₁₂(−1) hats and R₅(i) toms interweave with twelve separate first-degree pickup roots; every syncopation retains complex-root phase and velocity provenance.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1, 0.875@0.58 |
-| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | -1 + 0i | 180 | 4 | 1 | acid | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
+| 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
+| 2 | -1 + 0i | 180 | 4 | 2 | clap | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.35, 0.375@1, 0.4375@0.42, 0.625@1, 0.6875@0.32, 0.875@1, 0.9375@0.46 |
+| 3 | -1 + 0i | 180 | 12 | 2 | hat | 0.041667, 0.125, 0.208333, 0.291667, 0.375, 0.458333, 0.541667, 0.625, 0.708333, 0.791667, 0.875, 0.958333 | 0.041667@1, 0.0625@0.38, 0.125@1, 0.208333@1, 0.291667@1, 0.3125@0.47, 0.375@1, 0.458333@1, 0.541667@1, 0.5625@0.37, 0.625@1, 0.708333@1, 0.791667@1, 0.8125@0.44, 0.875@1, 0.958333@1 |
+| 4 | 0 + 1i | 90 | 5 | 2 | tom | 0.05, 0.25, 0.45, 0.65, 0.85 | 0.05@1, 0.21875@0.54, 0.25@1, 0.40625@0.44, 0.45@1, 0.65@1, 0.71875@0.58, 0.85@1, 0.90625@0.48 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.07 · L2: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.87 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.72 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.78
 
-**Nearest timing neighbors (Jaccard):** steel-rave (0.9), peak-pressure (0.8571), warehouse-hammer (0.7)
+**Nearest timing neighbors (Jaccard):** pressure (0.7778), concrete (0.4898), resonance-rush (0.3692)
 
-**Fingerprint:** 0:0;2:0;2:125000;3:125000;0:250000;1:250000;2:250000;2:375000;3:375000;0:500000;2:500000;2:625000;3:625000;0:750000;1:750000;2:750000;0:875000;2:875000;3:875000
+**Fingerprint:** 0:0;2:41667;3:50000;2:62500;0:125000;1:125000;2:125000;1:187500;2:208333;3:218750;0:250000;3:250000;2:291667;2:312500;0:375000;1:375000;2:375000;3:406250;1:437500;3:450000;2:458333;0:500000;2:541667;2:562500;0:625000;1:625000;2:625000;3:650000;1:687500;2:708333;3:718750;0:750000;2:791667;2:812500;3:850000;0:875000;1:875000;2:875000;3:906250;1:937500;2:958333
 
 ## Pressure · Acid Underground (pressure)
 
@@ -107,47 +113,53 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.05 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.67 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.62
 
-**Nearest timing neighbors (Jaccard):** concrete (0.4792), shaft (0.4314), steel-rave (0.4)
+**Nearest timing neighbors (Jaccard):** iron (0.7778), concrete (0.4792), dust (0.383)
 
 **Fingerprint:** 0:0;2:41667;3:50000;2:62500;0:125000;1:125000;2:125000;3:156250;2:208333;0:250000;3:250000;2:291667;2:312500;3:343750;0:375000;1:375000;2:375000;1:437500;3:450000;2:458333;0:500000;2:541667;2:562500;3:562500;0:625000;1:625000;2:625000;3:650000;2:708333;0:750000;3:750000;2:791667;2:812500;3:850000;0:875000;1:875000;2:875000;1:937500;2:958333
 
 ## Classic House · 4/4 (house)
 
-**Group:** original catalog · **Category:** other · **BPM:** 125 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Group:** original catalog · **Category:** other · **BPM:** 125 · **Common period:** 2 bars · **Shared phase groups:** 8.
+**Musical role:** Four-on-the-floor kick, claps on 2 and 4, open hats on every offbeat and a syncopated sub-bass answer.
+**Mathematical design:** Kick R₄(1) and hats R₄(−1) are the same square, turned by half a step. The clap circle spans two bars so one soft pickup root can announce the turnaround.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
+| 2 | -1 + 0i | 180 | 4 | 2 | clap | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1, 0.9375@0.34 |
 | 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
+| 4 | 0 − 1i | -90 | 2 | 1 | bass | 0.375, 0.875 | 0.1875@0.6, 0.375@1, 0.6875@0.66, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.84
 
-**Nearest timing neighbors (Jaccard):** warehouse-hammer (0.7368), dust (0.7222), acid-303 (0.7)
+**Nearest timing neighbors (Jaccard):** acid-303 (0.7568), dust (0.6667), warehouse-hammer (0.6486)
 
-**Fingerprint:** 0:0;3:0;2:125000;3:125000;0:250000;1:250000;3:250000;2:375000;3:375000;0:500000;3:500000;2:625000;3:625000;0:750000;1:750000;3:750000;2:875000;3:875000
+**Fingerprint:** 0:0;2:62500;3:93750;0:125000;1:125000;2:187500;3:187500;0:250000;2:312500;3:343750;0:375000;1:375000;2:437500;3:437500;0:500000;2:562500;3:593750;0:625000;1:625000;2:687500;3:687500;0:750000;2:812500;3:843750;0:875000;1:875000;1:937500;2:937500;3:937500
 
 ## Dub · Half-time (dub)
 
-**Group:** original catalog · **Category:** other · **BPM:** 78 · **Common period:** 1 bars · **Shared phase groups:** 2.
+**Group:** original catalog · **Category:** other · **BPM:** 78 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Musical role:** Half-time dub: the snare drops on beat 3, hats skank on the offbeats and a heavy bass walks around the kick.
+**Mathematical design:** The snare is a single root at −1. Kick and bass share R₂(1); quiet first-degree roots displace them by one or two sixteenths.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 2 | 1 | kick | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.68 |
-| 2 | -1 + 0i | 180 | 1 | 1 | snare | 0.5 | 0.5@1 |
-| 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1 |
+| 1 | 1 + 0i | 0 | 2 | 1 | kick | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.6 |
+| 2 | -1 + 0i | 180 | 1 | 1 | snare | 0.5 | 0.5@1, 0.9375@0.28 |
+| 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.34, 0.625@1, 0.8125@0.3, 0.875@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.375@0.66, 0.5@1, 0.875@0.5 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.82 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.66 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.88
 
-**Nearest timing neighbors (Jaccard):** ambient (0.5385), dust (0.5333), liquid-corrosion (0.5333)
+**Nearest timing neighbors (Jaccard):** maracatu (0.4815), dust (0.4737), liquid-corrosion (0.45)
 
-**Fingerprint:** 0:0;3:0;2:125000;2:375000;0:500000;1:500000;3:500000;2:625000;0:687500;2:875000
+**Fingerprint:** 0:0;3:0;2:125000;2:375000;3:375000;2:437500;0:500000;1:500000;3:500000;2:625000;0:687500;2:812500;2:875000;3:875000;1:937500
 
-## Polyrhythm · 3 : 4 (afro)
+## Polyrhythm · 3:4 (afro)
 
 **Group:** original catalog · **Category:** poly · **BPM:** 116 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Musical role:** Three toms against four rim clicks: the classic cross-rhythm. A shaker keeps straight eighths and the bass marks the one.
+**Mathematical design:** R₃(1) against R₄(1). A triangle and a square share only the vertex at 1, so the two voices meet once per bar.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
@@ -158,11 +170,11 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** ghostline (0.6), subpressure (0.5789), neuro-burst (0.5714)
+**Nearest timing neighbors (Jaccard):** ghostline (0.5217), neuro-burst (0.5217), bossa-classic (0.5)
 
 **Fingerprint:** 0:0;1:0;2:0;3:0;2:125000;1:250000;2:250000;0:333333;2:375000;1:500000;2:500000;2:625000;0:666667;1:750000;2:750000;2:875000
 
-## Polyrhythm · 5 : 7 (minimal)
+## Polyrhythm · 5:7 (minimal)
 
 **Group:** original catalog · **Category:** poly · **BPM:** 124 · **Common period:** 1 bars · **Shared phase groups:** 1.
 **Musical role:** Five equally spaced tom hits oppose seven rim hits; hats give an eight-pulse reference and the kick marks the cycle start.
@@ -175,168 +187,188 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 | 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
 | 4 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.6 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.9
 
-**Nearest timing neighbors (Jaccard):** afro (0.4231), poly-4-7 (0.4167), subpressure (0.4)
+**Nearest timing neighbors (Jaccard):** poly-4-7 (0.7083), afro (0.4231), bossa-classic (0.3519)
 
 **Fingerprint:** 0:0;1:0;2:0;3:0;2:125000;1:142857;0:200000;2:250000;1:285714;2:375000;0:400000;1:428571;2:500000;1:571429;0:600000;2:625000;1:714286;2:750000;0:800000;1:857143;2:875000
 
 ## Slow Orbit · Space (ambient)
 
-**Group:** original catalog · **Category:** other · **BPM:** 70 · **Common period:** 1 bars · **Shared phase groups:** 1.
+**Group:** original catalog · **Category:** other · **BPM:** 70 · **Common period:** 1 bars · **Shared phase groups:** 2.
+**Musical role:** A slow, open pulse: one kick per bar, three toms drifting across it, breathing open hats and a patient two-note bass.
+**Mathematical design:** The tom triangle R₃(i) is turned a quarter of a step away from the kick, so three-against-four never lands on the downbeat.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1 |
-| 2 | 0 + 1i | 90 | 3 | 1 | tom | 0.083333, 0.416667, 0.75 | 0.083333@1, 0.416667@1, 0.75@1 |
+| 2 | 0 + 1i | 90 | 3 | 1 | tom | 0.083333, 0.416667, 0.75 | 0.083333@1, 0.416667@1, 0.75@1, 0.875@0.4 |
 | 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.5 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.94 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.7 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.45 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.82
 
-**Nearest timing neighbors (Jaccard):** dub (0.5385), dust (0.5333), liquid-corrosion (0.5333)
+**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.5294), chopped-orbit (0.5), dust (0.4706)
 
-**Fingerprint:** 0:0;3:0;1:83333;2:125000;2:375000;1:416667;3:500000;2:625000;1:750000;2:875000
+**Fingerprint:** 0:0;3:0;1:83333;2:125000;2:375000;1:416667;3:500000;2:625000;3:687500;1:750000;1:875000;2:875000
 
-## Neuro · 2-Step (neuro-burst)
+## Drum & Bass · 2-Step (neuro-burst)
 
 **Group:** original catalog · **Category:** dnb · **BPM:** 174 · **Common period:** 1 bars · **Shared phase groups:** 5.
+**Musical role:** The basic two-step: kick on 1 and the “and” of 3, snare on 2 and 4 with ghost notes, eighth-note hats and a Reese bass answering the kick.
+**Mathematical design:** The snare is R₂(−1). Kick and bass each start from the single root 1 and add first-degree roots on the sixteenth grid.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.625@0.92 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.27, 0.75@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.27, 0.75@1, 0.9375@0.24 |
 | 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.42, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.42, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.5@1 |
+| 4 | 1 + 0i | 0 | 1 | 1 | reese | 0 | 0@1, 0.375@0.6, 0.625@0.9 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.64 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.72
 
-**Nearest timing neighbors (Jaccard):** velocity-grid (0.8947), ghostline (0.7368), ragga-spiral (0.7143)
+**Nearest timing neighbors (Jaccard):** ghostline (0.7273), velocity-grid (0.6957), ragga-spiral (0.6667)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;2:187500;1:250000;2:250000;2:375000;1:437500;2:500000;3:500000;0:625000;2:625000;2:687500;1:750000;2:750000;2:875000
+**Fingerprint:** 0:0;2:0;3:0;2:125000;2:187500;1:250000;2:250000;2:375000;3:375000;1:437500;2:500000;0:625000;2:625000;3:625000;2:687500;1:750000;2:750000;2:875000;1:937500
 
-## Roller · Ghosts (double-drop)
+## Drum & Bass · Roller (double-drop)
 
-**Group:** original catalog · **Category:** dnb · **BPM:** 176 · **Common period:** 1 bars · **Shared phase groups:** 5.
+**Group:** original catalog · **Category:** dnb · **BPM:** 176 · **Common period:** 1 bars · **Shared phase groups:** 10.
+**Musical role:** A roller: the two-step skeleton with three snare ghosts, a late kick pickup, a constant sixteenth shaker and a rolling sub line.
+**Mathematical design:** The shaker is the union R₈(1) ∪ R₈(−1): eight full-strength eighths and eight quiet in-between roots form all sixteen sixteenths.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.625@0.96, 0.875@0.38 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.3, 0.75@1, 0.9375@0.3 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | -1 + 0i | 180 | 2 | 1 | bass | 0.25, 0.75 | 0.25@1, 0.6875@0.48, 0.75@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.3, 0.5625@0.22, 0.75@1, 0.9375@0.3 |
+| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.0625@0.42, 0.125@1, 0.1875@0.42, 0.25@1, 0.3125@0.42, 0.375@1, 0.4375@0.42, 0.5@1, 0.5625@0.42, 0.625@1, 0.6875@0.42, 0.75@1, 0.8125@0.42, 0.875@1, 0.9375@0.42 |
+| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1, 0.1875@0.56, 0.625@0.88, 0.8125@0.5 |
 
-**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.86 · L3: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.66 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.84
 
-**Nearest timing neighbors (Jaccard):** ghostline (0.7), velocity-grid (0.6087), neuro-burst (0.5909)
+**Nearest timing neighbors (Jaccard):** neuro-burst (0.6207), samba-drive (0.5897), steel-rave (0.5882)
 
-**Fingerprint:** 0:0;2:0;2:125000;1:250000;2:250000;3:250000;2:375000;1:437500;2:500000;0:625000;2:625000;3:687500;1:750000;2:750000;3:750000;0:875000;2:875000;1:937500
+**Fingerprint:** 0:0;2:0;3:0;2:62500;2:125000;2:187500;3:187500;1:250000;2:250000;2:312500;2:375000;1:437500;2:437500;2:500000;1:562500;2:562500;0:625000;2:625000;3:625000;2:687500;1:750000;2:750000;2:812500;3:812500;0:875000;2:875000;1:937500;2:937500
 
-## Sub Pressure · Half-time (subpressure)
+## Drum & Bass · Half-time (subpressure)
 
-**Group:** original catalog · **Category:** dnb · **BPM:** 172 · **Common period:** 1 bars · **Shared phase groups:** 3.
+**Group:** original catalog · **Category:** dnb · **BPM:** 172 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Musical role:** Half-time pressure: a single heavy snare on beat 3, syncopated kicks around it, shaker eighths and a slow Reese.
+**Mathematical design:** One root at −1 carries the whole backbeat. The fast tempo is heard through R₈(1) in the shaker, not through the drums.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.625@0.83 |
+| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.375@0.62, 0.6875@0.8 |
 | 2 | -1 + 0i | 180 | 1 | 1 | snare | 0.5 | 0.5@1, 0.9375@0.25 |
-| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.5@1 |
+| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.34, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.38, 0.75@1, 0.875@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.52 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.92 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.72
 
-**Nearest timing neighbors (Jaccard):** chopped-orbit (0.65), ragga-spiral (0.65), velocity-grid (0.65)
+**Nearest timing neighbors (Jaccard):** baile-funk (0.56), neuro-burst (0.5417), velocity-grid (0.52)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;2:250000;2:375000;1:500000;2:500000;3:500000;0:625000;2:625000;2:750000;2:875000;1:937500
+**Fingerprint:** 0:0;2:0;3:0;2:125000;2:187500;2:250000;0:375000;2:375000;1:500000;2:500000;3:500000;2:625000;0:687500;2:687500;3:687500;2:750000;2:875000;1:937500
 
-## Break Grid · 16ths (velocity-grid)
+## Drum & Bass · Amen Grid (velocity-grid)
 
-**Group:** original catalog · **Category:** dnb · **BPM:** 178 · **Common period:** 1 bars · **Shared phase groups:** 6.
-
-| Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
-|---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.375@0.57, 0.625@0.9 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.27, 0.75@1, 0.9375@0.31 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.4, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.45, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1 |
-
-**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
-
-**Nearest timing neighbors (Jaccard):** neuro-burst (0.8947), ragga-spiral (0.7273), ghostline (0.6667)
-
-**Fingerprint:** 0:0;2:0;3:0;2:125000;2:187500;1:250000;2:250000;0:375000;2:375000;1:437500;2:500000;3:500000;0:625000;2:625000;2:687500;1:750000;2:750000;2:875000;1:937500
-
-## Ragga · Break Step (ragga-spiral)
-
-**Group:** original catalog · **Category:** jungle · **BPM:** 164 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Group:** original catalog · **Category:** dnb · **BPM:** 178 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Musical role:** The Amen-break skeleton: doubled kicks, backbeat snare with three ghost notes and ride-like eighth hats over a sparse sub.
+**Mathematical design:** Kick 1 plus three first-degree roots (steps 2, 10, 11 of 16); snare R₂(−1) plus three quiet roots at steps 7, 9 and 15.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.3125@0.75, 0.625@0.85 |
+| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.125@0.78, 0.625@0.95, 0.6875@0.66 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.3, 0.5625@0.3, 0.75@1, 0.9375@0.34 |
+| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.375@0.6, 0.5@1 |
+
+**Operations, patches and accents:** L1: union, 3 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.82
+
+**Nearest timing neighbors (Jaccard):** ghostline (0.7727), break-torrent (0.7083), neuro-burst (0.6957)
+
+**Fingerprint:** 0:0;2:0;3:0;0:125000;2:125000;1:250000;2:250000;2:375000;3:375000;1:437500;2:500000;3:500000;1:562500;0:625000;2:625000;0:687500;1:750000;2:750000;2:875000;1:937500
+
+## Jungle · Ragga Step (ragga-spiral)
+
+**Group:** original catalog · **Category:** dnb · **BPM:** 164 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Musical role:** Ragga jungle: a broken kick, ghosted backbeat and a reggae bassline that walks 3 + 3 + 2 across the bar.
+**Mathematical design:** The bass plays the tresillo: root 1 plus first-degree roots at steps 6 and 12 of 16, a 3-3-2 division of eight eighths.
+
+| Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
+|---|---|---:|---:|---:|---|---|---|
+| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.3125@0.72, 0.625@0.88 |
 | 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.5625@0.31, 0.75@1, 0.9375@0.38 |
 | 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.3125@0.35, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.42, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.5@1 |
+| 4 | 1 + 0i | 0 | 1 | 1 | reese | 0 | 0@1, 0.375@0.86, 0.75@0.8, 0.875@0.5 |
 
-**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.72
 
-**Nearest timing neighbors (Jaccard):** velocity-grid (0.7273), neuro-burst (0.7143), chopped-orbit (0.6522)
+**Nearest timing neighbors (Jaccard):** ghostline (0.6667), neuro-burst (0.6667), velocity-grid (0.64)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;1:250000;2:250000;0:312500;2:312500;2:375000;2:500000;3:500000;1:562500;0:625000;2:625000;2:687500;1:750000;2:750000;2:875000;1:937500
+**Fingerprint:** 0:0;2:0;3:0;2:125000;1:250000;2:250000;0:312500;2:312500;2:375000;3:375000;2:500000;1:562500;0:625000;2:625000;2:687500;1:750000;2:750000;3:750000;2:875000;3:875000;1:937500
 
-## Break Torrent · Chops (break-torrent)
+## Jungle · Amen Chops (break-torrent)
 
-**Group:** original catalog · **Category:** jungle · **BPM:** 169 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Group:** original catalog · **Category:** dnb · **BPM:** 169 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Musical role:** A chopped break: the second snare arrives late, on the “and” of 4, with ghost notes tumbling in between.
+**Mathematical design:** The snare starts from the single root i (beat 2). The displaced accent is a first-degree root at step 14 of 16 instead of the expected −i.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.1875@0.55, 0.625@0.9, 0.875@0.48 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.375@0.31, 0.75@1, 0.9375@0.29 |
+| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.125@0.62, 0.625@0.9 |
+| 2 | 0 + 1i | 90 | 1 | 1 | snare | 0.25 | 0.25@1, 0.4375@0.3, 0.5625@0.32, 0.875@0.94, 0.9375@0.3 |
 | 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.4375@0.38, 0.5@1, 0.625@1, 0.75@1, 0.875@1, 0.9375@0.42 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.1875@0.6, 0.5@1 |
 
-**Operations, patches and accents:** L1: union, 3 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.64 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.82
 
-**Nearest timing neighbors (Jaccard):** chopped-orbit (0.6957), ragga-spiral (0.625), velocity-grid (0.625)
+**Nearest timing neighbors (Jaccard):** velocity-grid (0.7083), ghostline (0.6667), double-drop (0.5806)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;0:187500;1:250000;2:250000;1:375000;2:375000;2:437500;2:500000;3:500000;0:625000;2:625000;1:750000;2:750000;0:875000;2:875000;1:937500;2:937500
+**Fingerprint:** 0:0;2:0;3:0;0:125000;2:125000;3:187500;1:250000;2:250000;2:375000;1:437500;2:437500;2:500000;3:500000;1:562500;0:625000;2:625000;2:750000;1:875000;2:875000;1:937500;2:937500
 
-## Ghostline · Half-roll (ghostline)
+## Jungle · Ghost Roll (ghostline)
 
-**Group:** original catalog · **Category:** jungle · **BPM:** 160 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Group:** original catalog · **Category:** dnb · **BPM:** 160 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Musical role:** A steady two-step whose snare whispers a rising four-note roll into every downbeat.
+**Mathematical design:** Backbeat R₂(−1) plus four low-velocity first-degree roots; a union keeps the louder value wherever two roots coincide.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.625@0.84 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.1875@0.25, 0.25@1, 0.4375@0.3, 0.75@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.4375@0.3, 0.5625@0.26, 0.75@1, 0.875@0.3, 0.9375@0.4 |
 | 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1, 0.6875@0.63 |
+| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1, 0.375@0.5, 0.6875@0.63 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.6 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.84
 
-**Nearest timing neighbors (Jaccard):** neuro-burst (0.7368), double-drop (0.7), velocity-grid (0.6667)
+**Nearest timing neighbors (Jaccard):** velocity-grid (0.7727), neuro-burst (0.7273), break-torrent (0.6667)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;1:187500;1:250000;2:250000;2:375000;1:437500;2:500000;0:625000;2:625000;3:687500;1:750000;2:750000;2:875000
+**Fingerprint:** 0:0;2:0;3:0;2:125000;1:250000;2:250000;2:375000;3:375000;1:437500;2:500000;1:562500;0:625000;2:625000;3:687500;1:750000;2:750000;1:875000;2:875000;1:937500
 
-## Chopped Orbit · Fast (chopped-orbit)
+## Jungle · Chopped Orbit (chopped-orbit)
 
-**Group:** original catalog · **Category:** jungle · **BPM:** 172 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Group:** original catalog · **Category:** dnb · **BPM:** 172 · **Common period:** 1 bars · **Shared phase groups:** 3.
+**Musical role:** Kicks pushed off the beat, open hats on every offbeat and a Reese bass that answers a sixteenth early.
+**Mathematical design:** Open hats are the rotated square R₄(−1). The bass is R₂(1) with two anticipating first-degree roots at steps 3 and 11.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.125@0.5, 0.625@0.92 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.375@0.34, 0.75@1, 0.9375@0.28 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.0625@0.48, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.5625@0.48, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.5@1 |
+| 1 | 1 + 0i | 0 | 1 | 1 | kick | 0 | 0@1, 0.375@0.7, 0.625@0.92 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.5625@0.3, 0.75@1, 0.9375@0.28 |
+| 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | reese | 0, 0.5 | 0@1, 0.1875@0.6, 0.5@1, 0.6875@0.6 |
 
-**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.88 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.56 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.72
 
-**Nearest timing neighbors (Jaccard):** break-torrent (0.6957), ragga-spiral (0.6522), velocity-grid (0.6522)
+**Nearest timing neighbors (Jaccard):** liquid-corrosion (0.7059), ghostline (0.5455), velocity-grid (0.5217)
 
-**Fingerprint:** 0:0;2:0;3:0;2:62500;0:125000;2:125000;1:250000;2:250000;1:375000;2:375000;2:500000;3:500000;2:562500;0:625000;2:625000;1:750000;2:750000;2:875000;1:937500
+**Fingerprint:** 0:0;3:0;2:125000;3:187500;1:250000;0:375000;2:375000;3:500000;1:562500;0:625000;2:625000;3:687500;1:750000;2:875000;1:937500
 
 ## Bossa Nova · Classic (bossa-classic)
 
 **Group:** original catalog · **Category:** brazil · **BPM:** 116 · **Common period:** 2 bars · **Shared phase groups:** 11.
+**Musical role:** Acoustic bossa nova: the two-bar cross-stick clave over a soft bass drum, a steady shaker and two quiet bongo answers.
+**Mathematical design:** Every circle spans two bars. The clave is five first-degree roots at steps 0, 6, 12, 20 and 26 of 32; the bongo lane has z = 0, so it sounds only its two added roots.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
@@ -347,272 +379,294 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 4 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 4 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
 
-**Nearest timing neighbors (Jaccard):** baile-funk (0.6341), double-drop (0.5581), samba-drive (0.5581)
+**Nearest timing neighbors (Jaccard):** baile-funk (0.5532), afro (0.5), subpressure (0.4889)
 
 **Fingerprint:** 0:0;1:0;2:0;2:62500;2:125000;0:187500;1:187500;2:187500;0:250000;2:250000;2:312500;3:343750;1:375000;2:375000;0:437500;2:437500;0:500000;2:500000;2:562500;1:625000;2:625000;0:687500;2:687500;0:750000;2:750000;1:812500;2:812500;3:843750;2:875000;0:937500;2:937500
 
-## Polyrhythm · 2 : 3 (poly-2-3)
+## Polyrhythm · 2:3 (poly-2-3)
 
 **Group:** original catalog · **Category:** poly · **BPM:** 108 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Musical role:** Two low bongo strokes against three high ones: the hemiola. The shaker plays the six pulses on which both sides land.
+**Mathematical design:** R₂(1) against R₃(1). Both are subsets of R₆(1), the shaker circle, because 6 is the least common multiple of 2 and 3.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 2 | 1 | tom | 0, 0.5 | 0@1, 0.5@1 |
-| 2 | 1 + 0i | 0 | 3 | 1 | rim | 0, 0.333333, 0.666667 | 0@1, 0.333333@1, 0.666667@1 |
+| 1 | 1 + 0i | 0 | 2 | 1 | bongoLow | 0, 0.5 | 0@1, 0.5@1 |
+| 2 | 1 + 0i | 0 | 3 | 1 | bongoHigh | 0, 0.333333, 0.666667 | 0@1, 0.333333@1, 0.666667@1 |
 | 3 | 1 + 0i | 0 | 6 | 1 | shaker | 0, 0.166667, 0.333333, 0.5, 0.666667, 0.833333 | 0@1, 0.166667@1, 0.333333@1, 0.5@1, 0.666667@1, 0.833333@1 |
 | 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.9 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.6 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.8
 
-**Nearest timing neighbors (Jaccard):** poly-4-7 (0.25), poly-3-5 (0.2222), afro (0.2174)
+**Nearest timing neighbors (Jaccard):** poly-4-7 (0.2308), afro (0.2174), poly-3-5 (0.2)
 
 **Fingerprint:** 0:0;1:0;2:0;3:0;2:166667;1:333333;2:333333;0:500000;2:500000;1:666667;2:666667;2:833333
 
-## Polyrhythm · 3 : 5 (poly-3-5)
+## Polyrhythm · 3:5 (poly-3-5)
 
-**Group:** original catalog · **Category:** poly · **BPM:** 112 · **Common period:** 1 bars · **Shared phase groups:** 1.
+**Group:** original catalog · **Category:** poly · **BPM:** 112 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Musical role:** Three toms against five claves. A soft fifteen-pulse shaker reveals the fine grid that both voices share.
+**Mathematical design:** R₃(1) against R₅(1) inside R₁₅(1): 15 = 3 · 5, and the two voices meet only at the root 1.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 3 | 1 | tom | 0, 0.333333, 0.666667 | 0@1, 0.333333@1, 0.666667@1 |
-| 2 | 1 + 0i | 0 | 5 | 1 | rim | 0, 0.2, 0.4, 0.6, 0.8 | 0@1, 0.2@1, 0.4@1, 0.6@1, 0.8@1 |
-| 3 | 1 + 0i | 0 | 1 | 1 | jazzkick | 0 | 0@1 |
-| 4 | 1 + 0i | 0 | 1 | 1 | shaker | 0 | 0@1 |
+| 2 | 1 + 0i | 0 | 5 | 1 | claves | 0, 0.2, 0.4, 0.6, 0.8 | 0@1, 0.2@1, 0.4@1, 0.6@1, 0.8@1 |
+| 3 | 1 + 0i | 0 | 15 | 1 | shaker | 0, 0.066667, 0.133333, 0.2, 0.266667, 0.333333, 0.4, 0.466667, 0.533333, 0.6, 0.666667, 0.733333, 0.8, 0.866667, 0.933333 | 0@1, 0.066667@1, 0.133333@1, 0.2@1, 0.266667@1, 0.333333@1, 0.4@1, 0.466667@1, 0.533333@1, 0.6@1, 0.666667@1, 0.733333@1, 0.8@1, 0.866667@1, 0.933333@1 |
+| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.9 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.5 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.8
 
-**Nearest timing neighbors (Jaccard):** afro (0.3), poly-2-3 (0.2222), poly-4-7 (0.2105)
+**Nearest timing neighbors (Jaccard):** poly-2-3 (0.2), afro (0.1765), acid-reactor (0.1042)
 
-**Fingerprint:** 0:0;1:0;2:0;3:0;1:200000;0:333333;1:400000;1:600000;0:666667;1:800000
+**Fingerprint:** 0:0;1:0;2:0;3:0;2:66667;2:133333;1:200000;2:200000;2:266667;0:333333;2:333333;1:400000;2:400000;2:466667;2:533333;1:600000;2:600000;0:666667;2:666667;2:733333;1:800000;2:800000;2:866667;2:933333
 
-## Polyrhythm · 4 : 7 (poly-4-7)
+## Polyrhythm · 4:7 (poly-4-7)
 
-**Group:** original catalog · **Category:** poly · **BPM:** 118 · **Common period:** 1 bars · **Shared phase groups:** 1.
+**Group:** original catalog · **Category:** poly · **BPM:** 118 · **Common period:** 1 bars · **Shared phase groups:** 4.
+**Musical role:** Seven rim clicks float over a four-on-the-floor kick; the shaker doubles the kick pulse and the bass marks the one.
+**Mathematical design:** R₄(1) against R₇(1). Since 4 and 7 share no factor, the heptagon touches the square only at 1.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
 | 2 | 1 + 0i | 0 | 7 | 1 | rim | 0, 0.142857, 0.285714, 0.428571, 0.571429, 0.714286, 0.857143 | 0@1, 0.142857@1, 0.285714@1, 0.428571@1, 0.571429@1, 0.714286@1, 0.857143@1 |
-| 3 | 1 + 0i | 0 | 1 | 1 | tom | 0 | 0@1 |
-| 4 | 1 + 0i | 0 | 1 | 1 | shaker | 0 | 0@1 |
+| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
+| 4 | 1 + 0i | 0 | 1 | 1 | bass | 0 | 0@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.9 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.55 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.8
 
-**Nearest timing neighbors (Jaccard):** minimal (0.4167), poly-2-3 (0.25), shaft (0.25)
+**Nearest timing neighbors (Jaccard):** minimal (0.7083), afro (0.44), bossa-classic (0.42)
 
-**Fingerprint:** 0:0;1:0;2:0;3:0;1:142857;0:250000;1:285714;1:428571;0:500000;1:571429;1:714286;0:750000;1:857143
+**Fingerprint:** 0:0;1:0;2:0;3:0;2:125000;1:142857;0:250000;2:250000;1:285714;2:375000;1:428571;0:500000;2:500000;1:571429;2:625000;1:714286;0:750000;2:750000;1:857143;2:875000
 
 ## Baile Funk · Tamborzão (baile-funk)
 
-**Group:** original catalog · **Category:** brazil · **BPM:** 132 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Group:** original catalog · **Category:** brazil · **BPM:** 132 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Musical role:** A tamborzão-style groove: a syncopated kick, claps with one early answer, tamborim eighths and a bouncing bass.
+**Mathematical design:** Kick and bass both start from R₂(1) and move apart through different first-degree roots; the tamborim is R₈(1) with two ghosts.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 2 | 1 | kick | 0, 0.5 | 0@1, 0.375@0.73, 0.5@1, 0.875@0.78 |
 | 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.6875@0.6, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | tamborim | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.1875@0.58, 0.5@1 |
+| 3 | 1 + 0i | 0 | 8 | 1 | tamborim | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.5, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.46, 0.75@1, 0.875@1 |
+| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.1875@0.58, 0.5@1, 0.875@0.6 |
 
-**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.66 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.86
 
-**Nearest timing neighbors (Jaccard):** shaft (0.6667), bossa-classic (0.6341), velocity-grid (0.6087)
+**Nearest timing neighbors (Jaccard):** subpressure (0.56), bossa-classic (0.5532), neuro-burst (0.5385)
 
-**Fingerprint:** 0:0;2:0;3:0;2:125000;3:187500;1:250000;2:250000;0:375000;2:375000;0:500000;2:500000;3:500000;2:625000;1:687500;1:750000;2:750000;0:875000;2:875000
+**Fingerprint:** 0:0;2:0;3:0;2:125000;2:187500;3:187500;1:250000;2:250000;0:375000;2:375000;0:500000;2:500000;3:500000;2:625000;1:687500;2:687500;1:750000;2:750000;0:875000;2:875000;3:875000
 
 ## Samba · Surdo Pulse (samba-drive)
 
-**Group:** original catalog · **Category:** brazil · **BPM:** 108 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Group:** original catalog · **Category:** brazil · **BPM:** 108 · **Common period:** 1 bars · **Shared phase groups:** 12.
+**Musical role:** Samba swing: the surdo opens on 2 and 4, shaker and tamborim lean on the last sixteenth of every beat, and the agogô plays a five-note bell line.
+**Mathematical design:** The shaker is a union of three squares and a 16-gon: R₄(1) loud, R₄(−i) strong, R₁₆(1) quiet. Where roots coincide, the louder one is kept.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 2 | 1 | surdo | 0, 0.5 | 0@1, 0.5@1, 0.75@0.58 |
-| 2 | -1 + 0i | 180 | 4 | 1 | tamborim | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | agogo | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.6 |
+| 1 | -1 + 0i | 180 | 2 | 1 | surdo | 0.25, 0.75 | 0@0.44, 0.25@1, 0.5@0.44, 0.75@1, 0.9375@0.36 |
+| 2 | 0 − 1i | -90 | 4 | 1 | tamborim | 0.1875, 0.4375, 0.6875, 0.9375 | 0@0.72, 0.1875@1, 0.3125@0.5, 0.4375@1, 0.5@0.72, 0.6875@1, 0.8125@0.5, 0.9375@1 |
+| 3 | 1 + 0i | 0 | 4 | 1 | shaker | 0, 0.25, 0.5, 0.75 | 0@1, 0.0625@0.4, 0.125@0.4, 0.1875@0.8, 0.25@1, 0.3125@0.4, 0.375@0.4, 0.4375@0.8, 0.5@1, 0.5625@0.4, 0.625@0.4, 0.6875@0.8, 0.75@1, 0.8125@0.4, 0.875@0.4, 0.9375@0.8 |
+| 4 | 1 + 0i | 0 | 1 | 1 | agogo | 0 | 0@1, 0.1875@0.74, 0.375@0.86, 0.625@0.76, 0.8125@0.9 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 3 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.7 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.62
 
-**Nearest timing neighbors (Jaccard):** batucada (0.7273), shaft (0.5909), bossa-classic (0.5581)
+**Nearest timing neighbors (Jaccard):** batucada (0.6341), double-drop (0.5897), steel-rave (0.5789)
 
-**Fingerprint:** 0:0;2:0;3:0;1:125000;2:125000;2:250000;1:375000;2:375000;0:500000;2:500000;3:500000;1:625000;2:625000;3:687500;0:750000;2:750000;1:875000;2:875000
+**Fingerprint:** 0:0;1:0;2:0;3:0;2:62500;2:125000;1:187500;2:187500;3:187500;0:250000;2:250000;1:312500;2:312500;2:375000;3:375000;1:437500;2:437500;0:500000;1:500000;2:500000;2:562500;2:625000;3:625000;1:687500;2:687500;0:750000;2:750000;1:812500;2:812500;3:812500;2:875000;0:937500;1:937500;2:937500
 
 ## Batucada · Layers (batucada)
 
-**Group:** original catalog · **Category:** brazil · **BPM:** 118 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Group:** original catalog · **Category:** brazil · **BPM:** 118 · **Common period:** 1 bars · **Shared phase groups:** 11.
+**Musical role:** A fuller bateria: answering surdo, offbeat tamborim with pushes, a sixteenth shaker and a syncopated agogô.
+**Mathematical design:** The tamborim square R₄(−1) sits exactly between the beats. The shaker is R₈(1) ∪ R₈(−1) with the second octagon played quietly.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 2 | 1 | surdo | 0, 0.5 | 0@1, 0.5@1, 0.875@0.51 |
-| 2 | -1 + 0i | 180 | 4 | 1 | tamborim | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.56, 0.375@1, 0.625@1, 0.6875@0.62, 0.875@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | agogo | 0, 0.5 | 0@1, 0.375@0.7, 0.5@1 |
+| 1 | -1 + 0i | 180 | 2 | 1 | surdo | 0.25, 0.75 | 0@0.42, 0.25@1, 0.5@0.42, 0.75@1, 0.875@0.5 |
+| 2 | -1 + 0i | 180 | 4 | 1 | tamborim | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.56, 0.375@1, 0.625@1, 0.6875@0.62, 0.875@1, 0.9375@0.5 |
+| 3 | 1 + 0i | 0 | 8 | 1 | shaker | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.0625@0.4, 0.125@1, 0.1875@0.4, 0.25@1, 0.3125@0.4, 0.375@1, 0.4375@0.4, 0.5@1, 0.5625@0.4, 0.625@1, 0.6875@0.4, 0.75@1, 0.8125@0.4, 0.875@1, 0.9375@0.4 |
+| 4 | 1 + 0i | 0 | 2 | 1 | agogo | 0, 0.5 | 0@1, 0.1875@0.6, 0.375@0.7, 0.5@1, 0.6875@0.56 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 3 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.7 · L3: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.6
 
-**Nearest timing neighbors (Jaccard):** samba-drive (0.7273), baile-funk (0.5833), bossa-classic (0.5106)
+**Nearest timing neighbors (Jaccard):** steel-rave (0.6389), samba-drive (0.6341), double-drop (0.525)
 
-**Fingerprint:** 0:0;2:0;3:0;1:125000;2:125000;1:187500;2:250000;1:375000;2:375000;3:375000;0:500000;2:500000;3:500000;1:625000;2:625000;1:687500;2:750000;0:875000;1:875000;2:875000
+**Fingerprint:** 0:0;2:0;3:0;2:62500;1:125000;2:125000;1:187500;2:187500;3:187500;0:250000;2:250000;2:312500;1:375000;2:375000;3:375000;2:437500;0:500000;2:500000;3:500000;2:562500;1:625000;2:625000;1:687500;2:687500;3:687500;0:750000;2:750000;2:812500;0:875000;1:875000;2:875000;1:937500;2:937500
 
-## Maracatu · Pulse Sketch (maracatu)
+## Maracatu · Alfaia Pulse (maracatu)
 
-**Group:** original catalog · **Category:** brazil · **BPM:** 104 · **Common period:** 1 bars · **Shared phase groups:** 3.
+**Group:** original catalog · **Category:** brazil · **BPM:** 104 · **Common period:** 1 bars · **Shared phase groups:** 10.
+**Musical role:** Maracatu-inspired: low drums roll 3 + 3 + 2 under a ghosted snare, an offbeat bell and a steady shaker.
+**Mathematical design:** The low drum is R₂(1) plus four first-degree roots, two tresillos per bar. The shaker is R₈(1) with its offbeat square R₄(−1) accented.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 2 | 1 | surdo | 0, 0.5 | 0@1, 0.5@1, 0.8125@0.53 |
-| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.4375@0.42, 0.75@1 |
-| 3 | -1 + 0i | 180 | 4 | 1 | agogo | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | tom | 0, 0.5 | 0@1, 0.5@1, 0.625@0.66 |
+| 1 | 1 + 0i | 0 | 2 | 1 | surdo | 0, 0.5 | 0@1, 0.1875@0.7, 0.375@0.8, 0.5@1, 0.6875@0.7, 0.875@0.8 |
+| 2 | -1 + 0i | 180 | 2 | 1 | jazzsnare | 0.25, 0.75 | 0.25@1, 0.4375@0.4, 0.625@0.34, 0.75@1, 0.9375@0.42 |
+| 3 | -1 + 0i | 180 | 4 | 1 | agogo | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.4375@0.55, 0.625@1, 0.875@1, 0.9375@0.6 |
+| 4 | -1 + 0i | 180 | 4 | 1 | shaker | 0.125, 0.375, 0.625, 0.875 | 0@0.5, 0.125@1, 0.25@0.5, 0.375@1, 0.5@0.5, 0.625@1, 0.75@0.5, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 4 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 3 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.6 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.66
 
-**Nearest timing neighbors (Jaccard):** dust (0.625), liquid-corrosion (0.625), stomp-circuit (0.5882)
+**Nearest timing neighbors (Jaccard):** dub (0.4815), warehouse-hammer (0.4643), dust (0.4074)
 
-**Fingerprint:** 0:0;3:0;2:125000;1:250000;2:375000;1:437500;0:500000;3:500000;2:625000;3:625000;1:750000;0:812500;2:875000
+**Fingerprint:** 0:0;3:0;2:125000;3:125000;0:187500;1:250000;3:250000;0:375000;2:375000;3:375000;1:437500;2:437500;0:500000;3:500000;1:625000;2:625000;3:625000;0:687500;1:750000;3:750000;0:875000;2:875000;3:875000;1:937500;2:937500
 
-## Warehouse · Hard Drive (warehouse-hammer)
+## Hard House · Offbeat Bass (warehouse-hammer)
 
-**Group:** original catalog · **Category:** hardhouse · **BPM:** 146 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Group:** original catalog · **Category:** other · **BPM:** 146 · **Common period:** 1 bars · **Shared phase groups:** 6.
+**Musical role:** The hard-house signature: a bass note on every offbeat, bouncing between the kicks, with open hats and a clap on 2 and 4.
+**Mathematical design:** Kick R₄(1) and bass R₄(−1) are the same square turned by half a step, so the two never touch.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1, 0.9375@0.3 |
 | 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
 | 4 | -1 + 0i | 180 | 4 | 1 | bass | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.8125@0.57, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.04 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.84
 
-**Nearest timing neighbors (Jaccard):** acid-303 (0.8235), house (0.7368), iron (0.7)
+**Nearest timing neighbors (Jaccard):** acid-303 (0.7895), peak-pressure (0.6739), house (0.6486)
 
-**Fingerprint:** 0:0;2:125000;3:125000;0:250000;1:250000;2:375000;3:375000;0:500000;2:625000;3:625000;0:750000;1:750000;3:812500;2:875000;3:875000
+**Fingerprint:** 0:0;2:125000;3:125000;0:250000;1:250000;2:375000;3:375000;0:500000;2:625000;3:625000;0:750000;1:750000;3:812500;2:875000;3:875000;1:937500
 
-## Steel Rave · Stabs (steel-rave)
+## Hard House · Rave Stabs (steel-rave)
 
-**Group:** original catalog · **Category:** hardhouse · **BPM:** 152 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Group:** original catalog · **Category:** other · **BPM:** 152 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Musical role:** Syncopated rave stabs, a sixteenth before each clap and on the offbeat after it, over sixteenth hats with offbeat accents.
+**Mathematical design:** The hats are R₄(−1) ∪ R₁₆(1): four loud roots inside sixteen quiet ones. The stabs are R₂(−i) plus two first-degree roots that anticipate beats 2 and 4.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | -1 + 0i | 180 | 4 | 1 | acid | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.6875@0.59, 0.875@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
+| 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0@0.4, 0.0625@0.4, 0.125@1, 0.1875@0.4, 0.25@0.4, 0.3125@0.4, 0.375@1, 0.4375@0.4, 0.5@0.4, 0.5625@0.4, 0.625@1, 0.6875@0.4, 0.75@0.4, 0.8125@0.4, 0.875@1, 0.9375@0.4 |
+| 4 | 0 − 1i | -90 | 2 | 1 | raveStab | 0.375, 0.875 | 0.1875@0.72, 0.375@1, 0.6875@0.72, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.04 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.66 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.5
 
-**Nearest timing neighbors (Jaccard):** peak-pressure (0.95), iron (0.9), acid-303 (0.75)
+**Nearest timing neighbors (Jaccard):** batucada (0.6389), peak-pressure (0.5902), double-drop (0.5882)
 
-**Fingerprint:** 0:0;2:0;2:125000;3:125000;0:250000;1:250000;2:250000;2:375000;3:375000;0:500000;2:500000;2:625000;3:625000;3:687500;0:750000;1:750000;2:750000;2:875000;3:875000
+**Fingerprint:** 0:0;2:0;2:62500;2:125000;2:187500;3:187500;0:250000;1:250000;2:250000;2:312500;2:375000;3:375000;2:437500;0:500000;2:500000;2:562500;2:625000;2:687500;3:687500;0:750000;1:750000;2:750000;2:812500;2:875000;3:875000;2:937500
 
-## Stomp Circuit · Push (stomp-circuit)
+## Hard House · Rolling Bass (stomp-circuit)
 
-**Group:** original catalog · **Category:** hardhouse · **BPM:** 148 · **Common period:** 1 bars · **Shared phase groups:** 5.
+**Group:** original catalog · **Category:** other · **BPM:** 148 · **Common period:** 1 bars · **Shared phase groups:** 7.
+**Musical role:** A rolling bassline: three bass notes fill the gap after every kick, plus a quick stomp into the downbeat.
+**Mathematical design:** The sixteenth grid is four squares. The kick owns R₄(1); the bass is the union of the other three, R₄(i) ∪ R₄(−1) ∪ R₄(−i), each at its own loudness.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
-| 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1, 0.875@0.52 |
+| 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1, 0.9375@0.5 |
 | 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
 | 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | 1 + 0i | 0 | 2 | 1 | bass | 0, 0.5 | 0@1, 0.5@1, 0.6875@0.63 |
+| 4 | -1 + 0i | 180 | 4 | 1 | bass | 0.125, 0.375, 0.625, 0.875 | 0.0625@0.55, 0.125@1, 0.1875@0.7, 0.3125@0.55, 0.375@1, 0.4375@0.7, 0.5625@0.55, 0.625@1, 0.6875@0.7, 0.8125@0.55, 0.875@1, 0.9375@0.7 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 1 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1.04 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.6 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.8
 
-**Nearest timing neighbors (Jaccard):** dust (0.8), liquid-corrosion (0.8), shaft (0.6316)
+**Nearest timing neighbors (Jaccard):** acid-303 (0.7826), warehouse-hammer (0.625), peak-pressure (0.5965)
 
-**Fingerprint:** 0:0;3:0;2:125000;0:250000;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;0:875000;2:875000
+**Fingerprint:** 0:0;3:62500;2:125000;3:125000;3:187500;0:250000;1:250000;3:312500;2:375000;3:375000;3:437500;0:500000;3:562500;2:625000;3:625000;3:687500;0:750000;1:750000;3:812500;2:875000;3:875000;0:937500;3:937500
 
-## Peak Pressure · Rave (peak-pressure)
+## Hard House · Peak Rave (peak-pressure)
 
-**Group:** original catalog · **Category:** hardhouse · **BPM:** 156 · **Common period:** 1 bars · **Shared phase groups:** 8.
+**Group:** original catalog · **Category:** other · **BPM:** 156 · **Common period:** 2 bars · **Shared phase groups:** 17.
+**Musical role:** Peak time: an acid line bubbling between the kicks and a snare roll that climbs at the end of every second bar.
+**Mathematical design:** The snare circle spans two bars: R₄(−1) for the backbeat plus three rising first-degree roots on the last three of 32 steps.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1 |
+| 2 | -1 + 0i | 180 | 4 | 2 | snare | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1, 0.90625@0.4, 0.9375@0.52, 0.96875@0.66 |
 | 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
-| 4 | -1 + 0i | 180 | 4 | 1 | acid | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.6, 0.375@1, 0.625@1, 0.6875@0.6, 0.875@1 |
+| 4 | -1 + 0i | 180 | 4 | 1 | acid | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.6, 0.375@1, 0.625@1, 0.6875@0.6, 0.8125@0.5, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1.04 · L2: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.64 · L4: union, 3 additional sets, no Euclidean overlay, patch default, gain 0.7
 
-**Nearest timing neighbors (Jaccard):** steel-rave (0.95), iron (0.8571), acid-303 (0.8)
+**Nearest timing neighbors (Jaccard):** acid-303 (0.7234), warehouse-hammer (0.6739), house (0.6444)
 
-**Fingerprint:** 0:0;2:0;2:125000;3:125000;3:187500;0:250000;1:250000;2:250000;2:375000;3:375000;0:500000;2:500000;2:625000;3:625000;3:687500;0:750000;1:750000;2:750000;2:875000;3:875000
+**Fingerprint:** 0:0;2:0;2:62500;3:62500;3:93750;0:125000;1:125000;2:125000;2:187500;3:187500;0:250000;2:250000;2:312500;3:312500;3:343750;0:375000;1:375000;2:375000;3:406250;2:437500;3:437500;0:500000;2:500000;2:562500;3:562500;3:593750;0:625000;1:625000;2:625000;2:687500;3:687500;0:750000;2:750000;2:812500;3:812500;3:843750;0:875000;1:875000;2:875000;1:906250;3:906250;1:937500;2:937500;3:937500;1:968750
 
 ## Acid 303 · Classic (acid-303)
 
 **Group:** original catalog · **Category:** acid · **BPM:** 128 · **Common period:** 1 bars · **Shared phase groups:** 6.
-**Musical role:** Sparse classic sawtooth 303 steps against a four-to-the-floor kick and restrained offbeat hats.
-**Mathematical design:** Six lead phases from the union of R4(-1) and two single-root accents.
+**Musical role:** Classic sawtooth 303: pairs of notes bubble after every kick, against claps and restrained offbeat hats.
+**Mathematical design:** Eight lead phases: the offbeat square R₄(−1) and four quieter first-degree roots placed beside its corners.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1 |
 | 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
 | 3 | -1 + 0i | 180 | 4 | 1 | hat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
-| 4 | -1 + 0i | 180 | 4 | 1 | acidClassic | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.65, 0.375@1, 0.625@1, 0.6875@0.66, 0.875@1 |
+| 4 | -1 + 0i | 180 | 4 | 1 | acidClassic | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.1875@0.65, 0.375@1, 0.4375@0.5, 0.625@1, 0.6875@0.66, 0.8125@0.55, 0.875@1 |
 
-**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.82 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.66 · L4: union, 4 additional sets, no Euclidean overlay, patch default, gain 0.78
 
-**Nearest timing neighbors (Jaccard):** warehouse-hammer (0.8235), peak-pressure (0.8), steel-rave (0.75)
+**Nearest timing neighbors (Jaccard):** warehouse-hammer (0.7895), stomp-circuit (0.7826), house (0.7568)
 
-**Fingerprint:** 0:0;2:125000;3:125000;3:187500;0:250000;1:250000;2:375000;3:375000;0:500000;2:625000;3:625000;3:687500;0:750000;1:750000;2:875000;3:875000
+**Fingerprint:** 0:0;2:125000;3:125000;3:187500;0:250000;1:250000;2:375000;3:375000;3:437500;0:500000;2:625000;3:625000;3:687500;0:750000;1:750000;3:812500;2:875000;3:875000
 
 ## Resonance · Twister (resonance-rush)
 
 **Group:** original catalog · **Category:** acid · **BPM:** 134 · **Common period:** 1 bars · **Shared phase groups:** 5.
-**Musical role:** Fast, animated psychedelic squelch over an eighth-note hi-hat roll and extra kick pickup.
-**Mathematical design:** Five rotated lead roots from R5(i), with two independently phased single-root syncopations.
+**Musical role:** Fast, animated psychedelic squelch over an eighth-note hi-hat roll and an extra kick pickup.
+**Mathematical design:** Five rotated lead roots from R₅(i), a pentagon turning against the square kick, with two independently phased single-root syncopations.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1, 0.875@0.45 |
 | 2 | -1 + 0i | 180 | 2 | 1 | clap | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.4, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
+| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.1875@0.4, 0.25@1, 0.375@1, 0.5@1, 0.625@1, 0.6875@0.36, 0.75@1, 0.875@1 |
 | 4 | 0 + 1i | 90 | 5 | 1 | acidPsychedelic | 0.05, 0.25, 0.45, 0.65, 0.85 | 0.05@1, 0.25@1, 0.4375@0.55, 0.45@1, 0.65@1, 0.8125@0.42, 0.85@1 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.82 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.74
 
-**Nearest timing neighbors (Jaccard):** shaft (0.6), iron (0.5556), concrete (0.5)
+**Nearest timing neighbors (Jaccard):** baile-funk (0.5), concrete (0.4815), peak-pressure (0.4762)
 
-**Fingerprint:** 0:0;2:0;3:50000;2:125000;2:187500;0:250000;1:250000;2:250000;3:250000;2:375000;3:437500;3:450000;0:500000;2:500000;2:625000;3:650000;0:750000;1:750000;2:750000;3:812500;3:850000;0:875000;2:875000
+**Fingerprint:** 0:0;2:0;3:50000;2:125000;2:187500;0:250000;1:250000;2:250000;3:250000;2:375000;3:437500;3:450000;0:500000;2:500000;2:625000;3:650000;2:687500;0:750000;1:750000;2:750000;3:812500;3:850000;0:875000;2:875000
 
 ## Liquid · Acid Dub (liquid-corrosion)
 
 **Group:** original catalog · **Category:** acid · **BPM:** 124 · **Common period:** 1 bars · **Shared phase groups:** 3.
-**Musical role:** Space between low, dark square-wave acid phrases, broken half-time kick and long open hats.
-**Mathematical design:** A deliberately sparse two-root bass family with two soft displaced accents.
+**Musical role:** Space between low, dark square-wave acid phrases, a broken half-time kick, rim backbeat and long open hats.
+**Mathematical design:** A deliberately sparse two-root bass family R₂(1) with two soft displaced accents.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 2 | 1 | kick | 0, 0.5 | 0@1, 0.5@1, 0.75@0.54 |
-| 2 | -1 + 0i | 180 | 2 | 1 | rim | 0.25, 0.75 | 0.25@1, 0.75@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | rim | 0.25, 0.75 | 0.25@1, 0.75@1, 0.9375@0.3 |
 | 3 | -1 + 0i | 180 | 4 | 1 | openhat | 0.125, 0.375, 0.625, 0.875 | 0.125@1, 0.375@1, 0.625@1, 0.875@1 |
 | 4 | 1 + 0i | 0 | 2 | 1 | acidDark | 0, 0.5 | 0@1, 0.1875@0.42, 0.5@1, 0.6875@0.52 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.8 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.55 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.8
 
-**Nearest timing neighbors (Jaccard):** stomp-circuit (0.8), dust (0.7333), maracatu (0.625)
+**Nearest timing neighbors (Jaccard):** chopped-orbit (0.7059), dust (0.6875), house (0.6286)
 
-**Fingerprint:** 0:0;3:0;2:125000;3:187500;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000
+**Fingerprint:** 0:0;3:0;2:125000;3:187500;1:250000;2:375000;0:500000;3:500000;2:625000;3:687500;0:750000;1:750000;2:875000;1:937500
 
 ## 303 Pressure · Peak (303-pressure)
 
 **Group:** original catalog · **Category:** acid · **BPM:** 140 · **Common period:** 1 bars · **Shared phase groups:** 5.
-**Musical role:** Dense distorted hard-acid stabs fight two snare backbeats and a rapid hi-hat line.
-**Mathematical design:** Seven equally spaced off-axis lead roots, plus two sixteenth-grid high-pressure accents.
+**Musical role:** Dense distorted hard-acid stabs fight a ghosted snare backbeat and a rapid hi-hat line.
+**Mathematical design:** Seven equally spaced off-axis lead roots R₇(−1), a heptagon against the square kick, plus two sixteenth-grid high-pressure accents.
 
 | Lane | z = a + bi | arg(z), deg | n | Bars | Sound | Base root phases | Final phases and velocities |
 |---|---|---:|---:|---:|---|---|---|
 | 1 | 1 + 0i | 0 | 4 | 1 | kick | 0, 0.25, 0.5, 0.75 | 0@1, 0.25@1, 0.5@1, 0.75@1, 0.875@0.54 |
-| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1 |
-| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.3125@0.33, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.875@1 |
+| 2 | -1 + 0i | 180 | 2 | 1 | snare | 0.25, 0.75 | 0.25@1, 0.75@1, 0.9375@0.3 |
+| 3 | 1 + 0i | 0 | 8 | 1 | hat | 0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875 | 0@1, 0.125@1, 0.25@1, 0.3125@0.33, 0.375@1, 0.5@1, 0.625@1, 0.75@1, 0.8125@0.36, 0.875@1 |
 | 4 | -1 + 0i | 180 | 7 | 1 | acidHard | 0.071429, 0.214286, 0.357143, 0.5, 0.642857, 0.785714, 0.928571 | 0.0625@0.56, 0.071429@1, 0.214286@1, 0.357143@1, 0.5@1, 0.5625@0.7, 0.642857@1, 0.785714@1, 0.928571@1 |
 
-**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L2: union, 0 additional sets, no Euclidean overlay, patch default, gain 1 · L3: union, 1 additional sets, no Euclidean overlay, patch default, gain 1 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 1
+**Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 1.04 · L2: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.84 · L3: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.62 · L4: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.7
 
-**Nearest timing neighbors (Jaccard):** shaft (0.5556), iron (0.5172), baile-funk (0.4828)
+**Nearest timing neighbors (Jaccard):** steel-rave (0.4324), resonance-rush (0.4167), peak-pressure (0.4143)
 
-**Fingerprint:** 0:0;2:0;3:62500;3:71429;2:125000;3:214286;0:250000;1:250000;2:250000;2:312500;3:357143;2:375000;0:500000;2:500000;3:500000;3:562500;2:625000;3:642857;0:750000;1:750000;2:750000;3:785714;0:875000;2:875000;3:928571
+**Fingerprint:** 0:0;2:0;3:62500;3:71429;2:125000;3:214286;0:250000;1:250000;2:250000;2:312500;3:357143;2:375000;0:500000;2:500000;3:500000;3:562500;2:625000;3:642857;0:750000;1:750000;2:750000;3:785714;2:812500;0:875000;2:875000;3:928571;1:937500
 
 ## Industrial Fracture (industrial-fracture)
 
@@ -629,7 +683,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.75 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.5 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.24 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.28
 
-**Nearest timing neighbors (Jaccard):** hardtek-mobius (0.3125), minimal (0.12), poly-3-5 (0.0714)
+**Nearest timing neighbors (Jaccard):** hardtek-mobius (0.3125), minimal (0.12), acid-singularity (0.0571)
 
 **Fingerprint:** 0:0;1:0;2:25974;1:28571;3:49383;0:100000;1:100000;2:116883;3:160494;1:171429;0:200000;2:207792;3:271605;2:298701;1:314286;3:382716;2:389610;0:400000;1:457143;2:480519;3:493827;2:571429;0:600000;1:600000;3:604938;2:662338;3:716049;1:742857;2:753247;0:800000;3:827160;2:844156;1:885714;2:935065;3:938272
 
@@ -648,7 +702,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.82 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.45 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.29 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2
 
-**Nearest timing neighbors (Jaccard):** prime-number-riot (0.234), poly-3-5 (0.1143), afro (0.0976)
+**Nearest timing neighbors (Jaccard):** prime-number-riot (0.234), poly-3-5 (0.1042), afro (0.0976)
 
 **Fingerprint:** 0:0;1:0;3:51948;1:66667;2:85714;3:142857;0:166667;1:166667;2:228571;3:233766;1:266667;3:324675;0:333333;2:371429;3:415584;1:466667;3:506494;2:514286;3:597403;2:657143;0:666667;1:666667;3:688312;3:779221;2:800000;1:866667;3:870130;2:942857;3:961039
 
@@ -667,7 +721,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.62 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.26 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.19 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2
 
-**Nearest timing neighbors (Jaccard):** frenchcore-spiral (0.3182), terror-geometry (0.28), shaft (0.1538)
+**Nearest timing neighbors (Jaccard):** frenchcore-spiral (0.3182), terror-geometry (0.28), poly-4-7 (0.1429)
 
 **Fingerprint:** 0:0;1:0;1:35714;2:45455;1:107143;3:111111;0:125000;2:136364;1:178571;2:227273;0:250000;2:318182;1:321429;2:409091;3:444444;1:464286;0:500000;2:500000;2:590909;1:607143;2:681818;0:750000;1:750000;2:772727;3:777778;2:863636;1:892857;2:954545
 
@@ -686,7 +740,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.42 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.22 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.16
 
-**Nearest timing neighbors (Jaccard):** eleven-against-seven (0.1233), euclidean-fragments (0.1154), poly-4-7 (0.0566)
+**Nearest timing neighbors (Jaccard):** eleven-against-seven (0.1233), euclidean-fragments (0.1154), poly-4-7 (0.05)
 
 **Fingerprint:** 0:0;1:0;2:18182;1:31746;3:32967;0:71429;1:87302;2:109091;3:109890;0:142857;1:142857;3:186813;2:200000;1:253968;3:263736;0:285714;2:290909;3:340659;1:365079;2:381818;3:417582;0:428571;2:472727;1:476190;3:494505;2:563636;0:571429;3:571429;1:587302;3:648352;2:654545;1:698413;0:714286;3:725275;2:745455;3:802198;1:809524;2:836364;0:857143;3:879121;1:920635;2:927273;3:956044
 
@@ -705,7 +759,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.65 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.31 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.18 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.15
 
-**Nearest timing neighbors (Jaccard):** terror-geometry (0.2097), mechanical-paradox (0.0933), poly-3-5 (0.0208)
+**Nearest timing neighbors (Jaccard):** terror-geometry (0.2097), mechanical-paradox (0.0933), poly-3-5 (0.0328)
 
 **Fingerprint:** 3:21978;1:36364;0:40000;1:40000;2:47619;1:81818;3:98901;1:127273;0:140000;3:175824;2:190476;1:218182;0:240000;3:252747;1:309091;3:329670;2:333333;1:400000;3:406593;0:440000;2:476190;3:483516;1:490909;3:560440;1:581818;2:619048;3:637363;0:640000;1:672727;3:714286;2:761905;1:763636;3:791209;0:840000;1:854545;3:868132;2:904762;3:945055;1:945455
 
@@ -762,7 +816,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.7 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.35 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.26 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.19
 
-**Nearest timing neighbors (Jaccard):** acid-reactor (0.234), poly-3-5 (0.1143), afro (0.0976)
+**Nearest timing neighbors (Jaccard):** acid-reactor (0.234), poly-3-5 (0.1042), afro (0.0976)
 
 **Fingerprint:** 0:0;1:0;3:12987;2:57143;1:66667;3:103896;0:166667;1:166667;3:194805;2:200000;1:266667;3:285714;0:333333;2:342857;3:376623;1:466667;3:467532;2:485714;3:558442;2:628571;3:649351;0:666667;1:666667;3:740260;2:771429;3:831169;1:866667;2:914286;3:922078
 
@@ -781,7 +835,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.42 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.25 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.2 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.16
 
-**Nearest timing neighbors (Jaccard):** schranz-machinery (0.1233), euclidean-fragments (0.1216), poly-4-7 (0.0612)
+**Nearest timing neighbors (Jaccard):** schranz-machinery (0.1233), euclidean-fragments (0.1216), poly-4-7 (0.0536)
 
 **Fingerprint:** 0:0;1:0;1:38961;2:40000;3:43956;0:71429;1:84416;3:120879;1:129870;0:142857;3:197802;1:220779;2:240000;3:274725;0:285714;1:311688;3:351648;1:402597;0:428571;3:428571;2:440000;1:493506;3:505495;0:571429;3:582418;1:584416;2:640000;3:659341;1:675325;0:714286;3:736264;1:766234;3:813187;2:840000;0:857143;1:857143;3:890110;1:948052;3:967033
 
@@ -800,7 +854,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.48 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.23 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.18 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.14
 
-**Nearest timing neighbors (Jaccard):** broken-reactor (0.0933), poly-2-3 (0.0185), poly-4-7 (0.0182)
+**Nearest timing neighbors (Jaccard):** broken-reactor (0.0933), poly-2-3 (0.0185), poly-4-7 (0.0161)
 
 **Fingerprint:** 1:21978;0:37037;1:37037;3:41322;2:47619;1:60440;0:92593;1:98901;3:132231;0:148148;1:175824;2:190476;3:223140;1:252747;0:259259;3:314050;1:329670;2:333333;0:370370;3:404959;1:406593;2:476190;0:481481;1:483516;3:495868;1:560440;3:586777;0:592593;2:619048;1:637363;3:677686;0:703704;1:714286;2:761905;3:768595;1:791209;0:814815;3:859504;1:868132;2:904762;0:925926;1:945055;3:950413
 
@@ -857,7 +911,7 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.5 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.33 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.19 · L4: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.22
 
-**Nearest timing neighbors (Jaccard):** industrial-fracture (0.3125), minimal (0.1395), poly-3-5 (0.0857)
+**Nearest timing neighbors (Jaccard):** industrial-fracture (0.3125), minimal (0.1395), stomp-circuit (0.1087)
 
 **Fingerprint:** 0:0;1:0;1:28571;2:37037;3:62500;0:100000;1:100000;2:148148;1:171429;0:200000;2:259259;3:312500;1:314286;2:370370;0:400000;1:457143;2:481481;3:562500;2:592593;0:600000;1:600000;2:703704;1:742857;0:800000;3:812500;2:814815;1:885714;2:925926
 
@@ -895,6 +949,6 @@ Similarity is pairwise four-lane Jaccard over the LCM; not a subjective musical 
 
 **Operations, patches and accents:** L1: union, 1 additional sets, no Euclidean overlay, patch default, gain 0.52 · L2: union, 2 additional sets, no Euclidean overlay, patch default, gain 0.25 · L3: union, 0 additional sets, no Euclidean overlay, patch default, gain 0.17 · L4: union, 0 additional sets, E(5,16), patch default, gain 0.17
 
-**Nearest timing neighbors (Jaccard):** eleven-against-seven (0.1216), schranz-machinery (0.1154), house (0.069)
+**Nearest timing neighbors (Jaccard):** eleven-against-seven (0.1216), schranz-machinery (0.1154), stomp-circuit (0.0806)
 
 **Fingerprint:** 0:0;1:0;2:11834;1:12987;3:40000;1:58442;0:71429;2:88757;1:103896;3:125000;0:142857;2:165680;1:194805;3:240000;2:242604;0:285714;1:285714;2:319527;3:375000;1:376623;2:396450;0:428571;3:440000;1:467532;2:473373;2:550296;1:558442;3:562500;0:571429;2:627219;3:640000;1:649351;2:704142;0:714286;1:740260;3:750000;2:781065;1:831169;3:840000;0:857143;2:857988;1:922078;2:934911;3:937500

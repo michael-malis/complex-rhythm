@@ -64,7 +64,8 @@ The latest Chromium screenshots and regression run are in [GitHub Actions](https
 
 ## Rhythm presets, acoustic audio and poly-rhythmic studies
 
-- 50 canonical core patterns across 10 source-genre categories (35 originals and 15 new studies), plus one separate Song Examples study. The browser has one **Category** selector (12 user-facing choices, including Featured Grooves and Song Examples) and one **Preset** selector. **One Bossa Nova** example remains (Classic, 116 BPM). Three previous Bossa variations were replaced by **2:3, 3:5 and 4:7 polyrhythms**; alongside existing 3:4 and 5:7 examples, the **Polyrhythms** category contains five mathematically distinct ratio studies.
+- 50 canonical core patterns (35 originals and 15 prime-ratio studies) plus one separate Song Examples study. The browser has one **Category** selector and one **Preset** selector. Ten choices: the curated **Start Here** tour, **Polyrhythms**, **House & Dub**, **Brazilian**, **Drum & Bass / Jungle**, **Bunker Techno**, **Acid / 303**, **Hardcore / Gabber**, **Prime Experiments** and **Song Examples**. Grouping and order live in one registry (`PRESET_GROUPS` in `app.js`); a preset's sample family (`kit`) is independent of the group it is listed in.
+- The groove presets are balanced per lane and use quiet first-degree roots as ghost notes and louder ones as accents. A whole quieter root set can sit under a sparse loud one (for example a sixteenth shaker whose offbeat square is accented), because a union keeps the louder value where roots coincide. Every preset carries a one-line musical description and a one-line mathematical one. Saved projects that still carry a preset's former name open as that preset. **One Bossa Nova** example remains (Classic, 116 BPM). Three previous Bossa variations were replaced by **2:3, 3:5 and 4:7 polyrhythms**; alongside existing 3:4 and 5:7 examples, the **Polyrhythms** category contains five mathematically distinct ratio studies.
 - Bossa loops span **two 4/4 bars**, not one. The cross-stick line is three hits in bar one (beat 1, & of 2, beat 4), then two in bar two (beat 2, & of 3). The feathered bass drum plays on 1, & of 2, 3, & of 4, against even shaker eighths.
 - New **real, recorded acoustic drum/percussion samples**, from the CC0 Virtuosity Drums library: soft/full kick, cross-stick variations, shaker variations, jazz hi-hat/snare, claves, bongo.
 - Faster drum-and-bass and jungle grooves also gain a quieter acoustic snare/kick body underneath the electronic transient when loaded.
@@ -75,7 +76,7 @@ The latest Chromium screenshots and regression run are in [GitHub Actions](https
 
 Open GitHub Pages or serve the **entire repository**, including `samples/`. Opening `index.html` alone (file:// without samples) will use the simpler synthesized fallback.
 
-In the web page: open **Rhythm examples**, select **Category: Brazilian & Acoustic** → **Preset: Bossa Nova · Classic** → **▶ Play**. The status line shows the number of decoded audio samples.
+In the web page: open **Rhythm examples**, select **Category: Brazilian** → **Preset: Bossa Nova · Classic** → **▶ Play**. The status line shows the number of decoded audio samples.
 
 ## Responsive English interface
 
@@ -101,7 +102,7 @@ Click or keyboard-focus a numeric/spinner/angle or volume control before scrolli
 
 ## Preset navigation and instrument quality
 
-- **Exactly two preset selectors:** `Category` and `Preset`. Featured Grooves is a curated shortcut rather than another source collection. The additional root-degree ratio studies are named inside their respective presets, not placed behind a third dropdown.
+- **Exactly two preset selectors:** `Category` and `Preset`. Start Here is a curated tour across the other categories rather than another source collection. The prime-ratio studies show their four root degrees in front of the name (for example `3:5:7:11 · Acid Reactor`), not behind a third dropdown.
 - **Four distinct original Acid presets:** Acid 303 Classic, Resonance Twister, Liquid Acid Dub and 303 Pressure Peak use different synthesis programs, lead root degrees and accents. The separate acid voices are mechanically validated, while subjective listening remains a manual requirement.
 - **Per-instrument volume:** each of the four visible lane cards carries its own volume slider. Master output remains global and separate.
 

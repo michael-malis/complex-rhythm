@@ -11,11 +11,15 @@ const P=(a,b,n,sound,layers=[])=>({a,b,n,sound,muted:false,layers});
 const L=(step,velocity=.58)=>({a:Math.cos(TAU*step/16),b:Math.sin(TAU*step/16),n:1,velocity});
 // A two-bar cycle contains 32 equal 16th-note positions. Every accent is still a 1st complex root.
 const L32=(step,velocity=.58)=>({a:Math.cos(TAU*step/32),b:Math.sin(TAU*step/32),n:1,velocity});
+// A whole n-th-root set added at one velocity. Inside a lane the union keeps
+// the louder value wherever two roots coincide, so a quiet dense set under a
+// loud sparse one gives accents and ghost notes without leaving root geometry.
+const SET=(a,b,n,velocity)=>({a,b,n,velocity});
 const PRESETS=[
 // Bunker techno: stable quarter-note kick, independent root-driven percussion.
 // Bass Wall alternates two-bar percussion cycles against a ONE-bar kick orbit;
 // every extra attack is still the phase of a degree-one complex root.
- {id:'berlin-bass-wall',category:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,bars:2,
+ {id:'berlin-bass-wall',kit:'bunker',name:'BERLIN BUNKER · Bass Wall',bpm:146,bars:2,
   character:'Driving / Hypnotic · an unwavering four-on-the-floor hard kick against rolling offbeat sub-rumble, a 16th-grid hat motor and alternating low-level rim pickups.',
   mathNote:'The kick repeats R₄(1) every bar. The other three circles span two bars: R₈(−1) rumble, R₁₆(−1) hats, and R₄(−1) rim. Individual first-degree roots introduce controlled syncopations; no second step sequencer is used.',
   tracks:[
@@ -27,7 +31,7 @@ const PRESETS=[
  // Dry/raw club pressure: rigid quarter kick vs alternating two-bar claps,
  // staggered metallic hats and a three-against-four gritty Reese bass orbit.
  // Real groove differences are complex roots, never detached step sequencing.
- {id:'concrete',category:'bunker',name:'Concrete · Raw Underground',bpm:138,bars:2,
+ {id:'concrete',kit:'bunker',name:'Concrete · Raw Underground',bpm:138,bars:2,
   character:'Raw Underground · dry hard quarter-note kick, clipped backbeat claps, coarse offbeat hats and short growling Reese bass stabs. Two-bar ghost variations maintain drive without a Berlin-style rumble wall.',
   mathNote:'R₄(1) is a separate one-bar quarter-kick circle; over two bars R₄(−1) claps land on beats 2 and 4, R₈(−1) hats articulate eighth-note offbeats, and R₃(i) bass sets up a shifting 3:4 polymetric counter-rhythm. Nine degree-one roots add intentionally soft ghost pickups.',
   tracks:[
@@ -39,7 +43,7 @@ const PRESETS=[
  // Industrial Bunker: quarter kick is the metrical anchor; two independent
  // metallic/FM root families interlock at off-grid points, with restrained
  // first-degree machine pickups instead of random noise or a step sequencer.
- {id:'shaft',category:'bunker',name:'Ventilation · Industrial',bpm:143,bars:2,
+ {id:'shaft',kit:'bunker',name:'Ventilation · Industrial',bpm:143,bars:2,
   character:'Industrial Techno · an immovable hard quarter kick and dry backbeat under seven-spoke metallic clangs and three-against-four low FM machinery. Quiet, intentional machine pickups alternate across two bars without drowning the pulse.',
   mathNote:'The one-bar R₄(1) kick supplies every quarter-note. Independent two-bar R₄(−1) snare, R₇(−1) metallic and R₃(i) FM orbits interlock with nine individually sourced first-degree complex roots. The 7:3 cross-rhythm preserves its own circle and audio-clock hand.',
   tracks:[
@@ -48,10 +52,13 @@ const PRESETS=[
    {...P(-1,0,7,'metallic',[L32(5,.34),L32(13,.44),L32(21,.32),L32(29,.42)]),gain:.48},
    {...P(0,1,3,'fmPerc',[L32(7,.38),L32(19,.46),L32(27,.33)]),gain:.46}
   ]},
- {id:'dust',category:'bunker',name:'Dust · Half-light',bpm:134,tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
+ {id:'dust',kit:'bunker',name:'Dust · Half-light',bpm:134,
+  character:'Sparse half-light techno, kept as the plain reference: quarter-note kick, rim on 2 and 4, open hats on the offbeats and a two-note sub with one late pickup.',
+  mathNote:'R₄(1) kick against R₂(−1) rim and R₄(−1) hats; the bass is R₂(1) plus one first-degree root at step 14 of 16.',
+  tracks:[P(1,0,4,'kick'),P(-1,0,2,'rim'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(14,.55)])]},
  // Hard Groove uses interlocking, unequal complex-root attacks rather than
  // racing the BPM or adding unauthorized off-quarter kick duplicates.
- {id:'iron',category:'bunker',name:'Iron · Hard Groove',bpm:151,bars:2,
+ {id:'iron',kit:'bunker',name:'Iron · Hard Groove',bpm:151,bars:2,
   character:'Hard Groove Techno · strict hard four-quarter kick, rolling clipped claps, driving coarse hats and syncopated low toms. Two-bar response accents create tension without burying the kick or cloning the industrial/acid patterns.',
   mathNote:'One-bar R₄(1) holds eight unwavering kicks over two bars. Independent two-bar R₄(−1) claps, R₁₂(−1) hats and R₅(i) toms interweave with twelve separate first-degree pickup roots; every syncopation retains complex-root phase and velocity provenance.',
   tracks:[
@@ -63,7 +70,7 @@ const PRESETS=[
  // Acid Bunker: quarter-note hard kick against a two-bar, phase-shifted
  // resonant 303 phrase. Ghosts remain degree-one complex roots sharing
  // exactly the same scheduling clock and colored orbit math as the kick.
- {id:'pressure',category:'bunker',name:'Pressure · Acid Underground',bpm:140,bars:2,
+ {id:'pressure',kit:'bunker',name:'Pressure · Acid Underground',bpm:140,bars:2,
   character:'Dark underground acid techno · unwavering four-quarter hard kick, dry backbeat snare, restless offbeat hats and a screaming resonant acid line with intentional call-and-response ghosts.',
   mathNote:'One-bar R₄(1) defines each kick quarter; independent two-bar R₄(−1) snare, R₁₂(−1) hats and R₅(i) acidScreaming phrase are extended by ten quiet first-degree phase roots. Distinct root families make the acid notes slide against the metrical kick without a separate beat sequencer.',
   tracks:[
@@ -72,61 +79,250 @@ const PRESETS=[
    {...P(-1,0,12,'hat',[L32(2,.37),L32(10,.40),L32(18,.35),L32(26,.44)]),gain:.67},
    {...P(0,1,5,'acidScreaming',[L32(5,.44),L32(11,.62),L32(18,.48),L32(24,.66)]),gain:.62}
   ]},
-// Essential rhythmic studies.
- {id:'house',category:'other',name:'Classic House · 4/4',bpm:125,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,8,'shaker')]},
- {id:'dub',category:'other',name:'Dub · Half-time',bpm:78,tracks:[P(1,0,2,'kick',[L(11,.68)]),P(-1,0,1,'snare'),P(-1,0,4,'hat'),P(1,0,2,'bass')]},
- {id:'afro',category:'poly',name:'Polyrhythm · 3 : 4',bpm:116,tracks:[P(1,0,3,'tom'),P(1,0,4,'rim'),P(1,0,8,'shaker'),P(1,0,1,'bass')]},
- {id:'minimal',category:'poly',name:'Polyrhythm · 5 : 7',bpm:124,tracks:[P(1,0,5,'tom'),P(1,0,7,'rim'),P(1,0,8,'hat'),P(1,0,1,'kick')],character:'Five equally spaced tom hits oppose seven rim hits; hats give an eight-pulse reference and the kick marks the cycle start.',mathNote:'The first two tracks construct a 5:7 polyrhythm from R₅(1) and R₇(1). Only their cycle-start events coincide.'},
- {id:'ambient',category:'other',name:'Slow Orbit · Space',bpm:70,tracks:[P(1,0,1,'kick'),P(0,1,3,'tom'),P(-1,0,4,'openhat'),P(1,0,2,'bass')]},
-// DnB: kick 1 + &3 (grid 0,10) and backbeat on 2 + 4; softer ghost notes.
- {id:'neuro-burst',category:'dnb',name:'Neuro · 2-Step',bpm:174,tracks:[P(1,0,1,'kick',[L(10,.92)]),P(-1,0,2,'snare',[L(7,.27)]),P(1,0,8,'hat',[L(3,.42),L(11,.42)]),P(1,0,2,'reese')]},
- {id:'double-drop',category:'dnb',name:'Roller · Ghosts',bpm:176,tracks:[P(1,0,1,'kick',[L(10,.96),L(14,.38)]),P(-1,0,2,'snare',[L(7,.30),L(15,.30)]),P(1,0,8,'hat'),P(-1,0,2,'bass',[L(11,.48)])]},
- {id:'subpressure',category:'dnb',name:'Sub Pressure · Half-time',bpm:172,tracks:[P(1,0,1,'kick',[L(10,.83)]),P(-1,0,1,'snare',[L(15,.25)]),P(1,0,8,'shaker'),P(1,0,2,'reese')]},
- {id:'velocity-grid',category:'dnb',name:'Break Grid · 16ths',bpm:178,tracks:[P(1,0,1,'kick',[L(6,.57),L(10,.9)]),P(-1,0,2,'snare',[L(7,.27),L(15,.31)]),P(1,0,8,'hat',[L(3,.4),L(11,.45)]),P(1,0,2,'bass')]},
-// Jungle: off-beat kick pick-ups, ghost snares and a busier break-like top.
- {id:'ragga-spiral',category:'jungle',name:'Ragga · Break Step',bpm:164,tracks:[P(1,0,1,'kick',[L(5,.75),L(10,.85)]),P(-1,0,2,'snare',[L(9,.31),L(15,.38)]),P(1,0,8,'hat',[L(5,.35),L(11,.42)]),P(1,0,2,'reese')]},
- {id:'break-torrent',category:'jungle',name:'Break Torrent · Chops',bpm:169,tracks:[P(1,0,1,'kick',[L(3,.55),L(10,.9),L(14,.48)]),P(-1,0,2,'snare',[L(6,.31),L(15,.29)]),P(1,0,8,'shaker',[L(7,.38),L(15,.42)]),P(1,0,2,'bass')]},
- {id:'ghostline',category:'jungle',name:'Ghostline · Half-roll',bpm:160,tracks:[P(1,0,1,'kick',[L(10,.84)]),P(-1,0,2,'snare',[L(3,.25),L(7,.3)]),P(1,0,8,'hat'),P(1,0,1,'bass',[L(11,.63)])]},
- {id:'chopped-orbit',category:'jungle',name:'Chopped Orbit · Fast',bpm:172,tracks:[P(1,0,1,'kick',[L(2,.5),L(10,.92)]),P(-1,0,2,'snare',[L(6,.34),L(15,.28)]),P(1,0,8,'hat',[L(1,.48),L(9,.48)]),P(1,0,2,'reese')]},
+// House, dub and the polyrhythm studies. In each polyrhythm two voices divide
+// the same bar into different equal parts, a quiet clock keeps a reference
+// pulse and a low note marks the "one".
+ {id:'house',kit:'other',name:'Classic House · 4/4',bpm:125,bars:2,
+  character:'Four-on-the-floor kick, claps on 2 and 4, open hats on every offbeat and a syncopated sub-bass answer.',
+  mathNote:'Kick R₄(1) and hats R₄(−1) are the same square, turned by half a step. The clap circle spans two bars so one soft pickup root can announce the turnaround.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1},
+   {...P(-1,0,4,'clap',[L32(30,.34)]),gain:.84},
+   {...P(-1,0,4,'openhat'),cycleBars:1,gain:.62},
+   {...P(0,-1,2,'bass',[L(3,.6),L(11,.66)]),cycleBars:1,gain:.84}
+  ]},
+ {id:'dub',kit:'other',name:'Dub · Half-time',bpm:78,
+  character:'Half-time dub: the snare drops on beat 3, hats skank on the offbeats and a heavy bass walks around the kick.',
+  mathNote:'The snare is a single root at −1. Kick and bass share R₂(1); quiet first-degree roots displace them by one or two sixteenths.',
+  tracks:[
+   {...P(1,0,2,'kick',[L(11,.6)]),gain:1},
+   {...P(-1,0,1,'snare',[L(15,.28)]),gain:.82},
+   {...P(-1,0,4,'hat',[L(7,.34),L(13,.3)]),gain:.66},
+   {...P(1,0,2,'bass',[L(6,.66),L(14,.5)]),gain:.88}
+  ]},
+ {id:'afro',kit:'poly',name:'Polyrhythm · 3:4',bpm:116,
+  character:'Three toms against four rim clicks: the classic cross-rhythm. A shaker keeps straight eighths and the bass marks the one.',
+  mathNote:'R₃(1) against R₄(1). A triangle and a square share only the vertex at 1, so the two voices meet once per bar.',
+  tracks:[P(1,0,3,'tom'),P(1,0,4,'rim'),P(1,0,8,'shaker'),P(1,0,1,'bass')]},
+ {id:'minimal',kit:'poly',name:'Polyrhythm · 5:7',bpm:124,
+  character:'Five equally spaced tom hits oppose seven rim hits; hats give an eight-pulse reference and the kick marks the cycle start.',
+  mathNote:'The first two tracks construct a 5:7 polyrhythm from R₅(1) and R₇(1). Only their cycle-start events coincide.',
+  tracks:[P(1,0,5,'tom'),P(1,0,7,'rim'),{...P(1,0,8,'hat'),gain:.6},{...P(1,0,1,'kick'),gain:.9}]},
+ {id:'ambient',kit:'other',name:'Slow Orbit · Space',bpm:70,
+  character:'A slow, open pulse: one kick per bar, three toms drifting across it, breathing open hats and a patient two-note bass.',
+  mathNote:'The tom triangle R₃(i) is turned a quarter of a step away from the kick, so three-against-four never lands on the downbeat.',
+  tracks:[
+   {...P(1,0,1,'kick'),gain:.94},
+   {...P(0,1,3,'tom',[L(14,.4)]),gain:.7},
+   {...P(-1,0,4,'openhat'),gain:.45},
+   {...P(1,0,2,'bass',[L(11,.5)]),gain:.82}
+  ]},
+// Drum & bass: kick on 1 and the "and" of 3 (steps 0 and 10), backbeat on 2 and 4.
+ {id:'neuro-burst',kit:'dnb',name:'Drum & Bass · 2-Step',bpm:174,
+  character:'The basic two-step: kick on 1 and the “and” of 3, snare on 2 and 4 with ghost notes, eighth-note hats and a Reese bass answering the kick.',
+  mathNote:'The snare is R₂(−1). Kick and bass each start from the single root 1 and add first-degree roots on the sixteenth grid.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(10,.92)]),gain:1},
+   {...P(-1,0,2,'snare',[L(7,.27),L(15,.24)]),gain:.88},
+   {...P(1,0,8,'hat',[L(3,.42),L(11,.42)]),gain:.64},
+   {...P(1,0,1,'reese',[L(6,.6),L(10,.9)]),gain:.72}
+  ]},
+ {id:'double-drop',kit:'dnb',name:'Drum & Bass · Roller',bpm:176,
+  character:'A roller: the two-step skeleton with three snare ghosts, a late kick pickup, a constant sixteenth shaker and a rolling sub line.',
+  mathNote:'The shaker is the union R₈(1) ∪ R₈(−1): eight full-strength eighths and eight quiet in-between roots form all sixteen sixteenths.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(10,.96),L(14,.38)]),gain:1},
+   {...P(-1,0,2,'snare',[L(7,.3),L(9,.22),L(15,.3)]),gain:.86},
+   {...P(1,0,8,'shaker',[SET(-1,0,8,.42)]),gain:.66},
+   {...P(1,0,1,'bass',[L(3,.56),L(10,.88),L(13,.5)]),gain:.84}
+  ]},
+ {id:'subpressure',kit:'dnb',name:'Drum & Bass · Half-time',bpm:172,
+  character:'Half-time pressure: a single heavy snare on beat 3, syncopated kicks around it, shaker eighths and a slow Reese.',
+  mathNote:'One root at −1 carries the whole backbeat. The fast tempo is heard through R₈(1) in the shaker, not through the drums.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(6,.62),L(11,.8)]),gain:1},
+   {...P(-1,0,1,'snare',[L(15,.25)]),gain:.92},
+   {...P(1,0,8,'shaker',[L(3,.34),L(11,.38)]),gain:.62},
+   {...P(1,0,2,'reese',[L(11,.52)]),gain:.72}
+  ]},
+ {id:'velocity-grid',kit:'dnb',name:'Drum & Bass · Amen Grid',bpm:178,
+  character:'The Amen-break skeleton: doubled kicks, backbeat snare with three ghost notes and ride-like eighth hats over a sparse sub.',
+  mathNote:'Kick 1 plus three first-degree roots (steps 2, 10, 11 of 16); snare R₂(−1) plus three quiet roots at steps 7, 9 and 15.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(2,.78),L(10,.95),L(11,.66)]),gain:1},
+   {...P(-1,0,2,'snare',[L(7,.3),L(9,.3),L(15,.34)]),gain:.88},
+   {...P(1,0,8,'hat'),gain:.62},
+   {...P(1,0,2,'bass',[L(6,.6)]),gain:.82}
+  ]},
+// Jungle: the same backbeat with busier, displaced break-style drums.
+ {id:'ragga-spiral',kit:'jungle',name:'Jungle · Ragga Step',bpm:164,
+  character:'Ragga jungle: a broken kick, ghosted backbeat and a reggae bassline that walks 3 + 3 + 2 across the bar.',
+  mathNote:'The bass plays the tresillo: root 1 plus first-degree roots at steps 6 and 12 of 16, a 3-3-2 division of eight eighths.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(5,.72),L(10,.88)]),gain:1},
+   {...P(-1,0,2,'snare',[L(9,.31),L(15,.38)]),gain:.88},
+   {...P(1,0,8,'hat',[L(5,.35),L(11,.42)]),gain:.62},
+   {...P(1,0,1,'reese',[L(6,.86),L(12,.8),L(14,.5)]),gain:.72}
+  ]},
+ {id:'break-torrent',kit:'jungle',name:'Jungle · Amen Chops',bpm:169,
+  character:'A chopped break: the second snare arrives late, on the “and” of 4, with ghost notes tumbling in between.',
+  mathNote:'The snare starts from the single root i (beat 2). The displaced accent is a first-degree root at step 14 of 16 instead of the expected −i.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(2,.62),L(10,.9)]),gain:1},
+   {...P(0,1,1,'snare',[L(7,.3),L(9,.32),L(14,.94),L(15,.3)]),gain:.88},
+   {...P(1,0,8,'shaker',[L(7,.38),L(15,.42)]),gain:.64},
+   {...P(1,0,2,'bass',[L(3,.6)]),gain:.82}
+  ]},
+ {id:'ghostline',kit:'jungle',name:'Jungle · Ghost Roll',bpm:160,
+  character:'A steady two-step whose snare whispers a rising four-note roll into every downbeat.',
+  mathNote:'Backbeat R₂(−1) plus four low-velocity first-degree roots; a union keeps the louder value wherever two roots coincide.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(10,.84)]),gain:1},
+   {...P(-1,0,2,'snare',[L(7,.3),L(9,.26),L(14,.3),L(15,.4)]),gain:.88},
+   {...P(1,0,8,'hat'),gain:.6},
+   {...P(1,0,1,'bass',[L(6,.5),L(11,.63)]),gain:.84}
+  ]},
+ {id:'chopped-orbit',kit:'jungle',name:'Jungle · Chopped Orbit',bpm:172,
+  character:'Kicks pushed off the beat, open hats on every offbeat and a Reese bass that answers a sixteenth early.',
+  mathNote:'Open hats are the rotated square R₄(−1). The bass is R₂(1) with two anticipating first-degree roots at steps 3 and 11.',
+  tracks:[
+   {...P(1,0,1,'kick',[L(6,.7),L(10,.92)]),gain:1},
+   {...P(-1,0,2,'snare',[L(9,.3),L(15,.28)]),gain:.88},
+   {...P(-1,0,4,'openhat'),gain:.56},
+   {...P(1,0,2,'reese',[L(3,.6),L(11,.6)]),gain:.72}
+  ]},
 // One Bossa Nova study spans two bars; three former Bossa variants are now polyrhythm studies.
- {id:'bossa-classic',category:'brazil',name:'Bossa Nova · Classic',bpm:116,bars:2,tracks:[P(1,0,4,'jazzkick',[L32(6,.46),L32(14,.42),L32(22,.46),L32(30,.42)]),P(1,0,1,'crossstick',[L32(6,.8),L32(12,.92),L32(20,.82),L32(26,.84)]),P(1,0,16,'jazzshaker'),P(0,0,1,'bongo',[L32(11,.28),L32(27,.32)])]},
- {id:'poly-2-3',category:'poly',name:'Polyrhythm · 2 : 3',bpm:108,tracks:[P(1,0,2,'tom'),P(1,0,3,'rim'),P(1,0,6,'shaker'),P(1,0,1,'bass')]},
- {id:'poly-3-5',category:'poly',name:'Polyrhythm · 3 : 5',bpm:112,tracks:[P(1,0,3,'tom'),P(1,0,5,'rim'),P(1,0,1,'jazzkick'),P(1,0,1,'shaker')]},
- {id:'poly-4-7',category:'poly',name:'Polyrhythm · 4 : 7',bpm:118,tracks:[P(1,0,4,'kick'),P(1,0,7,'rim'),P(1,0,1,'tom'),P(1,0,1,'shaker')]},
+ {id:'bossa-classic',kit:'brazil',name:'Bossa Nova · Classic',bpm:116,bars:2,
+  character:'Acoustic bossa nova: the two-bar cross-stick clave over a soft bass drum, a steady shaker and two quiet bongo answers.',
+  mathNote:'Every circle spans two bars. The clave is five first-degree roots at steps 0, 6, 12, 20 and 26 of 32; the bongo lane has z = 0, so it sounds only its two added roots.',
+  tracks:[P(1,0,4,'jazzkick',[L32(6,.46),L32(14,.42),L32(22,.46),L32(30,.42)]),P(1,0,1,'crossstick',[L32(6,.8),L32(12,.92),L32(20,.82),L32(26,.84)]),P(1,0,16,'jazzshaker'),P(0,0,1,'bongo',[L32(11,.28),L32(27,.32)])]},
+ {id:'poly-2-3',kit:'poly',name:'Polyrhythm · 2:3',bpm:108,
+  character:'Two low bongo strokes against three high ones: the hemiola. The shaker plays the six pulses on which both sides land.',
+  mathNote:'R₂(1) against R₃(1). Both are subsets of R₆(1), the shaker circle, because 6 is the least common multiple of 2 and 3.',
+  tracks:[P(1,0,2,'bongoLow'),{...P(1,0,3,'bongoHigh'),gain:.9},{...P(1,0,6,'shaker'),gain:.6},{...P(1,0,1,'bass'),gain:.8}]},
+ {id:'poly-3-5',kit:'poly',name:'Polyrhythm · 3:5',bpm:112,
+  character:'Three toms against five claves. A soft fifteen-pulse shaker reveals the fine grid that both voices share.',
+  mathNote:'R₃(1) against R₅(1) inside R₁₅(1): 15 = 3 · 5, and the two voices meet only at the root 1.',
+  tracks:[P(1,0,3,'tom'),{...P(1,0,5,'claves'),gain:.9},{...P(1,0,15,'shaker'),gain:.5},{...P(1,0,1,'bass'),gain:.8}]},
+ {id:'poly-4-7',kit:'poly',name:'Polyrhythm · 4:7',bpm:118,
+  character:'Seven rim clicks float over a four-on-the-floor kick; the shaker doubles the kick pulse and the bass marks the one.',
+  mathNote:'R₄(1) against R₇(1). Since 4 and 7 share no factor, the heptagon touches the square only at 1.',
+  tracks:[{...P(1,0,4,'kick'),gain:.9},P(1,0,7,'rim'),{...P(1,0,8,'shaker'),gain:.55},{...P(1,0,1,'bass'),gain:.8}]},
 // Other Brazilian-inspired studies; not exact transcriptions.
- {id:'baile-funk',category:'brazil',name:'Baile Funk · Tamborzão',bpm:132,tracks:[P(1,0,2,'kick',[L(6,.73),L(14,.78)]),P(-1,0,2,'clap',[L(11,.6)]),P(1,0,8,'tamborim'),P(1,0,2,'bass',[L(3,.58)])]},
- {id:'samba-drive',category:'brazil',name:'Samba · Surdo Pulse',bpm:108,tracks:[P(1,0,2,'surdo',[L(12,.58)]),P(-1,0,4,'tamborim',[L(2,.5),L(10,.5)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(11,.6)])]},
- {id:'batucada',category:'brazil',name:'Batucada · Layers',bpm:118,tracks:[P(1,0,2,'surdo',[L(14,.51)]),P(-1,0,4,'tamborim',[L(3,.56),L(11,.62)]),P(1,0,8,'shaker'),P(1,0,2,'agogo',[L(6,.7)])]},
- {id:'maracatu',category:'brazil',name:'Maracatu · Pulse Sketch',bpm:104,tracks:[P(1,0,2,'surdo',[L(13,.53)]),P(-1,0,2,'clap',[L(7,.42)]),P(-1,0,4,'agogo'),P(1,0,2,'tom',[L(10,.66)])]},
-// House keeps true four-on-floor kicks and backbeats.
- {id:'warehouse-hammer',category:'hardhouse',name:'Warehouse · Hard Drive',bpm:146,tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(-1,0,4,'bass',[L(13,.57)])]},
- {id:'steel-rave',category:'hardhouse',name:'Steel Rave · Stabs',bpm:152,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(11,.59)])]},
- {id:'stomp-circuit',category:'hardhouse',name:'Stomp Circuit · Push',bpm:148,tracks:[P(1,0,4,'kick',[L(14,.52)]),P(-1,0,2,'clap'),P(-1,0,4,'openhat'),P(1,0,2,'bass',[L(11,.63)])]},
- {id:'peak-pressure',category:'hardhouse',name:'Peak Pressure · Rave',bpm:156,tracks:[P(1,0,4,'kick'),P(-1,0,2,'snare'),P(1,0,8,'hat'),P(-1,0,4,'acid',[L(3,.6),L(11,.6)])]},
+ {id:'baile-funk',kit:'brazil',name:'Baile Funk · Tamborzão',bpm:132,
+  character:'A tamborzão-style groove: a syncopated kick, claps with one early answer, tamborim eighths and a bouncing bass.',
+  mathNote:'Kick and bass both start from R₂(1) and move apart through different first-degree roots; the tamborim is R₈(1) with two ghosts.',
+  tracks:[
+   {...P(1,0,2,'kick',[L(6,.73),L(14,.78)]),gain:1},
+   {...P(-1,0,2,'clap',[L(11,.6)]),gain:.84},
+   {...P(1,0,8,'tamborim',[L(3,.5),L(11,.46)]),gain:.66},
+   {...P(1,0,2,'bass',[L(3,.58),L(14,.6)]),gain:.86}
+  ]},
+ {id:'samba-drive',kit:'brazil',name:'Samba · Surdo Pulse',bpm:108,
+  character:'Samba swing: the surdo opens on 2 and 4, shaker and tamborim lean on the last sixteenth of every beat, and the agogô plays a five-note bell line.',
+  mathNote:'The shaker is a union of three squares and a 16-gon: R₄(1) loud, R₄(−i) strong, R₁₆(1) quiet. Where roots coincide, the louder one is kept.',
+  tracks:[
+   {...P(-1,0,2,'surdo',[L(0,.44),L(8,.44),L(15,.36)]),gain:1},
+   {...P(0,-1,4,'tamborim',[L(0,.72),L(5,.5),L(8,.72),L(13,.5)]),gain:.7},
+   {...P(1,0,4,'shaker',[SET(0,-1,4,.8),SET(1,0,16,.4)]),gain:.62},
+   {...P(1,0,1,'agogo',[L(3,.74),L(6,.86),L(10,.76),L(13,.9)]),gain:.62}
+  ]},
+ {id:'batucada',kit:'brazil',name:'Batucada · Layers',bpm:118,
+  character:'A fuller bateria: answering surdo, offbeat tamborim with pushes, a sixteenth shaker and a syncopated agogô.',
+  mathNote:'The tamborim square R₄(−1) sits exactly between the beats. The shaker is R₈(1) ∪ R₈(−1) with the second octagon played quietly.',
+  tracks:[
+   {...P(-1,0,2,'surdo',[L(0,.42),L(8,.42),L(14,.5)]),gain:1},
+   {...P(-1,0,4,'tamborim',[L(3,.56),L(11,.62),L(15,.5)]),gain:.7},
+   {...P(1,0,8,'shaker',[SET(-1,0,8,.4)]),gain:.62},
+   {...P(1,0,2,'agogo',[L(3,.6),L(6,.7),L(11,.56)]),gain:.6}
+  ]},
+ {id:'maracatu',kit:'brazil',name:'Maracatu · Alfaia Pulse',bpm:104,
+  character:'Maracatu-inspired: low drums roll 3 + 3 + 2 under a ghosted snare, an offbeat bell and a steady shaker.',
+  mathNote:'The low drum is R₂(1) plus four first-degree roots, two tresillos per bar. The shaker is R₈(1) with its offbeat square R₄(−1) accented.',
+  tracks:[
+   {...P(1,0,2,'surdo',[L(3,.7),L(6,.8),L(11,.7),L(14,.8)]),gain:1},
+   {...P(-1,0,2,'jazzsnare',[L(7,.4),L(10,.34),L(15,.42)]),gain:1},
+   {...P(-1,0,4,'agogo',[L(7,.55),L(15,.6)]),gain:.6},
+   {...P(-1,0,4,'shaker',[SET(1,0,8,.5)]),gain:.66}
+  ]},
+// Hard house keeps a true four-on-the-floor kick and a backbeat; the four
+// studies differ in what happens between the kicks.
+ {id:'warehouse-hammer',kit:'hardhouse',name:'Hard House · Offbeat Bass',bpm:146,
+  character:'The hard-house signature: a bass note on every offbeat, bouncing between the kicks, with open hats and a clap on 2 and 4.',
+  mathNote:'Kick R₄(1) and bass R₄(−1) are the same square turned by half a step, so the two never touch.',
+  tracks:[
+   {...P(1,0,4,'kick'),gain:1.04},
+   {...P(-1,0,2,'clap',[L(15,.3)]),gain:.84},
+   {...P(-1,0,4,'openhat'),gain:.62},
+   {...P(-1,0,4,'bass',[L(13,.57)]),gain:.84}
+  ]},
+ {id:'steel-rave',kit:'hardhouse',name:'Hard House · Rave Stabs',bpm:152,
+  character:'Syncopated rave stabs, a sixteenth before each clap and on the offbeat after it, over sixteenth hats with offbeat accents.',
+  mathNote:'The hats are R₄(−1) ∪ R₁₆(1): four loud roots inside sixteen quiet ones. The stabs are R₂(−i) plus two first-degree roots that anticipate beats 2 and 4.',
+  tracks:[
+   {...P(1,0,4,'kick'),gain:1.04},
+   {...P(-1,0,2,'clap'),gain:.84},
+   {...P(-1,0,4,'hat',[SET(1,0,16,.4)]),gain:.66},
+   {...P(0,-1,2,'raveStab',[L(3,.72),L(11,.72)]),gain:.5}
+  ]},
+ {id:'stomp-circuit',kit:'hardhouse',name:'Hard House · Rolling Bass',bpm:148,
+  character:'A rolling bassline: three bass notes fill the gap after every kick, plus a quick stomp into the downbeat.',
+  mathNote:'The sixteenth grid is four squares. The kick owns R₄(1); the bass is the union of the other three, R₄(i) ∪ R₄(−1) ∪ R₄(−i), each at its own loudness.',
+  tracks:[
+   {...P(1,0,4,'kick',[L(15,.5)]),gain:1.04},
+   {...P(-1,0,2,'clap'),gain:.84},
+   {...P(-1,0,4,'openhat'),gain:.6},
+   {...P(-1,0,4,'bass',[SET(0,-1,4,.7),SET(0,1,4,.55)]),gain:.8}
+  ]},
+ {id:'peak-pressure',kit:'hardhouse',name:'Hard House · Peak Rave',bpm:156,bars:2,
+  character:'Peak time: an acid line bubbling between the kicks and a snare roll that climbs at the end of every second bar.',
+  mathNote:'The snare circle spans two bars: R₄(−1) for the backbeat plus three rising first-degree roots on the last three of 32 steps.',
+  tracks:[
+   {...P(1,0,4,'kick'),cycleBars:1,gain:1.04},
+   {...P(-1,0,4,'snare',[L32(29,.4),L32(30,.52),L32(31,.66)]),gain:.84},
+   {...P(1,0,8,'hat'),cycleBars:1,gain:.64},
+   {...P(-1,0,4,'acid',[L(3,.6),L(11,.6),L(13,.5)]),cycleBars:1,gain:.7}
+  ]},
 // Four musically distinct acid roles; each note remains an nth-root event.
 // Separate voice definitions already implement six proven, measurable acid spectra.
- {id:'acid-303',category:'acid',name:'Acid 303 · Classic',bpm:128,
-  character:'Sparse classic sawtooth 303 steps against a four-to-the-floor kick and restrained offbeat hats.',
-  mathNote:'Six lead phases from the union of R4(-1) and two single-root accents.',
-  tracks:[P(1,0,4,'kick'),P(-1,0,2,'clap'),P(-1,0,4,'hat'),
-   P(-1,0,4,'acidClassic',[L(3,.65),L(11,.66)])]},
- {id:'resonance-rush',category:'acid',name:'Resonance · Twister',bpm:134,
-  character:'Fast, animated psychedelic squelch over an eighth-note hi-hat roll and extra kick pickup.',
-  mathNote:'Five rotated lead roots from R5(i), with two independently phased single-root syncopations.',
-  tracks:[P(1,0,4,'kick',[L(14,.45)]),P(-1,0,2,'clap'),
-   P(1,0,8,'hat',[L(3,.4)]),P(0,1,5,'acidPsychedelic',[L(7,.55),L(13,.42)])]},
- {id:'liquid-corrosion',category:'acid',name:'Liquid · Acid Dub',bpm:124,
-  character:'Space between low, dark square-wave acid phrases, broken half-time kick and long open hats.',
-  mathNote:'A deliberately sparse two-root bass family with two soft displaced accents.',
-  tracks:[P(1,0,2,'kick',[L(12,.54)]),P(-1,0,2,'rim'),
-   P(-1,0,4,'openhat'),P(1,0,2,'acidDark',[L(3,.42),L(11,.52)])]},
- {id:'303-pressure',category:'acid',name:'303 Pressure · Peak',bpm:140,
-  character:'Dense distorted hard-acid stabs fight two snare backbeats and a rapid hi-hat line.',
-  mathNote:'Seven equally spaced off-axis lead roots, plus two sixteenth-grid high-pressure accents.',
-  tracks:[P(1,0,4,'kick',[L(14,.54)]),P(-1,0,2,'snare'),
-   P(1,0,8,'hat',[L(5,.33)]),P(-1,0,7,'acidHard',[L(1,.56),L(9,.7)])]}
+ {id:'acid-303',kit:'acid',name:'Acid 303 · Classic',bpm:128,
+  character:'Classic sawtooth 303: pairs of notes bubble after every kick, against claps and restrained offbeat hats.',
+  mathNote:'Eight lead phases: the offbeat square R₄(−1) and four quieter first-degree roots placed beside its corners.',
+  tracks:[
+   {...P(1,0,4,'kick'),gain:1},
+   {...P(-1,0,2,'clap'),gain:.82},
+   {...P(-1,0,4,'hat'),gain:.66},
+   {...P(-1,0,4,'acidClassic',[L(3,.65),L(7,.5),L(11,.66),L(13,.55)]),gain:.78}
+  ]},
+ {id:'resonance-rush',kit:'acid',name:'Resonance · Twister',bpm:134,
+  character:'Fast, animated psychedelic squelch over an eighth-note hi-hat roll and an extra kick pickup.',
+  mathNote:'Five rotated lead roots from R₅(i), a pentagon turning against the square kick, with two independently phased single-root syncopations.',
+  tracks:[
+   {...P(1,0,4,'kick',[L(14,.45)]),gain:1},
+   {...P(-1,0,2,'clap'),gain:.82},
+   {...P(1,0,8,'hat',[L(3,.4),L(11,.36)]),gain:.62},
+   {...P(0,1,5,'acidPsychedelic',[L(7,.55),L(13,.42)]),gain:.74}
+  ]},
+ {id:'liquid-corrosion',kit:'acid',name:'Liquid · Acid Dub',bpm:124,
+  character:'Space between low, dark square-wave acid phrases, a broken half-time kick, rim backbeat and long open hats.',
+  mathNote:'A deliberately sparse two-root bass family R₂(1) with two soft displaced accents.',
+  tracks:[
+   {...P(1,0,2,'kick',[L(12,.54)]),gain:1},
+   {...P(-1,0,2,'rim',[L(15,.3)]),gain:.8},
+   {...P(-1,0,4,'openhat'),gain:.55},
+   {...P(1,0,2,'acidDark',[L(3,.42),L(11,.52)]),gain:.8}
+  ]},
+ {id:'303-pressure',kit:'acid',name:'303 Pressure · Peak',bpm:140,
+  character:'Dense distorted hard-acid stabs fight a ghosted snare backbeat and a rapid hi-hat line.',
+  mathNote:'Seven equally spaced off-axis lead roots R₇(−1), a heptagon against the square kick, plus two sixteenth-grid high-pressure accents.',
+  tracks:[
+   {...P(1,0,4,'kick',[L(14,.54)]),gain:1.04},
+   {...P(-1,0,2,'snare',[L(15,.3)]),gain:.84},
+   {...P(1,0,8,'hat',[L(5,.33),L(13,.36)]),gain:.62},
+   {...P(-1,0,7,'acidHard',[L(1,.56),L(9,.7)]),gain:.7}
+  ]}
 ];
-// Research-informed experimental studies. Original 35 records remain unmodified.
+// Research-informed experimental studies follow the 35 catalog records above.
 // Each n-th-root set is still exactly uniform; the combined ensemble is not a single arbitrary root set.
 const EXPERIMENTAL_STUDIES=[{"id":"industrial-fracture","name":"Industrial Fracture","bpm":155,"degrees":[5,7,11,9],"sounds":["hardcoreKick","metallic","hat","reese"],"offs":[0,0.02857142857142857,0.025974025974025976,0.04938271604938271],"category":"experimental","character":"Dry broken-pressure impacts against metal clicks and a slow detuned bass contour.","mathNote":"5:7:11 polyrhythm in the first three lanes, supported by a shifted nine-root bass contour.","acc":[0.75,0.5,0.24,0.28]},{"id":"acid-reactor","name":"Acid Reactor","bpm":148,"degrees":[3,5,7,11],"sounds":["technoKick","acidHard","metallic","hat"],"offs":[0,0.06666666666666667,0.08571428571428572,0.05194805194805195],"category":"experimental","character":"Three anchor kicks, agitated hard-acid response and scattered metallic shrapnel.","mathNote":"Relatively prime 3:5:7:11 periodicities with displaced phases.","acc":[0.82,0.45,0.29,0.2]},{"id":"rotterdam-collision","name":"Rotterdam Collision","bpm":180,"degrees":[4,7,11,3],"sounds":["gabberKick","metallic","noiseBurst","hoover"],"offs":[0,0.03571428571428571,0.045454545454545456,0.1111111111111111],"category":"hardcore","character":"Four relentless gabber pulses clash with seven metallic spikes and eleven noisy accents.","mathNote":"4:7:11:3 exact-root collision study, with offset root families.","acc":[0.62,0.26,0.19,0.2]},{"id":"schranz-machinery","name":"Schranz Machinery","bpm":158,"degrees":[7,9,11,13],"sounds":["hardcoreKick","metallic","fmPerc","acidIndustrial"],"offs":[0,0.031746031746031744,0.01818181818181818,0.03296703296703297],"category":"hardcore","character":"Mechanistic distorted kick punctuated by inharmonic percussive metallic events.","mathNote":"Odd-meter 7:9:11:13 layers, with substantial drift between collisions.","acc":[0.42,0.22,0.2,0.16]},{"id":"broken-reactor","name":"Broken Reactor","bpm":172,"degrees":[5,11,7,13],"sounds":["technoKick","snare","noiseBurst","acidScreaming"],"offs":[0.04,0.03636363636363636,0.047619047619047616,0.02197802197802198],"category":"experimental","character":"Five-beat broken low-end structure under thin snare splinters and screaming acid.","mathNote":"Five against eleven against seven against thirteen, with asymmetrical offsets.","acc":[0.65,0.31,0.18,0.15]},{"id":"frenchcore-spiral","name":"Frenchcore Spiral","bpm":205,"degrees":[4,7,5,11],"sounds":["frenchcoreKick","acidHard","metallic","hat"],"offs":[0,0.03571428571428571,0.05,0.03636363636363636],"category":"hardcore","character":"Pitched frenchcore kick with seven hard-acid notes and metallic syncopation.","mathNote":"4:7:5:11 with pitched root families and near-aligned source cycles.","acc":[0.58,0.27,0.3,0.15]},{"id":"acid-singularity","name":"Acid Singularity","bpm":162,"degrees":[7,11,13,5],"sounds":["technoKick","acidPsychedelic","fmPerc","acidDark"],"offs":[0.02857142857142857,0.025974025974025976,0.03296703296703297,0.04],"category":"experimental","character":"Narrow techno foundation against two contrasting resonant acid patches.","mathNote":"Prime periods 7:11:13:5 with separately shifted arguments.","acc":[0.44,0.22,0.17,0.23]},{"id":"prime-number-riot","name":"Prime Number Riot","bpm":175,"degrees":[3,5,7,11],"sounds":["gabberKick","metallic","raveStab","acidClassic"],"offs":[0,0.06666666666666667,0.05714285714285714,0.012987012987012988],"category":"experimental","character":"Three robust gabber accents chase five metal beats and a terse melodic rave stab.","mathNote":"3:5:7:11 — all prime root degrees, unlike the related Acid Reactor arrangement.","acc":[0.7,0.35,0.26,0.19]},{"id":"eleven-against-seven","name":"Eleven Against Seven","bpm":146,"degrees":[7,11,5,13],"sounds":["hardcoreKick","fmPerc","hat","acidIndustrial"],"offs":[0,0.03896103896103896,0.04,0.04395604395604396],"category":"experimental","character":"Sparse heavy low-frequency events and rapidly shifting light FM patterns.","mathNote":"Seven against eleven is the foreground relation; five and thirteen form a subdued counter-layer.","acc":[0.42,0.25,0.2,0.16]},{"id":"mechanical-paradox","name":"Mechanical Paradox","bpm":168,"degrees":[9,13,7,11],"sounds":["technoKick","metallic","raveStab","noiseBurst"],"offs":[0.037037037037037035,0.02197802197802198,0.047619047619047616,0.04132231404958678],"category":"experimental","character":"Rotating machinery pulses and destabilized metallic accents.","mathNote":"9:13:7:11, with nonzero phases to avoid universal downbeat collisions.","acc":[0.48,0.23,0.18,0.14]},{"id":"terror-geometry","name":"Terror Geometry","bpm":220,"degrees":[4,7,9,13],"sounds":["gabberKick","noiseBurst","acidScreaming","metallic"],"offs":[0,0.03571428571428571,0.044444444444444446,0.02197802197802198],"category":"hardcore","character":"Fast low-end impacts and densely shifting high-frequency shards, peak-controlled.","mathNote":"4:7:9:13 four-lane polyrhythm: a fixed four-root kick against independently offset seven, nine and thirteen-root layers.","acc":[0.55,0.23,0.13,0.11]},{"id":"complex-roots-overload","name":"Complex Roots Overload","bpm":186,"degrees":[7,11,13,17],"sounds":["hardcoreKick","fmPerc","hoover","metallic"],"offs":[0.02040816326530612,0.01652892561983471,0.01775147928994083,0.01730103806228374],"category":"experimental","character":"Intentionally dense prime-degree texture, with reduced per-lane gain for clarity.","mathNote":"7:11:13:17 – four individually uniform but collectively intricate time sets.","acc":[0.34,0.18,0.14,0.13]},{"id":"hardtek-mobius","name":"Hardtek Möbius","bpm":178,"degrees":[5,7,9,4],"sounds":["frenchcoreKick","raveStab","fmPerc","acidHard"],"offs":[0,0.02857142857142857,0.037037037037037035,0.0625],"category":"hardcore","character":"Hardtek bounce, pitched kick contour and short saturated acid responses.","mathNote":"5:7:9:4, with a four-root accompaniment countering the odd cycles.","acc":[0.5,0.33,0.19,0.22]},{"id":"breakcore-prime-shards","name":"Breakcore Prime Shards","bpm":190,"degrees":[7,5,11,3],"sounds":["hardcoreKick","snare","noiseBurst","reese"],"offs":[0.02040816326530612,0.04,0.008264462809917356,0.1111111111111111],"category":"experimental","character":"Dislocated kick and snare accents interleave with high-rate percussive noise.","mathNote":"7:5:11:3 and independent cyclic offsets, not a conventional 16-step break.","acc":[0.44,0.42,0.15,0.24]},{"id":"euclidean-fragments","name":"Euclidean Fragments","bpm":170,"degrees":[7,11,13,5],"sounds":["technoKick","metallic","acidDark","shaker"],"offs":[0,0.012987012987012988,0.011834319526627219,0.04],"category":"experimental","character":"Prime pulse layers with a distinct five-out-of-sixteen Euclidean accent line.","mathNote":"7:11:13:5 nth-root base sets plus explicit E(5,16) on the last instrument.","acc":[0.52,0.25,0.17,0.17],"euclidean":{"k":5,"n":16,"rotation":2,"velocity":0.38}}];
 // A musical accent is a separate *first-degree complex root*, not a second
@@ -155,16 +351,16 @@ for(const study of EXPERIMENTAL_STUDIES){
  // so these are genuine quieter pickups rather than ineffective gain labels.
  tracksForStudy[0].layers.push(studyAccentRoot(anchor+1/(2*study.degrees[0]),.46));
  tracksForStudy[1].layers.push(studyAccentRoot(study.offs[1]+1/(2*study.degrees[1]),.38));
- PRESETS.push({id:study.id,category:study.category,name:study.name,bpm:study.bpm,tracks:tracksForStudy,
+ PRESETS.push({id:study.id,name:study.name,bpm:study.bpm,tracks:tracksForStudy,
    character:study.character,
    mathNote:study.mathNote+' A shared kick/response phase and two half-step single-root ghost accents add measured contrast without changing the original root families.'});
 }
 
 // Separately curated song studies are user-provided interpretations, not audio
-// recordings or claimed exact transcriptions. The original 50 catalog entries
-// remain unchanged for the historical diversity/source audit.
+// recordings or claimed exact transcriptions. They stay outside the 50-entry
+// catalog that the diversity/source audit measures.
 const SONG_EXAMPLES=Object.freeze([
- {id:'prodigy-boom-boom-tap-study',category:'songs',
+ {id:'prodigy-boom-boom-tap-study',
   name:'Prodigy Boom Boom Tap (study)',
   displayName:'Prodigy · Boom Boom Tap (Rhythm Study)',
   bpm:160,bars:1,
@@ -191,38 +387,66 @@ const SONG_EXAMPLES=Object.freeze([
 ]);
 const BROWSE_PRESETS=Object.freeze([...PRESETS,...SONG_EXAMPLES]);
 
-// These six genre-diverse grooves remain real canonical mathematical presets.
-// Curated browsing adds a view, never a second preset-loading algorithm.
-const GROOVE_IDS=Object.freeze(['berlin-bass-wall','concrete','shaft','dust','iron','bossa-classic']);
-const GROOVE_LABELS=Object.freeze({
- 'berlin-bass-wall':'01 · Bass Wall · relentless kick / deep rumble',
- 'concrete':'02 · Concrete · raw claps / Reese bass',
- 'shaft':'03 · Machinery · snare, hats and toms',
- 'dust':'04 · Half-light · sparse bass and open hats',
- 'iron':'05 · Peak · relentless acid pressure',
- 'bossa-classic':'06 · Acoustic · bongo and cross-stick'
-});
-// One visible Category picker and one Preset picker. Source categories remain
-// unchanged for sample routing and old JSON; only the browser groups them.
-const PRESET_CATEGORIES=Object.freeze({
- grooves:'Featured Grooves',bunker:'Bunker Techno',hardhouse:'Hard House',
- acid:'Acid / 303',hardcore:'Hardcore / Gabber',dnb:'Drum & Bass',
- jungle:'Jungle',brazil:'Brazilian & Acoustic',other:'House & Dub',
- poly:'Polyrhythms',experimental:'Mathematical Experiments',songs:'Song Examples'
-});
+// One registry decides how rhythms are grouped and ordered in the browser.
+// Every catalog entry belongs to exactly one source group; "Start Here" is a
+// curated tour across them and never a second copy or loading algorithm.
+// A preset's `kit` (sample family) is independent of where it is listed.
+const PRESET_GROUPS=Object.freeze([
+ {id:'grooves',label:'Start Here',curated:true,
+  ids:['afro','house','bossa-classic','samba-drive','neuro-burst','berlin-bass-wall','acid-303','acid-reactor']},
+ {id:'poly',label:'Polyrhythms',
+  ids:['poly-2-3','afro','poly-3-5','poly-4-7','minimal']},
+ {id:'other',label:'House & Dub',
+  ids:['house','warehouse-hammer','stomp-circuit','steel-rave','peak-pressure','dub','ambient']},
+ {id:'brazil',label:'Brazilian',
+  ids:['bossa-classic','samba-drive','batucada','maracatu','baile-funk']},
+ {id:'dnb',label:'Drum & Bass / Jungle',
+  ids:['neuro-burst','double-drop','subpressure','velocity-grid','ragga-spiral','break-torrent','ghostline','chopped-orbit']},
+ {id:'bunker',label:'Bunker Techno',
+  ids:['berlin-bass-wall','concrete','shaft','dust','iron','pressure']},
+ {id:'acid',label:'Acid / 303',
+  ids:['acid-303','resonance-rush','liquid-corrosion','303-pressure']},
+ {id:'hardcore',label:'Hardcore / Gabber',
+  ids:['schranz-machinery','hardtek-mobius','rotterdam-collision','frenchcore-spiral','terror-geometry']},
+ {id:'experimental',label:'Prime Experiments',
+  ids:['acid-reactor','eleven-against-seven','industrial-fracture','acid-singularity','mechanical-paradox',
+   'euclidean-fragments','broken-reactor','prime-number-riot','complex-roots-overload','breakcore-prime-shards']},
+ {id:'songs',label:'Song Examples',ids:['prodigy-boom-boom-tap-study']}
+]);
+const PRESET_BY_ID=new Map(BROWSE_PRESETS.map(p=>[p.id,p]));
+for(const group of PRESET_GROUPS){
+ for(const id of group.ids){
+  const preset=PRESET_BY_ID.get(id);
+  if(!preset)throw Error('Unknown preset in group '+group.id+': '+id);
+  if(group.curated)continue;
+  if(preset.category)throw Error('Preset listed in two source groups: '+id);
+  preset.category=group.id;
+ }
+}
+for(const preset of BROWSE_PRESETS)if(!preset.category)throw Error('Preset without a group: '+preset.id);
 const categoryForPreset=preset=>preset.category;
-const inBrowse=(preset,category)=>category==='grooves'
- ? GROOVE_IDS.includes(preset.id):preset.category===category;
-const MATH_PRESET_RATIOS=Object.freeze({
- minimal:'5:7', 'schranz-machinery':'7:9', 'eleven-against-seven':'7:11',
- 'acid-singularity':'11:13', 'industrial-fracture':'5:7:11',
- 'acid-reactor':'3:5:7:11', 'complex-roots-overload':'7:11:13:17',
- 'terror-geometry':'4:7:9:13'
-});
-const presetLabel=(preset,category)=>category==='grooves'?GROOVE_LABELS[preset.id]:
- MATH_PRESET_RATIOS[preset.id]
- ? MATH_PRESET_RATIOS[preset.id]+' · '+preset.name
+const presetsInGroup=category=>(PRESET_GROUPS.find(g=>g.id===category)?.ids||[]).map(id=>PRESET_BY_ID.get(id));
+const inBrowse=(preset,category)=>presetsInGroup(category).includes(preset);
+// The prime studies carry their root degrees in the visible name, so the
+// ratio is readable without opening a third selector.
+const RATIO_GROUPS=new Set(['hardcore','experimental']);
+const presetLabel=preset=>RATIO_GROUPS.has(preset.category)
+ ? preset.tracks.map(t=>t.n).join(':')+' · '+preset.name
  : preset.displayName||preset.name;
+// Saved projects written before a preset was renamed still open as that preset.
+const LEGACY_PRESET_NAMES=Object.freeze({
+ 'Polyrhythm · 3 : 4':'afro','Polyrhythm · 5 : 7':'minimal','Polyrhythm · 2 : 3':'poly-2-3',
+ 'Polyrhythm · 3 : 5':'poly-3-5','Polyrhythm · 4 : 7':'poly-4-7',
+ 'Neuro · 2-Step':'neuro-burst','Roller · Ghosts':'double-drop',
+ 'Sub Pressure · Half-time':'subpressure','Break Grid · 16ths':'velocity-grid',
+ 'Ragga · Break Step':'ragga-spiral','Break Torrent · Chops':'break-torrent',
+ 'Ghostline · Half-roll':'ghostline','Chopped Orbit · Fast':'chopped-orbit',
+ 'Maracatu · Pulse Sketch':'maracatu',
+ 'Warehouse · Hard Drive':'warehouse-hammer','Steel Rave · Stabs':'steel-rave',
+ 'Stomp Circuit · Push':'stomp-circuit','Peak Pressure · Rave':'peak-pressure'
+});
+const presetForProjectName=name=>BROWSE_PRESETS.find(p=>p.name===name)||
+ PRESET_BY_ID.get(LEGACY_PRESET_NAMES[name])||null;
 const $=id=>document.getElementById(id);
 // Wheel changes are opt-in: only a clicked/focused input consumes scrolling.
 // Native keyboard and pointer behavior stays intact, as does page scrolling
@@ -250,7 +474,7 @@ const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 // carries the measured root/ring/playhead geometry of the main Canvas.
 const backCanvas=$('orbitBack'), back=backCanvas.getContext('2d');
 const orbitInstructions=canvas.getAttribute('aria-label');
-let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='poly';
+let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='grooves';
 let presetModified=false,importedProjectName=null;
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
@@ -585,8 +809,11 @@ function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return
 // An explicit reproducible index for the eight mandatory mathematical relations.
 // Ratios describe the foreground degrees; accompaniment can include other root sets.
 function renderPresets(){
- $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${Object.keys(PRESET_CATEGORIES).length} categories`;
- $('categorySelect').value=browseCategory;
+ $('presetCount').textContent=`${BROWSE_PRESETS.length} rhythm examples · ${PRESET_GROUPS.length-1} categories`;
+ const categories=$('categorySelect');
+ if(categories.options.length!==PRESET_GROUPS.length||[...categories.options].some((o,i)=>o.value!==PRESET_GROUPS[i].id))
+  categories.replaceChildren(...PRESET_GROUPS.map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.label;return o}));
+ categories.value=browseCategory;
  const select=$('presetSelect');select.replaceChildren();
  const selected=BROWSE_PRESETS.find(p=>p.id===activePresetId);
  const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
@@ -598,9 +825,9 @@ function renderPresets(){
   const option=document.createElement('option');option.value='__custom__';
   option.textContent=importedProjectName||'Custom rhythm';select.append(option);
  }
- for(const p of BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory))){
+ for(const p of presetsInGroup(browseCategory)){
   const option=document.createElement('option');option.value=p.id;
-  option.textContent=presetLabel(p,browseCategory)+
+  option.textContent=presetLabel(p)+
     (p.id===activePresetId&&presetModified?' · Modified':'');
   select.append(option);
  }
@@ -1641,7 +1868,7 @@ function applyPreset(p){
  inspectedRoot=null;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
- activeCategory=p.category;
+ activeCategory=p.kit||'other';
  if(!inBrowse(p,browseCategory))browseCategory=categoryForPreset(p);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
@@ -2443,13 +2670,13 @@ async function loadJson(file){try{if(file.size>100000)throw Error('File is too l
  tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
  bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
- const sourcePreset=BROWSE_PRESETS.find(p=>p.name===importedName);
+ const sourcePreset=presetForProjectName(importedName);
  activePresetId=sourcePreset?.id||null;
  presetModified=Boolean(sourcePreset);
  importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
  // Unnamed imported material has no genre identity: do not inherit a stale
  // previous preset's sample mappings or claim that it is a previous preset.
- activeCategory=sourcePreset?.category||'other';
+ activeCategory=sourcePreset?.kit||'other';
  browseCategory=sourcePreset?categoryForPreset(sourcePreset):'other';
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
  activateLoadedRhythm(phase,cycle);
@@ -2490,6 +2717,8 @@ function setupEvents() {
   if(open)renderRootRule();
  });
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
+ $('presetInfo').title='Click to show or hide the full description';
+ $('presetInfo').addEventListener('click',e=>e.currentTarget.classList.toggle('is-open'));
  $('presetSelect').addEventListener('change',e=>{const p=BROWSE_PRESETS.find(p=>p.id===e.target.value);if(p)applyPreset(p)});
  $('presetPrev').addEventListener('click',()=>stepPreset(-1));
  $('presetNext').addEventListener('click',()=>stepPreset(1));
@@ -2721,7 +2950,7 @@ function updatePlayHint(){
  el.style.setProperty('--hint-color',COLORS[selectedTrack]);
 }
 function stepPreset(direction){
- const list=BROWSE_PRESETS.filter(p=>inBrowse(p,browseCategory));
+ const list=presetsInGroup(browseCategory);
  if(!list.length)return;
  const at=list.findIndex(p=>p.id===activePresetId);
  applyPreset(list[at<0?(direction>0?0:list.length-1):(at+direction+list.length)%list.length]);
@@ -2770,7 +2999,7 @@ window.RhythmResearch=Object.freeze({
  markerVisualForSize:(size,requestedPulse,coincident=false)=>visualRootMarker(getRadii(size)[0]-getRadii(size)[1],requestedPulse,coincident),
  radiiForSize:size=>getRadii(size),
  presets:()=>PRESETS.map(p=>({
-  id:p.id,name:p.name,category:p.category,bpm:p.bpm,bars:p.bars||1,
+  id:p.id,name:p.name,category:p.category,kit:p.kit||'other',bpm:p.bpm,bars:p.bars||1,
   character:p.character||'',mathNote:p.mathNote||'',
   tracks:p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??(p.bars===2?2:1)},i))
  })),

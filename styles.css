@@ -140,6 +140,10 @@ html[data-theme="dark"] .expression-error{color:#ffb0a5}
 /* Secondary model and sound controls. Kept inside one optional inspector. */
 .preset-info{padding:0 12px 12px;color:var(--sub);font-size:16px;line-height:1.5}
 .preset-info:empty{display:none}
+/* One line by default so a long description never pushes the plot or the lane editors down; click or tap to read all of it. */
+.preset-info{cursor:pointer}
+html[data-view="lab"] .preset-info:not(.is-open):not(:empty){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;padding-bottom:0;margin-bottom:12px}
+html[data-view="play"] .preset-info.is-open{display:block;-webkit-line-clamp:unset;overflow:visible}
 .patch-controls,.special-rhythms{margin:14px 0 0;padding:13px 0;border-top:1px solid var(--fine);min-width:0}
 .patch-controls h4,.special-rhythms h4{font-size:20px;margin:0 0 11px;font-weight:650;color:var(--ink)}
 .patch-controls .small-explain,.special-rhythms .small-explain{font-size:17px;margin:7px 0 12px}
@@ -818,6 +822,10 @@ html[data-view="play"] .lane-math-term{font-size:16px!important}
  html[data-view="play"] .lane-bottom{grid-area:foot;display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0;padding-top:6px;border-top:1px solid var(--fine)}
  html[data-view="play"] .lane-equation{width:auto;flex:1 1 auto;color:var(--sub);overflow:hidden;flex-wrap:nowrap}
  html[data-view="play"] .lane-count{font-size:16px;font-weight:600;color:var(--muted);white-space:nowrap}
+}
+/* common laptop heights: a one-line description keeps all four lane cards on screen (click it to read on) */
+@media(min-width:980px) and (max-height:960px){
+ html[data-view="play"] .preset-info:not(.is-open){-webkit-line-clamp:1}
 }
 /* short laptop screens: single-row strips so all four lanes stay on screen */
 @media(min-width:980px) and (max-height:800px){

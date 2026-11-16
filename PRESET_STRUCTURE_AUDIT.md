@@ -4,14 +4,15 @@
 
 ## Observations
 
-- **50 presets / 200 lanes** remain represented by mathematical root and optional extra/Euclidean events.
-- **7** examples retain only unit-velocity root attacks; these may be deliberately pure mathematical polyrhythm demonstrations, not defects.
-- **7** still have no additional root sets, a valid mathematical configuration.
-- **0** now lack simultaneous cross-lane events in the common-cycle analysis. The 15 experimental pieces include an intentionally shared kick-response anchor, and the original 35 are unchanged.
-- The 15 experimental studies each contain three new genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study retains its previous five separately sourced accents as well.
-- High phase similarity (≥0.85) remains a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
+- **50 presets / 200 lanes** are represented by mathematical root and optional extra/Euclidean events.
+- **5** examples keep only unit-velocity root attacks; these are deliberately pure polyrhythm demonstrations, not defects.
+- **5** have no additional root sets, a valid mathematical configuration.
+- **0** lack simultaneous cross-lane events in the common-cycle analysis. The 15 experimental pieces include an intentionally shared kick-response anchor.
+- **0** presets have a timing neighbor at or above 0.85 Jaccard similarity.
+- The 15 experimental studies each contain three genuine first-degree root accents, including two lower-velocity in-between-root pickups. The Euclidean study keeps its five separately sourced accents as well.
+- High phase similarity (≥0.85) is a timing-only candidate for subjective listening review, not proof that two patches or genres sound the same.
 
-All per-preset event counts, shared moments, actual accent velocities, source additions and lane-density ratios below have been rechecked against the current 50-preset model. The 15 experimental studies remain unchanged. The approved Bunker redesigns update only Bass Wall, Concrete, Pressure, Shaft and Iron; the other 45 canonical preset arrangements remain unchanged.
+All per-preset event counts, shared moments, accent velocities, source additions and lane-density ratios below are rechecked against the current 50-preset model. The category column is the browser group from `PRESET_GROUPS` in `app.js`; a preset's sample family (`kit`) is separate. The groove, polyrhythm and acid presets were reworked together (lane balance, ghost and accent roots, descriptions); the five redesigned Bunker arrangements, **Dust · Half-light** and the root sets of the 15 experimental studies are musically unchanged.
 
 ## Quantitative per-preset evidence
 
@@ -23,35 +24,35 @@ All per-preset event counts, shared moments, actual accent velocities, source ad
 | `dust` | bunker | 134 | 4:2:4:3 | 5 | 1 | 1 | 2.00 | none |
 | `iron` | bunker | 151 | 4:8:16:9 | 5 | 12 | 12 | 4.00 | none |
 | `pressure` | bunker | 140 | 4:6:16:9 | 7 | 10 | 10 | 4.00 | none |
-| `house` | other | 125 | 4:2:4:8 | 8 | 0 | 0 | 4.00 | none |
-| `dub` | other | 78 | 3:1:4:2 | 2 | 1 | 1 | 4.00 | none |
+| `house` | other | 125 | 4:5:4:4 | 8 | 3 | 3 | 1.25 | none |
+| `dub` | other | 78 | 3:2:6:4 | 4 | 6 | 6 | 3.00 | none |
 | `afro` | poly | 116 | 3:4:8:1 | 4 | 0 | 0 | 8.00 | none |
 | `minimal` | poly | 124 | 5:7:8:1 | 1 | 0 | 0 | 8.00 | none |
-| `ambient` | other | 70 | 1:3:4:2 | 1 | 0 | 0 | 4.00 | none |
-| `neuro-burst` | dnb | 174 | 2:3:10:2 | 5 | 4 | 4 | 5.00 | `velocity-grid:0.89` |
-| `double-drop` | dnb | 176 | 3:4:8:3 | 5 | 5 | 5 | 2.67 | none |
-| `subpressure` | dnb | 172 | 2:2:8:2 | 3 | 2 | 2 | 4.00 | none |
-| `velocity-grid` | dnb | 178 | 3:4:10:2 | 6 | 6 | 6 | 5.00 | `neuro-burst:0.89` |
-| `ragga-spiral` | jungle | 164 | 3:4:10:2 | 6 | 6 | 6 | 5.00 | none |
-| `break-torrent` | jungle | 169 | 4:4:10:2 | 8 | 7 | 7 | 5.00 | none |
-| `ghostline` | jungle | 160 | 2:4:8:2 | 4 | 4 | 4 | 4.00 | none |
-| `chopped-orbit` | jungle | 172 | 3:4:10:2 | 7 | 6 | 6 | 5.00 | none |
+| `ambient` | other | 70 | 1:4:4:3 | 2 | 2 | 2 | 4.00 | none |
+| `neuro-burst` | dnb | 174 | 2:4:10:3 | 5 | 7 | 7 | 5.00 | none |
+| `double-drop` | dnb | 176 | 3:5:16:4 | 10 | 16 | 9 | 5.33 | none |
+| `subpressure` | dnb | 172 | 3:2:10:3 | 4 | 6 | 6 | 5.00 | none |
+| `velocity-grid` | dnb | 178 | 4:5:8:3 | 7 | 7 | 7 | 2.67 | none |
+| `ragga-spiral` | dnb | 164 | 3:4:10:4 | 7 | 9 | 9 | 3.33 | none |
+| `break-torrent` | dnb | 169 | 3:5:10:3 | 8 | 9 | 9 | 3.33 | none |
+| `ghostline` | dnb | 160 | 2:6:8:3 | 6 | 7 | 7 | 4.00 | none |
+| `chopped-orbit` | dnb | 172 | 3:4:4:4 | 3 | 6 | 6 | 1.33 | none |
 | `bossa-classic` | brazil | 116 | 8:5:16:2 | 11 | 10 | 10 | 8.00 | none |
 | `poly-2-3` | poly | 108 | 2:3:6:1 | 4 | 0 | 0 | 6.00 | none |
-| `poly-3-5` | poly | 112 | 3:5:1:1 | 1 | 0 | 0 | 5.00 | none |
-| `poly-4-7` | poly | 118 | 4:7:1:1 | 1 | 0 | 0 | 7.00 | none |
-| `baile-funk` | brazil | 132 | 4:3:8:3 | 6 | 4 | 4 | 2.67 | none |
-| `samba-drive` | brazil | 108 | 3:4:8:3 | 7 | 2 | 4 | 2.67 | none |
-| `batucada` | brazil | 118 | 3:6:8:3 | 6 | 4 | 4 | 2.67 | none |
-| `maracatu` | brazil | 104 | 3:3:4:3 | 3 | 3 | 3 | 1.33 | none |
-| `warehouse-hammer` | hardhouse | 146 | 4:2:4:5 | 6 | 1 | 1 | 2.50 | none |
-| `steel-rave` | hardhouse | 152 | 4:2:8:5 | 8 | 1 | 1 | 4.00 | `peak-pressure:0.95` |
-| `stomp-circuit` | hardhouse | 148 | 5:2:4:3 | 5 | 2 | 2 | 2.50 | none |
-| `peak-pressure` | hardhouse | 156 | 4:2:8:6 | 8 | 2 | 2 | 4.00 | `steel-rave:0.95` |
-| `acid-303` | acid | 128 | 4:2:4:6 | 6 | 2 | 2 | 3.00 | none |
-| `resonance-rush` | acid | 134 | 5:2:9:7 | 5 | 4 | 4 | 4.50 | none |
-| `liquid-corrosion` | acid | 124 | 3:2:4:4 | 3 | 3 | 3 | 2.00 | none |
-| `303-pressure` | acid | 140 | 5:2:9:9 | 5 | 4 | 4 | 4.50 | none |
+| `poly-3-5` | poly | 112 | 3:5:15:1 | 7 | 0 | 0 | 15.00 | none |
+| `poly-4-7` | poly | 118 | 4:7:8:1 | 4 | 0 | 0 | 8.00 | none |
+| `baile-funk` | brazil | 132 | 4:3:10:4 | 8 | 7 | 7 | 3.33 | none |
+| `samba-drive` | brazil | 108 | 5:8:16:5 | 12 | 23 | 13 | 3.20 | none |
+| `batucada` | brazil | 118 | 5:7:16:5 | 11 | 17 | 10 | 3.20 | none |
+| `maracatu` | brazil | 104 | 6:5:6:8 | 10 | 13 | 10 | 1.60 | none |
+| `warehouse-hammer` | other | 146 | 4:3:4:5 | 6 | 2 | 2 | 1.67 | none |
+| `steel-rave` | other | 152 | 4:2:16:4 | 8 | 14 | 3 | 8.00 | none |
+| `stomp-circuit` | other | 148 | 5:2:4:12 | 7 | 9 | 3 | 6.00 | none |
+| `peak-pressure` | other | 156 | 4:7:8:7 | 17 | 6 | 6 | 2.00 | none |
+| `acid-303` | acid | 128 | 4:2:4:8 | 6 | 4 | 4 | 4.00 | none |
+| `resonance-rush` | acid | 134 | 5:2:10:7 | 5 | 5 | 5 | 5.00 | none |
+| `liquid-corrosion` | acid | 124 | 3:3:4:4 | 3 | 4 | 4 | 1.33 | none |
+| `303-pressure` | acid | 140 | 5:3:10:9 | 5 | 6 | 6 | 3.33 | none |
 | `industrial-fracture` | experimental | 155 | 6:9:11:9 | 3 | 3 | 3 | 1.83 | none |
 | `acid-reactor` | experimental | 148 | 4:7:7:11 | 3 | 3 | 3 | 2.75 | none |
 | `rotterdam-collision` | hardcore | 180 | 5:9:11:3 | 3 | 3 | 3 | 3.67 | none |

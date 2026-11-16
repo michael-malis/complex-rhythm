@@ -475,7 +475,7 @@ const canvas=$('orbitCanvas'), ctx=canvas.getContext('2d');
 const backCanvas=$('orbitBack'), back=backCanvas.getContext('2d');
 const orbitInstructions=canvas.getAttribute('aria-label');
 let tracks=[], selectedTrack=0, bpm=146, cycleBars=1, volume=.65, activePresetId='berlin-bass-wall',activeCategory='bunker',browseCategory='grooves';
-let presetModified=false,importedProjectName=null;
+let presetModified=false,importedProjectName=null,projectOrigin='Imported project';
 const OUTPUT_CHAIN_COMPENSATION=0.005; // measured 2x waveshaper group delay; preserve accurate beat onsets
 let playing=false,pausedPhase=0,beatEpoch=0,scheduledUntil=0,timerId=null,windowStartBar=0;
 let transportWanted=false,transportTicket=0,pauseBarrier=Promise.resolve();
@@ -846,7 +846,7 @@ function renderPresets(){
  const description=selected?
   (presetModified?'Modified version of '+selected.name+'. ':'')+
   (selected.character&&selected.mathNote?`${selected.character} Mathematical structure: ${selected.mathNote}`:''):
-  (importedProjectName?'Imported project: '+importedProjectName:'');
+  (importedProjectName?projectOrigin+': '+importedProjectName:'');
  $('presetInfo').textContent=selected&&!inBrowseCategory?
   `Currently loaded: ${selected.name}${presetModified?' · Modified':''}. Switching categories does not change the rhythm. Select an example to load it. `+description:
   description;
@@ -1201,6 +1201,8 @@ function renderTracks() {
   const mute=document.createElement('button');mute.type='button';mute.className='lane-mute';mute.id='laneMute'+i;
   const updateMute=()=>{mute.title=t.muted?'Unmute':'Mute';mute.textContent=t.muted?'×':'♫';mute.setAttribute('aria-pressed',String(t.muted));mute.setAttribute('aria-label',(t.muted?'Unmute':'Mute')+' lane '+(i+1));row.classList.toggle('muted',t.muted)};
   updateMute();mute.addEventListener('click',()=>{t.muted=!t.muted;updateMute();if(i===selectedTrack)updateOrbitSummary();if(inspectedRoot)renderRootInspection();markCustom()});
+  // Two quick presses leave the mute state as it was and solo the lane.
+  mute.addEventListener('dblclick',e=>{e.preventDefault();toggleSolo(i)});
   head.append(pick,sound,mute);row.append(head);
   row.append(buildLaneQuick(t,i));
   // A lane card is one large selection target; real controls keep their own behavior.
@@ -1880,7 +1882,7 @@ function applyPreset(p){
  cycleBars=p.bars===2?2:1;
  inspectedRoot=null;
  tracks=p.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
- bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;
+ bpm=p.bpm;activePresetId=p.id;presetModified=false;importedProjectName=null;soloLane=-1;
  activeCategory=p.kit||'other';
  if(!inBrowse(p,browseCategory))browseCategory=categoryForPreset(p);
  $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
@@ -2696,25 +2698,11 @@ function validateImportedFields(project){
 async function loadJson(file){try{if(file.size>100000)throw Error('File is too large');const d=JSON.parse(await file.text());if(d?.format!=='roots-rhythm/1'||!Array.isArray(d.tracks)||d.tracks.length!==4)throw Error('Expected roots-rhythm/1 with four tracks');
  validateImportedFields(d);
  if(d.tracks.some(t=>!t||typeof t!=='object'||(t.cycleBars!==undefined&&(!Number.isInteger(t.cycleBars)||t.cycleBars<1||t.cycleBars>16))||!Number.isFinite(Number(t.a))||!Number.isFinite(Number(t.b))||Math.abs(Number(t.a))>10000||Math.abs(Number(t.b))>10000||!Number.isInteger(Number(t.n))||Number(t.n)<1||Number(t.n)>64||!Object.hasOwn(SOUNDS,t.sound)||t.layers!==undefined&&(!Array.isArray(t.layers)||t.layers.length>5||t.layers.some(l=>!l||!Number.isFinite(Number(l.a))||!Number.isFinite(Number(l.b))||Math.abs(Number(l.a))>10000||Math.abs(Number(l.b))>10000||!Number.isInteger(Number(l.n))||Number(l.n)<1||Number(l.n)>64||!Number.isFinite(Number(l.velocity))||Number(l.velocity)<.1||Number(l.velocity)>1))))throw Error('Check a, b, n and sound for every track');
- const phase=transportPhase(),oldCycle=cycleSeconds();
- const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
- cycleBars=d.bars===2?2:1;
- inspectedRoot=null;
- tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
- bpm=safeInt(d.bpm,50,260,138);
  const importedName=typeof d.name==='string'?d.name.trim().slice(0,45):'';
  const sourcePreset=presetForProjectName(importedName);
- activePresetId=sourcePreset?.id||null;
- presetModified=Boolean(sourcePreset);
- importedProjectName=sourcePreset?null:(importedName||file.name.slice(0,45));
- // Unnamed imported material has no genre identity: do not inherit a stale
- // previous preset's sample mappings or claim that it is a previous preset.
- activeCategory=sourcePreset?.kit||'other';
- browseCategory=sourcePreset?categoryForPreset(sourcePreset):'other';
- $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
- activateLoadedRhythm(phase,cycle);
- renderPresets();renderTracks();renderEditor();renderWindowTimeline();
- if(magnified)refreshPlotZoom();
+ loadProject(d,{presetId:sourcePreset?.id||null,modified:Boolean(sourcePreset),
+  name:importedName||file.name.slice(0,45),kit:sourcePreset?.kit||'other',
+  browse:sourcePreset?categoryForPreset(sourcePreset):'other'});
  showToast('Imported rhythm: '+(importedName||file.name))}catch(e){showToast('Import failed: '+e.message)}}
 function setupEvents() {
  const resultStrip=$('unionStrip');
@@ -2756,6 +2744,13 @@ function setupEvents() {
  $('presetPrev').addEventListener('click',()=>stepPreset(-1));
  $('presetNext').addEventListener('click',()=>stepPreset(1));
  $('presetShuffle').addEventListener('click',surprisePreset);
+ $('diceBtn').addEventListener('click',rollNewRhythm);
+ $('mutateBtn').addEventListener('click',mutateRhythm);
+ $('undoBtn').addEventListener('click',undoProject);
+ $('tapBtn').addEventListener('click',tapTempo);
+ $('stageBtn').addEventListener('click',()=>setStage(!stageOn()));
+ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)setStage(false)});
+ updateJamTools();
  $('viewPlay').addEventListener('click',()=>setView('play'));
  $('viewLab').addEventListener('click',()=>setView('lab'));
  window.addEventListener('hashchange',()=>setView(location.hash==='#lab'?'lab':'play',false));
@@ -2930,10 +2925,25 @@ function setupEvents() {
  // Focused canvas, timeline row, union strip and other keyboard controls must
  // not accidentally start/stop sound while inspecting mathematical events.
  document.addEventListener('keydown',e=>{
-  if(e.defaultPrevented||e.code!=='Space'||e.repeat||e.altKey||e.ctrlKey||e.metaKey)return;
+  if(e.defaultPrevented||e.repeat||e.altKey||e.ctrlKey||e.metaKey)return;
+  // Live keys use physical positions (e.code), so they work on any layout.
+  // Q W E R mute lanes 1-4, with Shift they solo; T taps the tempo; F is the stage.
+  if(!e.target?.closest?.('input:not([type=range]),select,textarea,[contenteditable]')){
+   const lane=['KeyQ','KeyW','KeyE','KeyR'].indexOf(e.code);
+   if(lane>=0&&tracks[lane]){
+    e.preventDefault();
+    if(e.shiftKey)toggleSolo(lane);else $('laneMute'+lane)?.click();
+    return;
+   }
+   if(e.code==='KeyT'){e.preventDefault();tapTempo();return}
+   if(e.code==='KeyF'&&view==='play'){e.preventDefault();setStage(!stageOn());return}
+   if(e.code==='Escape'&&stageOn()){setStage(false);return}
+  }
   if(e.target===canvas||e.target?.closest?.(
    'input,select,button,textarea,summary,a[href],[tabindex],[contenteditable],[role="button"]'
   ))return;
+  if(e.code==='ArrowRight'||e.code==='ArrowLeft'){e.preventDefault();stepPreset(e.code==='ArrowRight'?1:-1);return}
+  if(e.code!=='Space')return;
   e.preventDefault();togglePlay();
  });
  document.addEventListener('pointerdown',e=>{const m=$('fileMenu');if(m.open&&!m.contains(e.target))m.open=false});
@@ -2960,6 +2970,7 @@ function refitVisibleMath(){
 function setView(next,updateUrl=true){
  wake();
  view=next==='lab'?'lab':'play';
+ if(view==='lab')setStage(false);
  document.documentElement.dataset.view=view;
  $('viewPlay').setAttribute('aria-pressed',String(view==='play'));
  $('viewLab').setAttribute('aria-pressed',String(view==='lab'));
@@ -3014,6 +3025,184 @@ function setTheme(next,save=false) {
  $('themeBtn').setAttribute('aria-pressed',String(theme==='dark'));
  if(save)try{localStorage.setItem('roots-rhythm-theme',theme)}catch(_){}
  if(tracks.length){renderTracks();renderEditor();scheduleSoundWavePreview();updatePlayHint()}
+}
+// ---- Jam tools ---------------------------------------------------------------
+// Roll, Mutate and Undo all replace the rhythm through loadProject(), the same
+// atomic transition JSON import uses, so sound and picture never disagree.
+function loadProject(d,meta){
+ const phase=transportPhase(),oldCycle=cycleSeconds();
+ const cycle=playing&&audio?Math.floor(Math.max(0,audio.currentTime-beatEpoch)/oldCycle):0;
+ cycleBars=d.bars===2?2:1;
+ inspectedRoot=null;soloLane=-1;
+ tracks=d.tracks.map((t,i)=>cleanTrack({...t,cycleBars:t.cycleBars??cycleBars},i));
+ bpm=safeInt(d.bpm,50,260,138);
+ activePresetId=meta.presetId||null;
+ presetModified=Boolean(meta.modified);
+ importedProjectName=activePresetId?null:(meta.name||null);
+ projectOrigin=meta.origin||'Imported project';
+ // Unnamed material has no genre identity: it must not inherit a previous
+ // preset's sample mappings or claim to be that preset.
+ activeCategory=meta.kit||'other';
+ if(meta.browse)browseCategory=meta.browse;
+ $('bpm').value=String(bpm);$('bpmText').textContent=String(bpm);
+ activateLoadedRhythm(phase,cycle);
+ renderPresets();renderTracks();renderEditor();renderWindowTimeline();
+ if(magnified)refreshPlotZoom();
+ updatePlayHint();
+}
+const undoStack=[];
+function projectSnapshot(){
+ return {data:{bars:cycleBars,bpm,tracks:JSON.parse(JSON.stringify(tracks))},
+  meta:{presetId:activePresetId,modified:presetModified,name:importedProjectName,
+   origin:projectOrigin,kit:activeCategory,browse:browseCategory}};
+}
+function updateJamTools(){const undo=$('undoBtn');if(undo)undo.disabled=!undoStack.length}
+function rememberForUndo(){undoStack.push(projectSnapshot());if(undoStack.length>10)undoStack.shift();updateJamTools()}
+function undoProject(){
+ const last=undoStack.pop();if(!last)return;
+ loadProject(last.data,last.meta);updateJamTools();showToast('Back to the previous rhythm');
+}
+// Each family is four roles. `turn` is a fraction of the lane's own step, so
+// 0, 1/4, 1/2 and 3/4 give z = 1, i, −1 and −i.
+const DICE_FAMILIES=Object.freeze([
+ {kit:'other',bpm:[116,132],lanes:[
+  {sounds:['kick'],n:[4,4,4,2,3],turn:[0],gain:1},
+  {sounds:['clap','snare','rim'],n:[2,2,2,1,3],turn:[.5,.5,.25],gain:.84,ghosts:[15,7]},
+  {sounds:['hat','openhat','shaker'],n:[4,8,8,6,16],turn:[.5,0,.5],gain:.64},
+  {sounds:['bass','acid','reese'],n:[2,3,4,5],turn:[0,.5,.25,.75],gain:.8,ghosts:[3,11,14]}]},
+ {kit:'dnb',bpm:[160,176],lanes:[
+  {sounds:['kick'],n:[1,1,2],turn:[0],gain:1,always:[[10,.92]],ghosts:[6,14]},
+  {sounds:['snare'],n:[2,2,1],turn:[.5],gain:.88,ghosts:[7,9,15]},
+  {sounds:['hat','shaker'],n:[8,8,16,6],turn:[0],gain:.62},
+  {sounds:['bass','reese'],n:[1,2,3],turn:[0,.5],gain:.8,ghosts:[3,6,11,14]}]},
+ {kit:'brazil',bpm:[98,124],lanes:[
+  {sounds:['surdo','bongoLow','tom'],n:[2,2,3,4],turn:[.5,0],gain:1,ghosts:[0,8,14]},
+  {sounds:['tamborim','claves','crossstick','bongoHigh'],n:[3,4,5,7],turn:[0,.5,.25],gain:.72,ghosts:[3,11]},
+  {sounds:['shaker','jazzshaker'],n:[8,16,6,12],turn:[0],gain:.6},
+  {sounds:['agogo','claves','bass'],n:[2,3,5],turn:[0,.25,.5],gain:.66,ghosts:[6,13]}]},
+ {kit:'poly',distinct:true,bpm:[100,126],lanes:[
+  {sounds:['tom','bongoLow','kick'],n:[2,3,4,5],turn:[0],gain:1},
+  {sounds:['rim','claves','bongoHigh'],n:[3,4,5,7],turn:[0],gain:.9},
+  {sounds:['shaker','hat'],n:[6,8,12],turn:[0],gain:.55},
+  {sounds:['bass'],n:[1],turn:[0],gain:.8}]}
+]);
+function rollRhythm(){
+ const pick=list=>list[Math.floor(Math.random()*list.length)];
+ const snap=x=>Math.abs(x)<1e-9?0:Number(x.toFixed(9));
+ const family=pick(DICE_FAMILIES);
+ let lanes;
+ for(let attempt=0;attempt<12;attempt++){
+  lanes=family.lanes.map(role=>{
+   const angle=TAU*pick(role.turn);
+   const layers=(role.always||[]).map(([step,velocity])=>L(step,velocity));
+   for(const step of role.ghosts||[])
+    if(layers.length<3&&Math.random()<.35)layers.push(L(step,Number((.3+Math.random()*.3).toFixed(2))));
+   return {...P(snap(Math.cos(angle)),snap(Math.sin(angle)),pick(role.n),pick(role.sounds),layers),gain:role.gain};
+  });
+  if(!family.distinct||lanes[0].n!==lanes[1].n)break;
+ }
+ const [low,high]=family.bpm;
+ return {data:{bars:1,bpm:low+Math.floor(Math.random()*(high-low+1)),tracks:lanes},
+  meta:{name:'Roll · '+lanes.map(t=>t.n).join(':'),origin:'Rolled rhythm',kit:family.kit}};
+}
+function rollNewRhythm(){
+ rememberForUndo();
+ const rolled=rollRhythm();
+ loadProject(rolled.data,rolled.meta);
+ showToast('New rhythm '+rolled.data.tracks.map(t=>t.n).join(' : ')+' · Undo brings the previous one back');
+}
+// Moves a whole lane (its root set and every added root) by `delta` of its
+// own cycle. Rotating z alone would leave the added roots behind.
+function shiftedLane(t,delta){
+ const turned=JSON.parse(JSON.stringify(t));
+ const turn=(z,n)=>{
+  const radius=Math.hypot(z.a,z.b);if(!radius)return;
+  const angle=Math.atan2(z.b,z.a)+TAU*n*delta,snap=x=>Math.abs(x)<radius*1e-12?0:Number(x.toPrecision(10));
+  z.a=snap(radius*Math.cos(angle));z.b=snap(radius*Math.sin(angle));
+ };
+ turn(turned,turned.n);
+ for(const layer of turned.layers||[])turn(layer,layer.n);
+ if(turned.euclidean){
+  const steps=delta*turned.euclidean.n;
+  if(Math.abs(steps-Math.round(steps))<1e-9)turned.euclidean.rotation=(turned.euclidean.rotation||0)+Math.round(steps);
+ }
+ return turned;
+}
+const SOUND_ROLES=Object.freeze([
+ ['kick','jazzkick','surdo','tom','bongoLow','technoKick'],
+ ['snare','clap','rim','crossstick','jazzsnare','claves','bongoHigh'],
+ ['hat','openhat','shaker','jazzshaker','jazzhat','tamborim'],
+ ['bass','reese','acid','agogo','acidClassic','acidDark']
+]);
+// One small change to one audible lane; everything else stays as it was.
+function mutateRhythm(){
+ const pick=list=>list[Math.floor(Math.random()*list.length)];
+ const next=JSON.parse(JSON.stringify(tracks)),moves=[];
+ next.forEach((t,i)=>{
+  if(t.muted)return;
+  const lane='Lane '+(i+1),grid=16*(t.cycleBars||1);
+  if(t.a||t.b)moves.push(()=>{
+   const direction=Math.random()<.5?-1:1;next[i]=shiftedLane(t,direction/grid);
+   return lane+' moved one sixteenth '+(direction>0?'later':'earlier');
+  });
+  if(t.n<16)moves.push(()=>{t.n++;return lane+' now has '+t.n+' evenly spaced hits'});
+  if(t.n>1)moves.push(()=>{t.n--;return lane+' now has '+t.n+' evenly spaced '+(t.n===1?'hit':'hits')});
+  const role=SOUND_ROLES.find(sounds=>sounds.includes(t.sound));
+  if(role)moves.push(()=>{t.sound=pick(role.filter(sound=>sound!==t.sound));return lane+' now plays '+SOUNDS[t.sound]});
+  if(t.layers.length<5)moves.push(()=>{
+   const step=Math.floor(Math.random()*grid);
+   t.layers.push({a:Math.cos(TAU*step/grid),b:Math.sin(TAU*step/grid),n:1,velocity:Number((.3+Math.random()*.3).toFixed(2))});
+   return lane+' gained one quiet extra hit';
+  });
+ });
+ if(!moves.length){showToast('Unmute a lane to mutate it');return}
+ rememberForUndo();
+ const note=pick(moves)();
+ loadProject({bars:cycleBars,bpm,tracks:next},{presetId:activePresetId,modified:Boolean(activePresetId),
+  name:importedProjectName,origin:projectOrigin,kit:activeCategory});
+ showToast('Mutation · '+note);
+}
+// ---- Live play ---------------------------------------------------------------
+let soloLane=-1,soloRestore=null;
+function toggleSolo(i){
+ if(!tracks[i])return;
+ if(soloLane===i){tracks.forEach((t,k)=>{t.muted=soloRestore[k]});soloLane=-1}
+ else{
+  if(soloLane<0)soloRestore=tracks.map(t=>t.muted);
+  tracks.forEach((t,k)=>{t.muted=k!==i});soloLane=i;
+ }
+ renderTracks();updateOrbitSummary();if(inspectedRoot)renderRootInspection();markCustom();
+ showToast(soloLane<0?'Solo off':'Solo · lane '+(i+1));
+}
+let tapTimes=[];
+function tapTempo(){
+ const now=performance.now();
+ if(tapTimes.length&&now-tapTimes[tapTimes.length-1]>2000)tapTimes=[];
+ tapTimes.push(now);if(tapTimes.length>5)tapTimes.shift();
+ const button=$('tapBtn');
+ if(button){button.classList.remove('is-tapped');void button.offsetWidth;button.classList.add('is-tapped')}
+ if(tapTimes.length<2){showToast('Keep tapping the beat to set the tempo');return}
+ const beat=(tapTimes[tapTimes.length-1]-tapTimes[0])/(tapTimes.length-1);
+ const input=$('bpm');
+ input.value=String(Math.max(Number(input.min),Math.min(Number(input.max),Math.round(60000/beat))));
+ input.dispatchEvent(new Event('input',{bubbles:true}));
+}
+// Stage: nothing but the rings and the transport, for a big screen or a party.
+function stageOn(){return document.documentElement.dataset.stage==='on'}
+function setStage(on){
+ on=Boolean(on)&&view==='play';
+ if(stageOn()===on)return;
+ wake();
+ if(on)document.documentElement.dataset.stage='on';else delete document.documentElement.dataset.stage;
+ const button=$('stageBtn');
+ button.setAttribute('aria-pressed',String(on));
+ button.setAttribute('aria-label',on?'Leave stage mode':'Stage mode: show only the rings');
+ button.title=on?'Leave the stage (Esc)':'Stage: only the rings (F)';
+ try{
+  if(on)document.documentElement.requestFullscreen?.()?.catch?.(()=>{});
+  else if(document.fullscreenElement)document.exitFullscreen?.()?.catch?.(()=>{});
+ }catch(_){}
+ requestAnimationFrame(()=>{resizeCanvas();positionPhaseLabels()});
 }
 // Read-only research/CI snapshots; never expose writable runtime state.
 window.RhythmResearch=Object.freeze({

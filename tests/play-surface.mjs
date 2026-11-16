@@ -240,6 +240,99 @@ try{
    assert.equal(back.view,'play');assert.equal(back.hash,'');
    assert.deepEqual(back.current,shuffled.current,label+': returning to Play keeps the rhythm');
 
+   // ---- roll, mutate, undo -------------------------------------------------
+   const picker=()=>page.evaluate(()=>{
+    const select=document.getElementById('presetSelect');
+    return {value:select.value,text:select.selectedOptions[0]?.textContent||'',
+     undoDisabled:document.getElementById('undoBtn').disabled,
+     events:window.RhythmResearch.current().tracks.map(t=>window.RhythmResearch.events(t).length)};
+   });
+   assert.equal((await picker()).undoDisabled,true,label+': nothing to undo yet');
+   for(let roll=0;roll<6;roll++){
+    await page.locator('#diceBtn').click();
+    const rolled=await state(page),shown=await picker();
+    assert.equal(rolled.transport.activePresetId,null,label+': a roll is a new rhythm, not a catalog preset');
+    assert.equal(shown.value,'__custom__');
+    assert.match(shown.text,/^Roll · \d+:\d+:\d+:\d+$/,label+': a roll is named by its four root degrees');
+    assert.equal(rolled.current.tracks.length,4);
+    assert.ok(shown.events.every(n=>n>=1)&&shown.events.reduce((a,b)=>a+b,0)<=60,
+     label+': every rolled lane plays and the result stays readable '+JSON.stringify(shown.events));
+    assert.ok(rolled.current.bpm>=98&&rolled.current.bpm<=176,label+': rolled tempo '+rolled.current.bpm);
+    assert.equal(rolled.transport.playing,true,label+': rolling keeps the transport running');
+   }
+   const beforeMutation=await state(page);
+   await page.locator('#mutateBtn').click();
+   const mutated=await state(page);
+   assert.notDeepEqual(mutated.current,beforeMutation.current,label+': a mutation changes the rhythm');
+   const changedLanes=mutated.current.tracks.filter((t,i)=>JSON.stringify(t)!==JSON.stringify(beforeMutation.current.tracks[i])).length;
+   assert.equal(changedLanes,1,label+': a mutation touches exactly one lane');
+   assert.equal(mutated.current.bpm,beforeMutation.current.bpm);
+   assert.equal(mutated.transport.playing,true,label+': mutating keeps the transport running');
+   await page.locator('#undoBtn').click();
+   assert.deepEqual((await state(page)).current,beforeMutation.current,label+': undo restores the rhythm before the mutation');
+   for(let step=0;step<6;step++)await page.locator('#undoBtn').click();
+   const restored=await state(page);
+   assert.deepEqual(restored.current,back.current,label+': undoing every roll returns to the catalog rhythm');
+   assert.equal(restored.transport.activePresetId,back.transport.activePresetId,label+': undo restores the preset identity');
+   assert.equal((await picker()).undoDisabled,true,label+': the undo history is exhausted');
+
+   // ---- live keys: Q W E R mute, Shift solos, T taps the tempo -------------
+   const mutes=()=>page.evaluate(()=>window.RhythmResearch.current().tracks.map(t=>t.muted));
+   await page.locator('#stageBtn').focus();
+   await page.keyboard.press('q');
+   assert.deepEqual(await mutes(),[true,false,false,false],label+': Q mutes the first lane');
+   await page.keyboard.press('q');
+   assert.deepEqual(await mutes(),[false,false,false,false],label+': Q again unmutes it');
+   await page.keyboard.press('e');
+   await page.keyboard.press('Shift+w');
+   assert.deepEqual(await mutes(),[true,false,true,true],label+': Shift+W solos the second lane');
+   await page.keyboard.press('Shift+w');
+   assert.deepEqual(await mutes(),[false,false,true,false],label+': leaving solo restores the earlier mutes');
+   await page.keyboard.press('e');
+   assert.deepEqual(await mutes(),[false,false,false,false]);
+   await page.locator('#laneMute3').dblclick();
+   assert.deepEqual(await mutes(),[true,true,true,false],label+': a double press on a mute button solos that lane');
+   await page.locator('#laneMute3').dblclick();
+   assert.deepEqual(await mutes(),[false,false,false,false]);
+   for(let tap=0;tap<4;tap++){
+    await page.locator('#tapBtn').click();
+    if(tap<3)await page.waitForTimeout(400);
+   }
+   const tapped=await state(page);
+   assert.ok(tapped.current.bpm>=105&&tapped.current.bpm<=155,
+    label+': four taps 0.4 s apart set a tempo near 150 BPM, got '+tapped.current.bpm);
+   assert.equal(await page.locator('#bpmText').textContent(),String(tapped.current.bpm));
+   assert.equal(tapped.transport.playing,true);
+
+   // ---- stage: only the rings ----------------------------------------------
+   await page.evaluate(()=>{Element.prototype.requestFullscreen=()=>Promise.reject(new Error('not in CI'))});
+   await page.locator('#stageBtn').click();
+   await settle(page);
+   const stage=await page.evaluate(()=>{
+    const box=e=>{const b=e.getBoundingClientRect();return {left:b.left,top:b.top,right:b.right,bottom:b.bottom,width:b.width,height:b.height}};
+    const shown=e=>{const css=getComputedStyle(e),b=e.getBoundingClientRect();return css.display!=='none'&&b.width>0&&b.height>0};
+    return {on:document.documentElement.dataset.stage,innerWidth,innerHeight,
+     plot:box(document.getElementById('plotArea')),play:box(document.getElementById('playBtn')),
+     hidden:['.topbar','.preset-strip','.control-panel'].filter(s=>!shown(document.querySelector(s))).length,
+     scrollWidth:document.documentElement.scrollWidth};
+   });
+   assert.equal(stage.on,'on',label+': the stage opens');
+   assert.equal(stage.hidden,3,label+': the stage hides everything except the rings and transport');
+   assert.ok(stage.plot.width>=.8*Math.min(stage.innerWidth-24,stage.innerHeight-150)-2,
+    label+': on stage the rings use the screen '+JSON.stringify(stage.plot));
+   assert.ok(stage.plot.top>=0&&stage.plot.left>=0&&stage.plot.right<=stage.innerWidth+1&&
+    stage.play.bottom<=stage.innerHeight+1&&stage.plot.bottom<=stage.play.top+40&&stage.scrollWidth<=stage.innerWidth+1,
+    label+': rings and Play both fit the stage '+JSON.stringify(stage));
+   assert.equal((await state(page)).transport.playing,true,label+': the stage does not interrupt playback');
+   await page.screenshot({path:directory+'/'+viewport.name+'-'+theme+'-stage.png'});
+   await page.keyboard.press('Escape');
+   await settle(page);
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.stage||'off'),'off',label+': Escape leaves the stage');
+   await page.keyboard.press('f');
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.stage||'off'),'on',label+': F opens the stage');
+   await page.keyboard.press('f');
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.stage||'off'),'off');
+
    // ---- pause ------------------------------------------------------------
    await page.locator('#playBtn').click();
    await page.waitForFunction(()=>!window.RhythmResearch.transport().playing,null,{timeout:10000});
@@ -262,6 +355,9 @@ try{
    entry.idleFramesPerSecond=later.painted-still.painted;
 
    // ---- dense rings can be magnified without leaving Play ----------------
+   // A known rhythm: the one loaded so far was picked at random.
+   await page.locator('#categorySelect').selectOption('poly');
+   await page.locator('#presetSelect').selectOption('afro');
    await page.evaluate(()=>{
     const input=document.getElementById('trackN3');
     input.value='48';input.dispatchEvent(new Event('input',{bubbles:true}));
@@ -287,7 +383,7 @@ try{
    await page.locator('#zoomBtn').click();
    await settle(page);
    assert.equal(await page.evaluate(()=>document.getElementById('plotArea').classList.contains('focused')),false);
-   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, pause, zoom';
+   entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, roll, mutate, undo, mute and solo keys, tap tempo, stage, pause, zoom';
   }
   assert.deepEqual(errors,[],label+': no runtime errors');
   report.push(entry);

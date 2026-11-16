@@ -602,6 +602,7 @@ html[data-theme="dark"]{
 .view-btn[aria-pressed="true"]:hover{background:var(--ink)}
 /* Preset browsing */
 .preset-nav{display:flex;gap:6px;align-items:end}
+.jam-tools,.tap-btn,.stage-btn{display:none}
 .nav-btn{width:44px;min-width:44px;padding:0;font-size:24px;line-height:1}
 .shuffle-btn{font-size:16px;font-weight:650;white-space:nowrap}
 .preset-controls{grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto}
@@ -720,7 +721,7 @@ html[data-view="play"] .statusbar p{position:absolute;width:1px;height:1px;overf
 
 /* preset block */
 html[data-view="play"] .preset-strip{order:2;margin:0;border:0;background:none;border-radius:0}
-html[data-view="play"] .preset-controls{display:grid;grid-template-columns:44px minmax(0,1fr) auto 44px;grid-template-areas:"cat cat shuffle shuffle" "prev name name next";gap:8px 6px;padding:0;align-items:center}
+html[data-view="play"] .preset-controls{display:grid;grid-template-columns:44px minmax(0,1fr) 44px auto 44px;grid-template-areas:"cat cat shuffle tools tools" "prev name name name next";gap:8px 6px;padding:0;align-items:center}
 html[data-view="play"] .preset-nav{display:contents}
 html[data-view="play"] .preset-controls label{font-size:0;gap:0;display:block;min-width:0}
 html[data-view="play"] .preset-controls label:nth-of-type(1){grid-area:cat;justify-self:start;max-width:100%}
@@ -733,8 +734,30 @@ html[data-view="play"] #categorySelect{width:auto;max-width:100%;min-height:44px
 html[data-view="play"] #presetSelect{min-height:48px;border:1px solid var(--card-line);border-radius:14px;background-color:var(--card);box-shadow:var(--card-shadow);
  font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2;color:var(--ink);text-align:center;text-align-last:center;padding:8px 10px;text-overflow:ellipsis}
 html[data-view="play"] .nav-btn{border-radius:50%;height:44px;border-color:var(--line);color:var(--sub);font-size:24px;padding-bottom:4px}
-html[data-view="play"] .shuffle-btn{border-radius:999px;font-size:16px;min-height:44px;padding:6px 14px;border-color:var(--line);color:var(--sub);white-space:nowrap}
-html[data-view="play"] .shuffle-btn::before{content:"⚄";margin-right:7px;font-size:17px;vertical-align:-1px}
+html[data-view="play"] .shuffle-btn{border-radius:50%;font-size:0;width:44px;min-width:44px;height:44px;min-height:44px;padding:0;border-color:var(--line);color:var(--sub);white-space:nowrap}
+html[data-view="play"] .shuffle-btn::before{content:"✦";font-size:19px;line-height:1}
+/* jam tools: roll a new rhythm, mutate this one, undo */
+html[data-view="play"] .jam-tools{display:flex;gap:6px;grid-area:tools;justify-self:end}
+html[data-view="play"] .jam-btn{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;border-color:var(--line);color:var(--sub);font-size:21px;line-height:1}
+html[data-view="play"] .jam-btn:disabled{opacity:.36}
+/* tap tempo: the BPM readout itself is the target */
+html[data-view="play"] .transport .range-field{position:relative}
+html[data-view="play"] .tap-btn{display:block;position:absolute;right:0;top:-14px;width:118px;height:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent}
+html[data-view="play"] .tap-btn:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+html[data-view="play"] .tap-btn.is-tapped{animation:tapflash .28s ease-out}
+@keyframes tapflash{from{background:color-mix(in srgb,var(--ink) 16%,transparent)}to{background:transparent}}
+html[data-view="play"] .transport .range-field output{text-decoration:underline dotted 1px;text-underline-offset:5px}
+/* stage: only the rings and the transport */
+html[data-view="play"] .stage-btn{display:grid;place-items:center;position:absolute;right:0;top:2px;z-index:3;width:44px;min-width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;border-color:var(--line);background:var(--card);color:var(--sub)}
+html[data-view="play"] .stage-btn::before{content:"";width:15px;height:15px;border:2px solid currentColor;border-radius:4px;transition:width .15s,height .15s}
+html[data-view="play"] .stage-btn[aria-pressed="true"]::before{width:8px;height:8px}
+html[data-stage="on"] body{overflow:hidden}
+html[data-stage="on"] .topbar,html[data-stage="on"] .preset-strip,html[data-stage="on"] .control-panel,html[data-stage="on"] .stage-status,html[data-stage="on"] footer{display:none!important}
+html[data-stage="on"][data-view="play"] .visual-stage{position:fixed;inset:0;z-index:30;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;background:var(--page)}
+html[data-stage="on"][data-view="play"] .canvas-shell{width:min(100vw - 24px,100svh - 150px);max-width:none}
+html[data-stage="on"][data-view="play"] .stage-btn{right:12px;top:12px}
+html[data-stage="on"][data-view="play"] .stage-heading{left:12px;top:12px}
+@media(max-width:979px){html[data-stage="on"][data-view="play"] .visual-stage{padding-bottom:104px}}
 html[data-view="play"] .preset-info{padding:8px 2px 0;font-size:16px;line-height:1.4;color:var(--muted);
  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 html[data-view="play"] .preset-info:empty{display:none}

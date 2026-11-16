@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -25,7 +25,6 @@ try{
   if(theme==='dark')await page.locator('#themeBtn').click();
   await page.locator('#compositionPanel').evaluate(el=>el.open=true);
   await page.locator('.math-details').evaluate(el=>el.open=true);
-  await page.locator('#rootRuleInfoToggle').click();
   const value=await page.evaluate(()=>{
    const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,left:r.left,right:r.right,
       top:r.top,bottom:r.bottom,width:r.width,height:r.height}};
@@ -110,7 +109,6 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await page.locator('#compositionPanel').evaluate(el=>el.open=true);
- await page.locator('.advanced-coordinates').first().evaluate(el=>{el.open=true});
  const annotation=async id=>await page.locator('#'+id+' annotation').first().textContent();
  const initial=await annotation('selectedRootFormula');
  await page.locator('#trackN0').fill('7');

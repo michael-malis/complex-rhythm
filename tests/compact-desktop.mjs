@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -22,6 +22,9 @@ try{
     .map(s=>({id:s,height:rect(s).height,font:parseFloat(getComputedStyle(document.querySelector(s)).fontSize)}));
    return {vw:innerWidth,fullWidth:document.documentElement.scrollWidth,stage:rect('.visual-stage'),
     control:rect('.control-panel'),plot:rect('.canvas-shell'),cards,controls,
+    tabs:[...document.querySelectorAll('.lab-tab')].map(e=>{const r=e.getBoundingClientRect();return {y:r.y,bottom:r.bottom,height:r.height,width:r.width}}),
+    dock:rect('.transport-dock'),pageHeight:document.documentElement.scrollHeight,
+    disclosures:document.querySelectorAll('details,summary').length,
     heading:parseFloat(getComputedStyle(document.querySelector('.stage-heading h1')).fontSize),
     subheading:parseFloat(getComputedStyle(document.querySelector('.panel-heading h2')).fontSize),
     scaling:[...document.querySelectorAll('html,body,.app,.workspace,.visual-stage,.control-panel')]
@@ -31,30 +34,31 @@ try{
   assert.ok(result.fullWidth<=width+1,'no horizontal overflow '+width);
   assert.ok(result.controls.every(x=>x.height>=44&&x.font>=16),
    'readable controls keep >=44px targets at '+width);
-  assert.ok(result.plot.width>=320&&result.plot.width<=600,
-   'plot is compact but remains independently navigable at '+width);
+  assert.ok(result.plot.width>=320&&result.plot.width<=820,
+   'plot keeps a usable size next to the inspector at '+width+': '+result.plot.width);
+  assert.equal(result.disclosures,0,'the workbench has no collapsible disclosures');
+  assert.equal(result.tabs.length,5,'five inspector tabs');
+  assert.ok(result.tabs.every(t=>t.height>=44&&t.width>=44),'tabs are full-size targets');
   assert.ok(!result.scaling,'no visual zoom or transform scaling');
-  assert.equal(result.heading,28);
-  assert.equal(result.subheading,24);
+  assert.equal(result.heading,22);
+  assert.equal(result.subheading,22);
   if(width>=1080){
-   assert.ok(result.stage.right<result.control.x&&
-    Math.abs(result.stage.y-result.control.y)<3,'both workbench panels visible side by side '+width);
-   assert.ok(Math.abs(result.cards[0].y-result.cards[1].y)<2&&
-    result.cards[1].x>result.cards[0].x&&
-    Math.abs(result.cards[2].y-result.cards[3].y)<2,
-    'four cards retain a two-by-two grid '+width);
-   const firstScreenEditors=result.cards.filter(card=>card.y<height-44).length;
-   assert.ok(firstScreenEditors>=2,
-    'at least two useful editors start in the opening laptop viewport '+width+
-    ': '+JSON.stringify(result.cards));
-   assert.ok(result.cards[2].y<height+Math.max(160,height*.35),
-    'second editor row remains close to the viewport, not after a long sidebar '+width+
-    ': '+JSON.stringify(result.cards));
-   assert.ok(result.plot.width<=Math.min(600,Math.max(390,height-375))+2,
-    'real Canvas box adapts to available screen height '+width);
+   // One fixed frame: the figure and its transport on the left, the
+   // inspector on the right, nothing below the fold of the page itself.
+   assert.ok(result.stage.right<result.control.x,'figure and inspector side by side '+width);
+   assert.ok(result.pageHeight<=height+1,'the Lab is a single screen at '+width+'x'+height+', page height '+result.pageHeight);
+   assert.ok(result.plot.bottom<result.dock.y&&result.dock.bottom<=height,
+    'plot and transport both fit the screen at '+width+'x'+height);
+   assert.ok(result.tabs.every(t=>t.bottom<=height&&Math.abs(t.y-result.tabs[0].y)<1),'all five tabs sit in one visible row '+width);
+   assert.ok(result.cards.every((card,i)=>Math.abs(card.x-result.cards[0].x)<2&&(i===0||card.y>=result.cards[i-1].bottom)),
+    'four lanes form one aligned table '+width);
+   const firstScreenEditors=result.cards.filter(card=>card.bottom<=height).length;
+   assert.ok(firstScreenEditors>=(height>=900?4:height>=760?3:2),
+    'lane rows visible without scrolling at '+width+'x'+height+': '+firstScreenEditors);
+   assert.ok(result.plot.width<=height-212+2,'real Canvas box adapts to available screen height '+width);
   }else{
    assert.ok(result.stage.y<result.control.y,'narrow tablets retain graph-first reflow');
-   assert.ok(result.plot.width<=530,'tablet graph is height-aware');
+   assert.ok(result.plot.width<=540&&result.plot.width<=height-320+2,'tablet graph is height-aware');
   }
   assert.deepEqual(errors,[],'no JS errors');
   await page.screenshot({path:`artifacts/compact-desktop/${width}x${height}-${theme}.png`,fullPage:false});

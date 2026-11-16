@@ -34,6 +34,30 @@ function walk(id){
  visiting.delete(id);visited.add(id);
 }
 for(const id of map.keys())walk(id);
+// Manual acceptance is a separate register: human checks are never engineering
+// tasks, never dependencies of one, and never part of a readiness figure.
+const manual=read('MANUAL_ACCEPTANCE.md');
+const manualRows=manual.split(String.fromCharCode(10)).filter(s=>/^[|] [A-Z][A-Z0-9]*-[0-9]{2} [|]/.test(s)).map(cells);
+const manualIds=manualRows.map(r=>r[0]);
+assert.equal(new Set(manualIds).size,manualIds.length,'Unique manual check IDs');
+for(const required of ['AUDIO-01','ACCESS-01'])
+ assert.ok(manualIds.includes(required),'Manual check missing from MANUAL_ACCEPTANCE.md: '+required);
+const manualStatuses=new Set(['NOT VERIFIED','PASSED','FOUND ISSUES','WAIVED']);
+for(const [id,what,how,status,notes] of manualRows){
+ assert.ok(what.length>16&&how.length>40,'Manual check must say what and how: '+id);
+ assert.ok(manualStatuses.has(status),'Unknown manual status for '+id+': '+status);
+ if(status==='PASSED'||status==='FOUND ISSUES')
+  assert.match(notes,/[0-9]{4}-[0-9]{2}-[0-9]{2}/,'A performed manual check needs its date: '+id);
+ assert.ok(!map.has(id),'Manual check listed as an engineering task: '+id);
+}
+for(const [id,,,depends] of rows)
+ for(const dep of depends==='-'?[]:depends.split(',').map(x=>x.trim()))
+  assert.ok(!manualIds.includes(dep),'Engineering task '+id+' depends on manual check '+dep);
+// The readiness bar must equal what the table says.
+const figure=ledger.match(/^Tasks +\[[^\]]*\] +([0-9]+) \/ ([0-9]+) done/m);
+assert.ok(figure,'TASKS.md must state the task readiness figure');
+assert.equal(Number(figure[2]),rows.length,'Readiness denominator must equal the number of engineering tasks');
+assert.equal(Number(figure[1]),rows.filter(r=>r[2]==='DONE').length,'Readiness numerator must equal the DONE rows');
 // New independently useful outcomes can be added, and completed outcomes can
 // leave the active list. The verifier must never fix the task denominator.
 for(const r of rows.filter(r=>r[2]==='BLOCKED'))
@@ -71,8 +95,8 @@ for(const p of ['.github/workflows/current-visual-evidence.yml','.github/workflo
  assert.ok(!text.includes('verify-traceability.mjs')&&!text.includes('verify-execution-plan.mjs'),
   'Old registry validator still controlling CI: '+p);
 }
-console.log(JSON.stringify({status:'PASS',activeOutcomeTasks:rows.length,
- development:rows.filter(x=>x[0].startsWith('BUNK-')).length,
- externalReviews:rows.filter(x=>x[2]==='BLOCKED').length,
- releaseDecisions:1,guarantees:guaranteeLines.length,cycles:0,
+console.log(JSON.stringify({status:'PASS',engineeringTasks:rows.length,
+ done:rows.filter(x=>x[2]==='DONE').length,
+ open:rows.filter(x=>x[2]!=='DONE').map(x=>x[0]),
+ manualChecksOutsideReadiness:manualIds,guarantees:guaranteeLines.length,cycles:0,
  countedLegacyRows:0},null,2));

@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -15,17 +15,17 @@ try{
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   const panel=page.locator('#advancedSoundDetails');
-  assert.equal(await panel.evaluate(el=>el.open),false,'Sound Lab must start collapsed');
+  assert.equal(await panel.evaluate(el=>el.open),false,'Sound Lab is not the opening tab');
   assert.ok(await page.locator('#soundWaveCanvas').isHidden(),'no prominent waveform in the mathematical workspace');
-  assert.equal(await page.locator('.sound-lab-section').count(),1,'exactly one optional bottom Sound Lab');
-  assert.ok(await page.locator('.sound-lab-section').evaluate(el=>{
-   const main=document.querySelector('main'),footer=document.querySelector('footer');
-   return main.compareDocumentPosition(el)&Node.DOCUMENT_POSITION_FOLLOWING
-     &&el.compareDocumentPosition(footer)&Node.DOCUMENT_POSITION_FOLLOWING;
-  }),'the inspector comes after main and before footer');
+  assert.equal(await page.locator('.sound-lab').count(),1,'exactly one Sound Lab');
+  assert.ok(await panel.evaluate(el=>el.getAttribute('role')==='tabpanel'&&
+   el.getAttribute('aria-labelledby')==='tabSound'&&!!el.closest('.control-panel')),
+   'the Sound Lab is one tab of the inspector');
+  assert.equal(await page.locator('#tabSound').getAttribute('aria-selected'),'false');
 
-  await page.locator('#laneSound0').selectOption('acidClassic');
-  await panel.locator('summary').click();
+  await page.locator('#laneSound0').selectOption('acidClassic');await page.locator('#tabSound').click();
+  await page.locator('#tabSound').click();
+  assert.equal(await page.locator('#tabSound').getAttribute('aria-selected'),'true');
   await page.locator('#patchOsc').waitFor({state:'visible'});
   await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized'));
   const info=await page.locator('#soundWaveStatus').textContent();
@@ -50,7 +50,7 @@ try{
   assert.equal(await page.evaluate(()=>window.RhythmResearch.current().tracks[0].patch.osc),'square');
   assert.equal(await page.locator('#soundLabReset').isEnabled(),true);
 
-  await page.locator('#laneSound1').selectOption('hat');
+  await page.locator('#laneSound1').selectOption('hat');await page.locator('#tabSound').click();
   const selectedBefore=await page.locator('.lane.selected').getAttribute('data-lane');
   await page.locator('#soundLabLane').selectOption('1');
   await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Recorded sample'),null,{timeout:15000});
@@ -74,10 +74,10 @@ try{
 
   // Both bass voices without recorded assets use the exact same shared
   // Web Audio source graph for live hits and the offline waveform inspector.
-  await page.locator('#laneSound1').selectOption('reese');
+  await page.locator('#laneSound1').selectOption('reese');await page.locator('#tabSound').click();
   await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized fallback'));
   const reeseWave=await page.locator('#soundWaveCanvas').evaluate(c=>c.toDataURL());
-  await page.locator('#laneSound1').selectOption('bass');
+  await page.locator('#laneSound1').selectOption('bass');await page.locator('#tabSound').click();
   await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized fallback'));
   const subWave=await page.locator('#soundWaveCanvas').evaluate(c=>c.toDataURL());
   assert.notEqual(reeseWave,subWave,'Reese and sub-bass waveforms must come from distinct actual fallback engines');
@@ -97,10 +97,10 @@ try{
   }));
   assert.ok(widthAudit.scroll<=widthAudit.viewport+2,
    'expanded Sound Lab must not add page-wide horizontal scrollbar: '+JSON.stringify(widthAudit));
-  await panel.locator('summary').click();
+  await page.locator('#tabLanes').click();
   assert.equal(await panel.evaluate(el=>el.open),false);
   assert.ok(await page.locator('#soundWaveCanvas').isHidden(),
-   'a single summary interaction closes all waveform and editing controls');
+   'choosing another tab puts away all waveform and editing controls');
   assert.deepEqual(errors,[],'no uncaught browser exceptions');
   results.push({width,height,theme,synth:true,sample:true,patchReset:true,
    independentLane:true,previewWithoutScheduler:true});

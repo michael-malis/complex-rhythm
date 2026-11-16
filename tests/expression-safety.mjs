@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
@@ -44,9 +44,8 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
- await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
- const entry=page.locator('.lane[data-lane="0"] details.expression-entry');
- await entry.evaluate(el=>{el.open=true});
+ const entry=page.locator('.lane[data-lane="0"] .expression-entry');
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(2).click();
  const input=page.locator('#trackExpression0');
  const apply=entry.locator('button').first();
  const initial=await page.evaluate(()=>window.RhythmResearch.current().tracks[0]);

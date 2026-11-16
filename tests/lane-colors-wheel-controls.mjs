@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -19,7 +19,10 @@ try{
    const lanes=[...document.querySelectorAll('.lane')].map((row,i)=>({
     i,color:rgb(row.style.getPropertyValue('--lane-color')),slider:css(row.querySelector('input[type=range]')).accentColor,
     dot:css(row.querySelector('.lane-dot')).backgroundColor,
-     leftBorderWidth:css(row).borderLeftWidth,leftBorderColor:css(row).borderLeftColor,
+     leftBorderWidth:Math.round(row.querySelector('.lane-select').getBoundingClientRect().width)+'px',
+     leftBorderColor:css(row.querySelector('.lane-select'))[row.classList.contains('selected')?'backgroundColor':'color'],
+     expectedTab:row.classList.contains('selected')?rgb(row.style.getPropertyValue('--lane-color')):
+      rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 72%, '+css(document.documentElement).getPropertyValue('--ink').trim()+')'),
     percent:css(row.querySelector('.lane-volume output')).color,
     expectedPercent:rgb('color-mix(in srgb,'+row.style.getPropertyValue('--lane-color')+' 70%, '+css(document.documentElement).getPropertyValue('--ink').trim()+' 30%)')
    }));
@@ -31,8 +34,8 @@ try{
   for(const lane of paint.lanes){
    assert.equal(lane.color,lane.slider,'instrument slider hue follows the root ring on lane '+lane.i);
    assert.equal(lane.color,lane.dot,'instrument root marker hue follows its lane '+lane.i);
-    assert.equal(lane.leftBorderWidth,'5px','instrument panel left accent is 5px on lane '+lane.i);
-    assert.equal(lane.leftBorderColor,lane.color,'instrument panel left accent matches its root color on lane '+lane.i);
+    assert.equal(lane.leftBorderWidth,'44px','the lane index tab is a full 44px accent on lane '+lane.i);
+    assert.equal(lane.leftBorderColor,lane.expectedTab,'the lane index tab carries its root color on lane '+lane.i);
    assert.equal(lane.expectedPercent,lane.percent,'instrument gain readout has the lane hue with readable contrast on lane '+lane.i);
    assert.notEqual(lane.color,paint.master,'master volume is independent from lane '+lane.i);
   }
@@ -45,10 +48,10 @@ try{
     x:x.getBoundingClientRect().left,y:x.getBoundingClientRect().top,
     height:x.getBoundingClientRect().height
    })));
-   assert.ok(close(position[0].y,position[1].y,.5),'desktop lane 1 and 2 share a row');
-   assert.ok(close(position[2].y,position[3].y,.5),'desktop lane 3 and 4 share a row');
-   assert.ok(position[2].y>position[0].y,'the four lane panels use a compact 2x2 layout');
-   assert.ok(position.every(r=>r.height<550),'individual lane cards remain compact');
+   assert.ok(position.every(r=>close(r.x,position[0].x,.5)),'the four lanes form one aligned table column');
+   assert.ok(position.every((r,i)=>i===0||r.y>position[i-1].y),'lane rows follow each other top to bottom');
+   assert.ok(position.every(r=>r.height<170),'individual lane rows remain compact');
+   assert.ok(position[3].y+position[3].height<=viewport.height,'all four lane rows fit the opening desktop screen');
   }
   const wheel=async(id,delta=-100)=>{
    await page.locator(id).focus();

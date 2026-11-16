@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium,eachLabTab} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -8,10 +8,9 @@ try{
  for(const [width,height] of cases){
   const page=await browser.newPage({viewport:{width,height},hasTouch:true,isMobile:width<700});
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
-  for(const selector of ['#presetDetails','#compositionPanel','.math-details','#windowPanel'])
-   await page.locator(selector).evaluate(el=>{el.open=true});
   await page.locator('#loadRootExample').click();
-  const audited=await page.evaluate(()=>{
+  // Every inspector tab is audited while it is the one on screen.
+  const perTab=await eachLabTab(page,()=>page.evaluate(()=>{
    const failures=[],seen=[];
    const all=document.querySelectorAll('button,summary,select,input:not([type=hidden]),canvas[tabindex]');
    for(const el of all){
@@ -33,7 +32,11 @@ try{
     if(touch.width<43.95||touch.height<43.95)failures.push(entry);
    }
    return {total:seen.length,failures,inspected:seen};
-  });
+  }));
+  assert.equal(perTab.length,5,'all five inspector tabs audited');
+  const audited={total:perTab.reduce((n,x)=>n+x.result.total,0),
+   failures:perTab.flatMap(x=>x.result.failures.map(f=>({...f,tab:x.tab}))),
+   inspected:perTab.flatMap(x=>x.result.inspected.map(f=>({...f,tab:x.tab})))};
   report.push({width,height,...audited});
   console.log('TOUCH TARGETS '+width+'x'+height, 'checked',audited.total,
     'failures',audited.failures.length,'examples',JSON.stringify(audited.failures.slice(0,12)));

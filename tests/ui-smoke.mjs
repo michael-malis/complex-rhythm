@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -49,11 +49,9 @@ try {
   if(width<1280)verify(data.sceneTop<data.controlTop,'visualization must appear before settings on tablets and phones '+width);
   else verify(data.sceneLeft<data.controlLeft,'desktop visualization alongside settings '+width);
   if(width>=760){
-    verify(Math.abs(data.cards[0].top-data.cards[1].top)<2&&data.cards[1].left>data.cards[0].left,
-      'simultaneous editors: two columns '+width);
-    verify(Math.abs(data.cards[2].top-data.cards[3].top)<2&&data.cards[2].top>data.cards[0].top,
-      'simultaneous editors: second row '+width);
-    verify(data.cards[0].width>=260,'uncompressed editable panel '+width);
+    verify(data.cards.every((card,i)=>Math.abs(card.left-data.cards[0].left)<2&&(i===0||card.top>data.cards[i-1].bottom-1)),
+      'simultaneous editors: four aligned table rows '+width);
+    verify(data.cards[0].width>=480,'uncompressed editable lane row '+width);
   }
   if(width<520)verify(data.cards[0].top<data.cards[1].top,'compact mobile uses legible one-column editors '+width);
   await page.screenshot({path:'artifacts/workbench-'+width+'x'+height+'.png',fullPage:true});
@@ -86,11 +84,10 @@ try {
  await page.setViewportSize({width:1440,height:900});
  page.on('pageerror',e=>errors.push('interactions: '+e.message));
  await page.goto(base,{waitUntil:'domcontentloaded'});
- verify(await page.locator('#presetDetails').evaluate(el=>el.open),'rhythm examples open on initial load');
+ verify(await page.locator('#presetSelect').isVisible(),'rhythm examples open on initial load');
   verify((await page.locator('#presetSelect').inputValue())==='afro','default 3:4 study');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 roots initially three');
  verify((await page.locator('#laneCount1').textContent()).includes('4 hits'),'lane1 roots initially four');
- await page.locator('.advanced-coordinates').evaluateAll(items=>items.forEach(el=>{el.open=true}));
  await page.locator('#trackN1').fill('5');
  verify((await page.locator('#laneCount1').textContent()).includes('5 hits'),'lane1 independent edits');
  verify((await page.locator('#laneCount0').textContent()).includes('3 hits'),'lane0 unaffected by lane1 edit');
@@ -114,7 +111,6 @@ try {
  verify((await page.locator('#addedCount').textContent())==='3','added set count three');
  verify((await page.locator('#unionCount').textContent())==='6','union of fourth and third roots has six events');
  verify((await page.locator('#unionStrip .overlap').count())===1,'exact coincidence at phase zero');
- await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
  await page.locator('#setOperation').selectOption('intersection');
  verify((await page.locator('#unionCount').textContent())==='1','R4(1) intersect R3(1) is one phase');
  await page.locator('#addRootFamily').click();
@@ -170,7 +166,6 @@ try {
  await page.screenshot({path:'artifacts/workbench-dark-theme.png',fullPage:true});
  await page.locator('#themeBtn').click();
  verify((await page.locator('html').getAttribute('data-theme'))==='light','light theme restored');
- await page.locator('.advanced-coordinates').evaluateAll(items=>items.forEach(el=>{el.open=true}));
  await page.locator('#trackA0').fill('1');await page.locator('#trackB0').fill('0');
 
  // Keyboard turns the first lane's four roots by 5°, hence arg(z) by 20°.
@@ -180,7 +175,6 @@ try {
  verify(Math.abs(Math.atan2(keyB,keyA)*180/Math.PI-20)<2,'keyboard rotation by 5° per root');
 
  // Restore the default before the drag test.
- await page.locator('#presetDetails').evaluate(el=>el.open=true);
  await page.locator('#categorySelect').selectOption('poly');
  await page.locator('#presetSelect').selectOption('afro');
  await page.locator('#orbitCanvas').scrollIntoViewIfNeeded();
@@ -227,7 +221,6 @@ try {
  verify((await page.locator('#presetSelect option').allTextContents()).filter(t=>t.includes('Bossa Nova')).length===1,'one Bossa Nova preset');
 
  const beforeJsonEvents=await page.evaluate(()=>JSON.stringify(window.RhythmResearch.current().tracks.map(t=>window.RhythmResearch.events(t))));
-await page.locator('#fileMenu summary').click();
  const downloadPromise=page.waitForEvent('download');
  await page.locator('#saveBtn').click();
  const download=await downloadPromise;

@@ -1,60 +1,57 @@
-# V3 Design System — Mathematical Workbench
+# Design system — one instrument, two depths
 
-## Intent
+## Strategy
 
-The product is an interactive mathematical visualization, not a DAW. Complex root angles map to repeating phase events. All four parameter sets should be visible at once. Sound is a perceptual aid.
+The earlier Lab was a separate page of forms with fifteen collapsible disclosures (rhythm examples, project files, time window, composition, operations, notes, sound lab, and two per lane). Content was hidden in different places of a long page, and Play and Lab looked like two products.
 
-## Two views, one model
+The interface now follows three rules.
 
-- **Play** (default, `html[data-view="play"]`): the instrument. A lit circular plate with the four rings, a round Play button, a rhythm picker and four lane strips (rotation dial, sound, − n +, mute). No numeric forms. An underlay Canvas (`#orbitBack`) adds lane polygons, bar ticks, playhead trails and hit ripples; it is decoration only and never draws roots, rings or playheads.
-- **Lab** (`#lab`): the workbench described in the rest of this document. The 16px type floor, 44px targets, lane colors and measured Canvas geometry apply to both views.
-- Both views share one DOM and one state; switching is a CSS change and never touches rhythm, audio or JSON.
+1. **One shell.** Play and Lab share the plate with four rings, the transport pill, the rhythm picker and the lane cards. Lab is Play with an inspector, not another page.
+2. **Tabs, not disclosures.** Everything that used to collapse has one fixed place in a five-tab inspector next to the figure. The page contains no `<details>` element.
+3. **The figure stays put.** On wide screens the Lab is a single fixed frame: the plot never scrolls away while numbers are edited; only the inspector's content scrolls.
 
-## Architecture
+## Layout
 
-- One persistent circular visualization with four concentric instrument lanes.
-- Four simultaneous editor rows: sound, mute, a, b, n, unique event count, compact formula.
-- One secondary, selected-lane inspector: `Compose root sets`. Shows Base / Added / Union as aligned phase timelines.
-- One optional examples selector and one project-files menu.
-- One explanatory mathematics disclosure. No hero, dashboard cards, decorative shadows, animation-only content, or step sequencer.
+| Width | Play | Lab |
+|---|---|---|
+| ≥ 1080px (and ≥ 600px tall) | fixed frame, stage left, picker and four lane cards right (from 980px) | fixed frame, stage left (0.8–0.9fr), picker + inspector right (1.1–1.2fr) |
+| 600–1079px | flow; lanes in two columns; transport fixed at the bottom | flow: plot, transport pill, picker, sticky tab bar, panel |
+| < 600px | flow; one column; transport fixed at the bottom | the same flow; tabs stack glyph over label; each lane becomes a small labelled form |
 
-## Mathematical contract
+The lane layout follows the inspector's own width (container query `inspector`), not the viewport.
 
-For nonzero `z`, root phases are `(arg(z)+2πk)/(2πn)` mod 1. `z=0` gives no base events. Additional sets are combined as a union of phases with 1e-6 tolerance, including wraparound at 0/1. Coincident hits trigger once; velocity follows the existing max-velocity rule. Each additional set remains an actual complex-root set; `n=1` can express an individual accent. The four Canvas radii separate instruments, not root magnitudes.
+## Inspector tabs
 
-Base-only events: filled circles. Additional-only events: hollow circles. Coincident events: doubly marked circles. The phase source timeline is Base → Added → Union, with count and overlap status.
+`Lanes` · `Union` · `Time` · `Sound` · `Notes` (`role="tablist"`, arrow keys, Home/End). Each tab carries a mathematical glyph: *z*, ∪, *t*, ∿, §.
 
-## Design tokens (light mode default)
+- **Lanes** — the parameter table. One row per lane: index tab in the lane colour (selects the lane), miniature ring (draggable), sound, mute, `θ` rad, `θ` °, `n`, bars; second line: volume and `z` with a three-way notation switch (`a + bi` / `r∠θ` / `f(z)`); third line: `z`, `|z|`, the set expression and the hit count. One header row names the columns. Under the table: the root-placement card of the selected lane (rule, values, unit-circle diagram, list of all arguments), always shown.
+- **Union** — lane chips, Base / Added / Union strips first, then actions, added sets, rotation, set operation and Euclidean generator, selected-root formula, lane gain and preview.
+- **Time** — four-bar timeline, common period, coincidence summary.
+- **Sound** — waveform and synthesis parameters of one instrument.
+- **Notes** — reference formulas, prose, how to read the figure.
 
-- Page `#f2efe8`, panel `#fffdfa`, plot `#faf8f3`
-- Text `#292b27`, secondary `#666960`, border `#d8d6ce`
-- Track 1 terracotta `#ab5847`; track 2 sage `#567a63`; track 3 ochre `#967438`; track 4 plum `#80618a`
-- Native system-ui typography. One text scale, minimal decorative style.
+In code a panel's `open` property is true while its tab is showing; assigning `true` shows that tab. Panels fire `toggle` when they change.
 
-## Dark graphite alternative
+## Visual language
 
-- Page `#1b1c19`, panel `#242621`, plot `#20221d`, text `#edece3`
-- Same four track identities, softened for dark contrast.
-- The UI structure, mathematical semantics and hit markers do not change with theme.
+- Warm paper (`--page #f2efe8`), cards (`--card #fffdfa`) with a hairline and a soft shadow, radius 16px; fields radius 10px; buttons and chips are pills.
+- Display face `KaTeX_Main` (the same serif as the formulas) for the wordmark, rhythm name, panel titles, numerals and mathematical labels such as `a + bi`; system sans for everything else.
+- One text size: 16px (the floor). Hierarchy comes from the display face (19–24px), weight and colour, not from smaller text.
+- Lane colours: terracotta `#ab5847`, sage `#567a63`, ochre `#967438`, plum `#80618a` (softened in the dark theme). A lane's ring, index tab, miniature, sliders and timeline marks share its colour. Transport and master volume use a separate blue.
+- Dark theme: graphite page `#1b1c19`, cards `#242621`; same structure.
 
-## Layout and accessibility
+## Accessibility floor (enforced by tests)
 
-- At widths >=760px: two-column scientific workbench, Canvas left and four input rows right.
-- At 520–759px: compact two-column lane list above the visual stage; <=519px: four stacked lane rows above the stage.
-- Circular chart is square and constrained by viewport height; it does not independently stretch geometric root radii.
-- Numeric controls and buttons have at least 44px height; labels and accessible names refer to the lane index.
-- Focus outlines, reduced-motion preference, keyboard lane selection and semantic disclosure controls.
-- English only. Theme persisted locally when storage is available.
+- Text ≥ 16px; interactive targets ≥ 44×44px at phone and tablet widths.
+- Contrast ≥ 4.5:1 for text, ≥ 7:1 for key numerals and mathematics, ≥ 3:1 for lane colours on the plot, in both themes and on every tab.
+- No horizontal page overflow from 360px up; no global scaling or zoom.
+- Every control has an accessible name; the tab bar, lane chips and notation switch expose their state (`aria-selected`, `aria-pressed`).
+- `prefers-reduced-motion` removes transitions and animations.
 
-## Implementation
+## Mathematical contract (unchanged by design work)
 
-The original monolithic `index.html` has been split into:
-- `index.html`: accessible semantic layout, no inline CSS or JS.
-- `styles.css`: one coherent palette, component system and responsive layout.
-- `app.js`: original mathematical and audio engine plus rewritten visual and control rendering.
+For nonzero `z`, root phases are `(arg(z)+2πk)/(2πn) mod 1`. `z = 0` gives no base events. Additional sets combine as a union (or intersection) with 1e-6 tolerance including wraparound; coincident hits trigger once. Base-only events are filled circles, added-only hollow, shared doubly marked. Exactly four independent rings and four playheads on the audio clock.
 
-The architecture deliberately avoids additional dependencies.
+## Files
 
-## Verification
-
-Playwright checks seven viewport dimensions, all four input rows, root union `R4(1) ∪ R3(1)` (4 base, 3 added, 6 unique, 1 coincident), changes to individual lanes, slider, keyboard, dragging, 35 presets, JSON import/export, dark/light modes and audio play/pause. Human visual review uses the test-run screenshot artifact. Real-device sample quality and exhaustive screen-reader testing remain follow-up checks.
+`index.html` (structure, no inline CSS or JS), `styles.css` (tokens, shared shell, Play, Lab), `app.js` (model, audio, rendering, controls). No UI framework.

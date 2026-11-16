@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -114,7 +114,7 @@ try{
    return {innerWidth,innerHeight,scrollWidth:document.documentElement.scrollWidth,
     plot:box(document.getElementById('plotArea')),play:box(document.getElementById('playBtn')),
     main:box(main),back:box(back),painted,small,
-    labOnlyVisible:['.math-details','.sound-lab-section','#compositionPanel','.root-rule','footer','#windowPanel']
+    labOnlyVisible:['.math-details','.sound-lab','#compositionPanel','.root-rule','footer','#windowPanel','.lab-tabs']
      .filter(selector=>shown(document.querySelector(selector))),
     quick:['presetSelect','presetPrev','presetNext','presetShuffle','viewPlay','viewLab',
      ...[0,1,2,3].flatMap(i=>['laneDial'+i,'laneLess'+i,'laneMore'+i,'laneSound'+i])]
@@ -231,7 +231,11 @@ try{
    assert.equal(lab.view,'lab');assert.equal(lab.hash,'#lab');
    assert.deepEqual(lab.current,shuffled.current,label+': switching to the Lab keeps the rhythm');
    assert.equal(lab.transport.playing,true,label+': switching to the Lab keeps the sound');
-   assert.ok(await page.locator('.math-details').isVisible(),label+': the Lab shows the mathematics');
+   assert.ok(await page.locator('.root-rule').isVisible()&&await page.locator('#trackAngleRad0').isVisible(),label+': the Lab shows the mathematics');
+   assert.equal(await page.locator('.lab-tab').count(),5,label+': the Lab inspector has five tabs');
+   await page.locator('#tabNotes').click();
+   assert.ok(await page.locator('.math-details').isVisible(),label+': the Notes tab shows the formulas');
+   await page.locator('#tabLanes').click();
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),label+': Lab has no overflow');
    await page.screenshot({path:directory+'/'+viewport.name+'-'+theme+'-lab.png'});
    await page.locator('#viewPlay').click();

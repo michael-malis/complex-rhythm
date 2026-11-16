@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // BUNK-04: actual complex roots -> scheduled Web Audio attack events. The
 // offline mix uses recorded bunker drum samples + the EXISTING screaming

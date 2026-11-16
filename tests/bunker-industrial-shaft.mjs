@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // BUNK-05: production complex roots -> AudioContext schedule -> decoded hard
 // drums plus the EXISTING native metallic/FM synthesis and master limiter.

@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -12,7 +12,7 @@ try {
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
-  assert.equal(await page.locator('#presetDetails').evaluate(el=>el.open),true,
+  assert.equal(await page.locator('#presetSelect').isVisible(),true,
    'rhythm examples must be expanded by default on every viewport');
   assert.equal(await page.locator('#presetSelect').inputValue(),'afro','initial study remains selected');
   const before=await page.evaluate(()=>({

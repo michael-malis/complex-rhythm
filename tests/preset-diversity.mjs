@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 

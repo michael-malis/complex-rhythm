@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -15,12 +15,12 @@ try{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  await page.locator('#advancedSoundDetails summary').click();
+  await page.locator('#tabSound').click();
   const base=await page.evaluate(()=>window.RhythmResearch.current().tracks[0]);
   const phasesBefore=await page.evaluate(()=>window.RhythmResearch.events(window.RhythmResearch.current().tracks[0]).map(e=>e.phase));
   const rendered=new Map();
   for(const voice of voices){
-   await page.locator('#laneSound0').selectOption(voice);
+   await page.locator('#laneSound0').selectOption(voice);await page.locator('#tabSound').click();
    await page.waitForFunction(()=>document.querySelector('#soundWaveStatus').textContent.startsWith('Synthesized fallback'));
    assert.ok(await page.locator('#soundWaveCanvas').isVisible(),'waveform visible for '+voice);
    assert.ok(await page.locator('#patchOsc').isHidden(),

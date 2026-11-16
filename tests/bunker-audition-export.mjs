@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // AUDIO-01 technical evidence only: render production audio for all six
 // Bunker sources to downloadable, unnormalized 16-bit PCM WAVs. Passing this

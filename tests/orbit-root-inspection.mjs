@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -298,7 +298,6 @@ try{
 
   // True intersection leaves only the common phase. Tapping elsewhere must
   // inspect that result, never silently select an excluded base/additional root.
-  await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
   await page.locator('#setOperation').selectOption('intersection');
   assert.equal(await page.locator('#unionCount').textContent(),'1');
   await tapResult(.7);

@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -36,7 +36,6 @@ try{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  await page.locator('#rootRuleInfoToggle').click();
   const initial=await read(page);
   assert.deepEqual(initial.symbols.map(s=>s.latex),expected,
    'inline caption must use exact semantic TeX rather than text surrogates at '+width+'/'+theme);
@@ -57,9 +56,6 @@ try{
    await page.locator('#jsonFile').setInputFiles({name:'zero-caption.json',
     mimeType:'application/json',buffer:Buffer.from(JSON.stringify(json))});
    await page.waitForFunction(()=>document.getElementById('rootRuleCaption').textContent.includes('undefined'));
-   await page.locator('#rootRuleInfoToggle').evaluate(el=>{
-    if(el.getAttribute('aria-expanded')==='false')el.click();
-   });
    const zero=await read(page);
    assert.deepEqual(zero.symbols.map(s=>s.latex),['z=0','\\arg(0)'],
     'zero complex value uses actual semantic z and undefined argument');

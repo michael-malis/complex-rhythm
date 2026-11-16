@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--autoplay-policy=no-user-gesture-required']});
@@ -11,7 +11,6 @@ try{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  for(const id of ['#presetDetails','#compositionPanel','.math-details'])await page.locator(id).evaluate(el=>el.open=true);
   const data=await page.evaluate(()=>{
    const selectors=['body','.wordmark','.strapline','.eyebrow','.stage-heading h1','.panel-heading h2','.stage-meta','.quiet','.lane-select','.lane-fields label','.lane-fields input','.lane-sound','.lane-count','.figure-legend','.stage-hint','.small-explain','.math-details p','button','.formula-reference'];
    const sizes=selectors.map(sel=>{const e=document.querySelector(sel);return {selector:sel,font:e?parseFloat(getComputedStyle(e).fontSize):NaN}});
@@ -26,20 +25,17 @@ try{
   });
   ok(data.scroll<=data.width+2,'no whole-page overflow '+width+'/'+theme);
   ok(data.sizes.every(x=>x.font>=16), 'font min 16px '+width+'/'+theme+': '+JSON.stringify(data.sizes.filter(x=>x.font<16)));
-  const compact=width>=760;
-  ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===(compact?28:30),
-   'primary heading retains a clear mobile scale and compact desktop scale');
-  ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===(compact?24:26),
-   'secondary heading remains hierarchically smaller at every viewport');
+  // One type scale at every width: 16px text, 22px serif panel titles.
+  ok(data.sizes.find(x=>x.selector==='.stage-heading h1').font===22,
+   'figure heading uses the 22px display size');
+  ok(data.sizes.find(x=>x.selector==='.panel-heading h2').font===22,
+   'inspector panel titles use the same 22px display size');
   ok(data.renderer==='0.16.22'&&data.parts>=10&&data.root,'KaTeX rendered with local package');
   ok(await page.locator('#rootRuleEquation .katex').count()===1,'root angle infographic has valid KaTeX '+width+'/'+theme);
-  const minScale=compact?
-   {'.composition-info h3':20,'.lane-select':18,'.lane-fields label':16,'.lane-fields input':17,
-    '.lane-sound':17,'.lane-count':18,'.lane-length label':16,'.figure-legend':16,'.stage-hint':16,
-    '.small-explain':16,'.circle-labels':20,'.stage-meta':16,'.panel-heading h2':24,'.stage-heading h1':28}:
-   {'.composition-info h3':22,'.lane-select':20,'.lane-fields label':18,'.lane-fields input':18,
-    '.lane-sound':18,'.lane-count':20,'.lane-length label':18,'.figure-legend':17,'.stage-hint':17,
-    '.small-explain':17,'.circle-labels':20,'.stage-meta':18,'.panel-heading h2':26,'.stage-heading h1':30};
+  const minScale=
+   {'.composition-info h3':17,'.lane-select':22,'.lane-fields label':17,'.lane-fields input':16,
+    '.lane-sound':16,'.lane-count':16,'.lane-length label':16,'.figure-legend':16,'.stage-hint':16,
+    '.small-explain':16,'.circle-labels':20,'.stage-meta':16,'.panel-heading h2':22,'.stage-heading h1':22};
   for(const item of data.scale)ok(item.font>=minScale[item.selector],
     'mandatory math/controls typography '+item.selector+' '+width+'/'+theme+
     ': '+item.font+' < '+minScale[item.selector]);
@@ -54,7 +50,6 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
  const finalErrors=[];page.on('pageerror',e=>finalErrors.push(e.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
- await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  await page.locator('.lane[data-lane="0"] .mode-button').nth(1).click();
  ok(await page.locator('#trackR0').count()===1&&await page.locator('#trackTheta0').count()===1,'polar edit fields');
  await page.locator('#trackTheta0').fill('1.57079632679');
@@ -62,14 +57,18 @@ try{
  ok(Math.abs(Number(await page.locator('#trackTheta0').inputValue())-90)<.001,'switch radians to degrees');
  await page.locator('.lane[data-lane="0"] .mode-button').nth(0).click();
  ok(Math.abs(Number(await page.locator('#trackA0').inputValue()))<1e-5&&Math.abs(Number(await page.locator('#trackB0').inputValue())-1)<1e-5,'polar→Cartesian roundtrip');
- await page.locator('.lane[data-lane="0"] .expression-entry').evaluate(el=>el.open=true);
+ // f(z) is the third notation of the lane's segmented switch.
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(2).click();
  await page.locator('#trackExpression0').fill('cos(pi/3)+i sin(pi/3)');
  await page.locator('.lane[data-lane="0"] .expression-controls button').click();
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(0).click();
  ok(Math.abs(Number(await page.locator('#trackA0').inputValue())-.5)<1e-5,'safe expression real component');
  ok(Math.abs(Number(await page.locator('#trackB0').inputValue())-Math.sqrt(3)/2)<1e-5,'safe expression imaginary component');
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(2).click();
  await page.locator('#trackExpression0').fill('alert(1)');
  await page.locator('.lane[data-lane="0"] .expression-controls button').click();
  ok((await page.locator('.lane[data-lane="0"] .expression-error').textContent()).length>0,'unsafe expressions rejected');
+ await page.locator('.lane[data-lane="0"] .mode-button').nth(0).click();
  ok(Math.abs(Number(await page.locator('#trackA0').inputValue())-.5)<1e-5,'invalid syntax retains canonical state');
  await page.locator('#trackA0').fill('1e-9');
  await page.locator('#trackB0').fill('0');

@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium,eachLabTab} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -12,17 +12,16 @@ try{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  await page.evaluate(()=>{
-   for(const section of document.querySelectorAll('#presetDetails,#compositionPanel,.math-details,#windowPanel,#fileMenu,#advancedMathDetails,#advancedSoundDetails')){
-    section.open=true;
-   }
-  });
-  const audit=await page.evaluate(()=>{
-   const sections=['#presetDetails','#compositionPanel','.math-details','#windowPanel','#fileMenu'];
-   const sectionAudit=sections.map(s=>{
-    const el=document.querySelector(s),r=el?.getBoundingClientRect();
-    return {name:s,open:!!el?.open,visible:!!r&&r.width>0&&r.height>0,
-     title:el?.querySelector('summary')?.textContent.trim()||''};
+  // Nothing is collapsed any more: the audit visits every inspector tab in
+  // turn and checks whatever is on screen there.
+  const perTab=await eachLabTab(page,()=>page.evaluate(()=>{
+   const named=el=>(el.querySelector('.panel-head h2,.panel-heading h2')?.textContent||
+    document.getElementById(el.getAttribute('aria-labelledby')||'')?.textContent||
+    el.getAttribute('aria-label')||'').trim();
+   const sectionAudit=[document.querySelector('.lab-panel:not([hidden])'),
+    document.querySelector('#presetDetails'),document.querySelector('#fileMenu')].map(el=>{
+    const r=el.getBoundingClientRect();
+    return {name:'#'+el.id,open:el.matches('.lab-panel')?el.open:true,visible:r.width>0&&r.height>0,title:named(el)};
    });
    const visible=el=>{
     const style=getComputedStyle(el),r=el.getBoundingClientRect();
@@ -51,20 +50,25 @@ try{
    });
    const phaseNotes=document.querySelectorAll('.math-details .katex').length;
    const composedFormula=!!document.querySelector('#compositionEquation .katex');
-   const info=[
-    'Rhythm examples','Additional angles','Mathematical notes',
-    'Polymetric time window','Project files'
-   ].every(key=>sectionAudit.some(x=>x.title.includes(key)));
    const hints=[...document.querySelectorAll('[title]')].filter(visible).map(el=>({
     tag:el.tagName,text:el.getAttribute('title')?.trim()||''
    }));
    return {sectionAudit,unnamed,tiny,controls:controls.length,sound,phaseNotes,
-    composedFormula,allSectionsNamed:info,hints:hints.length,emptyHints:hints.filter(x=>!x.text)};
-  });
+    composedFormula,hints:hints.length,emptyHints:hints.filter(x=>!x.text)};
+  }));
+  const parts=perTab.map(x=>x.result);
+  const sectionAudit=[...new Map(parts.flatMap(p=>p.sectionAudit).map(x=>[x.name,x])).values()];
+  const audit={sectionAudit,unnamed:parts.flatMap(p=>p.unnamed),tiny:parts.flatMap(p=>p.tiny),
+   controls:parts.reduce((n,p)=>n+p.controls,0),sound:parts[0].sound,phaseNotes:parts[0].phaseNotes,
+   composedFormula:parts[0].composedFormula,hints:parts.reduce((n,p)=>n+p.hints,0),
+   emptyHints:parts.flatMap(p=>p.emptyHints),
+   allSectionsNamed:['Rhythm examples','Root angles','Combine root points','Polymetric time window',
+    'Sound lab','Mathematical notes','Project files'].every(key=>sectionAudit.some(x=>x.title.includes(key)))};
+  assert.equal(sectionAudit.length,7,'five inspector tabs plus the rhythm picker and project files are audited');
   report.push({viewport:[width,height],theme,...audit,runtimeErrors:errors});
   assert.ok(audit.sectionAudit.every(x=>x.open&&x.visible&&x.title.length>=3),
-   'all default-hidden documented panels must be visible and named: '+JSON.stringify(audit.sectionAudit));
-  assert.ok(audit.allSectionsNamed,'all five mandatory documentation areas must be identified');
+   'every inspector tab and fixed area must be visible and named: '+JSON.stringify(audit.sectionAudit));
+  assert.ok(audit.allSectionsNamed,'all seven mandatory areas must be identified');
   assert.ok(audit.controls>=30,'all expanded controls participate in full UI audit');
   assert.equal(audit.unnamed.length,0,'unlabeled UI controls: '+JSON.stringify(audit.unnamed.slice(0,8)));
   assert.equal(audit.tiny.length,0,'small controls in expanded panels: '+JSON.stringify(audit.tiny.slice(0,8)));
@@ -79,6 +83,7 @@ try{
    const voices=await page.locator('#laneSound0 option').evaluateAll(items=>items.map(o=>o.value));
    for(const voice of voices){
     await page.locator('#laneSound0').selectOption(voice);
+    await page.locator('#tabSound').click();
     const dynamic=await page.evaluate(()=>{
      const wrap=document.querySelector('#patchControls');
      const basic=document.querySelector('#laneGainControls');

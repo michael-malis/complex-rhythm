@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -6,7 +6,6 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800},acceptDownloads:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
- await page.locator('#presetDetails').evaluate(el=>{el.open=true});
  await page.locator('#categorySelect').selectOption('poly');
  await page.locator('#presetSelect').selectOption('afro');
  const source=await page.locator('#presetSelect option:checked').textContent();
@@ -23,7 +22,6 @@ try{
  assert.equal(await page.locator('#presetSelect option:checked').textContent(),
   source+' · Modified','repeated changes do not duplicate Modified marker');
  const edited=await page.evaluate(()=>window.RhythmResearch.current());
- await page.locator('#fileMenu summary').click();
  const downloadPromise=page.waitForEvent('download');
  await page.locator('#saveBtn').click();
  const saved=JSON.parse(fs.readFileSync(await(await downloadPromise).path(),'utf8'));
@@ -61,7 +59,6 @@ try{
  await page.waitForFunction(()=>document.querySelector('#presetSelect').value==='__custom__');
  assert.equal(await page.locator('#presetSelect option:checked').textContent(),custom.name,
   'user-created imported project retains its own name');
- await page.locator('#fileMenu summary').click();
  const customDownload=page.waitForEvent('download');
  await page.locator('#saveBtn').click();
  const customReexport=JSON.parse(fs.readFileSync(await(await customDownload).path(),'utf8'));

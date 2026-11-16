@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -20,7 +20,6 @@ try{
  assert.equal(studies.length,15,'all fifteen new rhythm studies are in the application');
  assert.equal(new Set(studies.map(p=>p.id)).size,15,'new study IDs are unique');
  for(const id of studyIds)assert.ok(studies.some(x=>x.id===id),'missing study '+id);
- await page.locator('#presetDetails').evaluate(el=>{el.open=true});
  const audit=[];
  let previousGeneration=0;
  for(let index=0;index<studies.length;index++){

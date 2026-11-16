@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -68,7 +68,6 @@ try{
    const degree=await snapshot(page);
    assert.ok(degree.latex.includes('R_{7}')&&degree.latex.includes('2 + 3i'),
     'editing degree recomputes root set without erasing its complex argument');
-   await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>el.open=true);
    await page.locator('#trackB0').fill('4');
    const edited=await snapshot(page);
    assert.ok(edited.latex.includes('2 + 4i')&&!edited.latex.includes('2 + 3i'),
@@ -76,7 +75,6 @@ try{
    assert.equal(await page.evaluate(()=>document.activeElement.id),'trackB0',
     'live rerender may not steal keyboard input focus');
    assert.notDeepEqual(edited.phases,degree.phases,'altering the complex angle changes canonical root events');
-   await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
    await page.locator('#setOperation').selectOption('intersection');
    const intersect=await snapshot(page);
    assert.ok(intersect.latex.includes('\\cap')&&!intersect.latex.includes('\\cup'),

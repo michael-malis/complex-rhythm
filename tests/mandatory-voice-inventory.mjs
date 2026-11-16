@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -35,13 +35,13 @@ try {
    preset:window.RhythmResearch.transport().activePresetId,
    schedulers:window.RhythmResearch.transport().schedulerIntervalsCreated
   }));
-  await page.locator('#advancedSoundDetails summary').click();
+  await page.locator('#tabSound').click();
   const rows=[];
   for(const voice of mandatory){
    const option=page.locator('#laneSound0 option').filter({hasText:voice.name});
    assert.ok(await page.locator('#laneSound0 option[value="'+voice.sound+'"]').count(),
     'Source inventory must have an actual user-selectable option '+voice.sound);
-   await page.locator('#laneSound0').selectOption(voice.sound);
+   await page.locator('#laneSound0').selectOption(voice.sound);await page.locator('#tabSound').click();
    await page.waitForFunction(kind=>{
     const status=document.querySelector('#soundWaveStatus')?.textContent||'';
     return status.startsWith(kind+' ·')&&status.includes('peak ');

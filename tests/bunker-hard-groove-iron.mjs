@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // BUNK-06: actual hard-groove complex-root attacks mixed with production
 // hard kick, clap, hat and tom WAVs through the same Web Audio master.

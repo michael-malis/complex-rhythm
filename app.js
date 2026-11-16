@@ -956,16 +956,18 @@ function updateLaneAlt(i) {
 }
 function buildLaneFields(row,t,i) {
 
+ // The visible caption is short (the desktop table has one header row);
+ // the accessible name keeps the full description.
+ const caption=text=>{const span=document.createElement('span');span.className='field-label';span.textContent=text;return span};
  const angular=document.createElement('div');angular.className='angle-fields';
- const title=document.createElement('div');title.className='angle-title';title.textContent='Complex argument θ';angular.append(title);
- const addInput=(id,name)=>{
-  const label=document.createElement('label');label.textContent=name;label.htmlFor=id;
+ const addInput=(id,name,short,cell)=>{
+  const label=document.createElement('label');label.className='lane-field '+cell;label.htmlFor=id;label.append(caption(short));
   const el=document.createElement('input');el.id=id;el.type='text';el.inputMode='decimal';
   el.autocomplete='off';el.spellcheck=false;el.setAttribute('aria-label','Lane '+(i+1)+' '+name);
   el.setAttribute('aria-invalid','false');label.append(el);angular.append(label);return el;
  };
- const rad=addInput('trackAngleRad'+i,'Radians · π allowed');
- const deg=addInput('trackAngleDeg'+i,'Degrees · °');
+ const rad=addInput('trackAngleRad'+i,'Radians · π allowed','θ · rad','field-rad');
+ const deg=addInput('trackAngleDeg'+i,'Degrees · °','θ · °','field-deg');
  rad.maxLength=80;deg.maxLength=32;
  // Both fields step through the SAME mathematical angle: 1° = π/180 rad.
  // A text field is required to retain symbolic values such as 2π/3.
@@ -977,7 +979,7 @@ function buildLaneFields(row,t,i) {
    input.dispatchEvent(new Event('input',{bubbles:true}));
   });
  }
- const nLabel=document.createElement('label');nLabel.className='root-degree';nLabel.textContent='Root degree n';
+ const nLabel=document.createElement('label');nLabel.className='lane-field field-n root-degree';nLabel.append(caption('n'));
  const nInput=document.createElement('input');nInput.id='trackN'+i;nInput.type='number';nInput.min='1';nInput.max='64';
  nInput.step='1';nInput.inputMode='numeric';nInput.value=String(t.n);
  nInput.setAttribute('aria-label','Lane '+(i+1)+' root degree n');
@@ -1020,21 +1022,23 @@ function buildLaneFields(row,t,i) {
  // Initial construction occurs before the card is connected to document.
  // Write both angle fields from canonical state using local references.
  syncPrimaryAngles(i,{rad,deg,degree:nInput});
- const advanced=document.createElement('details');advanced.className='advanced-coordinates';
- const advancedSummary=document.createElement('summary');advancedSummary.textContent='Advanced · Cartesian / legacy polar';
- advanced.append(advancedSummary);row.append(advanced);
+ // The same z in three notations. Always present: one segmented switch
+ // per lane replaces the former nested disclosures.
+ const advanced=document.createElement('div');advanced.className='advanced-coordinates';
+ row.append(advanced);
  const modeBar=document.createElement('div');modeBar.className='lane-modes';modeBar.setAttribute('role','group');modeBar.setAttribute('aria-label','Coordinate form for lane '+(i+1));
- const cart=document.createElement('button'),polar=document.createElement('button'),unit=document.createElement('button');
- for(const [btn,label,mode] of [[cart,'Cartesian','cart'],[polar,'Polar','polar']]){
-  btn.type='button';btn.textContent=label;btn.className='mode-button';btn.setAttribute('aria-pressed',String(laneModes[i]===mode));
-  btn.addEventListener('click',()=>{laneModes[i]=mode;refresh();cart.setAttribute('aria-pressed',String(mode==='cart'));polar.setAttribute('aria-pressed',String(mode==='polar'))});
+ const cart=document.createElement('button'),polar=document.createElement('button'),typed=document.createElement('button'),unit=document.createElement('button');
+ const modeButtons=[[cart,'a + bi','cart','Cartesian form a + bi'],[polar,'r∠θ','polar','Polar form: modulus r and angle θ'],[typed,'f(z)','expr','Type a complex expression']];
+ for(const [btn,label,mode,name] of modeButtons){
+  btn.type='button';btn.textContent=label;btn.className='mode-button';btn.title=name;
+  btn.setAttribute('aria-label',name+', lane '+(i+1));btn.setAttribute('aria-pressed',String(laneModes[i]===mode));
+  btn.addEventListener('click',()=>{laneModes[i]=mode;refresh();for(const [other,,m] of modeButtons)other.setAttribute('aria-pressed',String(m===mode))});
  }
  unit.type='button';unit.className='unit-button';unit.addEventListener('click',()=>{laneUnits[i]=laneUnits[i]==='rad'?'deg':'rad';refresh()});
- modeBar.append(cart,polar,unit);advanced.append(modeBar);
- const fields=document.createElement('div');fields.className='lane-fields';advanced.append(fields);
+ modeBar.append(cart,polar,typed);advanced.append(modeBar);
+ const fields=document.createElement('div');fields.className='lane-fields';advanced.append(fields,unit);
  const alt=document.createElement('div');alt.id='laneAlt'+i;alt.className='lane-alternate-math math-notation';row.append(alt);
- const exp=document.createElement('details');exp.className='expression-entry';
- const summary=document.createElement('summary');summary.textContent='Enter a complex expression';exp.append(summary);
+ const exp=document.createElement('div');exp.className='expression-entry';
  const wrap=document.createElement('div');wrap.className='expression-controls';
  const input=document.createElement('input');input.type='text';input.id='trackExpression'+i;input.maxLength=140;input.placeholder='cos(pi/3)+i sin(pi/3)';input.setAttribute('aria-label','Complex expression for lane '+(i+1));
  const apply=document.createElement('button');apply.type='button';apply.textContent='Apply';apply.className='secondary-btn';
@@ -1051,9 +1055,12 @@ function buildLaneFields(row,t,i) {
  function refresh() {
   const mode=laneModes[i],value=RhythmMath.polarOf(t.a,t.b);
   fields.replaceChildren();unit.hidden=mode!=='polar';unit.textContent=laneUnits[i]==='rad'?'radians':'degrees';
-  for(const key of (mode==='cart'?['a','b']:['r','theta'])){
+  unit.setAttribute('aria-label','Angle unit for lane '+(i+1)+': '+unit.textContent+'. Press to switch.');
+  fields.hidden=mode==='expr';exp.hidden=mode!=='expr';
+  for(const key of (mode==='expr'?[]:mode==='cart'?['a','b']:['r','theta'])){
    const label=document.createElement('label');
-   label.textContent=key==='a'?'a · real':key==='b'?'b · imag':key==='n'?'n · degree':key==='r'?'r · modulus':laneUnits[i]==='rad'?'θ · radians':'θ · degrees';
+   label.textContent=key==='a'?'a':key==='b'?'b':key==='r'?'r':'θ';
+   label.title=key==='a'?'Real part':key==='b'?'Imaginary part':key==='r'?'Modulus':laneUnits[i]==='rad'?'Angle in radians':'Angle in degrees';
    const el=document.createElement('input');el.type='number';el.step=key==='n'?'1':'any';el.inputMode=key==='n'?'numeric':'decimal';
    el.id='track'+key[0].toUpperCase()+key.slice(1)+i;
    const v=key==='a'?t.a:key==='b'?t.b:key==='n'?t.n:key==='r'?value.r:value.theta===null?null:value.theta*(laneUnits[i]==='deg'?180/Math.PI:1);
@@ -1214,7 +1221,7 @@ function renderTracks() {
   // editor keeps a synchronized secondary mirror for backward compatibility.
   const gainRow=document.createElement('label');gainRow.className='lane-volume';
   gainRow.htmlFor='laneGain'+i;
-  const gainName=document.createElement('span');gainName.textContent='Instrument volume';
+  const gainName=document.createElement('span');gainName.className='field-label';gainName.textContent='Volume';
   const gainReadout=document.createElement('output');gainReadout.id='laneGainValue'+i;
   gainReadout.htmlFor='laneGain'+i;gainReadout.textContent=Math.round((t.gain??1)*100)+'%';
   const gainSlider=document.createElement('input');gainSlider.type='range';
@@ -1232,7 +1239,7 @@ function renderTracks() {
   gainRow.append(gainName,gainReadout,gainSlider);row.append(gainRow);
   buildLaneFields(row,t,i);
   const length=document.createElement('div');length.className='lane-length';
-  const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.textContent='Cycle length · bars';
+  const lengthLabel=document.createElement('label');lengthLabel.htmlFor='laneBars'+i;lengthLabel.className='field-label';lengthLabel.textContent='bars';lengthLabel.title='Cycle length in bars';
   const lengthInput=document.createElement('input');lengthInput.id='laneBars'+i;lengthInput.type='number';lengthInput.inputMode='numeric';
   lengthInput.min='1';lengthInput.max='16';lengthInput.step='1';lengthInput.value=String(t.cycleBars||1);
   lengthInput.setAttribute('aria-label','Lane '+(i+1)+' cycle length in bars');
@@ -1253,6 +1260,23 @@ function renderTracks() {
   const eq=document.createElement('span');eq.className='lane-equation';eq.id='laneEq'+i;
   const count=document.createElement('span');count.className='lane-count';count.id='laneCount'+i;
   foot.append(eq,count);row.append(foot);wrap.append(row);updateLaneStatus(i);
+ });
+}
+// The Union tab edits one lane; its four chips choose which, without
+// leaving the tab. They mirror the lane buttons of the Lanes tab.
+function renderLaneChips(){
+ const wrap=$('laneChips');if(!wrap)return;
+ if(wrap.children.length!==tracks.length){
+  wrap.replaceChildren(...tracks.map((_,i)=>{
+   const b=document.createElement('button');b.type='button';b.className='lane-chip';b.id='laneChip'+i;b.dataset.lane=String(i);
+   b.addEventListener('click',()=>chooseTrack(i,true));return b;
+  }));
+ }
+ tracks.forEach((t,i)=>{
+  const b=wrap.children[i];b.style.setProperty('--lane-color',COLORS[i]);
+  b.textContent=(i+1)+' · '+SOUNDS[t.sound];
+  b.setAttribute('aria-pressed',String(i===selectedTrack));
+  b.setAttribute('aria-label','Edit the root sets of lane '+(i+1)+', '+SOUNDS[t.sound]);
  });
 }
 function updateOrbitSummary(){
@@ -1280,13 +1304,14 @@ function chooseTrack(i,fromTrackList=false) {
   row.classList.toggle('selected',j===selectedTrack);
   row.querySelector('.lane-select')?.setAttribute('aria-pressed',String(j===selectedTrack));
  });
+ renderLaneChips();
  renderEditor();
  updateOrbitSummary();
  updatePlayHint();
  if(magnified)refreshPlotZoom();
  if(fromTrackList&&$('compositionPanel').open)$('compositionHeading').focus({preventScroll:true});
 }
-// Waveform editing is deliberately optional: a single bottom details panel.
+// Waveform editing is deliberately optional: its own inspector tab.
 // The active waveform lane is NOT coupled to the mathematical selection.
 let soundLabLane=0,soundLabTrackRef=null,soundLabSound='',soundLabTimer=null,soundLabToken=0;
 const soundLabSampleCache=new Map();
@@ -1534,7 +1559,6 @@ function renderSpecialRhythms() {
  choice.value=t.operation||'union';
  // Intersection is available for advanced mathematics but does not obscure
  // the default union-of-points model.
- if(t.operation==='intersection'||t.euclidean)$('advancedMathDetails').open=true;
  choice.addEventListener('change',()=>{t.operation=choice.value;updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  opRow.append(choice);wrap.append(opRow);
  const euRow=document.createElement('label');euRow.className='math-check';
@@ -1561,7 +1585,7 @@ function renderSpecialRhythms() {
  cb.addEventListener('change',()=>{t.euclidean=cb.checked?{k:5,n:16,rotation:0,velocity:.58}:null;fillFields();updateLaneStatus(selectedTrack);renderReadout();markCustom()});
  fillFields();
 }
-function renderEditor() {renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();refreshSoundLab()}
+function renderEditor() {renderLaneChips();renderReadout();renderLayers();renderSoundControls();renderSpecialRhythms();refreshSoundLab()}
 function renderReadout() {
  const t=tracks[selectedTrack];if(!t)return;
  const a=t.a===0&&t.b===0?null:Math.atan2(t.b,t.a)*180/Math.PI;
@@ -1762,7 +1786,7 @@ function renderWindowTimeline() {
  }
  const eventSummary=$('eventSummary');
  if(eventSummary)eventSummary.textContent=`4-bar view · ${analysis.totalEvents} audible hits · ${analysis.uniqueMoments} distinct times · ${analysis.sharedMoments} shared across lanes`;
- if(!$('windowPanel').open)return;
+ // Built even while another inspector tab is showing, so the Time tab is never stale.
  const container=$('windowTimeline');container.replaceChildren();
  $('eventInspection').textContent='Select a timeline row, then use arrow keys to inspect individual mathematical events.';
  const simultaneous=analysis.sharedMoments;
@@ -2730,13 +2754,6 @@ function setupEvents() {
    e.key==='Home'?'first':e.key==='End'?'last':null);
  });
  $('clearRootInspection').addEventListener('click',()=>{inspectedRoot=null;renderRootInspection()});
- $('rootRuleInfoToggle').addEventListener('click',()=>{
-  const panel=$('rootRuleInfoPanel'),button=$('rootRuleInfoToggle');
-  const open=panel.hidden;panel.hidden=!open;
-  button.setAttribute('aria-expanded',String(open));
-  button.setAttribute('aria-label',open?'Hide root geometry explanation':'Show root geometry explanation');
-  if(open)renderRootRule();
- });
  $('categorySelect').addEventListener('change',e=>{browseCategory=e.target.value;renderPresets()});
  $('presetInfo').title='Click to show or hide the full description';
  $('presetInfo').addEventListener('click',e=>e.currentTarget.classList.toggle('is-open'));
@@ -2751,6 +2768,7 @@ function setupEvents() {
  $('stageBtn').addEventListener('click',()=>setStage(!stageOn()));
  document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)setStage(false)});
  updateJamTools();
+ bindLabTabs();
  $('viewPlay').addEventListener('click',()=>setView('play'));
  $('viewLab').addEventListener('click',()=>setView('lab'));
  window.addEventListener('hashchange',()=>setView(location.hash==='#lab'?'lab':'play',false));
@@ -2804,8 +2822,8 @@ function setupEvents() {
   t.layers.push({a:1,b:0,n:3,velocity:.65});
   renderLayers();updateLaneStatus(selectedTrack);renderReadout();markCustom();
  });
- $('saveBtn').addEventListener('click',()=>{saveJson();$('fileMenu').open=false});
- $('loadBtn').addEventListener('click',()=>{$('fileMenu').open=false;$('jsonFile').click()});
+ $('saveBtn').addEventListener('click',saveJson);
+ $('loadBtn').addEventListener('click',()=>$('jsonFile').click());
  $('jsonFile').addEventListener('change',e=>{if(e.target.files?.[0])loadJson(e.target.files[0]);e.target.value=''});
  $('themeBtn').addEventListener('click',()=>setTheme(theme==='light'?'dark':'light',true));
  $('zoomBtn').addEventListener('click',()=>{magnified=!magnified;refreshPlotZoom()});
@@ -2946,7 +2964,6 @@ function setupEvents() {
   if(e.code!=='Space')return;
   e.preventDefault();togglePlay();
  });
- document.addEventListener('pointerdown',e=>{const m=$('fileMenu');if(m.open&&!m.contains(e.target))m.open=false});
  for(const type of ['pointerdown','pointermove','pointerup','keydown','keyup','input','change','click','wheel','focusin','toggle'])
   document.addEventListener(type,()=>wake(),{capture:true,passive:true});
  document.addEventListener('visibilitychange',()=>wake());
@@ -2967,6 +2984,45 @@ function refitVisibleMath(){
  fitRootMath('rootRuleValues',18,16);
  fitRootMath('rootRuleSpacing',18,16);
 }
+// Lab inspector: five tabs replace every former disclosure, so each tool has
+// one fixed place next to the figure. A panel's `open` property reads like
+// <details>: true while its tab is showing; assigning true shows that tab.
+// Every change fires `toggle` on the panels involved (timeline and waveform
+// render only while their tab is showing).
+const LAB_TABS=Object.freeze({lanes:'lanesPanel',union:'compositionPanel',time:'windowPanel',sound:'advancedSoundDetails',notes:'mathNotes'});
+let labTab='lanes';
+function showLabTab(name,focusTab=false){
+ if(!LAB_TABS[name])name='lanes';
+ labTab=name;
+ for(const [key,id] of Object.entries(LAB_TABS)){
+  const panel=$(id),tab=document.querySelector('.lab-tab[data-tab="'+key+'"]'),on=key===name,was=!panel.hidden;
+  panel.hidden=!on;
+  tab.setAttribute('aria-selected',String(on));tab.tabIndex=on?0:-1;
+  if(was!==on)panel.dispatchEvent(new Event('toggle'));
+ }
+ document.documentElement.dataset.tab=name;
+ if(focusTab)document.querySelector('.lab-tab[data-tab="'+name+'"]').focus();
+ wake();
+ refitVisibleMath();
+}
+function bindLabTabs(){
+ const keys=Object.keys(LAB_TABS);
+ for(const key of keys){
+  Object.defineProperty($(LAB_TABS[key]),'open',{configurable:true,
+   get(){return !this.hidden},
+   set(value){if(value)showLabTab(key);else if(!this.hidden)showLabTab('lanes')}});
+ }
+ const list=$('labTabs');
+ list.addEventListener('click',e=>{const tab=e.target.closest('.lab-tab');if(tab)showLabTab(tab.dataset.tab)});
+ list.addEventListener('keydown',e=>{
+  const at=keys.indexOf(labTab);
+  const next=e.key==='ArrowRight'?keys[(at+1)%keys.length]:e.key==='ArrowLeft'?keys[(at+keys.length-1)%keys.length]:
+   e.key==='Home'?keys[0]:e.key==='End'?keys[keys.length-1]:null;
+  if(!next)return;
+  e.preventDefault();e.stopPropagation();showLabTab(next,true);
+ });
+ document.documentElement.dataset.tab=labTab;
+}
 function setView(next,updateUrl=true){
  wake();
  view=next==='lab'?'lab':'play';
@@ -2974,7 +3030,6 @@ function setView(next,updateUrl=true){
  document.documentElement.dataset.view=view;
  $('viewPlay').setAttribute('aria-pressed',String(view==='play'));
  $('viewLab').setAttribute('aria-pressed',String(view==='lab'));
- if(view==='play')$('presetDetails').open=true;
  if(updateUrl)try{history.replaceState(null,'',view==='lab'?'#lab':location.pathname+location.search)}catch(_){}
  requestAnimationFrame(()=>{resizeCanvas();refitVisibleMath();positionPhaseLabels()});
 }
@@ -3021,7 +3076,7 @@ function setTheme(next,save=false) {
  document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#181916':'#f2efe8';
  COLORS=theme==='dark'?['#df9883','#98b39a','#d5b16e','#bda0ca']:['#ab5847','#567a63','#967438','#80618a'];
  RGB=theme==='dark'?[[223,152,131],[152,179,154],[213,177,110],[189,160,202]]:[[171,88,71],[86,122,99],[150,116,56],[128,97,138]];
- $('themeBtn').textContent=theme==='dark'?'Light mode':'Dark mode';
+ $('themeLabel').textContent=theme==='dark'?'Light mode':'Dark mode';
  $('themeBtn').setAttribute('aria-pressed',String(theme==='dark'));
  if(save)try{localStorage.setItem('roots-rhythm-theme',theme)}catch(_){}
  if(tracks.length){renderTracks();renderEditor();scheduleSoundWavePreview();updatePlayHint()}

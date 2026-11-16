@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium,eachLabTab} from './helpers/lab-tabs.mjs';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 
@@ -17,9 +17,8 @@ try{
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  for(const selector of ['#presetDetails','#compositionPanel','.math-details','#windowPanel'])
-    await page.locator(selector).evaluate(el=>{el.open=true});
-  const measured=await page.evaluate(()=>{
+  // Contrast is measured on every inspector tab, one after another.
+  const perTab=await eachLabTab(page,()=>page.evaluate(()=>{
    const toRgb=value=>{
     // Modern CSS color-mix() resolves to color(srgb r g b), where channels
     // are 0..1, NOT 0..255. Treating these as byte RGB falsely reports
@@ -77,7 +76,9 @@ try{
     return {name:varname,contrast:Number(contrast(rgb,plot||panel).toFixed(2))};
    });
    return {text:rows,plotPalette:palette};
-  });
+  }));
+  assert.equal(perTab.length,5,'all five inspector tabs measured');
+  const measured={text:perTab.flatMap(x=>x.result.text.map(row=>({...row,tab:x.tab}))),plotPalette:perTab[0].result.plotPalette};
   const failed=measured.text.filter(x=>x.failure);
   const failsGraphics=measured.plotPalette.filter(x=>x.contrast<3);
   results.push({width,height,theme,count:measured.text.length,failed,graphics:failsGraphics,

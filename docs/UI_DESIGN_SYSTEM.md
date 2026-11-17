@@ -18,6 +18,8 @@ The interface now follows three rules.
 | 600–1079px | flow; lanes in two columns; transport fixed at the bottom | flow: plot, transport pill, picker, sticky tab bar, panel |
 | < 600px | flow; one column; transport fixed at the bottom | the same flow; tabs stack glyph over label; each lane becomes a small labelled form |
 
+**Rhythm picker**: ‹ name › ✦ ⚄ ± ↶. Play and phones put the category and the jam tools on the first row and ‹ name › on the second; the Lab frame (≥ 1080px) puts ‹ name › and the tools on one row and the category beside the one-line description, so the name always has room. Picker labels are short (`SHORT_LABELS` in `app.js`); the full title stays in `name` for saved projects and exports, and a test checks that no label is cut.
+
 **Transport pill** (same component in both views): ↺ restart, ▶ play, tempo, master volume, then the two mode switches ↻ Drift and ≡ Build. Where the pill is narrow (phones in the Lab, the Lab frame below 1440px) it takes two rows: tempo on the first, volume and the mode switches on the second. On phones in Play the word "Tempo" is visually hidden (it stays in the accessible name) to leave the slider room. While a mode is on, a status pill under the bar counter reads `Drift 3/32` (step / grid, dot in the drifting lane's colour) and/or `Build 5/16`; phase labels on the plate move clear of it.
 
 The lane layout follows the inspector's own width (container query `inspector`), not the viewport.

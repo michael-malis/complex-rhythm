@@ -64,6 +64,36 @@ try {
   results.push({viewport,initial:before.id,loaded:acid,categoriesBrowsed:5,passed:true});
   await page.close();
  }
+ // Every preset and category label fits its closed picker: nothing is cut with
+ // "…" on a 360px phone, a tablet, or the narrowest Lab and Play frames.
+ const fit=[];
+ for(const [width,height,view] of [[360,640,'play'],[390,844,'lab'],[768,1024,'play'],[1080,720,'lab'],[1080,720,'play'],[1280,720,'lab'],[1440,900,'lab']]){
+  const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
+  await page.goto('http://127.0.0.1:8767/'+(view==='lab'?'#lab':''),{waitUntil:'load'});
+  const cut=await page.evaluate(async()=>{
+   await document.fonts.ready;
+   const room=select=>{const css=getComputedStyle(select),ctx=document.createElement('canvas').getContext('2d');
+    ctx.font=css.fontWeight+' '+css.fontSize+' '+css.fontFamily;
+    // native select: padding on both sides plus the drop-down arrow
+    return {ctx,avail:select.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight)-(css.appearance==='none'?0:16)}};
+   const category=document.getElementById('categorySelect'),preset=document.getElementById('presetSelect'),out=[];
+   const c=room(category);
+   for(const option of category.options)if(c.ctx.measureText(option.textContent).width>c.avail)
+    out.push('category '+option.textContent+' ('+Math.round(c.ctx.measureText(option.textContent).width)+' > '+Math.round(c.avail)+')');
+   for(const value of [...category.options].map(o=>o.value)){
+    category.value=value;category.dispatchEvent(new Event('change',{bubbles:true}));
+    await new Promise(resolve=>requestAnimationFrame(resolve));
+    const p=room(preset);
+    for(const option of preset.options)if(p.ctx.measureText(option.textContent).width>p.avail)
+     out.push(value+': '+option.textContent+' ('+Math.round(p.ctx.measureText(option.textContent).width)+' > '+Math.round(p.avail)+')');
+   }
+   return out;
+  });
+  assert.deepEqual(cut,[],'picker labels fit without truncation at '+width+'x'+height+' '+view);
+  fit.push({width,height,view,truncated:cut.length});
+  await page.close();
+ }
+ results.push({labelFit:fit});
  fs.writeFileSync('artifacts/preset-category-navigation.json',JSON.stringify({results},null,2));
  console.log('PASS category browser: expanded by default, no silent switching, explicit selection in desktop/mobile live audio');
 }finally {await browser.close()}

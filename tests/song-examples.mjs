@@ -55,8 +55,10 @@ try{
    const rendered=await page.locator('#laneEq'+i+' .katex').count();
    assert.ok(rendered>=1,'each source root family must be properly typeset');
   }
-  assert.ok(await page.locator('#presetSelect option:checked').textContent().then(t=>t.includes('Rhythm Study')),
+  // The picker shows a short English title; the description says it is a study, not a recording.
+  assert.match(await page.locator('#presetSelect option:checked').textContent(),/^Boom Boom Tap( · Modified)?$/,
    'song example is titled in English');
+  assert.match(await page.locator('#presetInfo').textContent(),/\bstudy\b/i,'the song example is presented as a study');
   const active=await page.evaluate(()=>window.RhythmResearch.transport());
   assert.equal(active.activePresetId,'prodigy-boom-boom-tap-study');
   assert.ok(active.playing,'explicit song load preserves running transport');

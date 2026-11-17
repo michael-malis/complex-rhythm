@@ -362,7 +362,6 @@ for(const study of EXPERIMENTAL_STUDIES){
 const SONG_EXAMPLES=Object.freeze([
  {id:'prodigy-boom-boom-tap-study',
   name:'Prodigy Boom Boom Tap (study)',
-  displayName:'Prodigy · Boom Boom Tap (Rhythm Study)',
   bpm:160,bars:1,
   character:'User-supplied, one-bar electronic breakbeat study: kick accents, ghost snare, steady eighth-note hats and Reese bass.',
   mathNote:'All events are exact complex-root phases. This educational reconstruction is not an official or verified transcription of any recording.',
@@ -400,18 +399,18 @@ const PRESET_GROUPS=Object.freeze([
   ids:['house','warehouse-hammer','stomp-circuit','steel-rave','peak-pressure','dub','ambient']},
  {id:'brazil',label:'Brazilian',
   ids:['bossa-classic','samba-drive','batucada','maracatu','baile-funk']},
- {id:'dnb',label:'Drum & Bass / Jungle',
+ {id:'dnb',label:'DnB / Jungle',
   ids:['neuro-burst','double-drop','subpressure','velocity-grid','ragga-spiral','break-torrent','ghostline','chopped-orbit']},
- {id:'bunker',label:'Bunker Techno',
+ {id:'bunker',label:'Bunker',
   ids:['berlin-bass-wall','concrete','shaft','dust','iron','pressure']},
  {id:'acid',label:'Acid / 303',
   ids:['acid-303','resonance-rush','liquid-corrosion','303-pressure']},
- {id:'hardcore',label:'Hardcore / Gabber',
+ {id:'hardcore',label:'Hardcore',
   ids:['schranz-machinery','hardtek-mobius','rotterdam-collision','frenchcore-spiral','terror-geometry']},
- {id:'experimental',label:'Prime Experiments',
+ {id:'experimental',label:'Experiments',
   ids:['acid-reactor','eleven-against-seven','industrial-fracture','acid-singularity','mechanical-paradox',
    'euclidean-fragments','broken-reactor','prime-number-riot','complex-roots-overload','breakcore-prime-shards']},
- {id:'songs',label:'Song Examples',ids:['prodigy-boom-boom-tap-study']}
+ {id:'songs',label:'Songs',ids:['prodigy-boom-boom-tap-study']}
 ]);
 const PRESET_BY_ID=new Map(BROWSE_PRESETS.map(p=>[p.id,p]));
 for(const group of PRESET_GROUPS){
@@ -427,12 +426,24 @@ for(const preset of BROWSE_PRESETS)if(!preset.category)throw Error('Preset witho
 const categoryForPreset=preset=>preset.category;
 const presetsInGroup=category=>(PRESET_GROUPS.find(g=>g.id===category)?.ids||[]).map(id=>PRESET_BY_ID.get(id));
 const inBrowse=(preset,category)=>presetsInGroup(category).includes(preset);
+// Picker labels are short enough for a 360px phone and the Lab frame. `name`
+// keeps the full title: saved projects, exports and the inventory use it.
+const SHORT_LABELS=Object.freeze({
+ 'berlin-bass-wall':'Berlin · Bass Wall','concrete':'Concrete · Raw','pressure':'Pressure · Acid','shaft':'Shaft · Industrial',
+ 'warehouse-hammer':'Offbeat Hard House','stomp-circuit':'Rolling Hard House','steel-rave':'Hard House Stabs','peak-pressure':'Peak Hard House',
+ 'velocity-grid':'DnB · Amen Grid','subpressure':'DnB · Half-time','double-drop':'DnB · Roller','neuro-burst':'DnB · 2-Step',
+ 'chopped-orbit':'Jungle · Orbit','break-torrent':'Jungle · Chops','baile-funk':'Baile Funk','maracatu':'Maracatu · Alfaia',
+ 'schranz-machinery':'Schranz','rotterdam-collision':'Rotterdam','frenchcore-spiral':'Frenchcore','terror-geometry':'Terror',
+ 'hardtek-mobius':'Hardtek','complex-roots-overload':'Overload','breakcore-prime-shards':'Breakcore','eleven-against-seven':'11 vs 7',
+ 'euclidean-fragments':'Euclid','mechanical-paradox':'Paradox','prime-number-riot':'Prime Riot','industrial-fracture':'Fracture',
+ 'acid-singularity':'Horizon','broken-reactor':'Meltdown','acid-reactor':'Reactor','prodigy-boom-boom-tap-study':'Boom Boom Tap'
+});
+for(const id of Object.keys(SHORT_LABELS))if(!PRESET_BY_ID.has(id))throw Error('Short label for unknown preset: '+id);
 // The prime studies carry their root degrees in the visible name, so the
 // ratio is readable without opening a third selector.
 const RATIO_GROUPS=new Set(['hardcore','experimental']);
-const presetLabel=preset=>RATIO_GROUPS.has(preset.category)
- ? preset.tracks.map(t=>t.n).join(':')+' · '+preset.name
- : preset.displayName||preset.name;
+const presetLabel=preset=>(RATIO_GROUPS.has(preset.category)?preset.tracks.map(t=>t.n).join(':')+' · ':'')+
+ (SHORT_LABELS[preset.id]||preset.name);
 // Saved projects written before a preset was renamed still open as that preset.
 const LEGACY_PRESET_NAMES=Object.freeze({
  'Polyrhythm · 3 : 4':'afro','Polyrhythm · 5 : 7':'minimal','Polyrhythm · 2 : 3':'poly-2-3',
@@ -829,7 +840,7 @@ function renderPresets(){
  const inBrowseCategory=selected?inBrowse(selected,browseCategory):false;
  if(activePresetId&&!inBrowseCategory){
   const option=document.createElement('option');
-  option.value='__browse__';option.textContent='Choose a preset in this category';
+  option.value='__browse__';option.textContent='Choose a preset';
   option.disabled=true;select.append(option);
  }else if(!activePresetId){
   const option=document.createElement('option');option.value='__custom__';

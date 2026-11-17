@@ -276,7 +276,7 @@ jobs:
             for attempt in $(seq 1 30); do
               if curl -fsS --max-time 2 "http://127.0.0.1:${port}/index.html" -o "/tmp/rhythm-math-${port}.html" && \
                  cmp -s "/tmp/rhythm-math-${port}.html" "${expected}" && \
-                 grep -Fq 'class="math-details"' "/tmp/rhythm-math-${port}.html"; then
+                 grep -Fq 'math-details' "/tmp/rhythm-math-${port}.html"; then
                 ready=1
                 break
               fi

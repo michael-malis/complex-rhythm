@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // BUNK-07: integration is grounded in independently verified five Bunker
 // renders and the real 50-preset browser event model. Human sound quality

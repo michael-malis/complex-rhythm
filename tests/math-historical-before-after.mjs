@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -55,6 +55,7 @@ async function capture(baseURL,sha,width,height,theme){
    'missing expected mathematical disclosure '+selector+' at '+baseURL+' for '+sha);
   await page.locator(selector).evaluate(el=>el.open=true);
  }
+ // Only the historical release hides the geometry behind a toggle.
  if(await page.locator('#rootRuleInfoToggle').count()){
   const open=await page.locator('#rootRuleInfoToggle').getAttribute('aria-expanded');
   if(open==='false')await page.locator('#rootRuleInfoToggle').click();

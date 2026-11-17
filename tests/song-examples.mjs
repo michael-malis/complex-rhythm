@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -70,7 +70,6 @@ try{
   assert.ok(audio.keys.includes('kick')&&audio.keys.includes('snare')&&audio.keys.includes('hat'),
    'sample routing remains internal; no copyrighted audio is ingested');
 
-  await page.locator('#fileMenu summary').click();
   const download=page.waitForEvent('download');
   await page.locator('#saveBtn').click();
   const file=await download;

@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import fs from 'node:fs';
 const cases=[[1600,1000],[1440,900],[1280,800],[1024,768],[768,1024],[390,844]];
 const base='http://127.0.0.1:8767/#lab';
@@ -10,7 +10,6 @@ try{
   const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
   await page.goto(base,{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  await page.locator('#presetDetails').evaluate(el=>el.open=true);
   await page.locator('#compositionPanel').evaluate(el=>el.open=true);
   await page.locator('.math-details').evaluate(el=>el.open=true);
   const metrics=await page.evaluate(()=>{

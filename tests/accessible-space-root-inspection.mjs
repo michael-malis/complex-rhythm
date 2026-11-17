@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 
 // ACCESS-01 engineering safeguard, NOT a physical screen-reader acceptance.
 // A role=button root control owns Space; the global playback shortcut must not
@@ -24,7 +24,7 @@ try{
   await page.keyboard.press('Space');
   assert.equal(await transport(),'false',
    'Space on focused Canvas must not toggle the transport');
-  await page.locator('#compositionPanel > summary').click();
+  await page.locator('#tabUnion').click();
   const union=page.locator('#unionStrip');
   await union.focus();
   assert.equal(await union.getAttribute('role'),'button');
@@ -35,7 +35,7 @@ try{
    'selected real root is announced in the accessible live region');
   assert.equal(await transport(),'false',
    'Space selecting a union root must not start audio');
-  await page.locator('#windowPanel summary').click();
+  await page.locator('#tabTime').click();
   const lane=page.locator('#windowTimeline .window-lane-events').first();
   assert.equal(await lane.getAttribute('role'),'button');
   await lane.focus();

@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -8,7 +8,6 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  const target=page.locator('.lane[data-lane="0"]');
- await target.locator('.advanced-coordinates').evaluate(el=>{el.open=true});
  await target.locator('.mode-button').nth(0).click();
  const pairs=[[1,0],[-1,0],[0,1],[0,-1],[2,3],[-2,3],
   [-2,-3],[2,-3],[-3,0.000001],[-3,-0.000001],[4,0],[0,0]];

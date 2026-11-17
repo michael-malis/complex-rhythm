@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -63,7 +63,6 @@ try{
  assert.ok(metadata.some(ev=>ev.sources.some(s=>s.kind==='additional'&&s.sourceIndex===0)),
   'added single-angle source is kept in events');
  const before=JSON.stringify(metadata);
- await page.locator('#fileMenu summary').click();
  const dl=page.waitForEvent('download');
  await page.locator('#saveBtn').click();
  const saved=fs.readFileSync(await(await dl).path(),'utf8');

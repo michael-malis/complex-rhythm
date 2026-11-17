@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -23,7 +23,8 @@ async function importProject(page,project){
   buffer:Buffer.from(JSON.stringify(project))});
  await page.waitForFunction(name=>document.querySelector('#toast').textContent.includes('Imported rhythm: '+name),project.name);
 }
-const measure=(page,lane)=>page.evaluate(lane=>{
+// The unit-circle diagram lives on the Lanes tab; its geometry is measured there.
+const measure=async(page,lane)=>{await page.locator('#tabLanes').click();return page.evaluate(lane=>{
  // Playwright serializes this function into the browser: no Node closure variables.
  const TAU=2*Math.PI;
  const t=window.RhythmResearch.current().tracks[lane];
@@ -93,7 +94,7 @@ const measure=(page,lane)=>page.evaluate(lane=>{
   summary:document.getElementById('overlapSummary').textContent,
   pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
   katexErrors:document.querySelectorAll('.katex-error').length};
-},lane);
+},lane)};
 function check(result,context){
  assert.equal(result.svgViewBox,'0 0 280 280',context+' canonical vector coordinate system');
  assert.ok(result.vectorNodes,'no raster imagery may substitute vector/math notation');
@@ -146,7 +147,6 @@ try{
   if(theme==='dark')await page.locator('#themeBtn').click();
   await importProject(page,fixture);
   await page.locator('#compositionPanel').evaluate(el=>el.open=true);
-  await page.locator('#rootRuleInfoToggle').click();
   const lanes=[];
   for(let lane=0;lane<4;lane++){
    await page.locator('.lane[data-lane="'+lane+'"] .lane-select').click();
@@ -185,7 +185,6 @@ try{
    check(dense,'live 64-root SVG/Canvas resize');
    assert.equal(dense.expectedCount,64,'64 mathematically distinct vector roots remain in SVG');
    await page.locator('#trackN0').fill('4');
-   await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
    await page.locator('#setOperation').selectOption('intersection');
    const intersection=await measure(page,0);
    assert.ok(intersection.sharedFormula.hidden&&!intersection.sharedFormula.shared.length,
@@ -200,9 +199,6 @@ try{
       {a:Math.cos(angle),b:Math.sin(angle),n:1,velocity:.7}]}:t)};
    await importProject(page,other);
    await page.locator('#compositionPanel').evaluate(el=>el.open=true);
-   await page.locator('#rootRuleInfoToggle').evaluate(el=>{
-    if(el.getAttribute('aria-expanded')==='false')el.click();
-   });
    const extra=await measure(page,0);
    check(extra,'two added complex roots colliding off the base root set');
    assert.equal(extra.sharedFormula.shared.length,1);

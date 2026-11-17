@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -115,7 +115,9 @@ try{
 
   await page.locator('#playBtn').click();
   await page.waitForFunction(()=>window.RhythmResearch.transport().playing,null,{timeout:10000});
-  await page.waitForTimeout(240);
+  // The snapshot is the most recent painted frame; on a cold browser the first
+  // playing frame can arrive late, so wait for it instead of a fixed delay.
+  await page.waitForFunction(()=>window.RhythmResearch.orbitalHands().hands[0]?.phase>.02,null,{timeout:5000});
   const first=checkFrame(await capture(),'playing');
   assert.equal(first.transport.audioState,'running');
   assert.ok(first.frame.hands[0].phase>.02,'1-bar orbit hand actually rotates during Play');

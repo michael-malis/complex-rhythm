@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -10,7 +10,6 @@ try{
  const results=[];
  for(let i=0;i<4;i++){
   const row=page.locator('.lane[data-lane="'+i+'"]');
-  await row.locator('.advanced-coordinates').evaluate(el=>{el.open=true});
   await row.locator('.mode-button').nth(1).click();
   assert.equal(await row.locator('.mode-button').nth(1).getAttribute('aria-pressed'),'true',
    'Polar mode active on lane '+(i+1));

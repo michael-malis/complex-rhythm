@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -15,7 +15,6 @@ try{
   .filter((p,i)=>i%2===0).slice(0,24).map(p=>({id:p.id,category:p.category,bpm:p.bpm,
     counts:p.tracks.map(t=>window.RhythmResearch.events(t).length)})));
  assert.equal(cases.length,24,'24 reproducible preset-switching cases');
- await page.locator('#presetDetails').evaluate(el=>el.open=true);
  await page.locator('#playBtn').click();
  await page.waitForFunction(()=>window.RhythmResearch.transport().playing,null,{timeout:10000});
  const playing=await page.evaluate(()=>window.RhythmResearch.transport());

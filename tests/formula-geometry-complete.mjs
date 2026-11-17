@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium,eachLabTab} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -12,9 +12,9 @@ try{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
-  for(const selector of ['#compositionPanel','.math-details'])
-   await page.locator(selector).evaluate(el=>{el.open=true});
-  const measure=()=>page.evaluate(()=>{
+  // The formulas live on three inspector tabs (Lanes, Union, Notes). Each is
+  // measured while its own tab is showing; the results are then combined.
+  const measureTab=()=>page.evaluate(()=>{
    const rect=el=>{const r=el.getBoundingClientRect();return {
     left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height
    }};
@@ -57,6 +57,17 @@ try{
    return {rows:rows.length,rowOverlaps,collisions,critical,centered,labelCenters,
     documentWidth:document.documentElement.scrollWidth,viewport:innerWidth};
   });
+  const measure=async()=>{
+   const tabs=Object.fromEntries((await eachLabTab(page,measureTab)).map(x=>[x.tab,x.result]));
+   const home={rootRuleEquation:'lanes',rootRuleValues:'lanes',compositionEquation:'union',
+    selectedRootFormula:'union',rootPhaseFormula:'union'};
+   const critical=Object.entries(home).map(([id,tab])=>tabs[tab].critical.find(x=>x.id===id));
+   assert.ok(critical.every(x=>x.rect.width>0&&x.rect.height>0),'every mandatory formula is on screen on its own tab');
+   return {rows:tabs.notes.rows,rowOverlaps:tabs.notes.rowOverlaps,
+    collisions:[...tabs.lanes.collisions,...tabs.union.collisions],critical,
+    centered:tabs.lanes.centered,labelCenters:tabs.lanes.labelCenters,
+    documentWidth:Math.max(...Object.values(tabs).map(x=>x.documentWidth)),viewport:tabs.lanes.viewport};
+  };
   const baseline=await measure();
   assert.equal(baseline.rows,10,'ten formula-reference rows');
   assert.deepEqual(baseline.rowOverlaps,[],'reference labels do not cover their formulas at '+width+'/'+theme);

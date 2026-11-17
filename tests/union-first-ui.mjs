@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -12,9 +12,14 @@ try {
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   const composition=page.locator('#compositionPanel');
   await composition.evaluate(el=>el.open=true);
-  assert.match(await composition.locator(':scope > summary').textContent(),/Combine root points/);
-  assert.equal(await page.locator('#advancedMathDetails').evaluate(el=>el.open),false,
-   'intersection and Euclidean options are secondary, not required for union');
+  assert.match(await composition.locator('.panel-head h2').textContent(),/Combine root points/);
+  assert.equal(await page.locator('#tabUnion').getAttribute('aria-selected'),'true','the Union tab is showing');
+  assert.equal(await page.locator('details,summary').count(),0,'the page has no collapsible disclosure at all');
+  assert.ok(await page.evaluate(()=>{
+   const actions=document.querySelector('.composition-actions').getBoundingClientRect();
+   const operations=document.querySelector('#advancedMathDetails').getBoundingClientRect();
+   return operations.top>actions.bottom;
+  }),'intersection and Euclidean options follow the primary union actions');
   assert.ok(await page.locator('#addLayer').isVisible(),'primary add-point action is immediately available');
   assert.ok(await page.locator('#addRootFamily').isVisible(),'primary add-root-set action is immediately available');
 
@@ -58,7 +63,6 @@ try {
   assert.ok(model.shared.some(x=>Math.abs(x-.25)<1e-7),
    'merged source provenance is preserved at the coincident added point');
 
-  await page.locator('#advancedMathDetails').evaluate(el=>el.open=true);
   await page.locator('#extraLayers .layer-remove').last().click();
   await page.locator('#setOperation').selectOption('intersection');
   assert.equal(await page.locator('#unionCount').textContent(),'1',
@@ -67,14 +71,15 @@ try {
   assert.equal(await page.locator('#unionCount').textContent(),'6','union result is restored');
 
   await page.locator('#laneSound0').selectOption('acidClassic');
-  assert.ok(await page.locator('#laneGain').isVisible(),
+  assert.ok(await page.locator('#laneGain0').isVisible(),
    'lane volume is always available without editing oscillator/filter settings');
+  await page.locator('#tabUnion').click();
   assert.ok(await page.locator('#previewBtn').isVisible(),
    'instrument preview remains available outside advanced settings');
-  assert.ok(await page.locator('#advancedSoundDetails').isVisible(),
-   'a synthesized voice offers advanced sound settings');
+  assert.ok(await page.locator('#tabSound').isVisible(),
+   'a synthesized voice offers sound settings on their own tab');
   assert.equal(await page.locator('#advancedSoundDetails').evaluate(el=>el.open),false,
-   'technical synth controls are collapsed by default');
+   'technical synth controls stay on the Sound tab, not on the mathematical ones');
   assert.ok(await page.locator('#patchOsc').isHidden(),'oscillator is hidden until requested');
   await page.locator('#advancedSoundDetails').evaluate(el=>el.open=true);
   await page.locator('#patchOsc').waitFor({state:'visible'});
@@ -94,11 +99,12 @@ try {
   });
   assert.ok(sample,'a sample-backed instrument should be available');
   await page.locator('#laneSound0').selectOption(sample);
-  assert.ok(await page.locator('#advancedSoundDetails').isVisible(),
+  assert.ok(await page.locator('#tabSound').isVisible(),
    'Sound Lab stays accessible for recorded samples');
+  await page.locator('#tabSound').click();
   assert.ok(await page.locator('#patchOsc').isHidden(),
    'sample-backed voices hide synthesized waveform controls');
-  assert.ok(await page.locator('#laneGain').isVisible(),'sampled voices retain lane volume');
+  assert.ok(await page.locator('#laneGain0').isEnabled()&&await page.locator('#tabLanes').isVisible()&&await page.locator('#tabUnion').click().then(()=>page.locator('#laneGain').isVisible()),'sampled voices retain lane volume');
 
   const dense=structuredClone(fixture);dense.name='Dense fourth ring';
   dense.tracks[3].n=64;

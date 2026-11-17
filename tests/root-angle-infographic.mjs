@@ -1,4 +1,4 @@
-import {chromium} from 'playwright';
+import {chromium} from './helpers/lab-tabs.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
@@ -19,7 +19,7 @@ const report=[];
 const read=page=>page.evaluate(()=>{
  const list=[...document.querySelectorAll('#rootRuleAngleList li[data-index]')];
  return {
-  button:document.querySelector('#rootRuleInfoToggle').getAttribute('aria-expanded'),
+  toggles:document.querySelectorAll('#rootRuleInfoToggle,.root-rule details,.root-rule summary').length,
   hidden:document.querySelector('#rootRuleInfoPanel').hidden,
   compact:document.querySelector('#rootRuleValues annotation')?.textContent||'',
   spacing:document.querySelector('#rootRuleSpacing annotation')?.textContent||'',
@@ -49,11 +49,10 @@ try{
   await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
   if(theme==='dark')await page.locator('#themeBtn').click();
   await importFixture(page,fixture);
-  assert.equal(await page.locator('#rootRuleInfoToggle').getAttribute('aria-expanded'),'false');
-  assert.ok(await page.locator('#rootRuleInfoPanel').isHidden());
-  await page.locator('#rootRuleInfoToggle').click();
+  // The unit-circle explanation is part of the Lanes tab: nothing to expand.
+  assert.ok(await page.locator('#rootRuleInfoPanel').isVisible(),'root geometry is shown without any disclosure');
   const s=await read(page);
-  assert.equal(s.button,'true','geometry info control opens accessibly');
+  assert.equal(s.toggles,0,'no show/hide control guards the root geometry');
   assert.ok(!s.hidden&&s.rootPanel>200,'full root explanation fits in root-rule editor');
   assert.ok(s.compact.includes('\\frac{2\\pi}{3}'),'input angle 2π/3 shown as actual math');
   assert.ok(s.spacing.includes('\\frac{\\pi}{2}'),'π/2 spacing shown in compact rule');
@@ -80,12 +79,11 @@ try{
  const phone=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});
  await phone.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await importFixture(phone,fixture);
- await phone.locator('#rootRuleInfoToggle').tap();
  await phone.locator('#rootRuleAngleList li[data-index="2"]').tap();
  const touch=await phone.evaluate(()=>({
   selected:[...document.querySelectorAll('#rootRuleAngleList li.is-inspected')].map(x=>Number(x.dataset.index)),
   markers:[...document.querySelectorAll('#rootRuleDiagram .root-info-marker.is-inspected')].map(x=>Number(x.dataset.index)),
-  expanded:document.querySelector('#rootRuleInfoToggle').getAttribute('aria-expanded'),
+  expanded:String(!document.querySelector('#rootRuleInfoPanel').hidden),
   unchanged:window.RhythmResearch.current().tracks[0].n,
   overflow:document.documentElement.scrollWidth>innerWidth+1
  }));
@@ -100,12 +98,6 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:8767/#lab',{waitUntil:'domcontentloaded'});
  await importFixture(page,fixture);
- const info=page.locator('#rootRuleInfoToggle');
- await info.focus();await page.keyboard.press('Enter');
- assert.equal((await read(page)).button,'true','Enter opens root geometry');
- await info.focus();await page.keyboard.press('Space');
- assert.equal((await read(page)).button,'false','Space closes geometry');
- await info.focus();await page.keyboard.press('Enter');
  // Inspect the actual SVG marker and line with keyboard and pointer. This
  // is explanatory highlighting; it must not edit the complex-root source.
  const list=page.locator('#rootRuleAngleList');
@@ -145,7 +137,7 @@ try{
  assert.deepEqual((await trace()).selected,[0],'Home selects first root');
  await page.keyboard.press('Escape');
  assert.deepEqual((await trace()).selected,[],'Escape clears the focused root');
- await info.focus();
+ await page.locator('#tabLanes').focus();
  await page.locator('#rootRuleAngleList li[data-index="2"]').hover();
  assert.deepEqual((await trace()).selected,[2],'mouse hover traces the third root');
  await page.screenshot({path:'artifacts/root-angle-infographic/interactive-root-trace.png',fullPage:true});
@@ -188,7 +180,6 @@ try{
  const phaseBefore=(await read(page)).angles[0].phase;
  // Cartesian fields are intentionally inside a collapsed advanced editor.
  // Expand the actual interface before the user-like input interaction.
- await page.locator('.lane[data-lane="0"] .advanced-coordinates').evaluate(el=>{el.open=true});
  await page.locator('#trackB0').fill('0.7');
  const edited=await read(page);
  assert.notEqual(edited.angles[0].phase,phaseBefore,'complex argument edit updates displayed phases');

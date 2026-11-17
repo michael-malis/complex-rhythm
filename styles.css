@@ -122,7 +122,7 @@ footer span{letter-spacing:0}
 /* ---- 5. Stage (both views) ----------------------------------------------- */
 .visual-stage{order:1;position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;min-height:0}
 .visual-stage::before{content:"";position:absolute;inset:0;background:var(--stage-light);pointer-events:none;z-index:-1}
-.stage-heading{position:absolute;left:0;top:2px;padding:0;z-index:3;pointer-events:none}
+.stage-heading{position:absolute;left:0;top:2px;padding:0;z-index:3;pointer-events:none;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .stage-heading>div{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .stage-heading h1{font-family:var(--display);font-size:22px;line-height:1.2;font-weight:700}
 .stage-meta{font-size:16px;line-height:1;font-weight:600;letter-spacing:.02em;color:var(--muted);white-space:nowrap;
@@ -208,6 +208,17 @@ html[data-playing="true"] .play-button{background:var(--ink)}
 @keyframes beckon{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.42)}}
 @keyframes cue-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.55}}
 .stage-btn{display:none}
+/* modes: two round switches at the end of the pill; a status pill under the bar counter */
+.mode-switch{order:5;flex:none;display:flex;gap:6px}
+.mode-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:50%;border-color:var(--line);background:transparent;
+ color:var(--sub);font-size:21px;line-height:1;display:grid;place-items:center}
+.drift-btn{--mode-color:var(--ink)}
+.drift-btn[aria-pressed="true"]{background:var(--mode-color);border-color:var(--mode-color);color:var(--page)}
+.build-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--page)}
+.drift-btn[aria-pressed="true"]:hover{background:var(--mode-color)}
+.build-btn[aria-pressed="true"]:hover{background:var(--ink)}
+.mode-status{color:var(--ink);display:inline-flex;align-items:center;gap:8px;max-width:calc(100vw - 40px);white-space:normal;line-height:1.2}
+.mode-status::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--mode-color,var(--ink))}
 
 /* ---- 6. Lane cards (both views) ------------------------------------------ */
 .control-panel{order:3;min-width:0;width:100%}
@@ -306,6 +317,8 @@ html[data-view="play"] .lane-volume,html[data-view="play"] .lane-bottom{display:
  html[data-view="play"] .lane-stepper{gap:0}
  html[data-view="play"] .canvas-shell{width:min(100%,calc(100svh - 260px))}
  html[data-view="play"] .volume-control{display:none}
+ html[data-view="play"] .transport-dock{gap:8px;padding-left:12px;padding-right:12px}
+ html[data-view="play"] .tempo-word{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 @media(min-width:600px) and (max-width:979px){
  html[data-view="play"] .track-list{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -556,7 +569,6 @@ html[data-view="lab"] .lane-count{color:var(--ink);font-weight:700}
 .layer-row>div label{display:block;font-size:16px;color:var(--muted);margin-bottom:3px}
 .layer-row input{min-height:44px;min-width:0;padding:6px}
 .layer-row button{height:44px;width:44px;padding:0;border-radius:50%}
-.layer-title{grid-column:1/-1;font-weight:680;font-size:16px;color:var(--sub);padding:0 0 2px}
 .layer-velocity{grid-column:1/-1;display:flex;align-items:center;gap:9px;font-size:16px;color:var(--sub)}.layer-velocity input{flex:1}
 .angular-layer{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;gap:8px;align-items:end}
 .angular-layer .layer-angle-title{grid-column:1/-1;font-size:16px;font-weight:650;color:var(--ink)}
@@ -654,7 +666,7 @@ html[data-view="lab"] .lane-count{color:var(--ink);font-weight:700}
  .stage-heading{top:0}
  html[data-view="lab"] .transport-dock{flex-wrap:wrap;gap:4px 12px;padding:8px 18px 8px 10px;min-height:76px;width:100%;justify-content:center;border-radius:30px}
  html[data-view="lab"] .transport .range-field{flex:1 1 150px;width:auto}
- html[data-view="lab"] .volume-control{flex:1 1 100%;width:auto;padding:4px 6px 0 8px}
+ html[data-view="lab"] .volume-control{flex:1 1 150px;width:auto;padding:4px 6px 0 8px}
  .lab-tab{flex-direction:column;gap:1px;min-height:56px;padding:4px 2px}
  .tab-glyph{font-size:19px}
 }
@@ -693,10 +705,14 @@ html[data-view="lab"] .lane-count{color:var(--ink);font-weight:700}
  html[data-view="lab"] #presetSelect{font-size:17px;padding:8px 22px 8px 6px}
  html[data-view="lab"] .preset-controls{gap:6px 4px}
  html[data-view="lab"] .jam-tools{gap:4px}
+ html[data-view="lab"] footer{flex-direction:column;align-items:center;gap:0}
+}
+/* Lab frame up to 1439px: the stage column is narrow, so the pill takes two rows (tempo / volume and modes) */
+@media(min-width:1080px) and (max-width:1439px){
  html[data-view="lab"] .transport-dock{flex-wrap:wrap;gap:2px 12px;padding:8px 20px 8px 12px;border-radius:30px;width:100%;max-width:440px}
  html[data-view="lab"] .transport .range-field{flex:1 1 150px;width:auto}
- html[data-view="lab"] .volume-control{flex:1 1 100%;width:auto;padding:0 0 0 8px}
- html[data-view="lab"] footer{flex-direction:column;align-items:center;gap:0}
+ html[data-view="lab"] .volume-control{flex:1 1 150px;width:auto;padding:0 0 0 8px}
+ html[data-view="lab"] .canvas-shell{width:min(100cqw - 8px,100cqh - 252px,820px)}
 }
 /* tablets: the top bar keeps its words only where they fit */
 @media(min-width:600px) and (max-width:899px){

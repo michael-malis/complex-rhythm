@@ -814,7 +814,6 @@ function fmtMath(n){
  return Number(n.toPrecision(6)).toString();
 }
 function inputNumber(n){return n===0?'0':Number(n.toPrecision(12)).toString()}
-function complexDisplay(t){return `${fmt(t.a)} ${t.b<0?'−':'+'} ${fmt(Math.abs(t.b))}i`}
 function hitLabel(n){return `${n} ${n===1?'hit':'hits'}`}
 function applyRotation(t,ang){const radius=Math.hypot(t.a,t.b);if(!radius)return false;const snap=x=>Math.abs(x)<radius*1e-12?0:Number(x.toPrecision(10));t.a=snap(radius*Math.cos(ang));t.b=snap(radius*Math.sin(ang));return true}
 // An explicit reproducible index for the eight mandatory mathematical relations.
@@ -2142,7 +2141,6 @@ function barSeconds(){return 240/bpm}
 function cycleSeconds(){return barSeconds()*(tracks.length?RhythmMath.commonCycle(tracks):cycleBars)}
 function laneSeconds(track){return barSeconds()*(track.cycleBars||1)}
 function playbackElapsed(){return playing&&audio?Math.max(0,audio.currentTime-beatEpoch):pausedPhase*cycleSeconds()}
-function lanePhase(track){return RhythmMath.phaseAt(playbackElapsed(),track.cycleBars||1,barSeconds())}
 // One phase clock for BOTH visible orbit hands and audible hits:
 // planEvents() schedules at (cycle + root.phase) * cycleBars * barSeconds.
 // The playhead must use the same beatEpoch, bar duration and cycleBars
@@ -2393,6 +2391,8 @@ function positionPhaseLabels(){
    dots.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r});
   }
  });
+ // While a playback mode is on, its status pill sits over the plot's top-left corner.
+ const pill=$('modeStatus'),pillBox=pill&&!pill.hidden?pill.getBoundingClientRect():null;
  const options=[
   {id:'phaseZero',axis:'x',dir:1},
   {id:'phaseQuarter',axis:'y',dir:1},
@@ -2403,9 +2403,7 @@ function positionPhaseLabels(){
   const el=$(item.id);if(!el)continue;
   const label=el.getBoundingClientRect(),w=label.width,h=label.height;
   if(!w||!h)continue;
-  // In Play the corners of the plot square hold round controls; labels keep clear of them.
-  const corner=view==='play'?50:0;
-  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4-corner);
+  const maxShift=Math.max(0,(item.axis==='x'?box.width-w:box.height-h)/2-4);
   const shifts=[55,68,82,96,110,125,140].filter(x=>x<=maxShift);
   if(!shifts.length)shifts.push(maxShift);
   let best=shifts[0],fewest=Infinity;
@@ -2434,7 +2432,8 @@ function positionPhaseLabels(){
     Math.hypot(cx-(left+w),cy-(top+h))
    );
    const ringConflicts=radii.filter(r=>closest<=r+3&&farthest>=r-3).length;
-   const score=markerConflicts*100+ringConflicts*20;
+   const pillConflict=pillBox&&left<pillBox.right+4&&pillBox.left<left+w+4&&top<pillBox.bottom+4&&pillBox.top<top+h+4?1:0;
+   const score=markerConflicts*100+pillConflict*60+ringConflicts*20;
    if(score<fewest){best=shift;fewest=score}
    if(!score)break;
   }
@@ -2857,7 +2856,6 @@ function setupEvents() {
  $('windowPanel').addEventListener('toggle',renderWindowTimeline);
  function canvasPoint(e){const b=canvas.getBoundingClientRect();return{x:e.clientX-b.left-b.width/2,y:e.clientY-b.top-b.height/2,side:Math.min(b.width,b.height)}}
  function wrapAngle(x){return Math.atan2(Math.sin(x),Math.cos(x))}
- function onRootDot(p,t,r){return t.a===0&&t.b===0?false:rootPhases(t).some(ph=>{const a=-Math.PI/2+TAU*ph;return Math.hypot(p.x-Math.cos(a)*r,p.y-Math.sin(a)*r)<=Math.max(22,p.side*.025)})}
  canvas.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   const p=canvasPoint(e),dist=Math.hypot(p.x,p.y);
@@ -3276,6 +3274,18 @@ function updateModeButtons(){
  build.setAttribute('aria-pressed',String(buildOn));
  build.title=buildOn?'Build is on: bar '+(buildPosition()+1)+' of 16 · click to stop'
   :'Build: lanes enter one by one, play together, break and return';
+ // One quiet pill beside the bar counter says what the modes are doing.
+ const status=$('modeStatus');if(!status)return;
+ const parts=[];
+ // The dot carries the drifting lane's colour; the numbers are step / grid and bar / 16.
+ if(driftOn)parts.push('Drift '+driftSteps+'/'+driftGrid());
+ if(buildOn)parts.push('Build '+(buildPosition()+1)+'/16');
+ status.title=parts.length?[driftOn?'Drift: lane '+(driftLane+1)+', step '+driftSteps+' of '+driftGrid():'',
+  buildOn?'Build: bar '+(buildPosition()+1)+' of 16':''].filter(Boolean).join('; '):'';
+ const text=parts.join(' · ');
+ if(status.textContent!==text)status.textContent=text;
+ if(status.hidden!==!parts.length){status.hidden=!parts.length;positionPhaseLabels()}
+ status.style.setProperty('--mode-color',COLORS[driftLane]);
 }
 function setDrift(on){
  driftOn=Boolean(on);

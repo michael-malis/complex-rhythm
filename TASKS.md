@@ -9,7 +9,7 @@ This is the **only engineering task list**. It holds work that code and automate
 ## Engineering readiness
 
 ```
-Tasks         [██████████████████░░]  17 / 19 done
+Tasks         [███████████████████░]  19 / 20 done
 Requirements  [████████████████████]   9 / 9  guarantees covered by passing automated checks
 Stages        [█████████████████░░░]   6 / 7  complete
 ```
@@ -23,10 +23,10 @@ Counted from the tables below: tasks are the rows of "Engineering tasks"; requir
 | 1 | Mathematical core: roots, unions, intersections, Euclidean patterns, independent loops | complete |
 | 2 | Audio engine: one event plan, AudioContext scheduling, voices, samples, master safety | complete |
 | 3 | Preset catalog: 50 canonical presets, song study, Bunker set, groups | complete |
-| 4 | Play: the instrument view, jam tools, light first load | complete |
+| 4 | Play: the instrument view, jam tools, Drift and Build modes, light first load | complete |
 | 5 | Lab: tabbed inspector, lane table, one shell shared with Play | complete |
 | 6 | Governance: engineering backlog separated from manual acceptance | complete |
-| 7 | Closing: final technical release and pruning of legacy evidence | in progress (RELEASE-01, CLEAN-01) |
+| 7 | Closing: final technical release and pruning of legacy evidence | in progress (RELEASE-01) |
 
 ## Engineering tasks
 
@@ -49,7 +49,8 @@ Counted from the tables below: tasks are the rows of "Engineering tasks"; requir
 | QA-01 | Regression suite follows the tabbed interface without losing coverage | DONE | UI-01 | Contrast, touch-target, typography, clipping and formula-geometry audits visit every tab; mathematical and audio assertions are unchanged; the full suite passes. | [PR #80](https://github.com/michael-malis/complex-rhythm/pull/80); `tests/helpers/lab-tabs.mjs`. |
 | GOV-01 | Manual checks moved out of the engineering backlog | DONE | - | AUDIO-01, ACCESS-01 and every other human check live in a separate register, are absent from readiness figures and block nothing; the backlog verifier enforces the split. | [PR #80](https://github.com/michael-malis/complex-rhythm/pull/80); [MANUAL_ACCEPTANCE.md](MANUAL_ACCEPTANCE.md), `scripts/verify-backlog.mjs`. |
 | DOC-01 | README and design document describe the current product only | DONE | UI-01 | README explains the model, the two views, the five tabs and how to run tests, without historical ledgers or retired counters; the design document matches the shipped interface. | [PR #80](https://github.com/michael-malis/complex-rhythm/pull/80); [README.md](README.md), [design system](docs/UI_DESIGN_SYSTEM.md). |
-| RELEASE-01 | Final technical release | IN_PROGRESS | UI-01, UI-02, UI-03, QA-01, GOV-01, DOC-01 | The redesign commit on `main` has a green full regression run and a successful Pages deployment; no known critical defect is open. Manual acceptance is not a condition. | Merge PR #80 after its checks pass, then record the main run and the deployment here. |
-| CLEAN-01 | Prune legacy evidence documents and dead scaffolding | TODO | RELEASE-01 | Historical audit files that no test or guarantee reads are removed or archived, unused CSS and helpers are gone, and the full suite still passes. | Last engineering task; planned for the closing run. No user-visible change. |
+| MODES-01 | Drift and Build modes in the new transport pill | DONE | UI-02 | Both switches sit in the transport pill in Play and Lab as 44px targets that cover no other control; a status pill shows the drift step and Build bar; Drift moves only the selected lane on the bar line and the Lab table follows it. | [PR #79](https://github.com/michael-malis/complex-rhythm/pull/79), [PR #80](https://github.com/michael-malis/complex-rhythm/pull/80); covered by `tests/play-surface.mjs`. |
+| RELEASE-01 | Final technical release | IN_PROGRESS | UI-01, UI-02, UI-03, QA-01, GOV-01, DOC-01, MODES-01, CLEAN-01 | The redesign commit on `main` has a green full regression run and a successful Pages deployment; no known critical defect is open. Manual acceptance is not a condition. | Merge PR #80 after its checks pass, then record the main run and the deployment here. |
+| CLEAN-01 | Prune legacy evidence documents and dead scaffolding | DONE | - | Historical audit files that no test or guarantee reads are removed or archived, unused CSS and helpers are gone, and the full suite still passes. | [PR #80](https://github.com/michael-malis/complex-rhythm/pull/80): three retired audit documents and unused style rules removed; full suite green. |
 
 **Independence.** Manual acceptance may happen at any time, before or after the last engineering task. A defect found there becomes a new row here; nothing else reopens the backlog.

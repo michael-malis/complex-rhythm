@@ -18,6 +18,8 @@ The page has one shell in both views: the circular plate with four rings on the 
 
 **Play** (default) is the instrument. Press the round button, drag a point or a whole ring to rotate a lane, tap − / + to change how many evenly spaced hits it plays, step through the examples with ‹ ›.
 
+**Modes.** Two round switches at the end of the transport pill, in both views, turn a static loop into a small piece. **Drift** (↻) is phase music in the manner of Steve Reich's *Clapping Music*: the selected lane steps one sixteenth later every two bars while the others hold still, and is home again after a full circle (32 bars for a one-bar lane). **Build** (≡) is a 16-bar arrangement: lanes enter one by one, play together, drop to a short break and return. A small pill under the bar counter shows the drift step and the Build bar while a mode is on. Both act where events are scheduled, exactly on the bar line: nothing already sounding is cut, mutes and saved projects are not touched, and with both off the scheduler behaves as before. In the Lab the lane table follows a drifting lane's angle live.
+
 **Lab** (top bar, or `#lab`) keeps the same figure and adds an inspector with five tabs:
 
 | Tab | What it holds |

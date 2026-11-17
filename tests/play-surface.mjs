@@ -48,6 +48,30 @@ const at=(g,lane,phase)=>{
  const a=-Math.PI/2+TAU*phase,r=g.radii[lane];
  return [g.cx+Math.cos(a)*r,g.cy+Math.sin(a)*r];
 };
+// The transport pill holds ↺ ▶ tempo volume ↻ ≡ in both views, each a full
+// target, none on top of another.
+const dock=page=>page.evaluate(()=>{
+ const pill=document.querySelector('.transport-dock').getBoundingClientRect();
+ const shown=e=>{const css=getComputedStyle(e),b=e.getBoundingClientRect();return css.display!=='none'&&css.visibility!=='hidden'&&b.width>0&&b.height>0};
+ const controls=['resetBtn','playBtn','bpm','volume','driftBtn','buildBtn'].map(id=>document.getElementById(id)).filter(shown)
+  .map(e=>({id:e.id,b:e.getBoundingClientRect()}));
+ const overlaps=[];
+ for(let i=0;i<controls.length;i++)for(let j=i+1;j<controls.length;j++){const a=controls[i].b,c=controls[j].b;
+  if(a.left<c.right-.5&&c.left<a.right-.5&&a.top<c.bottom-.5&&c.top<a.bottom-.5)overlaps.push(controls[i].id+'/'+controls[j].id)}
+ const modeButtons=controls.filter(c=>c.id==='driftBtn'||c.id==='buildBtn');
+ return {modes:modeButtons.length,overlaps,
+  outside:modeButtons.filter(({b})=>b.left<pill.left-.5||b.right>pill.right+.5||b.top<pill.top-.5||b.bottom>pill.bottom+.5).map(c=>c.id),
+  small:modeButtons.filter(({b})=>b.width<43.95||b.height<43.95).map(c=>c.id),
+  inPill:modeButtons.every(({id})=>document.getElementById(id).closest('.transport-dock')),
+  status:{hidden:document.getElementById('modeStatus').hidden,text:document.getElementById('modeStatus').textContent}};
+});
+const assertDock=(d,label)=>{
+ assert.equal(d.modes,2,label+': Drift and Build are shown');
+ assert.ok(d.inPill,label+': the mode switches belong to the transport pill');
+ assert.deepEqual(d.outside,[],label+': the mode switches sit inside the pill');
+ assert.deepEqual(d.small,[],label+': the mode switches are full touch targets');
+ assert.deepEqual(d.overlaps,[],label+': no transport control covers another');
+};
 // Drags the pointer along one ring by `turn` radians, starting at `phase`.
 async function dragAlongRing(page,lane,phase,turn){
  const g=await geometry(page);
@@ -116,7 +140,7 @@ try{
     main:box(main),back:box(back),painted,small,
     labOnlyVisible:['.math-details','.sound-lab','#compositionPanel','.root-rule','footer','#windowPanel','.lab-tabs']
      .filter(selector=>shown(document.querySelector(selector))),
-    quick:['presetSelect','presetPrev','presetNext','presetShuffle','viewPlay','viewLab',
+    quick:['presetSelect','presetPrev','presetNext','presetShuffle','viewPlay','viewLab','driftBtn','buildBtn',
      ...[0,1,2,3].flatMap(i=>['laneDial'+i,'laneLess'+i,'laneMore'+i,'laneSound'+i])]
      .filter(id=>!shown(document.getElementById(id))),
     lanes:document.querySelectorAll('#tracks .lane').length};
@@ -139,6 +163,9 @@ try{
   assert.deepEqual(layout.quick,[],label+': play-surface controls are present');
   assert.deepEqual(layout.labOnlyVisible,[],label+': Lab-only panels stay out of the way');
   assert.deepEqual(layout.small,[],label+': every visible control is at least 44 by 44 CSS px');
+  const playDock=await dock(page);
+  assertDock(playDock,label+' Play');
+  assert.equal(playDock.status.hidden,true,label+': no mode status while both modes are off');
   await page.screenshot({path:directory+'/'+viewport.name+'-'+theme+'-idle.png'});
 
   // ---- press Play -------------------------------------------------------
@@ -348,6 +375,7 @@ try{
    assert.deepEqual(idleModes.build.audible,[true,true,true,true],label+': with Build off every lane is audible');
    await page.locator('#buildBtn').click();
    const building=await modes();
+   assert.deepEqual((await dock(page)).status,{hidden:false,text:'Build 1/16'},label+': the status pill shows the Build bar');
    assert.equal(building.build.on,true);
    assert.deepEqual(building.build.audible,[true,false,false,false],label+': Build starts with the first lane alone');
    await page.waitForTimeout(1700);
@@ -365,6 +393,7 @@ try{
 
    await page.locator('#driftBtn').click();
    const drifting=await modes();
+   assert.equal((await dock(page)).status.text,'Drift 0/'+drifting.drift.grid,label+': the status pill counts drift steps');
    assert.equal(drifting.drift.on,true);assert.equal(drifting.drift.steps,0);
    await page.waitForFunction(()=>window.RhythmResearch.modes().drift.steps>=1,null,{timeout:20000});
    const drifted=await modes();
@@ -379,6 +408,7 @@ try{
    assert.equal(drifted.transport.playing,true);
    await page.locator('#driftBtn').click();
    assert.equal((await modes()).drift.on,false);
+   assert.equal((await dock(page)).status.hidden,true,label+': the status pill leaves with the last mode');
 
    // ---- pause ------------------------------------------------------------
    await page.locator('#playBtn').click();
@@ -430,8 +460,40 @@ try{
    await page.locator('#zoomBtn').click();
    await settle(page);
    assert.equal(await page.evaluate(()=>document.getElementById('plotArea').classList.contains('focused')),false);
+
+   // ---- Drift in the Lab: the lane table follows the drifting lane -----------
+   await page.locator('#viewLab').click();
+   await page.locator('#tabLanes').click();
+   await page.locator('#playBtn').click();
+   await page.waitForFunction(()=>window.RhythmResearch.transport().playing,null,{timeout:10000});
+   await page.locator('#driftBtn').click();
+   const labDrift=await modes();
+   const degField='#trackAngleDeg'+labDrift.drift.lane;
+   const fieldBefore=Number(await page.locator(degField).inputValue());
+   await page.waitForFunction(()=>window.RhythmResearch.modes().drift.steps>=1,null,{timeout:20000});
+   const labDrifted=await page.evaluate(lane=>{const t=window.RhythmResearch.current().tracks[lane];
+    return {a:t.a,b:t.b,n:t.n,steps:window.RhythmResearch.modes().drift.steps,grid:window.RhythmResearch.modes().drift.grid}},labDrift.drift.lane);
+   const fieldAfter=Number(await page.locator(degField).inputValue());
+   const modelDeg=Math.atan2(labDrifted.b,labDrifted.a)*180/Math.PI;
+   const degGap=(x,y)=>{const d=Math.abs(((x-y)%360+360)%360);return Math.min(d,360-d)};
+   assert.ok(degGap(fieldAfter,modelDeg)<.01,label+': the Lab θ field shows the drifted angle '+JSON.stringify([fieldAfter,modelDeg]));
+   assert.ok(degGap(fieldAfter,fieldBefore+360*labDrifted.n*labDrifted.steps/labDrifted.grid)<.01,
+    label+': each drift step turns z by n sixteenths of the loop '+JSON.stringify([fieldBefore,fieldAfter,labDrifted]));
+   assert.match((await dock(page)).status.text,/^Drift [1-9][0-9]*[/][0-9]+$/,label+': the Lab shows the same drift status');
+   await page.locator('#driftBtn').click();
+   await page.locator('#playBtn').click();
+   await page.locator('#viewPlay').click();
    entry.interaction='drag, ring drag, stepper, dial keys, dial drag, browse, shuffle, view switch, roll, mutate, undo, mute and solo keys, tap tempo, stage, build, drift, pause, zoom';
   }
+  // ---- the same pill in the Lab --------------------------------------------
+  await page.locator('#viewLab').click();
+  await settle(page);
+  assertDock(await dock(page),label+' Lab');
+  await page.locator('#buildBtn').click();
+  assert.deepEqual((await dock(page)).status,{hidden:false,text:'Build 1/16'},label+': Lab shows the Build status');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),label+': the status pill causes no overflow');
+  await page.locator('#buildBtn').click();
+  assert.equal((await dock(page)).status.hidden,true);
   assert.deepEqual(errors,[],label+': no runtime errors');
   report.push(entry);
   await page.close();

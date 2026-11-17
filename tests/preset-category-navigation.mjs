@@ -78,7 +78,8 @@ try {
     return {ctx,avail:select.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight)-(css.appearance==='none'?0:16)}};
    const category=document.getElementById('categorySelect'),preset=document.getElementById('presetSelect'),out=[];
    const c=room(category);
-   for(const option of category.options)if(c.ctx.measureText(option.textContent).width>c.avail)out.push('category '+option.textContent);
+   for(const option of category.options)if(c.ctx.measureText(option.textContent).width>c.avail)
+    out.push('category '+option.textContent+' ('+Math.round(c.ctx.measureText(option.textContent).width)+' > '+Math.round(c.avail)+')');
    for(const value of [...category.options].map(o=>o.value)){
     category.value=value;category.dispatchEvent(new Event('change',{bubbles:true}));
     await new Promise(resolve=>requestAnimationFrame(resolve));

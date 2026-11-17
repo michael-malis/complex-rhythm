@@ -709,7 +709,11 @@ html[data-view="lab"] .lane-count{color:var(--ink);font-weight:700}
  .topbar{flex-wrap:wrap}
  .top-actions{margin-left:auto}
  .view-btn{min-width:44px;padding:6px 8px}
+ /* the picker rows give their room to the two names */
  #categorySelect{padding-left:8px;padding-right:8px}
+ .preset-controls{column-gap:4px}
+ .jam-tools{gap:4px}
+ #presetSelect{padding-left:6px;padding-right:6px}
 }
 /* mid-width Lab frame: picker on two rows, transport fields share the pill */
 @media(min-width:1080px) and (max-width:1279px){
